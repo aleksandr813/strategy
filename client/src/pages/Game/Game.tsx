@@ -31,6 +31,8 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         printFillSprite(spritesImage, canvas, { x, y }, points);
     }
 
+    
+
 
     // функция отрисовки одного кадра сцены
     function render(FPS: number): void {
