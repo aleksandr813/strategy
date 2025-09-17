@@ -16,6 +16,9 @@ export type TCanvas = {
         mouseMove: (x: number, y: number) => void;
         mouseClick: (x: number, y: number) => void;
         mouseRightClick: () => void;
+        onSelectionStart?: (x: number, y: number) => void;
+        onSelectionMove?: (x: number, y: number) => void;
+        onSelectionEnd?: (startX: number, startY: number, endX: number, endY: number) => void;
     },
 }
 
@@ -43,7 +46,16 @@ class Canvas {
         mouseMove: (x: number, y: number) => void;
         mouseClick: (x: number, y: number) => void;
         mouseRightClick: () => void;
+        onSelectionStart?: (x: number, y: number) => void;
+        onSelectionMove?: (x: number, y: number) => void;
+        onSelectionEnd?: (startX: number, startY: number, endX: number, endY: number) => void;
     }
+    isSelecting = false;
+    selectionStartX = 0;
+    selectionStartY = 0;
+    selectionEndX = 0;
+    selectionEndY = 0;
+
 
     constructor(options: TCanvas) {
         const { parentId, WINDOW, WIDTH, HEIGHT, callbacks } = options;
@@ -74,6 +86,9 @@ class Canvas {
         this.canvas.addEventListener('mouseleave', () => this.mouseLeaveHandler());
         this.canvas.addEventListener('click', (event) => this.mouseClickHandler(event));
         this.canvas.addEventListener('contextmenu', (event) => this.mouseRightClickHandler(event));
+        this.canvas.addEventListener('mousedown', (event) => this.mouseDownHandler(event));
+        this.canvas.addEventListener('mouseup', (event) => this.mouseUpHandler(event));
+
         this.interval = setInterval(() => {
             if (this.dx === 0 && this.dy === 0) {
                 return;
@@ -106,8 +121,44 @@ class Canvas {
         this.callbacks.mouseRightClick();
     }
 
+    mouseDownHandler(event: MouseEvent) {
+        const { offsetX, offsetY } = event;
+        this.isSelecting = true;
+        this.selectionStartX = this.sx(offsetX);
+        this.selectionStartY = this.sy(offsetY);
+        this.selectionEndX = this.selectionStartX;
+        this.selectionEndY = this.selectionStartY;
+        if (this.callbacks.onSelectionStart) {
+            this.callbacks.onSelectionStart(this.selectionStartX, this.selectionStartY);
+        }
+    }
+
+    mouseUpHandler(event: MouseEvent) {
+        if (this.isSelecting) {
+            this.isSelecting = false;
+            const { offsetX, offsetY } = event;
+            this.selectionEndX = this.sx(offsetX);
+            this.selectionEndY = this.sy(offsetY);
+            if (this.callbacks.onSelectionEnd) {
+                this.callbacks.onSelectionEnd(
+                    this.selectionStartX,
+                    this.selectionStartY,
+                    this.selectionEndX,
+                    this.selectionEndY
+                );
+            }
+        }
+    }
+
     mouseMoveHandler(event: MouseEvent) {
         const { offsetX, offsetY } = event;
+        if (this.isSelecting) {
+            this.selectionEndX = this.sx(offsetX);
+            this.selectionEndY = this.sy(offsetY);
+            if (this.callbacks.onSelectionMove) {
+                this.callbacks.onSelectionMove(this.selectionEndX, this.selectionEndY);
+            }
+        }
         // для скролла окошка относительно положения мышки
         /*
         const pX = offsetX / this.WIDTH;
@@ -193,6 +244,32 @@ class Canvas {
 
     spriteFull(image: HTMLImageElement, dx: number, dy: number, sx: number, sy: number, size: number): void {
         this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), size, size);
+    }
+
+    drawSelectionRect(): void {
+        if (this.isSelecting) {
+            const width = this.selectionEndX - this.selectionStartX;
+            const height = this.selectionEndY - this.selectionStartY;
+
+            // Рисуем полупрозрачный закрашенный прямоугольник
+            this.contextV.fillStyle = "rgba(0, 255, 0, 0.4)";
+            this.contextV.fillRect(
+                this.xs(this.selectionStartX),
+                this.ys(this.selectionStartY),
+                this.dec(width),
+                this.dec(height)
+            );
+
+            // Рисуем обводку
+            this.contextV.strokeStyle = "rgba(0, 255, 0, 0.8)";
+            this.contextV.lineWidth = 2;
+            this.contextV.strokeRect(
+                this.xs(this.selectionStartX),
+                this.ys(this.selectionStartY),
+                this.dec(width),
+                this.dec(height)
+            );
+        }
     }
 
     // копируем изображение с виртуального канваса на основной

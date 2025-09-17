@@ -33,7 +33,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
 
     // функция отрисовки одного кадра сцены
-    function render(FPS: number): void {
+    function render(canvas: Canvas, FPS: number): void {
         if (canvas && game) {
             canvas.clear();
             const { kapitoshka } = game.getScene();
@@ -48,9 +48,8 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
             /* нарисовать FPS */
             /******************/
             canvas.text(WINDOW.LEFT + 0.2, WINDOW.TOP + 0.5, String(FPS), GREEN);
-            /************************/
-            /* отрендерить картинку */
-            /************************/
+
+            canvas.drawSelectionRect();
             canvas.render();
         }
     }
