@@ -28,9 +28,9 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         canvas.spriteFull(image, x, y, points[0], points[1], points[2]);
     }
 
-    function printUnits(canvas: Canvas, unitsMatrix: Unit[]): void {
+    function printUnits(canvas: Canvas, unitsMatrix: Unit[], points: number[]): void {
         unitsMatrix.forEach((element) => {
-            printFillSprite(spritesImage, canvas, { element.dx, element.dy }, points);
+            printFillSprite(spritesImage, canvas, { x: element.dx, y: element.dy }, points);
         })
     }
 
@@ -47,7 +47,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
             /* нарисовать Капитошку */
             /************************/
             const { x, y } = kapitoshka;
-            printKapitoshka(canvas, { x, y }, getSprite(1));
+            printUnits(canvas, { x, y }, getSprite(1));
 
             /******************/
             /* нарисовать FPS */
