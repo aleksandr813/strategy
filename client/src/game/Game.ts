@@ -18,6 +18,7 @@ class Game {
         };
     }
 
+    /**
     move(dx: number, dy: number): void {
         if ((dx > 0 && this.kapitoshka.x + dx <= WIDTH - 1) ||
             (dx < 0 && this.kapitoshka.x - dx >= 0)
@@ -29,7 +30,7 @@ class Game {
         ) {
             this.kapitoshka.y += dy;
         }
-    }
+    }  */
 }
 
 export default Game;
