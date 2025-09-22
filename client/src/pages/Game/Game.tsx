@@ -28,24 +28,23 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         canvas.spriteFull(image, x, y, points[0], points[1], points[2]);
     }
 
-    //Массив points в этой функции принимает параметры для подтягивания спрайта (положение на холсте и так далее)
-    function printUnits(canvas: Canvas, unitsMatrix: Unit[], points: number[]): void { // Вот тут по отдельности должен отрисовываться юнит на своих координатах
-        unitsMatrix.forEach((element) => {
+    function printUnits(canvas: Canvas, units: Unit[], points: number[]): void { // Вот тут по отдельности должен отрисовываться юнит на своих координатах
+        units.forEach((element) => {
             printFillSprite(spritesImage, canvas, element.cords, points); 
         })
     }
 
-    
-    const units = [new Unit(0, 0), new Unit(10, 10)];
 
     // функция отрисовки одного кадра сцены
     function render(FPS: number): void {
         if (canvas && game) {
             canvas.clear();
 
+            const { units } = game.getScene();
+
             /************************/
             /* нарисовать Юнитов */
-            /************************/
+            /************************/ 
             printUnits(canvas, units, getSprite(1)); 
 
             /******************/

@@ -1,11 +1,12 @@
 import CONFIG, { TPoint } from "../config";
+import Unit from './Units';
 const { WIDTH, HEIGHT } = CONFIG;
 
 class Game {
-    private kapitoshka: TPoint;
+    private units:Unit[];
 
     constructor() {
-        this.kapitoshka = { x: 2, y: 5 };
+        this.units = [new Unit(0, 0), new Unit(5, 5)]
     }
 
     destructor() {
@@ -14,7 +15,7 @@ class Game {
 
     getScene() {
         return {
-            kapitoshka: this.kapitoshka,
+            units: this.units,
         };
     }
 
