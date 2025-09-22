@@ -25,7 +25,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         getSprite,
     ] = useSprites();
 
-    function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void {
+    function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void { //В массиве points хранятся sx, sy, size
         canvas.spriteFull(image, x, y, points[0], points[1], points[2]);
     }
 
@@ -37,7 +37,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
     function printBuilds(canvas: Canvas, builds: Build[], points: number[]): void {
         builds.forEach((element) => {
-            printFillSprite(spritesImage, canvas, element.cords)
+            printFillSprite(spritesImage, canvas, element.cords[1], points)
         })
     }
 
@@ -48,11 +48,13 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
             canvas.clear();
 
             const { units } = game.getScene();
+            const { builds } = game.getScene();
 
             /************************/
             /* нарисовать Юнитов */
             /************************/ 
             printUnits(canvas, units, getSprite(1)); 
+            printBuilds(canvas, builds, getSprite(2));
 
             /******************/
             /* нарисовать FPS */

@@ -2,8 +2,9 @@ import { TPoint } from "../config";
 
 export default class Build {
     hp = 100;
-    sprite = 1;
-    size = 1;
+    sx = 0;
+    sy = 0;
+    size = 2;
     cords:TPoint[] = [{x: 0, y: 0}, {x: 0, y: 0}, {x: 0, y: 0}, {x: 0, y: 0}];
     constructor(x:number, y:number) {
         this.cords = [{x: x, y: y}, {x: x+1, y: y}, {x: x, y: y+1}, {x: x+1, y: y+1}];

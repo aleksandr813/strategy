@@ -1,12 +1,15 @@
 import CONFIG, { TPoint } from "../config";
 import Unit from './Units';
+import Build from './Builds';
 const { WIDTH, HEIGHT } = CONFIG;
 
 class Game {
     private units:Unit[];
+    private builds:Build[]
 
     constructor() {
-        this.units = [new Unit(0, 0), new Unit(5, 5)]
+        this.units = [new Unit(0, 0), new Unit(0, 5)]
+        this.builds = [new Build(5, 5)]
     }
 
     destructor() {
@@ -16,6 +19,7 @@ class Game {
     getScene() {
         return {
             units: this.units,
+            builds: this.builds,
         };
     }
 
