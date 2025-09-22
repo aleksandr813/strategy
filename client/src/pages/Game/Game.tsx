@@ -31,7 +31,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     //Массив points в этой функции принимает параметры для подтягивания спрайта (положение на холсте и так далее)
     function printUnits(canvas: Canvas, unitsMatrix: Unit[], points: number[]): void { // Вот тут по отдельности должен отрисовываться юнит на своих координатах
         unitsMatrix.forEach((element) => {
-            printFillSprite(spritesImage, canvas, { x: element.dx, y: element.dy }, points); 
+            printFillSprite(spritesImage, canvas, element.cords, points); 
         })
     }
 
