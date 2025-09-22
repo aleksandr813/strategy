@@ -6,6 +6,7 @@ import Game from '../../game/Game';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units';
+import Build from '../../game/Builds';
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
@@ -31,6 +32,12 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     function printUnits(canvas: Canvas, units: Unit[], points: number[]): void { // Вот тут по отдельности должен отрисовываться юнит на своих координатах
         units.forEach((element) => {
             printFillSprite(spritesImage, canvas, element.cords, points); 
+        })
+    }
+
+    function printBuilds(canvas: Canvas, builds: Build[], points: number[]): void {
+        builds.forEach((element) => {
+            printFillSprite(spritesImage, canvas, element.cords)
         })
     }
 
@@ -102,7 +109,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
     useEffect(() => {
         const keyDownHandler = (event: KeyboardEvent) => {
-            console.log("keyDownHandler")
+            console.log("keyDownHandler");
         }
 
         document.addEventListener('keydown', keyDownHandler);
