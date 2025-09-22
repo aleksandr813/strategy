@@ -5,6 +5,7 @@ import { IBasePage, PAGES } from '../PageManager';
 import Game from '../../game/Game';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
+import Unit from '../../game/Units';
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
@@ -27,24 +28,25 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         canvas.spriteFull(image, x, y, points[0], points[1], points[2]);
     }
 
-    function printKapitoshka(canvas: Canvas, { x = 0, y = 0 }, points: number[]): void {
-        printFillSprite(spritesImage, canvas, { x, y }, points);
+    //Массив points в этой функции принимает параметры для подтягивания спрайта (положение на холсте и так далее)
+    function printUnits(canvas: Canvas, unitsMatrix: Unit[], points: number[]): void { // Вот тут по отдельности должен отрисовываться юнит на своих координатах
+        unitsMatrix.forEach((element) => {
+            printFillSprite(spritesImage, canvas, { x: element.dx, y: element.dy }, points); 
+        })
     }
 
     
-
+    const units = [new Unit(0, 0), new Unit(10, 10)];
 
     // функция отрисовки одного кадра сцены
     function render(FPS: number): void {
         if (canvas && game) {
             canvas.clear();
-            const { kapitoshka } = game.getScene();
 
             /************************/
-            /* нарисовать Капитошку */
+            /* нарисовать Юнитов */
             /************************/
-            const { x, y } = kapitoshka;
-            printKapitoshka(canvas, { x, y }, getSprite(1));
+            printUnits(canvas, units, getSprite(1)); 
 
             /******************/
             /* нарисовать FPS */
@@ -101,22 +103,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
     useEffect(() => {
         const keyDownHandler = (event: KeyboardEvent) => {
-            const delta = 0.2;
-            const keyCode = event.keyCode ? event.keyCode : event.which ? event.which : 0;
-            switch (keyCode) {
-                case 65: // a
-                    game?.move(-delta, 0);
-                break
-                case 68: // d
-                    game?.move(delta, 0);
-                break
-                case 87: // w
-                    game?.move(0, -delta);
-                break
-                case 83: // s
-                    game?.move(0, delta);
-                break
-            }
+            console.log("keyDownHandler")
         }
 
         document.addEventListener('keydown', keyDownHandler);

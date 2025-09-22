@@ -191,7 +191,7 @@ class Canvas {
         this.contextV.fillRect(this.xs(x), this.ys(y), width, height);
     }
 
-    spriteFull(image: HTMLImageElement, dx: number, dy: number, sx: number, sy: number, size: number): void {
+    spriteFull(image: HTMLImageElement, dx: number, dy: number, sx: number, sy: number, size: number): void { //sx, sy - это координаты откуда с картинки брать
         this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), size, size);
     }
 
