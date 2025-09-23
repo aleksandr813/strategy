@@ -5,6 +5,8 @@ import { IBasePage, PAGES } from '../PageManager';
 import Game from '../../game/Game';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
+import Unit from '../../game/Units';
+import Build from '../../game/Builds';
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
@@ -23,12 +25,20 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         getSprite,
     ] = useSprites();
 
-    function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void {
+    function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void { //В массиве points хранятся sx, sy, size
         canvas.spriteFull(image, x, y, points[0], points[1], points[2]);
     }
 
-    function printKapitoshka(canvas: Canvas, { x = 0, y = 0 }, points: number[]): void {
-        printFillSprite(spritesImage, canvas, { x, y }, points);
+    function printUnits(canvas: Canvas, units: Unit[], points: number[]): void { // Вот тут по отдельности должен отрисовываться юнит на своих координатах
+        units.forEach((element) => {
+            printFillSprite(spritesImage, canvas, element.cords, points); 
+        })
+    }
+
+    function printBuilds(canvas: Canvas, builds: Build[], points: number[]): void {
+        builds.forEach((element) => {
+            printFillSprite(spritesImage, canvas, element.cords[1], points)
+        })
     }
 
 
@@ -36,13 +46,15 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     function render(canvas: Canvas, FPS: number): void {
         if (canvas && game) {
             canvas.clear();
-            const { kapitoshka } = game.getScene();
+
+            const { units } = game.getScene();
+            const { builds } = game.getScene();
 
             /************************/
-            /* нарисовать Капитошку */
-            /************************/
-            const { x, y } = kapitoshka;
-            printKapitoshka(canvas, { x, y }, getSprite(1));
+            /* нарисовать Юнитов */
+            /************************/ 
+            printUnits(canvas, units, getSprite(1)); 
+            printBuilds(canvas, builds, getSprite(2));
 
             /******************/
             /* нарисовать FPS */
@@ -98,22 +110,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
     useEffect(() => {
         const keyDownHandler = (event: KeyboardEvent) => {
-            const delta = 0.2;
-            const keyCode = event.keyCode ? event.keyCode : event.which ? event.which : 0;
-            switch (keyCode) {
-                case 65: // a
-                    game?.move(-delta, 0);
-                break
-                case 68: // d
-                    game?.move(delta, 0);
-                break
-                case 87: // w
-                    game?.move(0, -delta);
-                break
-                case 83: // s
-                    game?.move(0, delta);
-                break
-            }
+            console.log("keyDownHandler");
         }
 
         document.addEventListener('keydown', keyDownHandler);
