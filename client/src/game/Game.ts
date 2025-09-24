@@ -8,12 +8,16 @@ class Game {
     private builds:Build[]
 
     constructor() {
-        this.units = [new Unit(0, 0), new Unit(0, 5)]
+        this.units = [new Unit(10, 10), new Unit(3, 4)]
         this.builds = [new Build(5, 5)]
     }
 
     destructor() {
         //...
+    }
+
+    getUnits(): Unit[] {
+        return this.units
     }
 
     getScene() {

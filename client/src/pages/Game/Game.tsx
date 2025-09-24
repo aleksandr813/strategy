@@ -3,6 +3,7 @@ import CONFIG from '../../config';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import Game from '../../game/Game';
+import {Allocation} from '../../game/UI/allocation';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units';
@@ -14,10 +15,10 @@ const GREEN = '#00e81c';
 const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     const { WINDOW, SPRITE_SIZE } = CONFIG;
     const { setPage } = props;
-    let game: Game | null = null;
-    // инициализация канваса
-    let canvas: Canvas | null = null;
-    const Canvas = useCanvas(render);
+    const gameRef = useRef<Game | null>(null);
+    const canvasRef = useRef<Canvas | null>(null);
+    const allocationRef = useRef<Allocation | null>(null);
+    const createCanvas = useCanvas(render);
     let interval: NodeJS.Timer | null = null;
     // инициализация карты спрайтов
     const [
@@ -32,6 +33,15 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     function printUnits(canvas: Canvas, units: Unit[], points: number[]): void { // Вот тут по отдельности должен отрисовываться юнит на своих координатах
         units.forEach((element) => {
             printFillSprite(spritesImage, canvas, element.cords, points); 
+            if (element.isHightlited) {
+                canvas.rectangle(
+                    element.cords.x, 
+                    element.cords.y, 
+                    SPRITE_SIZE,  
+                    SPRITE_SIZE,  
+                    'rgba(0, 255, 0, 0.4)'
+                );
+            }
         })
     }
 
@@ -44,11 +54,11 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
     // функция отрисовки одного кадра сцены
     function render(canvas: Canvas, FPS: number): void {
-        if (canvas && game) {
+        if (canvas && gameRef.current) {
             canvas.clear();
 
-            const { units } = game.getScene();
-            const { builds } = game.getScene();
+            const { units } = gameRef.current.getScene();
+            const { builds } = gameRef.current.getScene();
 
             /************************/
             /* нарисовать Юнитов */
@@ -67,6 +77,9 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     }
 
     const backClickHandler = () => setPage(PAGES.CHAT);
+    const onSelectionEnd = (startX: number, startY: number, endX: number, endY: number) => {
+        allocationRef.current?.selection(startX, startY, endX, endY);
+    };
 
     /****************/
     /* Mouse Events */
@@ -83,8 +96,9 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
     useEffect(() => {
         // инициализация игры
-        game = new Game();
-        canvas = Canvas({
+        gameRef.current = new Game();
+        allocationRef.current = new Allocation(gameRef.current);
+        canvasRef.current = createCanvas({
             parentId: GAME_FIELD,
             WIDTH: WINDOW.WIDTH * SPRITE_SIZE,
             HEIGHT: WINDOW.HEIGHT * SPRITE_SIZE,
@@ -93,20 +107,21 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
                 mouseMove,
                 mouseClick,
                 mouseRightClick,
+                onSelectionEnd
             },
         });
         return () => {
             // деинициализировать все экземпляры
-            game?.destructor();
-            canvas?.destructor();
-            canvas = null;
-            game = null;
+            gameRef.current?.destructor();
+            canvasRef.current?.destructor();
+            canvasRef.current = null;
+            gameRef.current = null;
             if (interval) {
                 clearInterval(interval);
                 interval = null;
             }
         }
-    });
+    },[spritesImage, createCanvas]);
 
     useEffect(() => {
         const keyDownHandler = (event: KeyboardEvent) => {

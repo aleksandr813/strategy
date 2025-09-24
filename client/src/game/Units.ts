@@ -10,4 +10,6 @@ export default class Unit {
     constructor(x: number, y: number) {
         this.cords = {x: x, y: y};
     }
-}
+    isHightlited = false;
+    destination = 100; //Место назначения координат
+}   

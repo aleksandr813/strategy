@@ -247,32 +247,26 @@ class Canvas {
     }
 
     drawSelectionRect(): void {
-        if (this.isSelecting) {
-            const width = this.selectionEndX - this.selectionStartX;
-            const height = this.selectionEndY - this.selectionStartY;
-
-            // Рисуем полупрозрачный закрашенный прямоугольник
-            this.contextV.fillStyle = "rgba(0, 255, 0, 0.4)";
-            this.contextV.fillRect(
-                this.xs(this.selectionStartX),
-                this.ys(this.selectionStartY),
-                this.dec(width),
-                this.dec(height)
-            );
-
-            // Рисуем обводку
-            this.contextV.strokeStyle = "rgba(0, 255, 0, 0.8)";
-            this.contextV.lineWidth = 2;
-            this.contextV.strokeRect(
-                this.xs(this.selectionStartX),
-                this.ys(this.selectionStartY),
-                this.dec(width),
-                this.dec(height)
-            );
+        if (!this.isSelecting) {
+            return;
         }
+
+        const screenStartX = this.xs(this.selectionStartX);
+        const screenStartY = this.ys(this.selectionStartY);
+        const screenEndX = this.xs(this.selectionEndX);
+        const screenEndY = this.ys(this.selectionEndY);
+        const width = screenEndX - screenStartX;
+        const height = screenEndY - screenStartY;
+
+        this.contextV.setLineDash([5, 5]);
+        this.contextV.strokeStyle = "rgba(0, 255, 0, 0.8)";
+        this.contextV.lineWidth = 2;
+        this.contextV.strokeRect(screenStartX, screenStartY, width, height);
+
+        this.contextV.fillStyle = "rgba(0, 255, 0, 0.2)";
+        this.contextV.fillRect(screenStartX, screenStartY, width, height);
     }
 
-    // копируем изображение с виртуального канваса на основной
     render(): void {
         this.context.drawImage(this.canvasV, 0, 0);
     }
