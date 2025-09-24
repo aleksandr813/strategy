@@ -9,6 +9,7 @@ export default class Unit {
     sy = 0;
     size = 1;
     sprite = 1;
+    range = 1;
     constructor(x: number, y: number) {
         this.dx = x;
         this.dy = y;
