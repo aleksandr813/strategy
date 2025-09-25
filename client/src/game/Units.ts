@@ -7,6 +7,7 @@ export default class Unit {
     sx = 0;
     sy = 0;
     size = 1;
+    sprite = 2
     constructor(x: number, y: number) {
         this.cords = {x: x, y: y};
     }
