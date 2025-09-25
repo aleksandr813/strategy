@@ -37,7 +37,9 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
     function printBuilds(canvas: Canvas, builds: Build[]): void {
         builds.forEach((element) => {
-            printFillSprite(spritesImage, canvas, element.cords[0], getSprite(element.sprite))
+            for (let i=0; i < element.sprites.length; i++) {
+                printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]))
+            }
         })
     }
 

@@ -5,7 +5,7 @@ export default class Build {
     sx = 0;
     sy = 0;
     size = 2;
-    sprite = 1;
+    sprites = [1, 1, 1, 1]
     cords:TPoint[] = [{x: 0, y: 0}, {x: 0, y: 0}, {x: 0, y: 0}, {x: 0, y: 0}];
     constructor(x:number, y:number) {
         this.cords = [{x: x, y: y}, {x: x+1, y: y}, {x: x, y: y+1}, {x: x+1, y: y+1}];
