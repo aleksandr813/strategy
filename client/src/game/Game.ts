@@ -33,12 +33,17 @@ class Game {
             this.binarMatrix.push(0); // бинарная матрица заполняется нулями
             const x = Math.floor(i / 29);//
             const y = i % 29;//уловные х и у для бинарной матрицы
-            if ((this.units[i].cords.x = x) && (this.units[i].cords.y = y)) { //проверка на юнитов: координаты юнита(х, у) сравниваются с условными координатами бинарной матрицы
-                this.binarMatrix[i] = 1;
-            }
-            for (let j = 0; j < 3; j ++) {
-                if ((this.builds[i].cords[j].x = x) && (this.builds[i].cords[j].y = y)) { //проверка на здания
+            for (let j = 0; j < this.units.length; j++) {
+                if ((this.units[j].cords.x = x) && (this.units[j].cords.y = y)) { //проверка на юнитов: координаты юнита(х, у) сравниваются с условными координатами бинарной матрицы
                     this.binarMatrix[i] = 1;
+                }
+            }
+            for (let j = 0; j < this.builds.length; j++) {
+                if ((this.builds[j].cords[0].x = x) && (this.builds[j].cords[0].y = y)) { //проверка на здания. Проверяется только нижний левый угол. В оставшиесе клетки тоже передаётся 1
+                    this.binarMatrix[i] = 1;
+                    this.binarMatrix[i + 1] = 1;
+                    this.binarMatrix[i - 29] = 1;
+                    this.binarMatrix[i - 28] = 1;
                 }
             }
         }
