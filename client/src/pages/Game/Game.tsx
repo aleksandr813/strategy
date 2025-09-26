@@ -6,6 +6,7 @@ import Game from '../../game/Game';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units';
+import Build from '../../game/Builds';
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
@@ -24,29 +25,38 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         getSprite,
     ] = useSprites();
 
-    function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void {
+    function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void { //В массиве points хранятся sx, sy, size
         canvas.spriteFull(image, x, y, points[0], points[1], points[2]);
     }
 
-    //Массив points в этой функции принимает параметры для подтягивания спрайта (положение на холсте и так далее)
-    function printUnits(canvas: Canvas, unitsMatrix: Unit[], points: number[]): void { // Вот тут по отдельности должен отрисовываться юнит на своих координатах
-        unitsMatrix.forEach((element) => {
-            printFillSprite(spritesImage, canvas, { x: element.dx, y: element.dy }, points); 
+    function printUnits(canvas: Canvas, units: Unit[]): void { // Вот тут по отдельности должен отрисовываться юнит на своих координатах
+        units.forEach((element) => {
+            printFillSprite(spritesImage, canvas, element.cords, getSprite(element.sprite)); 
         })
     }
 
-    
-    const units = [new Unit(0, 0), new Unit(10, 10)];
+    function printBuilds(canvas: Canvas, builds: Build[]): void {
+        builds.forEach((element) => {
+            for (let i=0; i < element.sprites.length; i++) {
+                printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]))
+            }
+        })
+    }
+
 
     // функция отрисовки одного кадра сцены
     function render(FPS: number): void {
         if (canvas && game) {
             canvas.clear();
 
+            const { units } = game.getScene();
+            const { builds } = game.getScene();
+
             /************************/
             /* нарисовать Юнитов */
-            /************************/
-            printUnits(canvas, units, getSprite(1)); 
+            /************************/ 
+            printUnits(canvas, units); 
+            printBuilds(canvas, builds);
 
             /******************/
             /* нарисовать FPS */
@@ -103,7 +113,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
     useEffect(() => {
         const keyDownHandler = (event: KeyboardEvent) => {
-            console.log("keyDownHandler")
+            console.log("keyDownHandler");
         }
 
         document.addEventListener('keydown', keyDownHandler);
