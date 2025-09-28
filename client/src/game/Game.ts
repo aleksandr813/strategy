@@ -27,6 +27,7 @@ class Game {
         return {
             units: this.units,
             builds: this.builds,
+            villageMatrix: this.villageMatrix,
         };
     }
 
