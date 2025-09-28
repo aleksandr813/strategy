@@ -1,5 +1,5 @@
 import CONFIG, { TPoint } from "../config";
-import Unit from './Units';
+import Unit from './Units/Unit';
 import Build from './Builds';
 const { WIDTH, HEIGHT } = CONFIG;
 

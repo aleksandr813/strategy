@@ -5,7 +5,7 @@ import { IBasePage, PAGES } from '../PageManager';
 import Game from '../../game/Game';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
-import Unit from '../../game/Units';
+import Unit from '../../game/Units/Unit';
 import Build from '../../game/Builds';
 
 const GAME_FIELD = 'game-field';
