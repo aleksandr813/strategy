@@ -78,6 +78,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     }
 
     const mouseClick = (_x: number, _y: number) => {
+        game?.moveUnits();
     }
 
     const mouseRightClick = () => {
