@@ -1,23 +1,22 @@
 import CONFIG, { TPoint } from "../config";
 import Unit from './Units';
 import Build from './Builds';
+import Allocation from "../pages/Game/UI/Allocation";
 const { WIDTH, HEIGHT } = CONFIG;
 
 class Game {
     private units:Unit[];
-    private builds:Build[]
+    private builds:Build[];
+    private allocation:Allocation
 
     constructor() {
-        this.units = [new Unit(10, 10), new Unit(3, 4)]
+        this.units = [new Unit(10, 10), new Unit(11, 6)]
         this.builds = [new Build(5, 5)]
+        this.allocation = new Allocation;
     }
 
     destructor() {
         //...
-    }
-
-    getUnits(): Unit[] {
-        return this.units
     }
 
     getScene() {

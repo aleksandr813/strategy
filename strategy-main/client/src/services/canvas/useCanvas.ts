@@ -10,7 +10,7 @@ declare global {
     }
 }
 
-export default function useCanvas(render = (canvas: Canvas, fps: number) => { }) {
+export default function useCanvas(render = (fps: number) => { }) {
     window.requestAnimFrame = (() => {
         return window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
@@ -26,7 +26,6 @@ export default function useCanvas(render = (canvas: Canvas, fps: number) => { })
     let FPS = 0;
     let outFPS = 0;
     let lastTimestamp = Date.now(); 
-    let canvasInstance: Canvas | null = null;
 
     const animLoop = () => {
         //calc fps
@@ -37,15 +36,12 @@ export default function useCanvas(render = (canvas: Canvas, fps: number) => { })
             FPS = 0;
             lastTimestamp = timestamp;
         }
-        if (canvasInstance) {
-            render(canvasInstance, outFPS); //print scene
-        }
+        render(outFPS); //print scene
         window.requestAnimFrame(animLoop);
     }
 
     return (params: TCanvas) => {
         setTimeout(() => animLoop(), 300); // таймаут необходим для корректной отрисовки первого кадра сцены, потому что статика не успевает подгрузиться
-        canvasInstance = new Canvas(params);
-        return canvasInstance;
+        return new Canvas(params)
     };
 }

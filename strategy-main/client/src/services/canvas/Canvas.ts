@@ -14,11 +14,9 @@ export type TCanvas = {
     HEIGHT: number;
     callbacks: {
         mouseMove: (x: number, y: number) => void;
-        mouseClick: (x: number, y: number) => void;
+        mouseDown: (x: number, y: number) => void;
+        mouseUp: (x: number, y: number) => void;
         mouseRightClick: () => void;
-        onSelectionStart?: (x: number, y: number) => void;
-        onSelectionMove?: (x: number, y: number) => void;
-        onSelectionEnd?: (startX: number, startY: number, endX: number, endY: number) => void;
     },
 }
 
@@ -44,18 +42,10 @@ class Canvas {
     interval: NodeJS.Timer;
     callbacks: {
         mouseMove: (x: number, y: number) => void;
-        mouseClick: (x: number, y: number) => void;
+        mouseDown: (x: number, y: number) => void;
+        mouseUp: (x: number, y: number) => void;
         mouseRightClick: () => void;
-        onSelectionStart?: (x: number, y: number) => void;
-        onSelectionMove?: (x: number, y: number) => void;
-        onSelectionEnd?: (startX: number, startY: number, endX: number, endY: number) => void;
     }
-    isSelecting = false;
-    selectionStartX = 0;
-    selectionStartY = 0;
-    selectionEndX = 0;
-    selectionEndY = 0;
-
 
     constructor(options: TCanvas) {
         const { parentId, WINDOW, WIDTH, HEIGHT, callbacks } = options;
@@ -83,11 +73,11 @@ class Canvas {
         this.callbacks = callbacks;
 
         this.canvas.addEventListener('mousemove', (event) => this.mouseMoveHandler(event));
-        this.canvas.addEventListener('mouseleave', () => this.mouseLeaveHandler());
-        this.canvas.addEventListener('click', (event) => this.mouseClickHandler(event));
-        this.canvas.addEventListener('contextmenu', (event) => this.mouseRightClickHandler(event));
         this.canvas.addEventListener('mousedown', (event) => this.mouseDownHandler(event));
         this.canvas.addEventListener('mouseup', (event) => this.mouseUpHandler(event));
+        this.canvas.addEventListener('mouseleave', () => this.mouseLeaveHandler());
+        this.canvas.addEventListener('contextmenu', (event) => this.mouseRightClickHandler(event));
+
 
         this.interval = setInterval(() => {
             if (this.dx === 0 && this.dy === 0) {
@@ -111,54 +101,14 @@ class Canvas {
         clearInterval(this.interval);
     }
 
-    mouseClickHandler(event: MouseEvent) {
-        const { offsetX, offsetY } = event;
-        this.callbacks.mouseClick(this.sx(offsetX), this.sy(offsetY));
-    }
 
     mouseRightClickHandler(event: MouseEvent) {
         event.preventDefault();
         this.callbacks.mouseRightClick();
     }
 
-    mouseDownHandler(event: MouseEvent) {
-        const { offsetX, offsetY } = event;
-        this.isSelecting = true;
-        this.selectionStartX = this.sx(offsetX);
-        this.selectionStartY = this.sy(offsetY);
-        this.selectionEndX = this.selectionStartX;
-        this.selectionEndY = this.selectionStartY;
-        if (this.callbacks.onSelectionStart) {
-            this.callbacks.onSelectionStart(this.selectionStartX, this.selectionStartY);
-        }
-    }
-
-    mouseUpHandler(event: MouseEvent) {
-        if (this.isSelecting) {
-            this.isSelecting = false;
-            const { offsetX, offsetY } = event;
-            this.selectionEndX = this.sx(offsetX);
-            this.selectionEndY = this.sy(offsetY);
-            if (this.callbacks.onSelectionEnd) {
-                this.callbacks.onSelectionEnd(
-                    this.selectionStartX,
-                    this.selectionStartY,
-                    this.selectionEndX,
-                    this.selectionEndY
-                );
-            }
-        }
-    }
-
     mouseMoveHandler(event: MouseEvent) {
         const { offsetX, offsetY } = event;
-        if (this.isSelecting) {
-            this.selectionEndX = this.sx(offsetX);
-            this.selectionEndY = this.sy(offsetY);
-            if (this.callbacks.onSelectionMove) {
-                this.callbacks.onSelectionMove(this.selectionEndX, this.selectionEndY);
-            }
-        }
         // для скролла окошка относительно положения мышки
         /*
         const pX = offsetX / this.WIDTH;
@@ -179,6 +129,16 @@ class Canvas {
         }
         */
         this.callbacks.mouseMove(this.sx(offsetX), this.sy(offsetY));
+    }
+
+    mouseDownHandler(event: MouseEvent) {
+    const { offsetX, offsetY } = event;
+    this.callbacks.mouseDown(this.sx(offsetX), this.sy(offsetY));
+}
+
+    mouseUpHandler(event: MouseEvent) {
+        const { offsetX, offsetY } = event;
+        this.callbacks.mouseUp(this.sx(offsetX), this.sy(offsetY));
     }
 
     mouseLeaveHandler() {
@@ -231,7 +191,7 @@ class Canvas {
         this.contextV.fillText(text, this.xs(x), this.ys(y));
     }
 
-    rect(x: number, y: number, size = 64, color = '#f004'): void {
+    rect(x: number, y: number, size = 64, color = 'rgba(255, 0, 0, 1)'): void {
         this.contextV.fillStyle = color;
         this.contextV.fillRect(this.xs(x), this.ys(y), size, size)
     }
@@ -246,27 +206,7 @@ class Canvas {
         this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), size, size);
     }
 
-    drawSelectionRect(): void {
-        if (!this.isSelecting) {
-            return;
-        }
-
-        const screenStartX = this.xs(this.selectionStartX);
-        const screenStartY = this.ys(this.selectionStartY);
-        const screenEndX = this.xs(this.selectionEndX);
-        const screenEndY = this.ys(this.selectionEndY);
-        const width = screenEndX - screenStartX;
-        const height = screenEndY - screenStartY;
-
-        this.contextV.setLineDash([5, 5]);
-        this.contextV.strokeStyle = "rgba(0, 255, 0, 0.8)";
-        this.contextV.lineWidth = 2;
-        this.contextV.strokeRect(screenStartX, screenStartY, width, height);
-
-        this.contextV.fillStyle = "rgba(0, 255, 0, 0.2)";
-        this.contextV.fillRect(screenStartX, screenStartY, width, height);
-    }
-
+    // копируем изображение с виртуального канваса на основной
     render(): void {
         this.context.drawImage(this.canvasV, 0, 0);
     }

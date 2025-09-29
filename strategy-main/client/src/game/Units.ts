@@ -7,9 +7,12 @@ export default class Unit {
     sx = 0;
     sy = 0;
     sprite = 2
+    isSelected: boolean = false;
     constructor(x: number, y: number) {
         this.cords = {x: x, y: y};
     }
-    isHightlited = false;
-    destination = 100; //Место назначения координат
-}   
+
+    updateSelection(isSelected: boolean): void {
+        this.isSelected = isSelected;
+    }
+}
