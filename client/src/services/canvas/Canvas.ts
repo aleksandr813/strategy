@@ -14,8 +14,11 @@ export type TCanvas = {
     HEIGHT: number;
     callbacks: {
         mouseMove: (x: number, y: number) => void;
+        mouseDown: (x: number, y: number) => void;
+        mouseUp: (x: number, y: number) => void;
+        mouseRightClickDown: (x: number, y: number) => void;
+        mouseRightClickUp: (x: number, y: number) => void;
         mouseClick: (x: number, y: number) => void;
-        mouseRightClick: () => void;
     },
 }
 
@@ -41,8 +44,11 @@ class Canvas {
     interval: NodeJS.Timer;
     callbacks: {
         mouseMove: (x: number, y: number) => void;
+        mouseDown: (x: number, y: number) => void;
+        mouseUp: (x: number, y: number) => void;
+        mouseRightClickDown: (x: number, y: number) => void;
+        mouseRightClickUp: (x: number, y: number) => void;
         mouseClick: (x: number, y: number) => void;
-        mouseRightClick: () => void;
     }
 
     constructor(options: TCanvas) {
@@ -71,9 +77,12 @@ class Canvas {
         this.callbacks = callbacks;
 
         this.canvas.addEventListener('mousemove', (event) => this.mouseMoveHandler(event));
-        this.canvas.addEventListener('mouseleave', () => this.mouseLeaveHandler());
+        this.canvas.addEventListener('mousedown', (event) => this.mouseDownHandler(event));
+        this.canvas.addEventListener('mouseup', (event) => this.mouseUpHandler(event));
         this.canvas.addEventListener('click', (event) => this.mouseClickHandler(event));
-        this.canvas.addEventListener('contextmenu', (event) => this.mouseRightClickHandler(event));
+        this.canvas.addEventListener('contextmenu', (event) => event.preventDefault());
+
+
         this.interval = setInterval(() => {
             if (this.dx === 0 && this.dy === 0) {
                 return;
@@ -96,14 +105,33 @@ class Canvas {
         clearInterval(this.interval);
     }
 
-    mouseClickHandler(event: MouseEvent) {
-        const { offsetX, offsetY } = event;
-        this.callbacks.mouseClick(this.sx(offsetX), this.sy(offsetY));
+
+    mouseDownHandler(event: MouseEvent) {
+        event.preventDefault();
+        const { offsetX, offsetY, button } = event;;
+        
+        if (button === 2) { // Правая кнопка мыши
+            this.callbacks.mouseRightClickDown(this.sx(offsetX), this.sy(offsetY));
+        } else if (button === 0) { // Левая кнопка мыши
+            this.callbacks.mouseDown(this.sx(offsetX), this.sy(offsetY));
+        }
     }
 
-    mouseRightClickHandler(event: MouseEvent) {
+    mouseUpHandler(event: MouseEvent) {
         event.preventDefault();
-        this.callbacks.mouseRightClick();
+        const { offsetX, offsetY, button } = event;
+        
+        if (button === 2) { // Правая кнопка мыши
+            this.callbacks.mouseRightClickUp(this.sx(offsetX), this.sy(offsetY));
+        } else if (button === 0) { // Левая кнопка мыши
+            this.callbacks.mouseUp(this.sx(offsetX), this.sy(offsetY));
+        }
+    }
+
+    mouseClickHandler(event: MouseEvent) {
+        event.preventDefault();
+        const { offsetX, offsetY } = event;
+        this.callbacks.mouseClick(this.sx(offsetX), this.sy(offsetY));
     }
 
     mouseMoveHandler(event: MouseEvent) {
@@ -129,6 +157,7 @@ class Canvas {
         */
         this.callbacks.mouseMove(this.sx(offsetX), this.sy(offsetY));
     }
+
 
     mouseLeaveHandler() {
         this.dx = 0;
@@ -180,7 +209,7 @@ class Canvas {
         this.contextV.fillText(text, this.xs(x), this.ys(y));
     }
 
-    rect(x: number, y: number, size = 64, color = '#f004'): void {
+    rect(x: number, y: number, size = 64, color = 'rgba(255, 0, 0, 1)'): void {
         this.contextV.fillStyle = color;
         this.contextV.fillRect(this.xs(x), this.ys(y), size, size)
     }
@@ -191,7 +220,7 @@ class Canvas {
         this.contextV.fillRect(this.xs(x), this.ys(y), width, height);
     }
 
-    spriteFull(image: HTMLImageElement, dx: number, dy: number, sx: number, sy: number, size: number): void {
+    spriteFull(image: HTMLImageElement, dx: number, dy: number, sx: number, sy: number, size: number): void { //sx, sy - это координаты откуда с картинки брать
         this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), size, size);
     }
 
