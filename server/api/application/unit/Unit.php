@@ -11,7 +11,7 @@ class Unit {
     public function getUnitById($unitId) {
         $unit = $this->db->getUnitById($unitId);
         if (!$unit) {
-            return ['error' => 242];
+            return ['error' => 500];
         }
 
         return [
@@ -25,7 +25,7 @@ class Unit {
 
     public function getUnitsByUser($userId) {
         if (!$userId) {
-            return ['error' => 242];
+            return ['error' => 705];
         }
         $units = $this->db->getUnitsByUser($userId);
 
@@ -43,7 +43,7 @@ class Unit {
             ];
         }
         else {
-            return ['error' => 242]; //Заглушка ошибки
+            return ['error' => 501];
         }
     }
 
@@ -58,13 +58,13 @@ class Unit {
                 'y' => $y
             ];
         }
-        return ['error' => 242];
+        return ['error' => 502];
     }
 
     public function deleteUnit($unitId, $userId) {
         $result = $this->db->deleteUnit($unitId, $userId);
         if (!$result) {
-            return ['error' => 242];
+            return ['error' => 503];
         }
         
         //Что возвращать при успешном удалении юнита?

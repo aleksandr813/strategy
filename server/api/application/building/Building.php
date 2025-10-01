@@ -11,7 +11,7 @@ class Building {
     public function getBuildingById($buildingId) {
         $building = $this->db->getBuildingById($buildingId);
         if (!$building) {
-            return ['error' => 242];
+            return ['error' => 300];
         }
 
         return [
@@ -25,7 +25,7 @@ class Building {
 
     public function getBuildingsByUser($userId) {
         if (!$userId) {
-            return ['error' => 242];
+            return ['error' => 705];
         }
         $buildings = $this->db->getBuildingsByUser($userId);
         return ['buildings' => $buildings];
@@ -42,7 +42,7 @@ class Building {
             ];
         }
         else {
-            return ['error' => 242];
+            return ['error' => 301];
         }
     }
 
@@ -58,13 +58,13 @@ class Building {
             ];
         }
 
-        return ['error' => 242];
+        return ['error' => 302];
     }
 
     public function deleteBuilding($buildingId, $userId) {
         $result = $this->db->deleteBuilding($buildingId, $userId);
         if (!$result) {
-            return ['error' => 242];
+            return ['error' => 303];
         }
 
         
