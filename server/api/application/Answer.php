@@ -4,6 +4,10 @@ class Answer {
     static $CODES = array(
         '101' => 'Param method not setted',
         '102' => 'Method not found',
+        '103' => 'Неверное количество аргументов',
+        '104' => 'Бесконечно корней',
+        '105' => 'Действительных корней нет',
+        '106' => 'Рациональный корень не найден',
         '242' => 'Params not set fully',
         '705' => 'User is not found',
         '1001' => 'Is it unique login?',
