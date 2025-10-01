@@ -8,6 +8,7 @@ import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units/Unit';
 import Build from '../../game/Builds/Build';
 
+
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
 
@@ -125,9 +126,12 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     });
 
     return (<div className='game'>
-        <h1>Игра</h1>
+        <h1>Менеджмент деревни</h1>
         <Button onClick={backClickHandler} text='Назад' />
         <div id={GAME_FIELD} className={GAME_FIELD}></div>
+        <div className='villageManagmentUI'>
+            <p>Монеты: 100</p>
+        </div>
     </div>)
 }
 

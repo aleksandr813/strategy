@@ -30,7 +30,7 @@ const CONFIG = {
     WINDOW: {
         LEFT: 0,
         TOP: 0,
-        HEIGHT: 12,
+        HEIGHT: 10,
         WIDTH: 20,
     },
 };
