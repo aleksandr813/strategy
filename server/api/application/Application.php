@@ -3,6 +3,7 @@ require_once ('db/DB.php');
 require_once ('user/User.php');
 require_once ('chat/Chat.php');
 require_once ('service/MatrixService.php');
+require_once ('calculator/Calculator.php');
 
 class Application {
     private $user;
@@ -85,5 +86,11 @@ class Application {
             return ['error' => 705];
         }
         return ['error' => 242];
+    }
+
+    public function getRoots($params) {
+        if ($params) {
+            
+        }
     }
 }
