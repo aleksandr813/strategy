@@ -99,19 +99,32 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     /* Mouse Events */
     /****************/
 
-    const mouseDown = (x: number, y: number) => allocation.start(x, y);
-    const mouseMove = (x: number, y: number) => allocation.update(x, y);
-    const mouseUp = (x: number, y: number) => {
-    if (!game) return;
-    const { units } = game.getScene();
-    allocation.update(x, y); 
-    allocation.end(units);
+    const mouseDown = (_x: number, _y: number) => {
+        //
+    }
+    const mouseMove = (_x: number, _y: number) => {
+        allocation.update(_x, _y);
+    }
+    const mouseUp = (_x: number, _y: number) => {
+        //
     };
-    const mouseRightClick = () => {
-    if (!game) return;
-    const { units } = game.getScene();
-    allocation.end(units);
+    const mouseRightClickDown = (_x:number, _y: number) => {
+        if (!game) return;
+        //console.log('down')
+        allocation.start(_x, _y);
+        const { units } = game.getScene();
+        allocation.update(_x, _y); 
     };
+    const mouseRightClickUp = (_x:number, _y: number) => {
+        if (!game) return;
+        //console.log('up')
+        const { units } = game.getScene();
+        allocation.end(units);
+    };
+    const mouseClick = (_x: number, _y:number) => {
+        game?.moveUnits({x: _x, y: _y});
+        console.log('click')
+    }
 
     /****************/
 
@@ -127,7 +140,9 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
                 mouseMove,
                 mouseDown,
                 mouseUp,
-                mouseRightClick,
+                mouseRightClickUp,
+                mouseRightClickDown,
+                mouseClick,
             },
         });
         return () => {

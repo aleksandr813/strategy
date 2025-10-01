@@ -48,6 +48,9 @@ class Game {
     }
 
     moveUnits(destination: TPoint) {
+        destination.x = Math.round(destination.x);
+        destination.y = Math.round(destination.y);
+        
         let easystar = new EasyStar.js();
 
         this.units.forEach((unit) => {
