@@ -14,7 +14,8 @@ export type TCanvas = {
     HEIGHT: number;
     callbacks: {
         mouseMove: (x: number, y: number) => void;
-        mouseClick: (x: number, y: number) => void;
+        mouseDown: (x: number, y: number) => void;
+        mouseUp: (x: number, y: number) => void;
         mouseRightClick: () => void;
     },
 }
@@ -41,7 +42,8 @@ class Canvas {
     interval: NodeJS.Timer;
     callbacks: {
         mouseMove: (x: number, y: number) => void;
-        mouseClick: (x: number, y: number) => void;
+        mouseDown: (x: number, y: number) => void;
+        mouseUp: (x: number, y: number) => void;
         mouseRightClick: () => void;
     }
 
@@ -71,9 +73,12 @@ class Canvas {
         this.callbacks = callbacks;
 
         this.canvas.addEventListener('mousemove', (event) => this.mouseMoveHandler(event));
+        this.canvas.addEventListener('mousedown', (event) => this.mouseDownHandler(event));
+        this.canvas.addEventListener('mouseup', (event) => this.mouseUpHandler(event));
         this.canvas.addEventListener('mouseleave', () => this.mouseLeaveHandler());
-        this.canvas.addEventListener('click', (event) => this.mouseClickHandler(event));
         this.canvas.addEventListener('contextmenu', (event) => this.mouseRightClickHandler(event));
+
+
         this.interval = setInterval(() => {
             if (this.dx === 0 && this.dy === 0) {
                 return;
@@ -96,10 +101,6 @@ class Canvas {
         clearInterval(this.interval);
     }
 
-    mouseClickHandler(event: MouseEvent) {
-        const { offsetX, offsetY } = event;
-        this.callbacks.mouseClick(this.sx(offsetX), this.sy(offsetY));
-    }
 
     mouseRightClickHandler(event: MouseEvent) {
         event.preventDefault();
@@ -128,6 +129,16 @@ class Canvas {
         }
         */
         this.callbacks.mouseMove(this.sx(offsetX), this.sy(offsetY));
+    }
+
+    mouseDownHandler(event: MouseEvent) {
+    const { offsetX, offsetY } = event;
+    this.callbacks.mouseDown(this.sx(offsetX), this.sy(offsetY));
+}
+
+    mouseUpHandler(event: MouseEvent) {
+        const { offsetX, offsetY } = event;
+        this.callbacks.mouseUp(this.sx(offsetX), this.sy(offsetY));
     }
 
     mouseLeaveHandler() {
@@ -180,7 +191,7 @@ class Canvas {
         this.contextV.fillText(text, this.xs(x), this.ys(y));
     }
 
-    rect(x: number, y: number, size = 64, color = '#f004'): void {
+    rect(x: number, y: number, size = 64, color = 'rgba(255, 0, 0, 1)'): void {
         this.contextV.fillStyle = color;
         this.contextV.fillRect(this.xs(x), this.ys(y), size, size)
     }

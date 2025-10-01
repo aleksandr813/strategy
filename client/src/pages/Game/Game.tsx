@@ -7,7 +7,7 @@ import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units/Unit';
 import Build from '../../game/Builds/Build';
-
+import Allocation from './UI/Allocation';
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
@@ -26,15 +26,25 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         getSprite,
     ] = useSprites();
 
+    const allocation = new Allocation();
+
     function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void { //В массиве points хранятся sx, sy, size
         canvas.spriteFull(image, x, y, points[0], points[1], points[2]);
     }
 
-    function printUnits(canvas: Canvas, units: Unit[]): void { // Вот тут по отдельности должен отрисовываться юнит на своих координатах
-        units.forEach((element) => {
-            printFillSprite(spritesImage, canvas, element.cords, getSprite(element.sprite)); 
-        })
-    }
+    function printUnits(canvas: Canvas, units: Unit[]): void {
+    units.forEach((unit) => {
+        const displaySelected = allocation.isSelectingStatus
+            ? allocation.isUnitInSelection(unit)
+            : unit.isSelected;
+
+        printFillSprite(spritesImage, canvas, unit.cords, getSprite(unit.sprite));
+        if (displaySelected) {
+        const unitColor = 'rgba(0, 255, 0, 0.5)'; 
+        canvas.rectangle(unit.cords.x, unit.cords.y, SPRITE_SIZE, SPRITE_SIZE, unitColor);
+}
+    });
+}
 
     function printBuilds(canvas: Canvas, builds: Build[]): void {
         builds.forEach((element) => {
@@ -59,6 +69,19 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
             printUnits(canvas, units); 
             printBuilds(canvas, builds);
 
+            if (allocation.isSelectingStatus) {
+            const rect = allocation.getSelectionRect();
+            if (rect) {
+                canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.3)";
+                canvas.contextV.fillRect(
+                canvas.xs(rect.x),
+                canvas.ys(rect.y),
+                canvas.dec(rect.width),
+                canvas.dec(rect.height)
+                );
+            }
+        }
+
             /******************/
             /* нарисовать FPS */
             /******************/
@@ -75,15 +98,21 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     /****************/
     /* Mouse Events */
     /****************/
-    const mouseMove = (_x: number, _y: number) => {
-    }
 
-    const mouseClick = (_x: number, _y: number) => {
-        game?.moveUnits({x: Math.round(_x), y: Math.round(_y) });
-    }
-
+    const mouseDown = (x: number, y: number) => allocation.start(x, y);
+    const mouseMove = (x: number, y: number) => allocation.update(x, y);
+    const mouseUp = (x: number, y: number) => {
+    if (!game) return;
+    const { units } = game.getScene();
+    allocation.update(x, y); 
+    allocation.end(units);
+    };
     const mouseRightClick = () => {
-    }
+    if (!game) return;
+    const { units } = game.getScene();
+    allocation.end(units);
+    };
+
     /****************/
 
     useEffect(() => {
@@ -96,7 +125,8 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
             WINDOW,
             callbacks: {
                 mouseMove,
-                mouseClick,
+                mouseDown,
+                mouseUp,
                 mouseRightClick,
             },
         });

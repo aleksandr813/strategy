@@ -2,19 +2,20 @@ import CONFIG, { TPoint } from "../config";
 import Unit from './Units/Unit';
 import Build from './Builds/Build';
 import EasyStar from 'easystarjs';
+import Allocation from "../pages/Game/UI/Allocation";
 
 const { WIDTH, HEIGHT } = CONFIG;
 
 class Game {
     private units:Unit[];
     private builds:Build[];
-    private villageMatrix:number[];
+    private allocation:Allocation;
     
 
     constructor() {
-        this.units = [new Unit(0, 0)]
+        this.units = [new Unit(10, 10), new Unit(11, 6)]
         this.builds = [new Build(5, 5)]
-        this.villageMatrix = [];
+        this.allocation = new Allocation;
     }
     
 
@@ -51,7 +52,7 @@ class Game {
 
         this.units.forEach((unit) => {
 
-            if (!unit.isHighlighted) {
+            if (!unit.isSelected) {
                 return
             }
 
