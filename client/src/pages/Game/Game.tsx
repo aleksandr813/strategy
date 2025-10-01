@@ -5,8 +5,8 @@ import { IBasePage, PAGES } from '../PageManager';
 import Game from '../../game/Game';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
-import Unit from '../../game/Units';
-import Build from '../../game/Builds';
+import Unit from '../../game/Units/Unit';
+import Build from '../../game/Builds/Build';
 import Allocation from './UI/Allocation';
 
 const GAME_FIELD = 'game-field';
@@ -94,24 +94,41 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     }
 
     const backClickHandler = () => setPage(PAGES.CHAT);
+    const BattleClicHandler = () => setPage(PAGES.BATTLE);
+    const CalculatorClicHandler = () => setPage(PAGES.CALCULATOR);
+    const GlobalMapClicHandler = () => setPage(PAGES.GLOBAL_MAP);
+    const VillageClicHandler = () => setPage(PAGES.VILLAGE);
 
     /****************/
     /* Mouse Events */
     /****************/
 
-    const mouseDown = (x: number, y: number) => allocation.start(x, y);
-    const mouseMove = (x: number, y: number) => allocation.update(x, y);
-    const mouseUp = (x: number, y: number) => {
-    if (!game) return;
-    const { units } = game.getScene();
-    allocation.update(x, y); 
-    allocation.end(units);
+    const mouseDown = (_x: number, _y: number) => {
+        //
+    }
+    const mouseMove = (_x: number, _y: number) => {
+        allocation.update(_x, _y);
+    }
+    const mouseUp = (_x: number, _y: number) => {
+        //
     };
-    const mouseRightClick = () => {
-    if (!game) return;
-    const { units } = game.getScene();
-    allocation.end(units);
+    const mouseRightClickDown = (_x:number, _y: number) => {
+        if (!game) return;
+        //console.log('down')
+        allocation.start(_x, _y);
+        const { units } = game.getScene();
+        allocation.update(_x, _y); 
     };
+    const mouseRightClickUp = (_x:number, _y: number) => {
+        if (!game) return;
+        //console.log('up')
+        const { units } = game.getScene();
+        allocation.end(units);
+    };
+    const mouseClick = (_x: number, _y:number) => {
+        game?.moveUnits({x: _x, y: _y});
+        console.log('click')
+    }
 
     /****************/
 
@@ -127,7 +144,9 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
                 mouseMove,
                 mouseDown,
                 mouseUp,
-                mouseRightClick,
+                mouseRightClickUp,
+                mouseRightClickDown,
+                mouseClick,
             },
         });
         return () => {
@@ -156,9 +175,16 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     });
 
     return (<div className='game'>
-        <h1>Игра</h1>
+        <h1>Менеджмент деревни</h1>
+        <Button onClick={BattleClicHandler} text='Battle'/>
+        <Button onClick={CalculatorClicHandler} text='Calculator'/>
+        <Button onClick={GlobalMapClicHandler} text='GlobalMap'/>
+        <Button onClick={VillageClicHandler} text='Village'/>
         <Button onClick={backClickHandler} text='Назад' />
         <div id={GAME_FIELD} className={GAME_FIELD}></div>
+        <div className='villageManagmentUI'>
+            <p>Монеты: 100</p>
+        </div>
     </div>)
 }
 

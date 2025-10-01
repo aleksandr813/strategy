@@ -16,7 +16,9 @@ export type TCanvas = {
         mouseMove: (x: number, y: number) => void;
         mouseDown: (x: number, y: number) => void;
         mouseUp: (x: number, y: number) => void;
-        mouseRightClick: () => void;
+        mouseRightClickDown: (x: number, y: number) => void;
+        mouseRightClickUp: (x: number, y: number) => void;
+        mouseClick: (x: number, y: number) => void;
     },
 }
 
@@ -44,7 +46,9 @@ class Canvas {
         mouseMove: (x: number, y: number) => void;
         mouseDown: (x: number, y: number) => void;
         mouseUp: (x: number, y: number) => void;
-        mouseRightClick: () => void;
+        mouseRightClickDown: (x: number, y: number) => void;
+        mouseRightClickUp: (x: number, y: number) => void;
+        mouseClick: (x: number, y: number) => void;
     }
 
     constructor(options: TCanvas) {
@@ -75,8 +79,8 @@ class Canvas {
         this.canvas.addEventListener('mousemove', (event) => this.mouseMoveHandler(event));
         this.canvas.addEventListener('mousedown', (event) => this.mouseDownHandler(event));
         this.canvas.addEventListener('mouseup', (event) => this.mouseUpHandler(event));
-        this.canvas.addEventListener('mouseleave', () => this.mouseLeaveHandler());
-        this.canvas.addEventListener('contextmenu', (event) => this.mouseRightClickHandler(event));
+        this.canvas.addEventListener('click', (event) => this.mouseClickHandler(event));
+        this.canvas.addEventListener('contextmenu', (event) => event.preventDefault());
 
 
         this.interval = setInterval(() => {
@@ -102,9 +106,32 @@ class Canvas {
     }
 
 
-    mouseRightClickHandler(event: MouseEvent) {
+    mouseDownHandler(event: MouseEvent) {
         event.preventDefault();
-        this.callbacks.mouseRightClick();
+        const { offsetX, offsetY, button } = event;;
+        
+        if (button === 2) { // Правая кнопка мыши
+            this.callbacks.mouseRightClickDown(this.sx(offsetX), this.sy(offsetY));
+        } else if (button === 0) { // Левая кнопка мыши
+            this.callbacks.mouseDown(this.sx(offsetX), this.sy(offsetY));
+        }
+    }
+
+    mouseUpHandler(event: MouseEvent) {
+        event.preventDefault();
+        const { offsetX, offsetY, button } = event;
+        
+        if (button === 2) { // Правая кнопка мыши
+            this.callbacks.mouseRightClickUp(this.sx(offsetX), this.sy(offsetY));
+        } else if (button === 0) { // Левая кнопка мыши
+            this.callbacks.mouseUp(this.sx(offsetX), this.sy(offsetY));
+        }
+    }
+
+    mouseClickHandler(event: MouseEvent) {
+        event.preventDefault();
+        const { offsetX, offsetY } = event;
+        this.callbacks.mouseClick(this.sx(offsetX), this.sy(offsetY));
     }
 
     mouseMoveHandler(event: MouseEvent) {
@@ -131,15 +158,6 @@ class Canvas {
         this.callbacks.mouseMove(this.sx(offsetX), this.sy(offsetY));
     }
 
-    mouseDownHandler(event: MouseEvent) {
-    const { offsetX, offsetY } = event;
-    this.callbacks.mouseDown(this.sx(offsetX), this.sy(offsetY));
-}
-
-    mouseUpHandler(event: MouseEvent) {
-        const { offsetX, offsetY } = event;
-        this.callbacks.mouseUp(this.sx(offsetX), this.sy(offsetY));
-    }
 
     mouseLeaveHandler() {
         this.dx = 0;

@@ -1,4 +1,4 @@
-import { TPoint } from "../config";
+import { TPoint } from "../../config";
 
 export default class Build {
     hp = 100;

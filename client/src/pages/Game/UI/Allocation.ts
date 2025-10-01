@@ -1,6 +1,6 @@
 import CONFIG from '../../../config';
 import { TPoint } from '../../../config';
-import Unit from '../../../game/Units';
+import Unit from '../../../game/Units/Unit';
 
 const { SPRITE_SIZE } = CONFIG;
 
@@ -13,6 +13,7 @@ export default class Allocation {
         this._start = { x, y };
         this._end = { x, y };
         this.isSelectingStatus = true;
+        console.log(this._start)
     }
 
     update(x: number, y: number): void {
@@ -22,6 +23,7 @@ export default class Allocation {
     }
 
     end(units: Unit[]) {
+
         this.isSelectingStatus = false;
 
         const rect = this.getSelectionRect();
