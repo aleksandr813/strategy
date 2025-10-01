@@ -37,6 +37,12 @@ class Game {
         units.forEach((element) => {
             booleanMatrix[element.cords.x][element.cords.y] = 1;
         })
+        builds.forEach((element) => {
+            booleanMatrix[element.cords[0].x][element.cords[0].y] = 1;
+            booleanMatrix[element.cords[0].x + 1][element.cords[0].y] = 1;
+            booleanMatrix[element.cords[0].x][element.cords[0].y + 1] = 1;
+            booleanMatrix[element.cords[0].x + 1][element.cords[0].y + 1] = 1;
+        })
         return booleanMatrix;
     }
 
