@@ -1,6 +1,6 @@
 import CONFIG, { TPoint } from "../config";
 import Unit from './Units/Unit';
-import Build from './Builds';
+import Build from './Builds/Build';
 import EasyStar from 'easystarjs';
 
 const { WIDTH, HEIGHT } = CONFIG;
@@ -12,7 +12,7 @@ class Game {
     
 
     constructor() {
-        this.units = [new Unit(0, 0), new Unit(0, 5)]
+        this.units = [new Unit(0, 0)]
         this.builds = [new Build(5, 5)]
         this.villageMatrix = [];
     }
@@ -35,32 +35,46 @@ class Game {
             booleanMatrix[i] = new Array(29).fill(0);
         }
         units.forEach((element) => {
-            booleanMatrix[element.cords.x][element.cords.y] = 1;
+            booleanMatrix[element.cords.y][element.cords.x] = 1;
         })
         return booleanMatrix;
     }
 
-    moveUnits() { //Сюда передаём НЕ всех юнитов, а массив с выделенными юнитами, а также матрицу с 0, где свободно для движения и 1, где чтокто-то стоит
+    moveUnits(destination: TPoint) {
         let easystar = new EasyStar.js();
 
-        let booleanMatrix = this.getVillageMatrix(this.units, this.builds)
+        let unitsForMove = this.units.filter(unit => unit.isHighlighted);
 
-        easystar.setGrid(booleanMatrix);
-        easystar.setAcceptableTiles(0);
+        unitsForMove.forEach((unit) => {
+            let booleanMatrix = this.getVillageMatrix(this.units, this.builds)
 
-        easystar.findPath(this.units[0].cords.x, this.units[0].cords.y, 6, 7, ( path ) => {
-            if (path === null) {
-                console.log("Path was not found");
-            }
-            else {
-                if (path[1]) {
-                    //console.log(path[1]);
-                    this.units[0].cords = path[1];
+            easystar.setGrid(booleanMatrix);
+            easystar.setAcceptableTiles([0]); // проходимые клетки
+
+            easystar.findPath(unit.cords.x, unit.cords.y, destination.x, destination.y, (path) => {
+                if (path === null) {
+                    console.log("Path was not found");
+                } else {
+                    // убираем стартовую точку (она = позиция юнита)
+                    path.shift();
+
+                    // запускаем пошаговое движение
+                    let stepIndex = 0;
+
+                    let intervalId = setInterval(() => {
+                        if (stepIndex < path.length) {
+                            unit.cords = path[stepIndex];
+                            stepIndex++;
+                            //booleanMatrix = this.getVillageMatrix(this.units, this.builds);
+                        } else {
+                            clearInterval(intervalId); // закончили движение
+                        }
+                    }, 100); // шаг раз в 0.1 сек
                 }
-            }
-        })
-        console.log(booleanMatrix);
-        easystar.calculate()
+            });
+        });
+
+        easystar.calculate();
     }
 
     

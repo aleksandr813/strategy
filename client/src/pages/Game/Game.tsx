@@ -6,7 +6,7 @@ import Game from '../../game/Game';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units/Unit';
-import Build from '../../game/Builds';
+import Build from '../../game/Builds/Build';
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
@@ -78,7 +78,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     }
 
     const mouseClick = (_x: number, _y: number) => {
-        game?.moveUnits();
+        game?.moveUnits({x: Math.round(_x), y: Math.round(_y) });
     }
 
     const mouseRightClick = () => {
