@@ -13,7 +13,7 @@ class Game {
     
 
     constructor() {
-        this.units = [new Unit(10, 10), new Unit(11, 6)]
+        this.units = [new Unit(5, 7), new Unit(0, 0)]
         this.builds = [new Build(5, 5)]
         this.allocation = new Allocation;
     }
@@ -54,41 +54,50 @@ class Game {
         let easystar = new EasyStar.js();
 
         this.units.forEach((unit) => {
-
             if (!unit.isSelected) {
-                return
+                return;
             }
 
-            let booleanMatrix = this.getVillageMatrix(this.units, this.builds)
+            // Создаем копию матрицы без текущего юнита
+            let booleanMatrix = this.getVillageMatrix(
+                this.units.filter(u => u !== unit), 
+                this.builds
+            );
 
             easystar.setGrid(booleanMatrix);
-            easystar.setAcceptableTiles([0]); // проходимые клетки
+            easystar.setAcceptableTiles([0]);
 
             easystar.findPath(unit.cords.x, unit.cords.y, destination.x, destination.y, (path) => {
                 if (path === null) {
                     console.log("Path was not found");
                 } else {
-                    // убираем стартовую точку (она = позиция юнита)
                     path.shift();
 
-                    // запускаем пошаговое движение
                     let stepIndex = 0;
-
                     let intervalId = setInterval(() => {
                         if (stepIndex < path.length) {
-                            unit.cords = path[stepIndex];
-                            stepIndex++;
-                            //booleanMatrix = this.getVillageMatrix(this.units, this.builds);
+                            // Перед каждым шагом проверяем, не занята ли клетка
+                            const nextStep = path[stepIndex];
+                            const currentMatrix = this.getVillageMatrix(
+                                this.units.filter(u => u !== unit), 
+                                this.builds
+                            );
+                            
+                            if (currentMatrix[nextStep.x][nextStep.y] === 0) {
+                                unit.cords = nextStep;
+                                stepIndex++;
+                            }
+                            // Если клетка занята, ждем следующего интервала
                         } else {
-                            clearInterval(intervalId); // закончили движение
+                            clearInterval(intervalId);
                         }
-                    }, 100); // шаг раз в 0.1 сек
+                    }, 100);
                 }
             });
         });
 
-        easystar.calculate();
-    }
+    easystar.calculate();
+}
 
     
 
