@@ -49,9 +49,12 @@ class Game {
     moveUnits(destination: TPoint) {
         let easystar = new EasyStar.js();
 
-        let unitsForMove = this.units.filter(unit => unit.isHighlighted);
+        this.units.forEach((unit) => {
 
-        unitsForMove.forEach((unit) => {
+            if (!unit.isHighlighted) {
+                return
+            }
+
             let booleanMatrix = this.getVillageMatrix(this.units, this.builds)
 
             easystar.setGrid(booleanMatrix);

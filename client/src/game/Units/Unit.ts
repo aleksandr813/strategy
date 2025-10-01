@@ -8,7 +8,7 @@ export default class Unit {
     sx = 0;
     sy = 0;
     sprite = 2
-    isHighlighted = true;
+    isHighlighted = false;
     constructor(x: number, y: number) {
         this.cords = {x: x, y: y};
         this.destination = {x: x, y: y};
