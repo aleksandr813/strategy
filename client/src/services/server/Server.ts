@@ -104,6 +104,13 @@ class Server {
             this.store.clearMessages();
         }
     }
+
+    async getRoots(coeffs: number[]): Promise<void> {
+    await this.request('getRoots', {
+        coeffs: JSON.stringify(coeffs)
+    });
+}
+
 }
 
 export default Server;
