@@ -94,6 +94,10 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     }
 
     const backClickHandler = () => setPage(PAGES.CHAT);
+    const BattleClicHandler = () => setPage(PAGES.BATTLE);
+    const CalculatorClicHandler = () => setPage(PAGES.CALCULATOR);
+    const GlobalMapClicHandler = () => setPage(PAGES.GLOBAL_MAP);
+    const VillageClicHandler = () => setPage(PAGES.VILLAGE);
 
     /****************/
     /* Mouse Events */
@@ -172,6 +176,10 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
     return (<div className='game'>
         <h1>Менеджмент деревни</h1>
+        <Button onClick={BattleClicHandler} text='Battle'/>
+        <Button onClick={CalculatorClicHandler} text='Calculator'/>
+        <Button onClick={GlobalMapClicHandler} text='GlobalMap'/>
+        <Button onClick={VillageClicHandler} text='Village'/>
         <Button onClick={backClickHandler} text='Назад' />
         <div id={GAME_FIELD} className={GAME_FIELD}></div>
         <div className='villageManagmentUI'>
