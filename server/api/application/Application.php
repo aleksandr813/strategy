@@ -8,10 +8,13 @@ class Application {
     private $user;
     private $chat;
 
+    private $calculator;
+
     function __construct() {
         $db = new DB();
         $this->user = new User($db);
         $this->chat = new Chat($db);
+        $this->calculator = new Calculator();
     }
 
     public function login($params) {
@@ -63,8 +66,8 @@ class Application {
 
     public function getRoots($params) {
         if ($params) {
-            $result = new Calculator($params);
-            return $result->$result;
+            $result = $this->calculator->get($params);
+            return $result;
         }
         return ['error' => 242];
     }

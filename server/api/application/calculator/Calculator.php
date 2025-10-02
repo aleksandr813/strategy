@@ -1,6 +1,6 @@
 <?php
 class Calculator{
-    public function __construct(...$arr) {
+    public function get(...$arr) {
         $params = [];
         if (isset($arr['a'])) $params[] = (float)$arr['a'];
         if (isset($arr['b'])) $params[] = (float)$arr['b'];
@@ -25,7 +25,7 @@ class Calculator{
                 $result = ['error' => 103];
                 http_response_code(400);
         };
-        $this->$result = $result;
+        return $result;
     }
 private static function solveLinear($a, $b) { 
     if ($a == 0) {
