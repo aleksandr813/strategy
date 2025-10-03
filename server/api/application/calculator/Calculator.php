@@ -1,6 +1,6 @@
 <?php
 class Calculator{
-    public function get(...$arr) {
+    public function get($arr) {
         $params = [];
         if (isset($arr['a'])) $params[] = (float)$arr['a'];
         if (isset($arr['b'])) $params[] = (float)$arr['b'];

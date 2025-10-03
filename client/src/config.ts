@@ -18,19 +18,20 @@ export type TWINDOW = {
 }
 
 const CONFIG = {
+    //HOST: 'http://localhost/',
     HOST: 'http://nopainnogame.local/api',
 
     CHAT_TIMESTAMP: 200, //ms
 
     SPRITE_SIZE: 64, // размер спрайта в пикселях
-    LINE_OF_SPRITES: 10, // количество спрайтов в карте спрайтов
+    LINE_OF_SPRITES: 20, // количество спрайтов в карте спрайтов
     WIDTH: 50, // ширина карты
     HEIGHT: 32, // высота карты 
     // игровое окно, видимое пользователю
     WINDOW: {
         LEFT: 0,
         TOP: 0,
-        HEIGHT: 12,
+        HEIGHT: 10,
         WIDTH: 20,
     },
 };
