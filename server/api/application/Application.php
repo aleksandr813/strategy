@@ -138,14 +138,14 @@ class Application {
         return ['error' => 242];
     }
 
-    public function createBuilding($params) {
-        if ($params['token'] && $params['building_type'] && isset($params['x']) && isset($params['y'])) {
+    public function buyBuilding($params) {
+        if ($params['token'] && $params['type_id'] && $params['village_id'] && isset($params['x']) && isset($params['y'])) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->building->createBuilding($user->id, $params['building_type'], $params['x'], $params['y']);
+                return $this->building->buyBuilding($user->id, $params['type_id'], $params['village_id'], $params['x'], $params['y']);
             }
             return ['error' => 705];
-        }
+        }   
         return ['error' => 242];
     }
 

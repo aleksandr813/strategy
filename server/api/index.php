@@ -29,7 +29,7 @@ function result($params) {
             //building
             case 'getBuilding': return $app->getBuildingById($params);
             case 'getBuildingsByUser': return $app->getBuildingsByUser($params);
-            case 'createBuilding': return $app->createBuilding($params);
+            case 'buyBuilding': return $app->buyBuilding($params);
             case 'updateBuilding': return $app->updateBuilding($params);
             case 'deleteBuilding': return $app->deleteBuilding($params);
             default: return ['error' => 102];

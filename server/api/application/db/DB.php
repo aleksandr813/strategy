@@ -133,10 +133,25 @@ class DB {
         ", [$userId]);
     }
 
-    public function createBuilding($userId, $buildingType, $x, $y) {
-        return $this->execute("INSERT INTO buildings (user_id, building_type, x, y) VALUES (?, ?, ?, ?)",
-            [$userId, $buildingType, $x, $y]
+    public function buyBuilding($typeId, $villageId, $x, $y) {
+        $building = $this->query("SELECT id, type, name, hp, price FROM building_types WHERE id = ?", [$typeId]);
+        if (!$building) {
+            return false;
+        }
+
+        $result = $this->execute("INSERT INTO buildings (type_id, village_id, x, y, level, current_hp) VALUES (?, ?, ?, ?, 1, ?)",
+            [$building->id, $villageId, $x, $y, $building->hp]
         );
+
+        return $result ? $building : false;
+    }
+
+    public function getMoney($userId) {
+        return $this->query("SELECT money FROM users WHERE id = ?", [$userId]);
+    }
+
+    public function updateMoney($userId, $money) {
+        return $this->execute("UPDATE users SET money = ? WHERE id = ?", [$money, $userId]);
     }
 
     public function updateBuilding($buildingId, $userId, $buildingType, $x, $y) {

@@ -31,19 +31,29 @@ class Building {
         return ['buildings' => $buildings];
     }
 
-    public function createBuilding($userId, $buildingType, $x, $y) {
-        $building = $this->db->createBuilding($userId, $buildingType, $x, $y);
-        if ($building) {
-            return [
-                'user_id' => $userId,
-                'building_type' => $buildingType,
-                'x' => $x,
-                'y' => $y
-            ];
-        }
-        else {
+    public function buyBuilding($userId, $typeId, $villageId, $x, $y) {
+        $userMoney = $this->db->getMoney($userId);
+
+        $building = $this->db->buyBuilding($typeId, $villageId, $x, $y);
+
+        if (!$building) {
             return ['error' => 301];
         }
+        
+        if ($userMoney->money < $building->price) {
+            return ['error' => 305];
+        }
+
+        $newBalance = $userMoney->money - $building->price;
+        $moneyUpdate = $this->db->updateMoney($userId, $newBalance);
+
+        if (!$moneyUpdate) {
+            return ['error' => 306];
+        }
+
+        return [
+            'new_balance' => $newBalance
+        ];
     }
 
     public function updateBuilding($buildingId, $userId, $buildingType, $x, $y) {
