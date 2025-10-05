@@ -1,12 +1,12 @@
 <?php
 class Calculator{
-    public function __construct(...$params) {
-        //$params = [];
-        //if (isset($_GET['a'])) $params[] = (float)$_GET['a'];
-        //if (isset($_GET['b'])) $params[] = (float)$_GET['b'];
-        //if (isset($_GET['c'])) $params[] = (float)$_GET['c'];
-        //if (isset($_GET['d'])) $params[] = (float)$_GET['d'];
-        //if (isset($_GET['e'])) $params[] = (float)$_GET['e'];
+    public function get($arr) {
+        $params = [];
+        if (isset($arr['a'])) $params[] = (float)$arr['a'];
+        if (isset($arr['b'])) $params[] = (float)$arr['b'];
+        if (isset($arr['c'])) $params[] = (float)$arr['c'];
+        if (isset($arr['d'])) $params[] = (float)$arr['d'];
+        if (isset($arr['e'])) $params[] = (float)$arr['e'];
             
         switch (count($params)) {
             case 2:
@@ -22,14 +22,14 @@ class Calculator{
                 $result = self::solveQuartic(...$params);
                 break;
             default:
-                $result = ["Неверное количество аргументов"];
+                $result = ['error' => 103];
                 http_response_code(400);
         };
-        echo json_encode($result);
+        return $result;
     }
 private static function solveLinear($a, $b) { 
     if ($a == 0) {
-        return ["Бесконечно корней"];
+        return ['error' => 104];
     }
     return [-$b / $a]; 
 }
@@ -49,7 +49,7 @@ private static function solveQuadratic($a, $b, $c) {
     } elseif ($discriminant == 0) {
         return [-$b / (2 * $a)];
     } else {
-        return ["Действительных корней нет"];
+        return ['error' => 105];
     }
 }
 
@@ -190,7 +190,7 @@ private static function solveQuartic($a, $b, $c, $d, $e) {
         
         return $roots;
     } else {
-        return ["Рациональный корень не найден."];
+        return ['error' => 106];
     }
 }
 }

@@ -22,7 +22,7 @@ class DB {
         $pass = '---';
         $db = 'nopainnogame';
         $connect = "pgsql:host=$host;port=$port;dbname=$db;";
-        $this->pdo = new PDO($connect, $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        //$this->pdo = new PDO($connect, $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
     }
 
     public function __destruct() {

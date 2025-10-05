@@ -20,6 +20,7 @@ function result($params) {
             // chat
             case 'sendMessage': return $app->sendMessage($params);
             case 'getMessages': return $app->getMessages($params);
+            case 'getRoots': return $app->getRoots($params);
             default: return ['error' => 102];
         }
     }
