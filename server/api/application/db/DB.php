@@ -133,10 +133,36 @@ class DB {
         ", [$userId]);
     }
 
-    public function createBuilding($userId, $buildingType, $x, $y) {
-        return $this->execute("INSERT INTO buildings (user_id, building_type, x, y) VALUES (?, ?, ?, ?)",
-            [$userId, $buildingType, $x, $y]
+    public function buyBuilding($villageId, $buildingId, $x, $y, $hp) {
+        $this->execute("INSERT INTO buildings
+            (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
+            [$buildingId, $villageId, $x, $y, $hp]
         );
+    }
+
+    public function getVillageByUserId($userId) {
+        return $this->query("SELECT id, user_id, x, y FROM villages WHERE user_id = ?", [$userId]);
+    }
+
+    public function getBuildingType($buildingType) {
+        return $this->query("SELECT hp, price FROM building_types WHERE id = ?", [$buildingType]);
+    }
+
+    public function getPositionBuilding($villageId, $x, $y) {
+        return $this->query(
+            "SELECT village_id, x, y 
+            FROM buildings 
+            WHERE village_id = ? AND x = ? AND y = ?",
+            [$villageId, $x, $y]
+        );
+    }
+
+    public function getMoney($userId) {
+        return $this->query("SELECT money FROM users WHERE id = ?", [$userId]);
+    }
+
+    public function updateMoney($userId, $money) {
+        return $this->execute("UPDATE users SET money = ? WHERE id = ?", [$money, $userId]);
     }
 
     public function updateBuilding($buildingId, $userId, $buildingType, $x, $y) {
