@@ -4,14 +4,21 @@ require_once ('user/User.php');
 require_once ('chat/Chat.php');
 require_once ('unit/Unit.php');
 require_once ('building/Building.php');
+require_once ('calculator/Calculator.php');
 
 class Application {
+    private $user;
+    private $chat;
+
+    private $calculator;
+
     function __construct() {
         $db = new DB();
         $this->user = new User($db);
         $this->chat = new Chat($db);
         $this->unit = new Unit($db);
         $this->building = new Building($db);
+        $this->calculator = new Calculator();
     }
 
     public function login($params) {
@@ -167,6 +174,14 @@ class Application {
                 return $this->building->deleteBuilding($params['id'], $user->id);
             }
             return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function getRoots($params) {
+        if ($params) {
+            $result = $this->calculator->get($params);
+            return $result;
         }
         return ['error' => 242];
     }

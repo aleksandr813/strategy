@@ -11,7 +11,7 @@ class DB {
         $pass = 'root';
         $db = 'strategy';
         $connect = "mysql:host=$host;port=$port;dbname=$db;charset=utf8";
-        $this->pdo = new PDO($connect, $user, $pass);
+        //$this->pdo = new PDO($connect, $user, $pass);
 
         // Postgres
         // $host = 'localhost';
@@ -20,7 +20,7 @@ class DB {
         // $pass = '---';
         // $db = 'nopainnogame';
         // $connect = "pgsql:host=$host;port=$port;dbname=$db;";
-        // $this->pdo = new PDO($connect, $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $this->pdo = new PDO($connect, $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
     }
 
     public function __destruct() {
