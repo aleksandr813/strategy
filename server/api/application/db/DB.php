@@ -146,6 +146,11 @@ class DB {
     }
 
     public function deleteBuilding($buildingId, $userId) {
-        return $this->execute("DELETE FROM buildings WHERE id = ? AND user_id = ?", [$buildingId, $userId]);
+        return $this->execute("
+            DELETE FROM buildings 
+            WHERE id = ? 
+            AND village_id = (SELECT id FROM villages WHERE user_id = ?)", 
+            [$buildingId, $userId]
+        );
     }
 }
