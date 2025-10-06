@@ -30,6 +30,7 @@ function result($params) {
             case 'getBuilding': return $app->getBuildingById($params);
             case 'getBuildingsByUser': return $app->getBuildingsByUser($params);
             case 'getBuildingTypes': return $app->getBuildingTypes($params);
+            case 'getBuildings': return $app->getBuildings($params);
             case 'createBuilding': return $app->createBuilding($params);
             case 'updateBuilding': return $app->updateBuilding($params);
             case 'deleteBuilding': return $app->deleteBuilding($params);
