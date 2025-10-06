@@ -20,6 +20,18 @@ function result($params) {
             // chat
             case 'sendMessage': return $app->sendMessage($params);
             case 'getMessages': return $app->getMessages($params);
+            //unit
+            case 'getUnitById': return $app->getUnitById($params);
+            case 'getUnitsByUser': return $app->getUnitsByUser($params);
+            case 'createUnit': return $app->createUnit($params);
+            case 'updateUnit': return $app->updateUnit($params);
+            case 'deleteUnit': return $app->deleteUnit($params);
+            //building
+            case 'getBuilding': return $app->getBuildingById($params);
+            case 'getBuildingsByUser': return $app->getBuildingsByUser($params);
+            case 'createBuilding': return $app->createBuilding($params);
+            case 'updateBuilding': return $app->updateBuilding($params);
+            case 'deleteBuilding': return $app->deleteBuilding($params);
             case 'getRoots': return $app->getRoots($params);
             default: return ['error' => 102];
         }
