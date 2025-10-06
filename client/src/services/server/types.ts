@@ -3,6 +3,11 @@ export type TError = {
     text: string;
 }
 
+export type TRootsResponse = {
+    roots?: number[];
+    error?: TError;
+};
+
 export type TAnswer<T> = {
     result: 'ok' | 'error';
     data?: T;
