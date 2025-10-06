@@ -125,11 +125,11 @@ class DB {
         [$buildingId]);
     }
 
-    public function getBuildingsByUser($userId) {
+    public function getBuildings($userId) {
         return $this->queryAll(
-            "SELECT * FROM buildings
-            WHERE user_id = ?
-            ORDER BY building_type
+            "SELECT id, type_id, village_id, x, y, level, current_hp FROM buildings
+            WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)
+            ORDER BY type_id
         ", [$userId]);
     }
 
