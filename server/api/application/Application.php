@@ -4,6 +4,7 @@ require_once ('user/User.php');
 require_once ('chat/Chat.php');
 require_once ('unit/Unit.php');
 require_once ('building/Building.php');
+require_once ('economy/Economy.php');
 
 class Application {
     function __construct() {
@@ -12,6 +13,7 @@ class Application {
         $this->chat = new Chat($db);
         $this->unit = new Unit($db);
         $this->building = new Building($db);
+         $this->economy = new Economy($db);
     }
 
     public function login($params) {
@@ -171,5 +173,42 @@ class Application {
         return ['error' => 242];
     }
 
+     public function getEconomyState($params) {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->economy->getEconomyState($user->id);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function getIncomeSources($params) {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->economy->getIncomeSources($user->id);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function addGold($params) {
+        if ($params['token'] && $params['amount']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                $result = $this->economy->addGold($user->id, $params['amount']);
+                return $result ? ['success' => true] : ['error' => 'Failed to add gold'];
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    
+        
+    
     
 }

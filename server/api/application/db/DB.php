@@ -148,4 +148,28 @@ class DB {
     public function deleteBuilding($buildingId, $userId) {
         return $this->execute("DELETE FROM buildings WHERE id = ? AND user_id = ?", [$buildingId, $userId]);
     }
+
+        public function getUserGold($userId) {
+        return $this->query("SELECT gold, last_update FROM users WHERE id = ?", [$userId]);
+    }
+
+    public function updateUserGold($userId, $gold, $lastUpdate = null) {
+        if ($lastUpdate === null) {
+            $lastUpdate = time();
+        }
+        return $this->execute("UPDATE users SET gold = ?, last_update = ? WHERE id = ?", 
+            [$gold, $lastUpdate, $userId]);
+    }
+
+     public function getBuildingsWithIncome($userId) {
+        return $this->queryAll("SELECT id, building_type, income, x, y FROM buildings WHERE user_id = ?", [$userId]);
+    }
+
+    public function createBuildingWithIncome($userId, $buildingType, $income, $x, $y) {
+        return $this->execute("INSERT INTO buildings (user_id, building_type, income, x, y) VALUES (?, ?, ?, ?, ?)",
+            [$userId, $buildingType, $income, $x, $y]
+        );
+    }
+
+
 }

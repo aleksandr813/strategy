@@ -32,6 +32,10 @@ function result($params) {
             case 'createBuilding': return $app->createBuilding($params);
             case 'updateBuilding': return $app->updateBuilding($params);
             case 'deleteBuilding': return $app->deleteBuilding($params);
+              // economy 
+            case 'getEconomyState': return $app->getEconomyState($params);
+            case 'getIncomeSources': return $app->getIncomeSources($params);
+            case 'addGold': return $app->addGold($params);
             default: return ['error' => 102];
         }
     }
