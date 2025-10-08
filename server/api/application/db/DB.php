@@ -150,6 +150,6 @@ class DB {
     }
 
     public function getBuildingTypes() {
-        return $this->queryAll("SELECT id, type, name, hp, price FROM building_types ORDER BY type, name");
+        return $this->queryAll("SELECT id, type, name, hp, price FROM building_types");
     }
 }
