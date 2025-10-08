@@ -72,6 +72,6 @@ class Building {
             return ['error' => 303];
         }
 
-        return ['success' => true];
+        return true;
     }
 }

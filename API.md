@@ -21,6 +21,7 @@
     * 4.5. getMessages
     * 4.6. getBuildingTypes
     * 4.7. getBuildings
+    * 4.8. deleteBuilding
 
 
 ## 1. Общее
@@ -77,7 +78,7 @@ BuildingTypes: {
     name: string,
     hp: number,
     price: number
-
+}
 ```
 ### 2.5. Здание
 ```
@@ -103,7 +104,7 @@ Buildings: {
 | getMessages | Получить сообщения в чате |
 | getBuildingTypes | Получить типы зданий |
 | getBuildings | Получить все здания в деревне |
-
+| deleteBuilding | Удалить здание из деревни |
 
 ### 3.1. Общие ошибки
 * `101` - если не передан параметр `method`
@@ -250,3 +251,22 @@ Buildings: {
 ```
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
+
+
+### 4.8. deleteBuilding
+Удалить здание из деревни
+
+**Параметры**
+```
+{
+    token: string; - токен
+    id: number; - id здания 
+}
+```
+**Успешный ответ**
+```
+    Answer<true>
+```
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
+* `303` - ошибка удаления здания (Failed to delete building)
