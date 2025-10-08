@@ -148,4 +148,8 @@ class DB {
     public function deleteBuilding($buildingId, $userId) {
         return $this->execute("DELETE FROM buildings WHERE id = ? AND user_id = ?", [$buildingId, $userId]);
     }
+
+    public function getBuildingTypes() {
+        return $this->queryAll("SELECT id, type, name, hp, price FROM building_types");
+    }
 }
