@@ -206,7 +206,39 @@ class Application {
         }
         return ['error' => 242];
     }
+    
+    public function getMineIncome($params) {
+    if ($params['token'] && $params['mine_id']) {
+        $user = $this->user->getUser($params['token']);
+        if ($user) {
+            return $this->economy->getIncome($params['mine_id'], $user->id);
+        }
+        return ['error' => 705];
+    }
+    return ['error' => 242];
+}
 
+public function getAllMinesIncome($params) {
+    if ($params['token']) {
+        $user = $this->user->getUser($params['token']);
+        if ($user) {
+            return $this->economy->getAllMinesIncome($user->id);
+        }
+        return ['error' => 705];
+    }
+    return ['error' => 242];
+}
+
+public function updateMineIncomeTime($params) {
+    if ($params['token'] && $params['mine_id'] && $params['income_time']) {
+        $user = $this->user->getUser($params['token']);
+        if ($user) {
+            return $this->economy->updateMineIncomeTime($params['mine_id'], $user->id, $params['income_time']);
+        }
+        return ['error' => 705];
+    }
+    return ['error' => 242];
+}
     
         
     
