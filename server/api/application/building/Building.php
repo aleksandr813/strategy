@@ -31,11 +31,14 @@ class Building {
         return ['buildings' => $buildings];
     }
 
+<<<<<<< HEAD
     public function getBuildingTypes() {
         $types = $this->db->getBuildingTypes();
         return ["building_types" => $types];
     }
 
+=======
+>>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
     public function buyBuilding($user, $typeId, $x, $y) {
         $village = $this->db->getVillageByUserId($user->id);
         if (!$village) {
@@ -49,8 +52,13 @@ class Building {
             return ['error' => 305];
         }
 
+<<<<<<< HEAD
         $existingBuilding = $this->db->getPositionBuilding($village->id, $x, $y);
         if ($existingBuilding) {
+=======
+        $villageBuildings = $this->db->getBuildings($user->id);
+        if (!$x && !$y) {
+>>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
             return ['error' => 311];
         }
 

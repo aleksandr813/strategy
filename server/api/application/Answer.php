@@ -12,7 +12,11 @@ class Answer {
         '305' => 'Not enough funds to buy',
         '306' => 'Transaction error',
         '310' => 'Village not found',
+<<<<<<< HEAD
         '311' => 'Coordinates are busy',
+=======
+        '311' => 'Coordinates not defined',
+>>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
         '500' => 'Unit is not found',
         '501' => 'Failed to create unit',
         '502' => 'Failed to update unit',
