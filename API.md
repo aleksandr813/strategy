@@ -20,6 +20,7 @@
     * 4.4. sendMessage
     * 4.5. getMessages
     * 4.6. getBuildingTypes
+    * 4.7. getBuildings
 
 
 ## 1. Общее
@@ -76,6 +77,18 @@ BuildingTypes: {
     name: string,
     hp: number,
     price: number
+
+```
+### 2.5. Здание
+```
+Buildings: {
+    id: number;
+    type_id: number;
+    village_id: number;
+    x: number;
+    y: number;
+    level: number;
+    current_hp: number
 }
 ```
 
@@ -89,6 +102,8 @@ BuildingTypes: {
 | sendMessage | Отправить сообщение в чат |
 | getMessages | Получить сообщения в чате |
 | getBuildingTypes | Получить типы зданий |
+| getBuildings | Получить все здания в деревне |
+
 
 ### 3.1. Общие ошибки
 * `101` - если не передан параметр `method`
@@ -198,6 +213,7 @@ BuildingTypes: {
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
 
+
 ### 4.6. getBuildingTypes
 Получить все типы зданий
 
@@ -216,3 +232,21 @@ BuildingTypes: {
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
 
+
+### 4.7. getBuildings
+Получить все здания в деревне
+
+**Параметры**
+```
+{
+    token: string; - токен
+}
+```
+**Успешный ответ**
+```
+    Answer<{
+        buildings: building[];
+    }>
+```
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
