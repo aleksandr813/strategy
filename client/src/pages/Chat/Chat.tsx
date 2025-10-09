@@ -44,7 +44,7 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
             }
         }
     }
-    const toGameClickHandler = () => setPage(PAGES.GAME);
+    const toGameClickHandler = () => setPage(PAGES.VILLAGE);
     const backClickHandler = () => setPage(PAGES.LOGIN);
 
     if (!user) {
