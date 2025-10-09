@@ -12,7 +12,8 @@ const Preloader: React.FC<IBasePage> = (props: IBasePage) => {
 
     return (
         <div className="preloader">
-            <p>xsffd</p>
+            <h1>Загрузка</h1>
+            <p>...</p>
         </div>
     );
 }

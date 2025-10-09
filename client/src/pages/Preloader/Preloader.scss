@@ -6,6 +6,11 @@
     100% { box-shadow: 30px 9999px 0 -4px currentColor; }
 }
 
+@font-face {
+    font-family: 'PixelifySans-Medium';
+    src: url('../../assets/fonts/PixelifySans-Medium.ttf');
+}
+
 .preloader {
     position: fixed;
     top: 0;
@@ -19,12 +24,13 @@
     justify-content: center;
     flex-direction: column;
 
-    background-image: url('../../assets/img/background/background.jpg');
-    background-repeat: no-repeat;
+    background-image: url('../../assets/img/background/background.png');
+    background-repeat:rep no-repeat;
     background-position: center;
     background-size: cover;
 
-    color: $text-color;
+    color: whitesmoke;
+    font-family: PixelifySans-Medium;
 
     >span {
         position: absolute;
@@ -132,13 +138,6 @@
             background-position: center;
             background-repeat: no-repeat;
             background-size: contain;
-        }
-
-        &.alex {
-            &::before {
-                background-image: url('../../assets/img/authors/alex_pixel-art.png');
-                background-size: 140%;
-            }
         }
     }
 }
