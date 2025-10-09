@@ -18,9 +18,7 @@ export type TWINDOW = {
 }
 
 const CONFIG = {
-    //HOST: 'http://localhost/',
-    HOST: 'http://nopainnogame.local/api',
-    //HOST: 'http://nopainnogame/api/index.php',
+    HOST: 'http://strategy/api',
 
     CHAT_TIMESTAMP: 200, //ms
 
