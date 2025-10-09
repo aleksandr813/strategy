@@ -23,12 +23,17 @@ class Building {
         ];
     }
 
-    public function getBuildingsByUser($userId) {
+    public function getBuildings($userId) {
         if (!$userId) {
             return ['error' => 705];
         }
-        $buildings = $this->db->getBuildingsByUser($userId);
+        $buildings = $this->db->getBuildings($userId);
         return ['buildings' => $buildings];
+    }
+
+    public function getBuildingTypes() {
+        $types = $this->db->getBuildingTypes();
+        return ["building_types" => $types];
     }
 
     public function createBuilding($userId, $buildingType, $x, $y) {

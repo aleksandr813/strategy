@@ -134,11 +134,22 @@ class Application {
         return ['error' => 242];
     }
 
-    public function getBuildingsByUser($params) {
+    public function getBuildings($params) {
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->building->getBuildingsByUser($user->id);
+                return $this->building->getBuildings($user->id);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function getBuildingTypes($params) {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->building->getBuildingTypes();
             }
             return ['error' => 705];
         }
