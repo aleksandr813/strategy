@@ -32,6 +32,7 @@ function result($params) {
             case 'createBuilding': return $app->createBuilding($params);
             case 'updateBuilding': return $app->updateBuilding($params);
             case 'deleteBuilding': return $app->deleteBuilding($params);
+            case 'getRoots': return $app->getRoots($params);
             default: return ['error' => 102];
         }
     }
