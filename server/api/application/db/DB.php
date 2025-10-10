@@ -136,11 +136,7 @@ class DB {
     public function buyBuilding($villageId, $buildingId, $x, $y, $hp) {
         $this->execute("INSERT INTO buildings
             (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
-<<<<<<< HEAD
             [$buildingId, $villageId, $x, $y, $hp]
-=======
-            [$buildingId->id, $villageId, $x, $y, $hp]
->>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
         );
     }
 
@@ -150,7 +146,6 @@ class DB {
 
     public function getBuildingType($buildingType) {
         return $this->query("SELECT hp, price FROM building_types WHERE id = ?", [$buildingType]);
-<<<<<<< HEAD
     }
 
     public function getPositionBuilding($villageId, $x, $y) {
@@ -160,8 +155,6 @@ class DB {
             WHERE village_id = ? AND x = ? AND y = ?",
             [$villageId, $x, $y]
         );
-=======
->>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
     }
 
     public function getMoney($userId) {
