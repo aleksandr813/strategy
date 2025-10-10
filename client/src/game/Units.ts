@@ -1,7 +1,7 @@
 // Базовый класс Unit
 export class Unit {
     sprite: string = ''; // путь к PNG файлу спрайта
-    hp: number | undefined;
+    hp: number | undefined; // здоровье
     damage: number | undefined;
     x: number = 0; // позиция в матрице
     y: number = 0; // позиция в матрице
