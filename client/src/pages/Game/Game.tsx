@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import CONFIG from '../../config';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
@@ -8,6 +8,7 @@ import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units/Unit';
 import Build from '../../game/Builds/Build';
 import Allocation from './UI/Allocation';
+import { TPoint } from '../../config';
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
@@ -16,79 +17,67 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     const { WINDOW, SPRITE_SIZE } = CONFIG;
     const { setPage } = props;
     let game: Game | null = null;
-    // инициализация канваса
     let canvas: Canvas | null = null;
     const Canvas = useCanvas(render);
     let interval: NodeJS.Timer | null = null;
-    // инициализация карты спрайтов
-    const [
-        [spritesImage],
-        getSprite,
-    ] = useSprites();
-
+    const [[spritesImage], getSprite] = useSprites();
     const allocation = new Allocation();
+    
+    // Для отслеживания начала клика и перетаскивания
+    const mouseDownPosition = useRef<TPoint | null>(null);
+    const mouseDownTime = useRef<number>(0);
+    const wasDragging = useRef<boolean>(false);
+    const DRAG_THRESHOLD = 5; // Порог в пикселях для определения перетаскивания
+    const TIME_THRESHOLD = 200; // Порог времени в миллисекундах для короткого клика
 
-    function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void { //В массиве points хранятся sx, sy, size
+    function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void {
         canvas.spriteFull(image, x, y, points[0], points[1], points[2]);
     }
 
     function printUnits(canvas: Canvas, units: Unit[]): void {
-    units.forEach((unit) => {
-        const displaySelected = allocation.isSelectingStatus
-            ? allocation.isUnitInSelection(unit)
-            : unit.isSelected;
+        units.forEach((unit) => {
+            const displaySelected = allocation.isSelectingStatus
+                ? allocation.isUnitInSelection(unit)
+                : unit.isSelected;
 
-        printFillSprite(spritesImage, canvas, unit.cords, getSprite(unit.sprite));
-        if (displaySelected) {
-        const unitColor = 'rgba(0, 255, 0, 0.5)'; 
-        canvas.rectangle(unit.cords.x, unit.cords.y, SPRITE_SIZE, SPRITE_SIZE, unitColor);
-}
-    });
-}
+            printFillSprite(spritesImage, canvas, unit.cords, getSprite(unit.sprite));
+            if (displaySelected) {
+                const unitColor = 'rgba(0, 255, 0, 0.5)';
+                canvas.rectangle(unit.cords.x, unit.cords.y, SPRITE_SIZE, SPRITE_SIZE, unitColor);
+            }
+        });
+    }
 
     function printBuilds(canvas: Canvas, builds: Build[]): void {
         builds.forEach((element) => {
-            for (let i=0; i < element.sprites.length; i++) {
-                printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]))
+            for (let i = 0; i < element.sprites.length; i++) {
+                printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]));
             }
-        })
+        });
     }
 
-
-    // функция отрисовки одного кадра сцены
     function render(FPS: number): void {
         if (canvas && game) {
             canvas.clear();
+            const { units, builds } = game.getScene();
 
-            const { units } = game.getScene();
-            const { builds } = game.getScene();
-
-            /************************/
-            /* нарисовать Юнитов */
-            /************************/ 
-            printUnits(canvas, units); 
+            printUnits(canvas, units);
             printBuilds(canvas, builds);
 
             if (allocation.isSelectingStatus) {
-            const rect = allocation.getSelectionRect();
-            if (rect) {
-                canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.3)";
-                canvas.contextV.fillRect(
-                canvas.xs(rect.x),
-                canvas.ys(rect.y),
-                canvas.dec(rect.width),
-                canvas.dec(rect.height)
-                );
+                const rect = allocation.getSelectionRect();
+                if (rect) {
+                    canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.3)";
+                    canvas.contextV.fillRect(
+                        canvas.xs(rect.x),
+                        canvas.ys(rect.y),
+                        canvas.dec(rect.width),
+                        canvas.dec(rect.height)
+                    );
+                }
             }
-        }
 
-            /******************/
-            /* нарисовать FPS */
-            /******************/
             canvas.text(WINDOW.LEFT + 0.2, WINDOW.TOP + 0.5, String(FPS), GREEN);
-            /************************/
-            /* отрендерить картинку */
-            /************************/
             canvas.render();
         }
     }
@@ -99,41 +88,56 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     const GlobalMapClicHandler = () => setPage(PAGES.GLOBAL_MAP);
     const VillageClicHandler = () => setPage(PAGES.VILLAGE);
 
-    /****************/
-    /* Mouse Events */
-    /****************/
-
-    const mouseDown = (_x: number, _y: number) => {
-        //
-    }
-    const mouseMove = (_x: number, _y: number) => {
-        allocation.update(_x, _y);
-    }
-    const mouseUp = (_x: number, _y: number) => {
-        //
-    };
-    const mouseRightClickDown = (_x:number, _y: number) => {
+    const mouseDown = (x: number, y: number) => {
         if (!game) return;
-        //console.log('down')
-        allocation.start(_x, _y);
-        const { units } = game.getScene();
-        allocation.update(_x, _y); 
+        mouseDownPosition.current = { x, y };
+        mouseDownTime.current = Date.now();
+        wasDragging.current = false;
+        allocation.start(x, y);
     };
-    const mouseRightClickUp = (_x:number, _y: number) => {
-        if (!game) return;
-        //console.log('up')
-        const { units } = game.getScene();
-        allocation.end(units);
-    };
-    const mouseClick = (_x: number, _y:number) => {
-        game?.moveUnits({x: _x, y: _y});
-        console.log('click')
-    }
 
-    /****************/
+    const mouseMove = (x: number, y: number) => {
+        allocation.update(x, y);
+    };
+
+    const mouseUp = (x: number, y: number) => {
+        if (!game) return;
+        const { units } = game.getScene();
+
+        const startPos = mouseDownPosition.current;
+        if (startPos) {
+            const distance = Math.sqrt(
+                Math.pow(x - startPos.x, 2) + Math.pow(y - startPos.y, 2)
+            );
+            const timeElapsed = Date.now() - mouseDownTime.current;
+
+            if (distance > DRAG_THRESHOLD || timeElapsed > TIME_THRESHOLD) {
+                wasDragging.current = true;
+                allocation.end(units);
+            } else {
+                allocation.cancel();
+            }
+        }
+        mouseDownPosition.current = null;
+        mouseDownTime.current = 0;
+    };
+
+    const mouseClick = (x: number, y: number) => {
+        if (!game || wasDragging.current) return;
+        if (!allocation.isSelectingStatus) {
+            game.moveUnits({ x, y });
+            console.log('click: move units to', { x, y });
+        }
+    };
+
+    const mouseRightClickDown = (x: number, y: number) => {
+        if (!game) return;
+        const { units } = game.getScene();
+        allocation.clearSelection(units); // Снимаем выделение с юнитов
+        console.log('right click: clear selection');
+    };
 
     useEffect(() => {
-        // инициализация игры
         game = new Game();
         canvas = Canvas({
             parentId: GAME_FIELD,
@@ -144,13 +148,12 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
                 mouseMove,
                 mouseDown,
                 mouseUp,
-                mouseRightClickUp,
                 mouseRightClickDown,
+                //mouseRightClickUp: () => {},
                 mouseClick,
             },
         });
         return () => {
-            // деинициализировать все экземпляры
             game?.destructor();
             canvas?.destructor();
             canvas = null;
@@ -159,33 +162,33 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
                 clearInterval(interval);
                 interval = null;
             }
-        }
-    });
+        };
+    }, []);
 
     useEffect(() => {
         const keyDownHandler = (event: KeyboardEvent) => {
             console.log("keyDownHandler");
-        }
-
+        };
         document.addEventListener('keydown', keyDownHandler);
-
         return () => {
             document.removeEventListener('keydown', keyDownHandler);
-        }
-    });
+        };
+    }, []);
 
-    return (<div className='game'>
-        <h1>Менеджмент деревни</h1>
-        <Button onClick={BattleClicHandler} text='Battle'/>
-        <Button onClick={CalculatorClicHandler} text='Calculator'/>
-        <Button onClick={GlobalMapClicHandler} text='GlobalMap'/>
-        <Button onClick={VillageClicHandler} text='Village'/>
-        <Button onClick={backClickHandler} text='Назад' />
-        <div id={GAME_FIELD} className={GAME_FIELD}></div>
-        <div className='villageManagmentUI'>
-            <p>Монеты: 100</p>
+    return (
+        <div className='game'>
+            <h1>Менеджмент деревни</h1>
+            <Button onClick={BattleClicHandler} text='Battle'/>
+            <Button onClick={CalculatorClicHandler} text='Calculator'/>
+            <Button onClick={GlobalMapClicHandler} text='GlobalMap'/>
+            <Button onClick={VillageClicHandler} text='Village'/>
+            <Button onClick={backClickHandler} text='Назад' />
+            <div id={GAME_FIELD} className={GAME_FIELD}></div>
+            <div className='villageManagmentUI'>
+                <p>Монеты: 100</p>
+            </div>
         </div>
-    </div>)
-}
+    );
+};
 
 export default GamePage;
