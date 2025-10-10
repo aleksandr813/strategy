@@ -19,10 +19,8 @@
     * 4.3. registration
     * 4.4. sendMessage
     * 4.5. getMessages
-    * 4.6. getMineIncome
-    * 4.7. getAllMinesIncome
-    * 4.8. updateMineIncomeTime
-    * 4.9. getBuildingTypes
+    * 4.6. getBuildingTypes
+
 
 ## 1. Общее
 ### 1.1. Адрес сервера
@@ -90,11 +88,7 @@ BuildingTypes: {
 | registration | Регистрация пользователя |
 | sendMessage | Отправить сообщение в чат |
 | getMessages | Получить сообщения в чате |
-| getMineIncome | Получить доход конкретной шахты |
-| getAllMinesIncome | Получить доход всех шахт пользователя |
-| updateMineIncomeTime | Обновить время начисления дохода шахты |
 | getBuildingTypes | Получить типы зданий |
-
 
 ### 3.1. Общие ошибки
 * `101` - если не передан параметр `method`
@@ -204,82 +198,7 @@ BuildingTypes: {
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
 
-
-### 4.6. getMineIncome
-Получить доход конкретной шахты. Если с момента последнего начисления прошел достаточный интервал, доход будет начислен автоматически.
-
-**Параметры**
-{
-token: string; - токен
-mine_id: number; - идентификатор шахты
-}
-
-**Успешный ответ (доход начислен)**
-Answer<{
-    success: true;
-    needs_update: true;
-    income_amount: number;
-    intervals_passed: number;
-    last_income_time: number;
-    current_time: number;
-    mine_id: number;
-}>
-**Успешный ответ (доход еще не готов)**
-Answer<{
-    success: true;
-    needs_update: false;
-    time_remaining: number;
-    last_income_time: number;
-    current_time: number;
-    mine_id: number;
-}>
-
-**Ошибки**
-* `410` - шахта не найдена
-* `411` - ошибка обновления времени дохода шахты
-* `412` - ошибка начисления дохода пользователю
-* `705` - невалидный токен. Пользователь не авторизован
-
-
-### 4.7. getAllMinesIncome
-Получить доход всех шахт пользователя. Для каждой шахты автоматически проверяется и начисляется доход.
-
-**Параметры**
-{
-token: string; - токен
-}
-**Успешный ответ**
-Answer<{
-    mines_income: [{
-        mine_id: number;
-        mine_type: string;
-        income_result: MineIncome;
-    }]>;
-}>
-**Ошибки**
-* `705` - невалидный токен. Пользователь не авторизован
-
-
-### 4.8. updateMineIncomeTime
-Обновить время последнего начисления дохода для шахты (ручное обновление)
-
-**Параметры**
-{
-token: string; - токен
-mine_id: number; - идентификатор шахты
-income_time: number; - новое время начисления (timestamp)
-}
-**Успешный ответ**
-Answer<{
-    id: number;
-    user_id: number;
-    last_income_time: number;
-}>
-**Ошибки**
-* `413` - ошибка обновления данных дохода шахты
-* `705` - невалидный токен. Пользователь не авторизован
-
-### 4.9. getBuildingTypes
+### 4.6. getBuildingTypes
 Получить все типы зданий
 
 **Параметры**
@@ -296,5 +215,4 @@ Answer<{
 ```
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
-
 
