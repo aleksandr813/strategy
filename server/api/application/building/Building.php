@@ -31,6 +31,11 @@ class Building {
         return ['buildings' => $buildings];
     }
 
+    public function getBuildingTypes() {
+        $types = $this->db->getBuildingTypes();
+        return ["building_types" => $types];
+    }
+
     public function createBuilding($userId, $buildingType, $x, $y) {
         $building = $this->db->createBuilding($userId, $buildingType, $x, $y);
         if ($building) {

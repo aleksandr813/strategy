@@ -149,6 +149,7 @@ class DB {
         return $this->execute("DELETE FROM buildings WHERE id = ? AND user_id = ?", [$buildingId, $userId]);
     }
 
+
         public function getUserGold($userId) {
         return $this->query("SELECT gold, last_update FROM users WHERE id = ?", [$userId]);
     }
@@ -171,5 +172,10 @@ class DB {
         );
     }
 
+
+
+    public function getBuildingTypes() {
+        return $this->queryAll("SELECT id, type, name, hp, price FROM building_types");
+    }
 
 }

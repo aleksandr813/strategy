@@ -140,6 +140,17 @@ class Application {
         return ['error' => 242];
     }
 
+    public function getBuildingTypes($params) {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->building->getBuildingTypes();
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
     public function createBuilding($params) {
         if ($params['token'] && $params['building_type'] && isset($params['x']) && isset($params['y'])) {
             $user = $this->user->getUser($params['token']);
