@@ -35,26 +35,102 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     }
 
     function printUnits(canvas: Canvas, units: Unit[]): void {
-        units.forEach((unit) => {
-            const displaySelected = allocation.isSelectingStatus
-                ? allocation.isUnitInSelection(unit)
-                : unit.isSelected;
+    const BAR_WIDTH_UNITS = 0.8;  
+    const BAR_HEIGHT_UNITS = 0.1; 
+    const OFFSET_Y_UNITS = 0.1; 
 
-            printFillSprite(spritesImage, canvas, unit.cords, getSprite(unit.sprite));
-            if (displaySelected) {
-                const unitColor = 'rgba(0, 255, 0, 0.5)';
-                canvas.rectangle(unit.cords.x, unit.cords.y, SPRITE_SIZE, SPRITE_SIZE, unitColor);
-            }
-        });
-    }
+    units.forEach((unit) => {
+        const displaySelected = allocation.isSelectingStatus
+            ? allocation.isUnitInSelection(unit)
+            : unit.isSelected;
+
+        // 1. Отрисовка спрайта юнита
+        printFillSprite(spritesImage, canvas, unit.cords, getSprite(unit.sprite));
+        
+        // 2. Отрисовка рамки выделения
+        if (displaySelected) {
+            const ctx = canvas.contextV;
+            const unitColor = 'rgba(0, 255, 0, 0.5)';
+            ctx.fillStyle = unitColor;
+
+            ctx.fillRect(
+                canvas.xs(unit.cords.x),
+                canvas.ys(unit.cords.y),
+                canvas.dec(1), 
+                canvas.dec(1) 
+            );
+        }
+
+        const maxHp = unit.maxHp || 100; 
+        
+        if (unit.hp < maxHp) {
+            const ctx = canvas.contextV;
+            const barX = unit.cords.x + (1 - BAR_WIDTH_UNITS) / 2; 
+            const barY = unit.cords.y - OFFSET_Y_UNITS; 
+
+            const hpRatio = unit.hp / maxHp;
+            const currentHpWidthUnits = BAR_WIDTH_UNITS * hpRatio;
+
+            ctx.fillStyle = "#A00000"; 
+            ctx.fillRect(
+                canvas.xs(barX),                        
+                canvas.ys(barY),                        
+                canvas.dec(BAR_WIDTH_UNITS),            
+                canvas.dec(BAR_HEIGHT_UNITS)            
+            );
+
+            ctx.fillStyle = "#00FF00";
+            ctx.fillRect(
+                canvas.xs(barX),
+                canvas.ys(barY),
+                canvas.dec(currentHpWidthUnits),
+                canvas.dec(BAR_HEIGHT_UNITS)
+            );
+        }
+    });
+}
+
 
     function printBuilds(canvas: Canvas, builds: Build[]): void {
-        builds.forEach((element) => {
-            for (let i = 0; i < element.sprites.length; i++) {
-                printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]));
-            }
-        });
-    }
+    const BAR_HEIGHT_UNITS = 0.2; 
+    const OFFSET_Y_UNITS = 0.3;   
+
+    builds.forEach((element) => {
+        for (let i = 0; i < element.sprites.length; i++) {
+            printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]));
+        }
+
+        const maxHp = (element.MAX_HP !== undefined) ? element.MAX_HP : 100;
+        
+        if (element.hp < maxHp) {
+            const barWidthUnits = element.size;
+            const barX = element.cords[0].x;
+            const barY = element.cords[0].y - BAR_HEIGHT_UNITS - OFFSET_Y_UNITS;
+
+            const hpRatio = element.hp / maxHp;
+            const currentHpWidthUnits = barWidthUnits * hpRatio;
+
+            const ctx = canvas.contextV;
+
+            ctx.fillStyle = "red";
+            ctx.fillRect(
+                canvas.xs(barX),                        
+                canvas.ys(barY),                        
+                canvas.dec(barWidthUnits),              
+                canvas.dec(BAR_HEIGHT_UNITS)            
+            );
+
+            ctx.fillStyle = "#00FF00";
+            ctx.fillRect(
+                canvas.xs(barX),
+                canvas.ys(barY),
+                canvas.dec(currentHpWidthUnits),
+                canvas.dec(BAR_HEIGHT_UNITS)
+            );
+        }
+    });
+}
+
 
     function render(FPS: number): void {
         if (canvas && game) {
@@ -67,7 +143,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
             if (allocation.isSelectingStatus) {
                 const rect = allocation.getSelectionRect();
                 if (rect) {
-                    canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.3)";
+                    canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.5)";
                     canvas.contextV.fillRect(
                         canvas.xs(rect.x),
                         canvas.ys(rect.y),
@@ -124,6 +200,22 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
     const mouseClick = (x: number, y: number) => {
         if (!game || wasDragging.current) return;
+
+        const gridX = Math.floor(x);
+        const gridY = Math.floor(y);
+        const { builds, units } = game.getScene();
+
+        for (const build of builds) {
+            const buildX = build.cords[0].x;
+            const buildY = build.cords[0].y;
+            if (gridX >= buildX && gridX < buildX + 2 && gridY >= buildY && gridY < buildY + 2) {
+                build.takeDamage(10); 
+                console.log(`Building HP: ${build.hp}`);
+                return; 
+            }
+        }
+
+
         if (!allocation.isSelectingStatus) {
             game.moveUnits({ x, y });
             console.log('click: move units to', { x, y });
@@ -133,7 +225,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     const mouseRightClickDown = (x: number, y: number) => {
         if (!game) return;
         const { units } = game.getScene();
-        allocation.clearSelection(units); // Снимаем выделение с юнитов
+        allocation.clearSelection(units);
         console.log('right click: clear selection');
     };
 

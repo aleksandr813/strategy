@@ -1,7 +1,8 @@
 import { TPoint } from "../../config";
 
 export default class Unit {
-    hp = 100;
+    hp = 50;
+    maxHp = 100;
     damage = 100;
     cords:TPoint;
     destination:TPoint;
