@@ -1,6 +1,7 @@
 <?php
 
-class Answer {
+class Answer
+{
     static $CODES = array(
         '101' => 'Param method not setted',
         '102' => 'Method not found',
@@ -38,12 +39,22 @@ class Answer {
         '800' => 'not found object',
         '801' => 'unknown state',
         '1001' => 'params login or password not set',
+        '1007' => 'Неправильная длина логина',
+        '1008' => 'Логин начинается с цифры или подчеркивания',
+        '1009' => 'Недопустимые символы в логине',
+        '1010' => 'Логин содержит пробелы или специальные символы',
+        '1011' => 'Слишком короткий пароль',
+        '1012' => 'Пароль без разных регистров',
+        '1013' => 'Пароль без цифр',
+        '1014' => 'Пароль содержит персональную информацию',
+        '1006' => 'Ошибка создания деревни',
         '1005' => 'Other user is playing wright now. If you doesn`t, please change the password',
         '1006' => 'user with this email is already registered',
         '9000' => 'unknown error'
     );
 
-    static function response($data) {
+    static function response($data)
+    {
         if ($data) {
             if (!is_bool($data) && array_key_exists('error', $data)) {
                 $code = $data['error'];
