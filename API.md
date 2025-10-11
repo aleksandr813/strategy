@@ -19,9 +19,17 @@
     * 4.3. registration
     * 4.4. sendMessage
     * 4.5. getMessages
+<<<<<<< HEAD
     * 4.6. getBuildingTypes
     * 4.7. getBuildings
     * 4.8. deleteBuilding
+    * 4.9. buyBuilding
+=======
+    
+
+
+    *4.9. buyBuilding
+>>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
 
 
 ## 1. Общее
@@ -105,6 +113,11 @@ Buildings: {
 | getBuildingTypes | Получить типы зданий |
 | getBuildings | Получить все здания в деревне |
 | deleteBuilding | Удалить здание из деревни |
+| buyBuilding | Купить здание в деревню |
+
+
+
+| buyBuilding | Купить здание в деревню |
 
 ### 3.1. Общие ошибки
 * `101` - если не передан параметр `method`
@@ -215,6 +228,7 @@ Buildings: {
 * `705` - невалидный токен. Пользователь не авторизован
 
 
+<<<<<<< HEAD
 ### 4.6. getBuildingTypes
 Получить все типы зданий
 
@@ -270,3 +284,43 @@ Buildings: {
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
 * `303` - ошибка удаления здания (Failed to delete building)
+
+
+=======
+>>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
+### 4.9. buyBuilding
+Купить здание в деревню
+
+**Параметры**
+```
+{
+    token: string; - токен
+<<<<<<< HEAD
+    typeId: number; - id типа здания 
+=======
+    typeId: number; - id типа здания
+>>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
+    x: number; координаты размещения здания по x
+    y: number; координаты размещения здания по y
+}
+```
+**Успешный ответ**
+```
+<<<<<<< HEAD
+    Answer<{
+        money: money;
+    }>
+=======
+    Answer<true>
+>>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
+```
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
+* `301` - неудалось купить здание (Failed to buy building)
+* `305` - недостаточно монеток для покупки здания (Not enough funds to buy)
+* `310` - деревня не найдена (Village not found)
+<<<<<<< HEAD
+* `311` - координаты заняты (Coordinates are busy)
+=======
+* `311` - не верные координаты (Coordinates not defined)
+>>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
