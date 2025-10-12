@@ -5,6 +5,7 @@ require_once ('chat/Chat.php');
 require_once ('unit/Unit.php');
 require_once ('building/Building.php');
 require_once ('calculator/Calculator.php');
+require_once ('village/Money.php');
 
 class Application {
     private $user;
@@ -19,6 +20,7 @@ class Application {
         $this->unit = new Unit($db);
         $this->building = new Building($db);
         $this->calculator = new Calculator();
+        $this->money = new MineIncome($db);
     }
 
     public function login($params) {
@@ -196,4 +198,37 @@ class Application {
         }
         return ['error' => 242];
     }
+
+    public function getMineIncome($params) {
+    if ($params['token'] && $params['mine_id']) {
+        $user = $this->user->getUser($params['token']);
+        if ($user) {
+            return $this->money->getMineIncome($params['mine_id'], $user->id);
+        }
+        return ['error' => 705];
+    }
+    return ['error' => 242];
+}
+
+public function getAllMinesIncome($params) {
+    if ($params['token']) {
+        $user = $this->user->getUser($params['token']);
+        if ($user) {
+            return $this->money->getAllMinesIncome($user->id);
+        }
+        return ['error' => 705];
+    }
+    return ['error' => 242];
+}
+
+public function updateMineIncomeTime($params) {
+    if ($params['token'] && $params['mine_id'] && $params['income_time']) {
+        $user = $this->user->getUser($params['token']);
+        if ($user) {
+            return $this->money->updateMineIncomeTime($params['mine_id'], $user->id, $params['income_time']);
+        }
+        return ['error' => 705];
+    }
+    return ['error' => 242];
+}
 }

@@ -27,6 +27,8 @@
 | name | varchar(100) | not null |
 | hp | integer | 1 by default |
 | price | integer | not null |
+| income | integer | 100 by default | 
+| income_interval | integer | 1800 by default | 
 
 
 **buldings**
@@ -39,6 +41,8 @@
 | y | integer | not null |
 | level | integer | not null | 1 by default |
 | current_hp | integer | not null |
+| last_income_time | integer | 0 by default | 
+
 
 
 **unit_types**

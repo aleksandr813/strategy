@@ -19,18 +19,15 @@
     * 4.3. registration
     * 4.4. sendMessage
     * 4.5. getMessages
-<<<<<<< HEAD
+
     * 4.6. getBuildingTypes
     * 4.7. getBuildings
     * 4.8. deleteBuilding
     * 4.9. buyBuilding
-=======
-    
 
-
-    *4.9. buyBuilding
->>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
-
+    * 4.10. getMineIncome
+    * 4.11. getAllMinesIncome
+    * 4.12. updateMineIncomeTime
 
 ## 1. Общее
 ### 1.1. Адрес сервера
@@ -101,6 +98,21 @@ Buildings: {
 }
 ```
 
+### 2.6. Доход шахты
+```
+MineIncome: {
+    success: boolean;
+    needs_update: boolean;
+    income_amount?: number;
+    intervals_passed?: number;
+    last_income_time: number;
+    current_time: number;
+    mine_id: number;
+    time_remaining?: number;
+}
+
+
+```
 
 ## 3. Список запросов
 | Название | О чем |
@@ -114,6 +126,9 @@ Buildings: {
 | getBuildings | Получить все здания в деревне |
 | deleteBuilding | Удалить здание из деревни |
 | buyBuilding | Купить здание в деревню |
+| getMineIncome | Получить доход конкретной шахты |
+| getAllMinesIncome | Получить доход всех шахт пользователя |
+| updateMineIncomeTime | Обновить время начисления дохода шахты |
 
 
 
@@ -123,6 +138,11 @@ Buildings: {
 * `101` - если не передан параметр `method`
 * `102` - если переданное значение в параметре `method` не обрабатывается
 * `242` - не переданы все необходимые параметры
+### 3.2. Ошибки дохода шахт
+* `410` - шахта не найдена
+* `411` - ошибка обновления времени дохода шахты
+* `412` - ошибка начисления дохода пользователю
+* `413` - ошибка обновления данных дохода шахты
 
 
 ## 4. Подробно
@@ -324,3 +344,74 @@ Buildings: {
 =======
 * `311` - не верные координаты (Coordinates not defined)
 >>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
+
+
+```markdown
+### 4.10. getMineIncome
+Получить доход конкретной шахты. Если с момента последнего начисления прошел достаточный интервал, доход будет начислен автоматически.
+**Параметры**
+{
+token: string; - токен
+mine_id: number; - идентификатор шахты
+}
+**Успешный ответ (доход начислен)**
+Answer<{
+success: true;
+needs_update: true;
+income_amount: number;
+intervals_passed: number;
+last_income_time: number;
+current_time: number;
+mine_id: number;
+}>
+**Успешный ответ (доход еще не готов)**
+Answer<{
+success: true;
+needs_update: false;
+time_remaining: number;
+last_income_time: number;
+current_time: number;
+mine_id: number;
+}>
+**Ошибки**
+* `410` - шахта не найдена
+* `411` - ошибка обновления времени дохода шахты
+* `412` - ошибка начисления дохода пользователю
+* `705` - невалидный токен. Пользователь не авторизован
+
+### 4.11. getAllMinesIncome
+Получить доход всех шахт пользователя. Для каждой шахты автоматически проверяется и начисляется доход.
+
+**Параметры**
+{
+token: string; - токен
+}
+**Успешный ответ**
+Answer<{
+mines_income: [{
+mine_id: number;
+mine_type: string;
+income_result: MineIncome;
+}]>
+}>
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
+
+### 4.12. updateMineIncomeTime
+Обновить время последнего начисления дохода для шахты (ручное обновление)
+
+**Параметры**
+{
+token: string; - токен
+mine_id: number; - идентификатор шахты
+income_time: number; - новое время начисления (timestamp)
+}
+**Успешный ответ**
+Answer<{
+id: number;
+user_id: number;
+last_income_time: number;
+}>
+**Ошибки**
+* `413` - ошибка обновления данных дохода шахты
+* `705` - невалидный токен. Пользователь не авторизован
