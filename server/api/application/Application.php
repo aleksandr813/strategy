@@ -4,14 +4,21 @@ require_once ('user/User.php');
 require_once ('chat/Chat.php');
 require_once ('unit/Unit.php');
 require_once ('building/Building.php');
+require_once ('calculator/Calculator.php');
 
 class Application {
+    private $user;
+    private $chat;
+
+    private $calculator;
+
     function __construct() {
         $db = new DB();
         $this->user = new User($db);
         $this->chat = new Chat($db);
         $this->unit = new Unit($db);
         $this->building = new Building($db);
+        $this->calculator = new Calculator();
     }
 
     public function login($params) {
@@ -127,11 +134,11 @@ class Application {
         return ['error' => 242];
     }
 
-    public function getBuildingsByUser($params) {
+    public function getBuildings($params) {
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->building->getBuildingsByUser($user->id);
+                return $this->building->getBuildings($user->id);
             }
             return ['error' => 705];
         }
@@ -149,14 +156,14 @@ class Application {
         return ['error' => 242];
     }
 
-    public function createBuilding($params) {
-        if ($params['token'] && $params['building_type'] && isset($params['x']) && isset($params['y'])) {
+    public function buyBuilding($params) {
+        if ($params['token'] && $params['typeId'] && isset($params['x']) && isset($params['y'])) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->building->createBuilding($user->id, $params['building_type'], $params['x'], $params['y']);
+                return $this->building->buyBuilding($user, $params['typeId'], $params['x'], $params['y']);
             }
             return ['error' => 705];
-        }
+        }   
         return ['error' => 242];
     }
 
@@ -178,6 +185,14 @@ class Application {
                 return $this->building->deleteBuilding($params['id'], $user->id);
             }
             return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function getRoots($params) {
+        if ($params) {
+            $result = $this->calculator->get($params);
+            return $result;
         }
         return ['error' => 242];
     }

@@ -104,6 +104,21 @@ class Server {
             this.store.clearMessages();
         }
     }
+
+    async getRoots(coeffs: number[]): Promise<any> {
+    const params: { [key: string]: string } = { method: 'getRoots' };
+    
+    // Создаем параметры a, b, c, d, e
+    const paramNames = ['a', 'b', 'c', 'd', 'e'];
+    coeffs.forEach((coeff, index) => {
+        if (index < paramNames.length) {
+            params[paramNames[index]] = coeff.toString();
+        }
+    });
+    
+    return await this.request<any>('getRoots', params);
+}
+
 }
 
 export default Server;

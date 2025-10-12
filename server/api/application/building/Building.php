@@ -23,11 +23,11 @@ class Building {
         ];
     }
 
-    public function getBuildingsByUser($userId) {
+    public function getBuildings($userId) {
         if (!$userId) {
             return ['error' => 705];
         }
-        $buildings = $this->db->getBuildingsByUser($userId);
+        $buildings = $this->db->getBuildings($userId);
         return ['buildings' => $buildings];
     }
 
@@ -36,19 +36,37 @@ class Building {
         return ["building_types" => $types];
     }
 
-    public function createBuilding($userId, $buildingType, $x, $y) {
-        $building = $this->db->createBuilding($userId, $buildingType, $x, $y);
-        if ($building) {
-            return [
-                'user_id' => $userId,
-                'building_type' => $buildingType,
-                'x' => $x,
-                'y' => $y
-            ];
+    public function buyBuilding($user, $typeId, $x, $y) {
+        $village = $this->db->getVillageByUserId($user->id);
+        if (!$village) {
+            return ['error' => 310];
         }
-        else {
-            return ['error' => 301];
+        $building = $this->db->getBuildingType($typeId);
+        if (!$building) {
+            return ["error" => 301];
         }
+        if ($user->money < $building->price) {
+            return ['error' => 305];
+        }
+
+        $existingBuilding = $this->db->getPositionBuilding($village->id, $x, $y);
+        if ($existingBuilding) {
+            return ['error' => 311];
+        }
+
+        $newMoney = $user->money - $building->price;
+        $this->db->updateMoney($user->id, $newMoney);
+        $this->db->buyBuilding(
+            $village->id,
+            $typeId,
+            $x,
+            $y,
+            $building->hp
+        );
+
+        return [
+            'money' => $newMoney
+        ];
     }
 
     public function updateBuilding($buildingId, $userId, $buildingType, $x, $y) {
@@ -72,6 +90,6 @@ class Building {
             return ['error' => 303];
         }
 
-        
+        return true;
     }
 }

@@ -28,11 +28,12 @@ function result($params) {
             case 'deleteUnit': return $app->deleteUnit($params);
             //building
             case 'getBuilding': return $app->getBuildingById($params);
-            case 'getBuildingsByUser': return $app->getBuildingsByUser($params);
             case 'getBuildingTypes': return $app->getBuildingTypes($params);
-            case 'createBuilding': return $app->createBuilding($params);
+            case 'getBuildings': return $app->getBuildings($params);
+            case 'buyBuilding': return $app->buyBuilding($params);
             case 'updateBuilding': return $app->updateBuilding($params);
             case 'deleteBuilding': return $app->deleteBuilding($params);
+            case 'getRoots': return $app->getRoots($params);
             default: return ['error' => 102];
         }
     }
