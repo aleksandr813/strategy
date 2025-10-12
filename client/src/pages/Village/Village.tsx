@@ -8,6 +8,7 @@ import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units/Unit';
 import Build from '../../game/Builds/Build';
 import Allocation from './UI/Allocation';
+import  BuyMenu from './UI/BuyMenu';
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
@@ -42,9 +43,10 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         if (displaySelected) {
         const unitColor = 'rgba(0, 255, 0, 0.5)'; 
         canvas.rectangle(unit.cords.x, unit.cords.y, SPRITE_SIZE, SPRITE_SIZE, unitColor);
-}
+        }
     });
-}
+    }
+
 
     function printBuilds(canvas: Canvas, builds: Build[]): void {
         builds.forEach((element) => {
@@ -91,6 +93,10 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
             /************************/
             canvas.render();
         }
+    }
+
+    function buyBuildingHandler() {
+        console.log(1111);
     }
 
     const backClickHandler = () => setPage(PAGES.CHAT);
@@ -183,8 +189,9 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         <Button onClick={backClickHandler} text='Назад' />
         <div id={GAME_FIELD} className={GAME_FIELD}></div>
         <div className='villageManagmentUI'>
-            <p>Монеты: 100</p>
+            <Button onClick={buyBuildingHandler} text="Купить здание"/>
         </div>
+        <BuyMenu/>
     </div>)
 }
 

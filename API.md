@@ -19,17 +19,10 @@
     * 4.3. registration
     * 4.4. sendMessage
     * 4.5. getMessages
-<<<<<<< HEAD
     * 4.6. getBuildingTypes
     * 4.7. getBuildings
     * 4.8. deleteBuilding
     * 4.9. buyBuilding
-=======
-    
-
-
-    *4.9. buyBuilding
->>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
 
 
 ## 1. Общее

@@ -117,7 +117,11 @@ class Server {
     });
     
     return await this.request<any>('getRoots', params);
-}
+    }
+
+    async getBuildingTypes(): Promise<any> {
+        return this.request("getBuildingTypes")
+    }
 
 }
 
