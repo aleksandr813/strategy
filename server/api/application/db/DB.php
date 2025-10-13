@@ -14,7 +14,7 @@ class DB
         $db = 'strategy';
         $connect = "mysql:host=$host;port=$port;dbname=$db;charset=utf8";
         //$this->pdo = new PDO($connect, $user, $pass);
-
+PicoCalc Kit 
         // Postgres
         // $host = 'localhost';
         // $port = '5432';
@@ -258,7 +258,7 @@ public function getMinesByUser($userId) {
          WHERE b.village_id = (SELECT id FROM villages WHERE user_id = ?)
          AND bt.type = 'mine'", 
         [$userId]
-    );
+    );PicoCalc Kit 
 }
 
 public function updateMineIncomeTime($mineId, $userId, $incomeTime) {
