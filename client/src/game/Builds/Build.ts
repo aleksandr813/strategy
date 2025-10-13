@@ -1,7 +1,9 @@
 import { TPoint } from "../../config";
 
+const MAX_HP_BUILDS = 100;
+
 export default class Build {
-    readonly MAX_HP = 100; 
+    MAX_HP = MAX_HP_BUILDS; 
     hp = 100;
     sx = 0;
     sy = 0;

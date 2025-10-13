@@ -34,102 +34,118 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         canvas.spriteFull(image, x, y, points[0], points[1], points[2]);
     }
 
+    function printHPBar(
+        canvas: Canvas,
+        x: number, 
+        y: number, 
+        widthUnits: number, 
+        heightUnits: number, 
+        currentHp: number,
+        maxHp: number
+    ): void {
+        if (currentHp >= maxHp) {
+            return;
+        }
+
+        const ctx = canvas.contextV;
+        const hpRatio = currentHp / maxHp;
+        const currentHpWidthUnits = widthUnits * hpRatio;
+
+        // Фон (Потерянное HP - красный/темный)
+        ctx.fillStyle = "#A00000"; 
+        ctx.fillRect(
+            canvas.xs(x),
+            canvas.ys(y),
+            canvas.dec(widthUnits),
+            canvas.dec(heightUnits)
+        );
+
+        // Текущее HP (Зеленый)
+        ctx.fillStyle = "#00FF00";
+        ctx.fillRect(
+            canvas.xs(x),
+            canvas.ys(y),
+            canvas.dec(currentHpWidthUnits),
+            canvas.dec(heightUnits)
+        );
+    }
+
     function printUnits(canvas: Canvas, units: Unit[]): void {
-    const BAR_WIDTH_UNITS = 0.8;  
-    const BAR_HEIGHT_UNITS = 0.1; 
-    const OFFSET_Y_UNITS = 0.1; 
+        const BAR_WIDTH_UNITS = 0.8;  
+        const BAR_HEIGHT_UNITS = 0.1; 
+        const OFFSET_Y_UNITS = 0.1; 
 
-    units.forEach((unit) => {
-        const displaySelected = allocation.isSelectingStatus
-            ? allocation.isUnitInSelection(unit)
-            : unit.isSelected;
+        units.forEach((unit) => {
+            const displaySelected = allocation.isSelectingStatus
+                ? allocation.isUnitInSelection(unit)
+                : unit.isSelected;
 
-        // 1. Отрисовка спрайта юнита
-        printFillSprite(spritesImage, canvas, unit.cords, getSprite(unit.sprite));
-        
-        // 2. Отрисовка рамки выделения
-        if (displaySelected) {
-            const ctx = canvas.contextV;
-            const unitColor = 'rgba(0, 255, 0, 0.5)';
-            ctx.fillStyle = unitColor;
+            // 1. Отрисовка спрайта юнита
+            printFillSprite(spritesImage, canvas, unit.cords, getSprite(unit.sprite));
+            
+            // 2. Отрисовка рамки выделения
+            if (displaySelected) {
+                const ctx = canvas.contextV;
+                const unitColor = 'rgba(0, 255, 0, 0.5)';
+                ctx.fillStyle = unitColor;
 
-            ctx.fillRect(
-                canvas.xs(unit.cords.x),
-                canvas.ys(unit.cords.y),
-                canvas.dec(1), 
-                canvas.dec(1) 
-            );
-        }
+                ctx.fillRect(
+                    canvas.xs(unit.cords.x),
+                    canvas.ys(unit.cords.y),
+                    canvas.dec(1), 
+                    canvas.dec(1) 
+                );
+            }
 
-        const maxHp = unit.maxHp || 100; 
-        
-        if (unit.hp < maxHp) {
-            const ctx = canvas.contextV;
-            const barX = unit.cords.x + (1 - BAR_WIDTH_UNITS) / 2; 
-            const barY = unit.cords.y - OFFSET_Y_UNITS; 
+            const maxHp = unit.maxHp; 
+            
+            if (unit.hp < maxHp) {
+                const barX = unit.cords.x + (1 - BAR_WIDTH_UNITS) / 2; 
+                const barY = unit.cords.y - OFFSET_Y_UNITS; 
 
-            const hpRatio = unit.hp / maxHp;
-            const currentHpWidthUnits = BAR_WIDTH_UNITS * hpRatio;
-
-            ctx.fillStyle = "#A00000"; 
-            ctx.fillRect(
-                canvas.xs(barX),                        
-                canvas.ys(barY),                        
-                canvas.dec(BAR_WIDTH_UNITS),            
-                canvas.dec(BAR_HEIGHT_UNITS)            
-            );
-
-            ctx.fillStyle = "#00FF00";
-            ctx.fillRect(
-                canvas.xs(barX),
-                canvas.ys(barY),
-                canvas.dec(currentHpWidthUnits),
-                canvas.dec(BAR_HEIGHT_UNITS)
-            );
-        }
-    });
-}
+                // 3. Отрисовка полоски здоровья
+                printHPBar(
+                    canvas, 
+                    barX, 
+                    barY, 
+                    BAR_WIDTH_UNITS, 
+                    BAR_HEIGHT_UNITS, 
+                    unit.hp, 
+                    maxHp
+                );
+            }
+        });
+    }
 
 
     function printBuilds(canvas: Canvas, builds: Build[]): void {
-    const BAR_HEIGHT_UNITS = 0.2; 
-    const OFFSET_Y_UNITS = 0.3;   
+        const BAR_HEIGHT_UNITS = 0.2; 
+        const OFFSET_Y_UNITS = 0.3;   
 
-    builds.forEach((element) => {
-        for (let i = 0; i < element.sprites.length; i++) {
-            printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]));
-        }
+        builds.forEach((element) => {
+            for (let i = 0; i < element.sprites.length; i++) {
+                printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]));
+            }
 
-        const maxHp = (element.MAX_HP !== undefined) ? element.MAX_HP : 100;
-        
-        if (element.hp < maxHp) {
-            const barWidthUnits = element.size;
-            const barX = element.cords[0].x;
-            const barY = element.cords[0].y - BAR_HEIGHT_UNITS - OFFSET_Y_UNITS;
+            const maxHp = element.MAX_HP;
+            
+            if (element.hp < maxHp) {
+                const barWidthUnits = element.size; 
+                const barX = element.cords[0].x;
+                const barY = element.cords[0].y - BAR_HEIGHT_UNITS - OFFSET_Y_UNITS;
 
-            const hpRatio = element.hp / maxHp;
-            const currentHpWidthUnits = barWidthUnits * hpRatio;
-
-            const ctx = canvas.contextV;
-
-            ctx.fillStyle = "red";
-            ctx.fillRect(
-                canvas.xs(barX),                        
-                canvas.ys(barY),                        
-                canvas.dec(barWidthUnits),              
-                canvas.dec(BAR_HEIGHT_UNITS)            
-            );
-
-            ctx.fillStyle = "#00FF00";
-            ctx.fillRect(
-                canvas.xs(barX),
-                canvas.ys(barY),
-                canvas.dec(currentHpWidthUnits),
-                canvas.dec(BAR_HEIGHT_UNITS)
-            );
-        }
-    });
-}
+                printHPBar(
+                    canvas, 
+                    barX, 
+                    barY, 
+                    barWidthUnits, 
+                    BAR_HEIGHT_UNITS, 
+                    element.hp, 
+                    maxHp
+                );
+            }
+        });
+    }
 
 
     function render(FPS: number): void {
@@ -203,7 +219,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
         const gridX = Math.floor(x);
         const gridY = Math.floor(y);
-        const { builds, units } = game.getScene();
+        const { builds } = game.getScene();
 
         for (const build of builds) {
             const buildX = build.cords[0].x;
