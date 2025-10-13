@@ -1,5 +1,9 @@
 <?php
 
+header('Access-Control-Allow-Origin: http://localhost:3000');
+header('Access-Control-Allow-Methods: GET, POST');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
 error_reporting(1);
 
 header('Content-Type: application/json; charset=utf-8');

@@ -235,12 +235,4 @@ class DB
             [$userId, $x, $y]
         );
     }
-
-    public function getVillageByUserId($userId)
-    {
-        return $this->query(
-            "SELECT * FROM villages WHERE user_id = ?",
-            [$userId]
-        );
-    }
 }

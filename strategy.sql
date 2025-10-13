@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Окт 04 2025 г., 22:44
+-- Время создания: Окт 12 2025 г., 20:29
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -37,6 +37,16 @@ CREATE TABLE `buildings` (
   `current_hp` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Дамп данных таблицы `buildings`
+--
+
+INSERT INTO `buildings` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `current_hp`) VALUES
+(1, 1, 5, 15, 15, 1, 100),
+(2, 2, 5, 5, 5, 1, 100),
+(3, 1, 6, 15, 15, 1, 100),
+(4, 2, 6, 5, 5, 1, 100);
+
 -- --------------------------------------------------------
 
 --
@@ -50,6 +60,14 @@ CREATE TABLE `building_types` (
   `hp` int NOT NULL DEFAULT '1',
   `price` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `building_types`
+--
+
+INSERT INTO `building_types` (`id`, `type`, `name`, `hp`, `price`) VALUES
+(1, 'main_building', 'Ратуша', 700, 0),
+(2, 'mine', 'Шахта ', 100, 0);
 
 -- --------------------------------------------------------
 
@@ -74,6 +92,17 @@ CREATE TABLE `messages` (
   `message` text NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `messages`
+--
+
+INSERT INTO `messages` (`id`, `user_id`, `message`, `created`) VALUES
+(1, 1, '1234', '2025-10-10 06:55:02'),
+(2, 1, '123', '2025-10-10 07:16:13'),
+(3, 1, '333', '2025-10-10 07:16:15'),
+(4, 5, 'хай', '2025-10-10 14:33:16'),
+(5, 1, '12', '2025-10-12 17:27:17');
 
 -- --------------------------------------------------------
 
@@ -120,6 +149,17 @@ CREATE TABLE `users` (
   `money` int NOT NULL DEFAULT '100'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Дамп данных таблицы `users`
+--
+
+INSERT INTO `users` (`id`, `login`, `password`, `name`, `token`, `money`) VALUES
+(1, 'DenisTest123', 'f9334e67eb51ca74f15146d2ebd61d08', 'Denissss', '8b43d607e8fe983f7783074bf076240b', 100),
+(5, 'A2345688', '6866a536740d1ac4af4c89eb3d046631', '123', '7b56cc22b1324f74fc105ab2f12f4cce', 100),
+(6, 'A23456888', '28754f9dc3f50b7b4be0cdd5bf2c6940', '123', NULL, 100),
+(7, 'A2345678', 'd5174b43cb0ddd0ff65e49d6689684cb', '123', '8dc52f3a822ca8f0a0bdcb8c82a12937', 100),
+(8, 'A23456788', 'a0af848759b6a5928cbaad779d65898f', '123', 'b5a8070af061be665aef1b59bb04b825', 100);
+
 -- --------------------------------------------------------
 
 --
@@ -133,6 +173,16 @@ CREATE TABLE `villages` (
   `y` int NOT NULL,
   `last_income_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `villages`
+--
+
+INSERT INTO `villages` (`id`, `user_id`, `x`, `y`, `last_income_datetime`) VALUES
+(3, 5, 836, 654, '2025-10-10 17:31:45'),
+(4, 6, 388, 245, '2025-10-10 17:34:00'),
+(5, 7, 2, 814, '2025-10-10 17:46:22'),
+(6, 8, 617, 700, '2025-10-10 17:47:06');
 
 --
 -- Индексы сохранённых таблиц
@@ -201,19 +251,19 @@ ALTER TABLE `villages`
 -- AUTO_INCREMENT для таблицы `buildings`
 --
 ALTER TABLE `buildings`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT для таблицы `building_types`
 --
 ALTER TABLE `building_types`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT для таблицы `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `units`
@@ -231,13 +281,13 @@ ALTER TABLE `unit_types`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT для таблицы `villages`
 --
 ALTER TABLE `villages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц

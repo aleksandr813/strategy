@@ -13,7 +13,7 @@ export default class Allocation {
         this._start = { x, y };
         this._end = { x, y };
         this.isSelectingStatus = true;
-        console.log(this._start)
+        console.log('start selection at', this._start);
     }
 
     update(x: number, y: number): void {
@@ -22,19 +22,18 @@ export default class Allocation {
         }
     }
 
-    end(units: Unit[]) {
-
+    end(units: Unit[]): void {
         this.isSelectingStatus = false;
 
         const rect = this.getSelectionRect();
         if (!rect) {
-            units.forEach(u => u.updateSelection(false)); 
+            units.forEach(u => u.updateSelection(false));
             this._start = null;
             this._end = null;
             return;
         }
-        console.log('rect', rect)
-        console.log(units.map(u=>u.cords))
+        console.log('selection rect', rect);
+        console.log('units positions', units.map(u => u.cords));
 
         const unitW = 1;
         const unitH = 1;
@@ -44,10 +43,10 @@ export default class Allocation {
             const uy = unit.cords.y;
 
             const intersects = !(
-                ux + unitW <= rect.x ||        
-                ux >= rect.x + rect.width ||   
-                uy + unitH <= rect.y ||        
-                uy >= rect.y + rect.height     
+                ux + unitW <= rect.x ||
+                ux >= rect.x + rect.width ||
+                uy + unitH <= rect.y ||
+                uy >= rect.y + rect.height
             );
 
             unit.updateSelection(intersects);
@@ -57,31 +56,40 @@ export default class Allocation {
         this._end = null;
     }
 
+    cancel(): void {
+        this.isSelectingStatus = false;
+        this._start = null;
+        this._end = null;
+    }
 
-    isUnitInSelection(unit: Unit) {
-    const rect = this.getSelectionRect();
-    if (!rect) return false;
+    clearSelection(units: Unit[]): void {
+        this.isSelectingStatus = false;
+        this._start = null;
+        this._end = null;
+        units.forEach(u => u.updateSelection(false));
+    }
 
-    // координаты рамки rect  уже в тайлах/локальных единицах
-    const rectX = rect.x;
-    const rectY = rect.y;
-    const rectW = rect.width;
-    const rectH = rect.height;
+    isUnitInSelection(unit: Unit): boolean {
+        const rect = this.getSelectionRect();
+        if (!rect) return false;
 
-    // координаты юнита  уже в тайлах
-    const unitLocalX = unit.cords.x;
-    const unitLocalY = unit.cords.y;
-    const unitW = 1; // 1x1 тайл
-    const unitH = 1; // 1x1 тайл
+        const rectX = rect.x;
+        const rectY = rect.y;
+        const rectW = rect.width;
+        const rectH = rect.height;
 
-    // проверка пересечения в тайловой системе
-    return !(
-        unitLocalX + unitW <= rectX ||      // юнит полностью слева от рамки
-        unitLocalX >= rectX + rectW ||      // юнит полностью справа от рамки
-        unitLocalY + unitH <= rectY ||      // юнит полностью выше рамки
-        unitLocalY >= rectY + rectH         // юнит полностью ниже рамки
-    );
-}
+        const unitLocalX = unit.cords.x;
+        const unitLocalY = unit.cords.y;
+        const unitW = 1;
+        const unitH = 1;
+
+        return !(
+            unitLocalX + unitW <= rectX ||
+            unitLocalX >= rectX + rectW ||
+            unitLocalY + unitH <= rectY ||
+            unitLocalY >= rectY + rectH
+        );
+    }
 
     getSelectionRect() {
         if (!this._start || !this._end) return null;
