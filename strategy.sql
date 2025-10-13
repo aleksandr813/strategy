@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Окт 12 2025 г., 20:29
+-- Время создания: Окт 14 2025 г., 00:06
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -45,7 +45,11 @@ INSERT INTO `buildings` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `curr
 (1, 1, 5, 15, 15, 1, 100),
 (2, 2, 5, 5, 5, 1, 100),
 (3, 1, 6, 15, 15, 1, 100),
-(4, 2, 6, 5, 5, 1, 100);
+(4, 2, 6, 5, 5, 1, 100),
+(5, 1, 7, 15, 15, 1, 100),
+(6, 2, 7, 5, 5, 1, 100),
+(7, 1, 8, 15, 15, 1, 100),
+(8, 2, 8, 5, 5, 1, 100);
 
 -- --------------------------------------------------------
 
@@ -66,8 +70,9 @@ CREATE TABLE `building_types` (
 --
 
 INSERT INTO `building_types` (`id`, `type`, `name`, `hp`, `price`) VALUES
-(1, 'main_building', 'Ратуша', 700, 0),
-(2, 'mine', 'Шахта ', 100, 0);
+(1, 'Ratusha', 'Ратуша', 700, 0),
+(2, 'Mine', 'Шахта ', 100, 0),
+(3, 'Shooting tower', 'Стрелковая башня', 300, 200);
 
 -- --------------------------------------------------------
 
@@ -154,11 +159,13 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `login`, `password`, `name`, `token`, `money`) VALUES
-(1, 'DenisTest123', 'f9334e67eb51ca74f15146d2ebd61d08', 'Denissss', '8b43d607e8fe983f7783074bf076240b', 100),
+(1, 'DenisTest123', 'f9334e67eb51ca74f15146d2ebd61d08', 'Denissss', '91fb8a4f85dbbae776cdc71f3cbbc603', 100),
 (5, 'A2345688', '6866a536740d1ac4af4c89eb3d046631', '123', '7b56cc22b1324f74fc105ab2f12f4cce', 100),
 (6, 'A23456888', '28754f9dc3f50b7b4be0cdd5bf2c6940', '123', NULL, 100),
 (7, 'A2345678', 'd5174b43cb0ddd0ff65e49d6689684cb', '123', '8dc52f3a822ca8f0a0bdcb8c82a12937', 100),
-(8, 'A23456788', 'a0af848759b6a5928cbaad779d65898f', '123', 'b5a8070af061be665aef1b59bb04b825', 100);
+(8, 'A23456788', 'a0af848759b6a5928cbaad779d65898f', '123', 'b5a8070af061be665aef1b59bb04b825', 100),
+(9, 'DenisTest1234', 'b94ea1cdc0c9d69d15347de4f0b6009b', 'Den', '10218d8eed97cb8766b62e104afe5632', 100),
+(10, 'DenisTest12341', '9d3bb7d535d7c16a0e35b46c7271c7cd', 'Den', '81402df3b7e98df32d638126590d71d0', 100);
 
 -- --------------------------------------------------------
 
@@ -182,7 +189,9 @@ INSERT INTO `villages` (`id`, `user_id`, `x`, `y`, `last_income_datetime`) VALUE
 (3, 5, 836, 654, '2025-10-10 17:31:45'),
 (4, 6, 388, 245, '2025-10-10 17:34:00'),
 (5, 7, 2, 814, '2025-10-10 17:46:22'),
-(6, 8, 617, 700, '2025-10-10 17:47:06');
+(6, 8, 617, 700, '2025-10-10 17:47:06'),
+(7, 9, 475, 315, '2025-10-13 23:13:11'),
+(8, 10, 490, 397, '2025-10-13 23:13:25');
 
 --
 -- Индексы сохранённых таблиц
@@ -251,13 +260,13 @@ ALTER TABLE `villages`
 -- AUTO_INCREMENT для таблицы `buildings`
 --
 ALTER TABLE `buildings`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT для таблицы `building_types`
 --
 ALTER TABLE `building_types`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT для таблицы `messages`
@@ -281,13 +290,13 @@ ALTER TABLE `unit_types`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT для таблицы `villages`
 --
 ALTER TABLE `villages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
