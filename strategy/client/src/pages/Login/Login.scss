@@ -1,0 +1,40 @@
+.login {
+
+    @font-face {
+        font-family: 'PixelifySans-Medium';
+        src: url('../../assets/fonts/PixelifySans-Medium.ttf');
+        font-family: 'PixelifySans-Bold';
+        src: url('../../assets/fonts/PixelifySans-Bold.ttf');
+    }
+
+    #title {
+        font-family: PixelifySans-Bold;
+        color: whitesmoke;
+        font-size: larger;
+    }
+
+    &-inputs {
+        font-family: PixelifySans-Medium;
+        display: flex;
+        flex-direction: column;
+        color: black;
+        alignment-baseline:alphabetic;
+
+        input {
+            margin: 10px;
+            padding: 0 10px 5px 10px;
+            background-color: whitesmoke;
+            width: 300px;
+            border-radius: 10px;
+            border: 2px;
+            border-style: solid;
+            border-color: gray;
+        }
+    }
+
+    &-buttons {
+        display: flex;
+        justify-content: space-between;
+        max-width: 500px;
+    }
+}

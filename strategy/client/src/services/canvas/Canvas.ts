@@ -1,0 +1,198 @@
+import { TWINDOW } from "../../config";
+
+enum EDIRECTION {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+}
+
+export type TCanvas = {
+    parentId: string;
+    WINDOW: TWINDOW;
+    WIDTH: number;
+    HEIGHT: number;
+    callbacks: {
+        mouseMove: (x: number, y: number) => void;
+        mouseDown: (x: number, y: number) => void;
+        mouseUp: (x: number, y: number) => void;
+        mouseRightClickDown: (x: number, y: number) => void;
+        //mouseRightClickUp: (x: number, y: number) => void;
+        mouseClick: (x: number, y: number) => void;
+    },
+}
+
+class Canvas {
+    parentId: string;
+    canvas: HTMLCanvasElement;
+    context: CanvasRenderingContext2D;
+    canvasV: HTMLCanvasElement;
+    contextV: CanvasRenderingContext2D;
+    WIDTH: number;
+    HEIGHT: number;
+    WINDOW: TWINDOW;
+    DIRECTION = {
+        [EDIRECTION.UP]: -90 * Math.PI / 180,
+        [EDIRECTION.DOWN]: 90 * Math.PI / 180,
+        [EDIRECTION.LEFT]: 180 * Math.PI / 180,
+        [EDIRECTION.RIGHT]: 0,
+    }
+    dx = 0;
+    dy = 0;
+    interval: NodeJS.Timer;
+    callbacks: TCanvas['callbacks'];
+
+    constructor(options: TCanvas) {
+        const { parentId, WINDOW, WIDTH, HEIGHT, callbacks } = options;
+        this.parentId = parentId;
+        this.canvas = document.createElement('canvas');
+        if (parentId) {
+            document.getElementById(parentId)?.appendChild(this.canvas);
+        } else {
+            document.querySelector('body')?.appendChild(this.canvas);
+        }
+        this.WIDTH = WIDTH || window.innerWidth;
+        this.HEIGHT = HEIGHT || window.innerHeight;
+        this.canvas.width = this.WIDTH;
+        this.canvas.height = this.HEIGHT;
+        this.context = this.canvas.getContext('2d')!;
+        this.canvasV = document.createElement('canvas');
+        this.canvasV.width = this.WIDTH;
+        this.canvasV.height = this.HEIGHT;
+        this.contextV = this.canvasV.getContext('2d')!;
+        this.WINDOW = WINDOW;
+        this.callbacks = callbacks;
+
+        this.canvas.addEventListener('mousemove', (event) => this.mouseMoveHandler(event));
+        this.canvas.addEventListener('mousedown', (event) => this.mouseDownHandler(event));
+        this.canvas.addEventListener('mouseup', (event) => this.mouseUpHandler(event));
+        this.canvas.addEventListener('click', (event) => this.mouseClickHandler(event));
+        this.canvas.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            this.mouseRightClickDownHandler(event); // Добавляем обработку правой кнопки
+        });
+
+        this.interval = setInterval(() => {
+            if (this.dx === 0 && this.dy === 0) {
+                return;
+            }
+            this.WINDOW.LEFT += this.dx;
+            this.WINDOW.TOP += this.dy;
+        }, 200);
+    }
+
+    destructor() {
+        document.getElementById(this.parentId)?.removeChild(this.canvas);
+        this.contextV = null as any;
+        this.canvasV = null as any;
+        this.context = null as any;
+        this.canvas = null as any;
+        clearInterval(this.interval);
+    }
+
+    mouseDownHandler(event: MouseEvent) {
+        event.preventDefault();
+        const { offsetX, offsetY, button } = event;
+        if (button === 0) {
+            this.callbacks.mouseDown(this.sx(offsetX), this.sy(offsetY));
+        }
+    }
+
+    mouseUpHandler(event: MouseEvent) {
+        event.preventDefault();
+        const { offsetX, offsetY, button } = event;
+        if (button === 0) {
+            this.callbacks.mouseUp(this.sx(offsetX), this.sy(offsetY));
+        }
+    }
+
+    mouseRightClickDownHandler(event: MouseEvent) {
+        const { offsetX, offsetY, button } = event;
+        if (button === 2) {
+            this.callbacks.mouseRightClickDown(this.sx(offsetX), this.sy(offsetY));
+        }
+    }
+
+    mouseClickHandler(event: MouseEvent) {
+        event.preventDefault();
+        const { offsetX, offsetY, button } = event;
+        if (button === 0) {
+            this.callbacks.mouseClick(this.sx(offsetX), this.sy(offsetY));
+        }
+    }
+
+    mouseMoveHandler(event: MouseEvent) {
+        const { offsetX, offsetY } = event;
+        this.callbacks.mouseMove(this.sx(offsetX), this.sy(offsetY));
+    }
+
+    mouseLeaveHandler() {
+        this.dx = 0;
+        this.dy = 0;
+    }
+
+    xs(x: number): number {
+        return (x - this.WINDOW.LEFT) / this.WINDOW.WIDTH * this.WIDTH;
+    }
+
+    ys(y: number): number {
+        return (y - this.WINDOW.TOP) / this.WINDOW.HEIGHT * this.HEIGHT;
+    }
+
+    sx(x: number): number {
+        return x * this.WINDOW.WIDTH / this.WIDTH + this.WINDOW.LEFT;
+    }
+
+    sy(y: number): number {
+        return y * this.WINDOW.HEIGHT / this.HEIGHT + this.WINDOW.TOP;
+    }
+
+    dec(x: number): number {
+        return x / this.WINDOW.WIDTH * this.WIDTH;
+    }
+
+    clear(): void {
+        this.contextV.fillStyle = '#305160';
+        this.contextV.fillRect(0, 0, this.WIDTH, this.HEIGHT);
+    }
+
+    clearImage(image: HTMLImageElement): void {
+        this.contextV.drawImage(image, 0, 0, this.WIDTH, this.HEIGHT);
+    }
+
+    line(x1: number, y1: number, x2: number, y2: number, color = '#0f0', width = 2): void {
+        this.contextV.beginPath();
+        this.contextV.strokeStyle = color;
+        this.contextV.lineWidth = width;
+        this.contextV.moveTo(this.xs(x1), this.ys(y1));
+        this.contextV.lineTo(this.xs(x2), this.ys(y2));
+        this.contextV.stroke();
+        this.contextV.closePath();
+    }
+
+    text(x: number, y: number, text: string, color = '#fff', font = 'bold 1rem Arial'): void {
+        this.contextV.fillStyle = color;
+        this.contextV.font = font;
+        this.contextV.fillText(text, this.xs(x), this.ys(y));
+    }
+
+    rect(x: number, y: number, size = 64, color = 'rgba(255, 0, 0, 1)'): void {
+        this.contextV.fillStyle = color;
+        this.contextV.fillRect(this.xs(x), this.ys(y), size, size);
+    }
+
+    rectangle(x: number, y: number, width = 64, height = 64, color = '#f004'): void {
+        this.contextV.fillStyle = color;
+        this.contextV.fillRect(this.xs(x), this.ys(y), width, height);
+    }
+
+    spriteFull(image: HTMLImageElement, dx: number, dy: number, sx: number, sy: number, size: number): void {
+        this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), size, size);
+    }
+
+    render(): void {
+        this.context.drawImage(this.canvasV, 0, 0);
+    }
+}
+
+export default Canvas;

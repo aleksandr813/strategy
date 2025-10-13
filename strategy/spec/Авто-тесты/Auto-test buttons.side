@@ -1,0 +1,215 @@
+{
+  "id": "b6affa05-53b4-4a1a-9b51-c2c9d9a9eb13",
+  "version": "2.0",
+  "name": "Auto-test 2",
+  "url": "http://localhost:3000",
+  "tests": [{
+    "id": "e53423b8-dc08-4a71-8fd8-5953bb64f1f4",
+    "name": "Auto-test buttons",
+    "commands": [{
+      "id": "d01dbd1d-47ad-478e-b46b-1aedc982892e",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "7d5add8f-8a6e-4efc-99c4-55c49131819b",
+      "comment": "",
+      "command": "click",
+      "target": "css=.button:nth-child(1)",
+      "targets": [
+        ["css=.button:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/div[2]/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Авторизоваться')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a7c5f9d6-2b09-4744-9415-f6b673cf6e41",
+      "comment": "",
+      "command": "click",
+      "target": "css=.button:nth-child(3)",
+      "targets": [
+        ["css=.button:nth-child(3)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'В игру!')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "27107f12-06af-45c5-b299-aad75f314532",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=.button:nth-child(3)",
+      "targets": [
+        ["css=.button:nth-child(3)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'В игру!')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "823bf261-de7a-43ba-98fc-be29be39b1d7",
+      "comment": "",
+      "command": "click",
+      "target": "css=.button:nth-child(2)",
+      "targets": [
+        ["css=.button:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Battle')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "88341015-e5c9-47ea-854c-c32603b96863",
+      "comment": "",
+      "command": "click",
+      "target": "css=.button",
+      "targets": [
+        ["css=.button", "css:finder"],
+        ["xpath=//div[@id='root']/div/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Назад')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "dc6315c8-9d03-49cc-b02c-57f8d49c1771",
+      "comment": "",
+      "command": "click",
+      "target": "css=.button:nth-child(3)",
+      "targets": [
+        ["css=.button:nth-child(3)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Calculator')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "aa71064b-30a4-4e72-af09-f0e17ecdc5ba",
+      "comment": "",
+      "command": "click",
+      "target": "css=div:nth-child(6) > .button:nth-child(2)",
+      "targets": [
+        ["css=div:nth-child(6) > .button:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/button[2]", "xpath:idRelative"],
+        ["xpath=//div[2]/button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Назад')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "1166144d-e63a-489c-8a99-e31403633a71",
+      "comment": "",
+      "command": "click",
+      "target": "css=.button:nth-child(4)",
+      "targets": [
+        ["css=.button:nth-child(4)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/button[3]", "xpath:idRelative"],
+        ["xpath=//button[3]", "xpath:position"],
+        ["xpath=//button[contains(.,'GlobalMap')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "4a243cd5-ba45-44f1-ae3d-7f9dddfa80d2",
+      "comment": "",
+      "command": "click",
+      "target": "css=.button",
+      "targets": [
+        ["css=.button", "css:finder"],
+        ["xpath=//div[@id='root']/div/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Назад')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ec057447-7769-41c5-a592-2c552629d184",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=.button",
+      "targets": [
+        ["css=.button", "css:finder"],
+        ["xpath=//div[@id='root']/div/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Назад')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ccc976b7-890e-4121-8fbe-f5ac27144c40",
+      "comment": "",
+      "command": "click",
+      "target": "css=.button:nth-child(5)",
+      "targets": [
+        ["css=.button:nth-child(5)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/button[4]", "xpath:idRelative"],
+        ["xpath=//button[4]", "xpath:position"],
+        ["xpath=//button[contains(.,'Village')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "81b6b3fb-7841-48bd-8f59-98c6c9101600",
+      "comment": "",
+      "command": "click",
+      "target": "css=.button",
+      "targets": [
+        ["css=.button", "css:finder"],
+        ["xpath=//div[@id='root']/div/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Назад')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "2774e4da-4bf8-43dc-b861-d2980c0aebf3",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=.button",
+      "targets": [
+        ["css=.button", "css:finder"],
+        ["xpath=//div[@id='root']/div/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Назад')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "38a75d4a-2dfd-43b0-a2f9-33e73fc5e58d",
+      "comment": "",
+      "command": "click",
+      "target": "css=.button:nth-child(6)",
+      "targets": [
+        ["css=.button:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/button[5]", "xpath:idRelative"],
+        ["xpath=//button[5]", "xpath:position"],
+        ["xpath=//button[contains(.,'Назад')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "4e18256b-0ef9-4bec-9fe9-35c8ff4f3a43",
+      "comment": "",
+      "command": "click",
+      "target": "css=.button:nth-child(4)",
+      "targets": [
+        ["css=.button:nth-child(4)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Назад')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c206cf1d-d4ef-40ad-9659-556e2ce7a3e5",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "7d1beb4c-0991-439e-b55a-145e13de55cb",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["e53423b8-dc08-4a71-8fd8-5953bb64f1f4"]
+  }],
+  "urls": ["http://localhost:3000/"],
+  "plugins": []
+}
