@@ -14,7 +14,6 @@ class DB
         $db = 'strategy';
         $connect = "mysql:host=$host;port=$port;dbname=$db;charset=utf8";
         //$this->pdo = new PDO($connect, $user, $pass);
-PicoCalc Kit 
         // Postgres
         // $host = 'localhost';
         // $port = '5432';
@@ -188,6 +187,10 @@ PicoCalc Kit
         return $this->query("SELECT hp, price FROM building_types WHERE id = ?", [$buildingType]);
     }
 
+    public function getUnitType($unitType) {
+        return $this->query("SELECT hp, price FROM unit_types WHERE id = ?", [$unitType]);
+    }
+
     public function getPositionBuilding($villageId, $x, $y) {
         return $this->query(
             "SELECT village_id, x, y 
@@ -227,6 +230,11 @@ PicoCalc Kit
         return $this->queryAll("SELECT id, type, name, hp, price FROM building_types");
     }
 
+    public function getUnitTypes()
+    {
+        return $this->queryAll("SELECT id, type, name, hp, price FROM unit_types");
+    }
+
 
     public function createVillage($userId, $x, $y)
     {
@@ -258,7 +266,7 @@ public function getMinesByUser($userId) {
          WHERE b.village_id = (SELECT id FROM villages WHERE user_id = ?)
          AND bt.type = 'mine'", 
         [$userId]
-    );PicoCalc Kit 
+    );
 }
 
 public function updateMineIncomeTime($mineId, $userId, $incomeTime) {
