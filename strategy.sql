@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Окт 12 2025 г., 20:29
+-- Время создания: Окт 14 2025 г., 23:43
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -57,6 +57,7 @@ CREATE TABLE `building_types` (
   `id` int NOT NULL,
   `type` varchar(100) NOT NULL,
   `name` varchar(100) NOT NULL,
+  `sprite_id` int NOT NULL DEFAULT '1',
   `hp` int NOT NULL DEFAULT '1',
   `price` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -65,9 +66,9 @@ CREATE TABLE `building_types` (
 -- Дамп данных таблицы `building_types`
 --
 
-INSERT INTO `building_types` (`id`, `type`, `name`, `hp`, `price`) VALUES
-(1, 'main_building', 'Ратуша', 700, 0),
-(2, 'mine', 'Шахта ', 100, 0);
+INSERT INTO `building_types` (`id`, `type`, `name`, `sprite_id`, `hp`, `price`) VALUES
+(1, 'main_building', 'Ратуша', 1, 700, 0),
+(2, 'mine', 'Шахта ', 1, 100, 0);
 
 -- --------------------------------------------------------
 
