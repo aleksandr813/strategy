@@ -1,14 +1,17 @@
-import React, { useContext, useEffect, useState, useMemo, useRef } from 'react';
-import CONFIG from '../../config';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import CONFIG, { BuildingType } from '../../config';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import Game from '../../game/Game';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units/Unit';
-import Build from '../../game/Builds/Build';
+import Build from '../../game/Buildings/Building';
 import Allocation from './UI/Allocation';
-import  BuyMenu from './UI/BuyMenu';
+import { TPoint } from '../../config';
+import { ServerContext } from '../../App';
+
+import "./Village.scss"
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
@@ -21,82 +24,162 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     let canvas: Canvas | null = null;
     const Canvas = useCanvas(render);
     let interval: NodeJS.Timer | null = null;
-    // инициализация карты спрайтов
-    const [
-        [spritesImage],
-        getSprite,
-    ] = useSprites();
-
+    const [[spritesImage], getSprite] = useSprites();
     const allocation = new Allocation();
+    const [showBuyMenu, setShowBuyMenu] = React.useState(false);
+    const server = useContext(ServerContext)
+    const [buildingTypes, setBuildingTypes] = useState<BuildingType[]>([]);
+    
+    // Для отслеживания начала клика и перетаскивания
+    const mouseDownPosition = useRef<TPoint | null>(null);
+    const mouseDownTime = useRef<number>(0);
+    const wasDragging = useRef<boolean>(false);
+    const DRAG_THRESHOLD = 5; // Порог в пикселях для определения перетаскивания
+    const TIME_THRESHOLD = 200; // Порог времени в миллисекундах для короткого клика
 
-    function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void { //В массиве points хранятся sx, sy, size
+
+    function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void {
         canvas.spriteFull(image, x, y, points[0], points[1], points[2]);
     }
 
-    function printUnits(canvas: Canvas, units: Unit[]): void {
-    units.forEach((unit) => {
-        const displaySelected = allocation.isSelectingStatus
-            ? allocation.isUnitInSelection(unit)
-            : unit.isSelected;
-
-        printFillSprite(spritesImage, canvas, unit.cords, getSprite(unit.sprite));
-        if (displaySelected) {
-        const unitColor = 'rgba(0, 255, 0, 0.5)'; 
-        canvas.rectangle(unit.cords.x, unit.cords.y, SPRITE_SIZE, SPRITE_SIZE, unitColor);
+    function printHPBar(
+        canvas: Canvas,
+        x: number, 
+        y: number, 
+        widthUnits: number, 
+        heightUnits: number, 
+        currentHp: number,
+        maxHp: number
+    ): void {
+        if (currentHp >= maxHp) {
+            return;
         }
-    });
+
+        const ctx = canvas.contextV;
+        const hpRatio = currentHp / maxHp;
+        const currentHpWidthUnits = widthUnits * hpRatio;
+
+        // Фон (Потерянное HP - красный/темный)
+        ctx.fillStyle = "#A00000"; 
+        ctx.fillRect(
+            canvas.xs(x),
+            canvas.ys(y),
+            canvas.dec(widthUnits),
+            canvas.dec(heightUnits)
+        );
+
+        // Текущее HP (Зеленый)
+        ctx.fillStyle = "#00FF00";
+        ctx.fillRect(
+            canvas.xs(x),
+            canvas.ys(y),
+            canvas.dec(currentHpWidthUnits),
+            canvas.dec(heightUnits)
+        );
+    }
+
+    function printUnits(canvas: Canvas, units: Unit[]): void {
+        const BAR_WIDTH_UNITS = 0.8;  
+        const BAR_HEIGHT_UNITS = 0.1; 
+        const OFFSET_Y_UNITS = 0.1; 
+
+        units.forEach((unit) => {
+            const displaySelected = allocation.isSelectingStatus
+                ? allocation.isUnitInSelection(unit)
+                : unit.isSelected;
+
+            // 1. Отрисовка спрайта юнита
+            printFillSprite(spritesImage, canvas, unit.cords, getSprite(unit.sprite));
+            
+            // 2. Отрисовка рамки выделения
+            if (displaySelected) {
+                const ctx = canvas.contextV;
+                const unitColor = 'rgba(0, 255, 0, 0.5)';
+                ctx.fillStyle = unitColor;
+
+                ctx.fillRect(
+                    canvas.xs(unit.cords.x),
+                    canvas.ys(unit.cords.y),
+                    canvas.dec(1), 
+                    canvas.dec(1) 
+                );
+            }
+
+            const maxHp = unit.maxHp; 
+            
+            if (unit.hp < maxHp) {
+                const barX = unit.cords.x + (1 - BAR_WIDTH_UNITS) / 2; 
+                const barY = unit.cords.y - OFFSET_Y_UNITS; 
+
+                // 3. Отрисовка полоски здоровья
+                printHPBar(
+                    canvas, 
+                    barX, 
+                    barY, 
+                    BAR_WIDTH_UNITS, 
+                    BAR_HEIGHT_UNITS, 
+                    unit.hp, 
+                    maxHp
+                );
+            }
+        });
     }
 
 
     function printBuilds(canvas: Canvas, builds: Build[]): void {
+        const BAR_HEIGHT_UNITS = 0.2; 
+        const OFFSET_Y_UNITS = 0.3;   
+
         builds.forEach((element) => {
-            for (let i=0; i < element.sprites.length; i++) {
-                printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]))
+            for (let i = 0; i < element.sprites.length; i++) {
+                printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]));
             }
-        })
+
+            const maxHp = element.MAX_HP;
+            
+            if (element.hp < maxHp) {
+                const barWidthUnits = element.size; 
+                const barX = element.cords[0].x;
+                const barY = element.cords[0].y - BAR_HEIGHT_UNITS - OFFSET_Y_UNITS;
+
+                printHPBar(
+                    canvas, 
+                    barX, 
+                    barY, 
+                    barWidthUnits, 
+                    BAR_HEIGHT_UNITS, 
+                    element.hp, 
+                    maxHp
+                );
+            }
+        });
     }
 
 
-    // функция отрисовки одного кадра сцены
     function render(FPS: number): void {
         if (canvas && game) {
             canvas.clear();
+            const { units, builds } = game.getScene();
 
-            const { units } = game.getScene();
-            const { builds } = game.getScene();
-
-            /************************/
-            /* нарисовать Юнитов */
-            /************************/ 
-            printUnits(canvas, units); 
+            printUnits(canvas, units);
             printBuilds(canvas, builds);
 
             if (allocation.isSelectingStatus) {
-            const rect = allocation.getSelectionRect();
-            if (rect) {
-                canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.3)";
-                canvas.contextV.fillRect(
-                canvas.xs(rect.x),
-                canvas.ys(rect.y),
-                canvas.dec(rect.width),
-                canvas.dec(rect.height)
-                );
+                const rect = allocation.getSelectionRect();
+                if (rect) {
+                    canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.5)";
+                    canvas.contextV.fillRect(
+                        canvas.xs(rect.x),
+                        canvas.ys(rect.y),
+                        canvas.dec(rect.width),
+                        canvas.dec(rect.height)
+                    );
+                }
             }
-        }
 
-            /******************/
-            /* нарисовать FPS */
-            /******************/
             canvas.text(WINDOW.LEFT + 0.2, WINDOW.TOP + 0.5, String(FPS), GREEN);
-            /************************/
-            /* отрендерить картинку */
-            /************************/
             canvas.render();
         }
-    }
-
-    function buyBuildingHandler() {
-        console.log(1111);
     }
 
     const backClickHandler = () => setPage(PAGES.CHAT);
@@ -105,41 +188,72 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     const GlobalMapClicHandler = () => setPage(PAGES.GLOBAL_MAP);
     const VillageClicHandler = () => setPage(PAGES.VILLAGE);
 
-    /****************/
-    /* Mouse Events */
-    /****************/
-
-    const mouseDown = (_x: number, _y: number) => {
-        //
-    }
-    const mouseMove = (_x: number, _y: number) => {
-        allocation.update(_x, _y);
-    }
-    const mouseUp = (_x: number, _y: number) => {
-        //
-    };
-    const mouseRightClickDown = (_x:number, _y: number) => {
+    const mouseDown = (x: number, y: number) => {
         if (!game) return;
-        //console.log('down')
-        allocation.start(_x, _y);
-        const { units } = game.getScene();
-        allocation.update(_x, _y); 
+        mouseDownPosition.current = { x, y };
+        mouseDownTime.current = Date.now();
+        wasDragging.current = false;
+        allocation.start(x, y);
     };
-    const mouseRightClickUp = (_x:number, _y: number) => {
-        if (!game) return;
-        //console.log('up')
-        const { units } = game.getScene();
-        allocation.end(units);
-    };
-    const mouseClick = (_x: number, _y:number) => {
-        game?.moveUnits({x: _x, y: _y});
-        console.log('click')
-    }
 
-    /****************/
+    const mouseMove = (x: number, y: number) => {
+        allocation.update(x, y);
+    };
+
+    const mouseUp = (x: number, y: number) => {
+        if (!game) return;
+        const { units } = game.getScene();
+
+        const startPos = mouseDownPosition.current;
+        if (startPos) {
+            const distance = Math.sqrt(
+                Math.pow(x - startPos.x, 2) + Math.pow(y - startPos.y, 2)
+            );
+            const timeElapsed = Date.now() - mouseDownTime.current;
+
+            if (distance > DRAG_THRESHOLD || timeElapsed > TIME_THRESHOLD) {
+                wasDragging.current = true;
+                allocation.end(units);
+            } else {
+                allocation.cancel();
+            }
+        }
+        mouseDownPosition.current = null;
+        mouseDownTime.current = 0;
+    };
+
+    const mouseClick = (x: number, y: number) => {
+        if (!game || wasDragging.current) return;
+
+        const gridX = Math.floor(x);
+        const gridY = Math.floor(y);
+        const { builds } = game.getScene();
+
+        for (const build of builds) {
+            const buildX = build.cords[0].x;
+            const buildY = build.cords[0].y;
+            if (gridX >= buildX && gridX < buildX + 2 && gridY >= buildY && gridY < buildY + 2) {
+                build.takeDamage(10); 
+                console.log(`Building HP: ${build.hp}`);
+                return; 
+            }
+        }
+
+
+        if (!allocation.isSelectingStatus) {
+            game.moveUnits({ x, y });
+            console.log('click: move units to', { x, y });
+        }
+    };
+
+    const mouseRightClickDown = (x: number, y: number) => {
+        if (!game) return;
+        const { units } = game.getScene();
+        allocation.clearSelection(units);
+        console.log('right click: clear selection');
+    };
 
     useEffect(() => {
-        // инициализация игры
         game = new Game();
         canvas = Canvas({
             parentId: GAME_FIELD,
@@ -150,13 +264,12 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
                 mouseMove,
                 mouseDown,
                 mouseUp,
-                mouseRightClickUp,
                 mouseRightClickDown,
+                //mouseRightClickUp: () => {},
                 mouseClick,
             },
         });
         return () => {
-            // деинициализировать все экземпляры
             game?.destructor();
             canvas?.destructor();
             canvas = null;
@@ -165,22 +278,22 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
                 clearInterval(interval);
                 interval = null;
             }
-        }
-    });
+        };
+    }, []);
 
     useEffect(() => {
         const keyDownHandler = (event: KeyboardEvent) => {
             console.log("keyDownHandler");
-        }
-
+        };
         document.addEventListener('keydown', keyDownHandler);
-
         return () => {
             document.removeEventListener('keydown', keyDownHandler);
-        }
-    });
+        };
+    }, []);
 
-    return (<div className='game'>
+
+    return (
+    <div className='game'>
         <h1>Менеджмент деревни</h1>
         <Button onClick={BattleClicHandler} text='Battle'/>
         <Button onClick={CalculatorClicHandler} text='Calculator'/>
@@ -189,10 +302,47 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         <Button onClick={backClickHandler} text='Назад' />
         <div id={GAME_FIELD} className={GAME_FIELD}></div>
         <div className='villageManagmentUI'>
-            <Button onClick={buyBuildingHandler} text="Купить здание"/>
+            <Button onClick={buyHandler} text='Купить'/>
         </div>
-        <BuyMenu/>
-    </div>)
-}
+
+        {showBuyMenu && (
+            <div 
+                className="buy-menu-overlay"
+                onClick={closeBuyMenu}
+            >
+                <div 
+                    className="buy-menu-container"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <h3 className="buy-menu-title">
+                        Выберите здание
+                    </h3>
+                    
+                    {buildingTypes.map((building) => (
+                        <div key={building.id} className="buy-menu-item">
+                            <div className="building-info">
+                                <span className="building-name">{building.name}</span>
+                                <span className="building-details">
+                                    HP: {building.hp} | Цена: {building.price}
+                                </span>
+                            </div>
+                            <Button 
+                                onClick={() => buyBuilding(building.name)} 
+                                text='Купить'
+                            />
+                        </div>
+                    ))}
+                    
+                    <Button 
+                        onClick={closeBuyMenu} 
+                        text='Закрыть'
+                        className="buy-menu-close-button"
+                    />
+                </div>
+            </div>
+        )}
+    </div>
+    );
+};
 
 export default GamePage;

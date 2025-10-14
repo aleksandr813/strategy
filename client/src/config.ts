@@ -3,6 +3,14 @@ export type TPoint = {
     y: number;
 }
 
+export interface BuildingType {
+    id: string;
+    type: string;
+    name: string;
+    hp: string;
+    price: string;
+}
+
 export enum EDIRECTION {
     LEFT = 'left',
     RIGHT = 'right',

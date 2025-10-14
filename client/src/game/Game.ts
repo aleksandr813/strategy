@@ -1,20 +1,21 @@
 import CONFIG, { TPoint } from "../config";
 import Unit from './Units/Unit';
-import Build from './Builds/Build';
+import Build from './Buildings/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../pages/Village/UI/Allocation";
+import { ServerContext } from "../App";
 
 const { WIDTH, HEIGHT } = CONFIG;
 
 class Game {
     private units:Unit[];
-    private builds:Build[];
+    private buildings:Build[];
     private allocation:Allocation;
     
 
     constructor() {
         this.units = [new Unit(5, 7), new Unit(0, 0)]
-        this.builds = [new Build(5, 5)]
+        this.buildings = []
         this.allocation = new Allocation;
     }
     
@@ -26,7 +27,7 @@ class Game {
     getScene() {
         return {
             units: this.units,
-            builds: this.builds,
+            builds: this.buildings,
         };
     }
 
@@ -61,7 +62,7 @@ class Game {
             // Создаем копию матрицы без текущего юнита
             let booleanMatrix = this.getVillageMatrix(
                 this.units.filter(u => u !== unit), 
-                this.builds
+                this.buildings
             );
 
             easystar.setGrid(booleanMatrix);
@@ -80,7 +81,7 @@ class Game {
                             const nextStep = path[stepIndex];
                             const currentMatrix = this.getVillageMatrix(
                                 this.units.filter(u => u !== unit), 
-                                this.builds
+                                this.buildings
                             );
                             
                             if (currentMatrix[nextStep.x][nextStep.y] === 0) {

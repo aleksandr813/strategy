@@ -120,7 +120,7 @@ class Server {
     }
 
     async getBuildingTypes(): Promise<any> {
-        return this.request("getBuildingTypes")
+        return this.request<any>('getBuildingTypes')
     }
 
 }
