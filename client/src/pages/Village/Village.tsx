@@ -188,6 +188,27 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     const GlobalMapClicHandler = () => setPage(PAGES.GLOBAL_MAP);
     const VillageClicHandler = () => setPage(PAGES.VILLAGE);
 
+    const buyHandler = () => {
+        setShowBuyMenu(true);
+    };
+
+    const closeBuyMenu = () => {
+        setShowBuyMenu(false);
+    };
+
+    const buyBuilding = (buildingId: string) => {
+        console.log(`Покупка здания с ID: ${buildingId}`);
+        
+        // Находим полную информацию о здании
+        const buildingInfo = buildingTypes.find(b => b.id === buildingId);
+        if (buildingInfo) {
+            console.log('Информация о здании:', buildingInfo);
+        }
+        
+        // Здесь будет логика покупки здания
+        closeBuyMenu();
+    };
+
     const mouseDown = (x: number, y: number) => {
         if (!game) return;
         mouseDownPosition.current = { x, y };
@@ -306,14 +327,8 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         </div>
 
         {showBuyMenu && (
-            <div 
-                className="buy-menu-overlay"
-                onClick={closeBuyMenu}
-            >
-                <div 
-                    className="buy-menu-container"
-                    onClick={(e) => e.stopPropagation()}
-                >
+            <div className="buy-menu-overlay" onClick={closeBuyMenu}>
+                <div className="buy-menu-container" onClick={(e) => e.stopPropagation()}>
                     <h3 className="buy-menu-title">
                         Выберите здание
                     </h3>
