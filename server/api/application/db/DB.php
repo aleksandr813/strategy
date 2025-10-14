@@ -14,7 +14,6 @@ class DB
         $db = 'strategy';
         $connect = "mysql:host=$host;port=$port;dbname=$db;charset=utf8";
         //$this->pdo = new PDO($connect, $user, $pass);
-PicoCalc Kit 
         // Postgres
         // $host = 'localhost';
         // $port = '5432';
@@ -68,9 +67,8 @@ PicoCalc Kit
         $this->execute("UPDATE users SET token=? WHERE id=?", [$token, $userId]);
     }
 
-    public function registration($login, $password, $name)
+    public function registration($login, $hash, $name)
     {
-        $hash = md5($login . $password); // Создаем MD5-хеш от логина и пароля
         $this->execute("INSERT INTO users (login, password, name) VALUES (?, ?, ?)", [$login, $hash, $name]);
     }
 
@@ -258,7 +256,7 @@ public function getMinesByUser($userId) {
          WHERE b.village_id = (SELECT id FROM villages WHERE user_id = ?)
          AND bt.type = 'mine'", 
         [$userId]
-    );PicoCalc Kit 
+    );
 }
 
 public function updateMineIncomeTime($mineId, $userId, $incomeTime) {
