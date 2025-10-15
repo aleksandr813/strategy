@@ -29,7 +29,8 @@
     * 4.11. getAllMinesIncome
     * 4.12. updateMineIncomeTime
 
-    * 4.13. upgradeBuilding
+
+    * 4.14. upgradeBuilding
 
 ## 1. Общее
 ### 1.1. Адрес сервера
@@ -131,6 +132,7 @@ MineIncome: {
 | getMineIncome | Получить доход конкретной шахты |
 | getAllMinesIncome | Получить доход всех шахт пользователя |
 | updateMineIncomeTime | Обновить время начисления дохода шахты |
+
 | upgradeBuilding | Улучшить здание |
 
 
@@ -406,7 +408,22 @@ last_income_time: number;
 * `705` - невалидный токен. Пользователь не авторизован
 
 
-### 4.8. deleteBuilding
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### 4.14. upgradeBuilding
 Удалить здание из деревни
 
 **Параметры**
