@@ -31,6 +31,23 @@ class Game {
         };
     }
 
+    /**
+     * Добавить новое здание в игру
+     */
+    addBuilding(building: Building): void {
+        this.buildings.push(building);
+    }
+
+    /**
+     * Удалить здание из игры
+     */
+    removeBuilding(building: Building): void {
+        const index = this.buildings.indexOf(building);
+        if (index > -1) {
+            this.buildings.splice(index, 1);
+        }
+    }
+
     getVillageMatrix(units:Unit[], buildings:Building[]):number[][] {
         let booleanMatrix:number[][] = new Array(29);
         for (let i = 0; i < 29; i++) {
@@ -97,24 +114,8 @@ class Game {
             });
         });
 
-    easystar.calculate();
-}
-
-    
-
-    /**
-    move(dx: number, dy: number): void {
-        if ((dx > 0 && this.kapitoshka.x + dx <= WIDTH - 1) ||
-            (dx < 0 && this.kapitoshka.x - dx >= 0)
-        ) {
-            this.kapitoshka.x += dx;
-        }
-        if ((dy > 0 && this.kapitoshka.y + dy <= HEIGHT - 1) ||
-            (dy < 0 && this.kapitoshka.y - dy >= 0)
-        ) {
-            this.kapitoshka.y += dy;
-        }
-    }  */
+        easystar.calculate();
+    }
 }
 
 export default Game;
