@@ -1,6 +1,6 @@
 import React, { Component, useContext, useEffect, useRef, useState } from 'react';
 import CONFIG from '../../config';
-import { BuildingType } from '../../services/server/types';
+import { BuildingType, BuildingTypeResponse } from '../../services/server/types';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import Game from '../../game/Game';
@@ -310,10 +310,17 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     useEffect(() => {
         const fetchBuildingTypes = async () => {
             try {
-                const types = await server.getBuildingTypes();
+                const response = await server.getBuildingTypes();
                 
-                if (types) {
-                    setBuildingTypes(types);
+                if (response && response.building_types && response.building_types.length > 0) {
+                    const convertedTypes: BuildingType[] = response.building_types.map((type: BuildingTypeResponse) => ({
+                        id: Number(type.id),
+                        type: type.type,
+                        name: type.name,
+                        hp: Number(type.hp),
+                        price: Number(type.price)
+                    }));
+                    setBuildingTypes(convertedTypes);
                 } else {
                     console.error('Пустой массив типов зданий');
                     setBuildingTypes([]);
