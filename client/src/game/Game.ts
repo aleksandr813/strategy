@@ -1,6 +1,6 @@
 import CONFIG, { TPoint } from "../config";
 import Unit from './Units/Unit';
-import Build from './Builds/Build';
+import Build from './Builds/Buildings';
 import EasyStar from 'easystarjs';
 import Allocation from "../pages/Village/UI/Allocation";
 
