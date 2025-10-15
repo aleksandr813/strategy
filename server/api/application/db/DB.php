@@ -164,13 +164,6 @@ class DB
         );
     }
 
-    public function createBuilding($villageId, $buildingType, $x, $y)
-    { 
-        return $this->execute(
-            "INSERT INTO buildings (village_id, type_id, x, y, level, current_hp) VALUES (?, ?, ?, ?, 1, 100)",
-            [$villageId, $buildingType, $x, $y]
-        );
-    }
     public function buyBuilding($villageId, $buildingId, $x, $y, $hp) {
         $this->execute("INSERT INTO buildings
             (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
@@ -203,9 +196,15 @@ class DB
         return $this->execute("UPDATE users SET money = ? WHERE id = ?", [$money, $userId]);
     }
 
-    public function updateBuilding($buildingId, $userId, $buildingType, $x, $y) {
-        return $this->execute("UPDATE buildings SET building_type = ?, x = ?, y = ? WHERE id = ? AND user_id = ?",
-            [$buildingType, $x, $y, $buildingId, $userId]
+    public function upgradeBuilding($buildingId, $villageId) {
+        return $this->execute("UPDATE buildings SET level = level + 1 WHERE id = ? AND village_id = ?",
+            [$buildingId, $villageId]
+        );
+    }
+
+    public function getLevel($buildingId, $villageId) {
+        return $this->query("SELECT level FROM buildings WHERE id = ? AND village_id = ?",
+            [$buildingId, $villageId]
         );
     }
 

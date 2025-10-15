@@ -29,6 +29,8 @@
     * 4.11. getAllMinesIncome
     * 4.12. updateMineIncomeTime
 
+    * 4.13. upgradeBuilding
+
 ## 1. Общее
 ### 1.1. Адрес сервера
 `http://nopainnogame.local/api`
@@ -129,7 +131,7 @@ MineIncome: {
 | getMineIncome | Получить доход конкретной шахты |
 | getAllMinesIncome | Получить доход всех шахт пользователя |
 | updateMineIncomeTime | Обновить время начисления дохода шахты |
-
+| upgradeBuilding | Улучшить здание |
 
 
 | buyBuilding | Купить здание в деревню |
@@ -248,7 +250,6 @@ MineIncome: {
 * `705` - невалидный токен. Пользователь не авторизован
 
 
-<<<<<<< HEAD
 ### 4.6. getBuildingTypes
 Получить все типы зданий
 
@@ -306,8 +307,6 @@ MineIncome: {
 * `303` - ошибка удаления здания (Failed to delete building)
 
 
-=======
->>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
 ### 4.9. buyBuilding
 Купить здание в деревню
 
@@ -315,35 +314,25 @@ MineIncome: {
 ```
 {
     token: string; - токен
-<<<<<<< HEAD
     typeId: number; - id типа здания 
-=======
     typeId: number; - id типа здания
->>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
     x: number; координаты размещения здания по x
     y: number; координаты размещения здания по y
 }
 ```
 **Успешный ответ**
 ```
-<<<<<<< HEAD
     Answer<{
         money: money;
     }>
-=======
-    Answer<true>
->>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
 ```
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
 * `301` - неудалось купить здание (Failed to buy building)
 * `305` - недостаточно монеток для покупки здания (Not enough funds to buy)
 * `310` - деревня не найдена (Village not found)
-<<<<<<< HEAD
 * `311` - координаты заняты (Coordinates are busy)
-=======
 * `311` - не верные координаты (Coordinates not defined)
->>>>>>> a94f88f (Исправлен метод buyBuilding, в DB.php добавлены вспомогательные методы getVillageByUserId и getBuildingType, добавил коды ошибок в Answer.php и добавил документацию в API.md)
 
 
 ```markdown
@@ -415,3 +404,29 @@ last_income_time: number;
 **Ошибки**
 * `413` - ошибка обновления данных дохода шахты
 * `705` - невалидный токен. Пользователь не авторизован
+
+
+### 4.8. deleteBuilding
+Удалить здание из деревни
+
+**Параметры**
+```
+{
+    token: string; - токен
+    id: number; - id здания
+    typeId: number; - id типа здания 
+}
+```
+**Успешный ответ**
+```
+    Answer<{
+        money: money
+    }>
+    
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
+* `302` - не удалось улучшить здание (Failed to upgrade building)
+* `305` - недостаточно монеток для покупки здания (Not enough funds to buy)
+* `310` - деревня не найдена (Village not found)
+* `311` - координаты заняты (Coordinates are busy)
+* `312` - максимальный уровень (Maximum level)
