@@ -30,3 +30,12 @@ export type TMessagesResponse = {
     messages: TMessages;
     hash: string;
 }
+
+export type BuildingType = BuildingType[];
+export type BuildingTypeResponse = {
+    id: string;
+    type: string;
+    name: string;
+    hp: string;
+    price: string;
+}

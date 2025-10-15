@@ -2,7 +2,7 @@ import { TPoint } from "../../config";
 
 const MAX_HP_BUILDS = 100;
 
-export default class Build {
+export default class Building {
     MAX_HP = MAX_HP_BUILDS; 
     hp = 100;
     sx = 0;

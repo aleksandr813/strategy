@@ -1,6 +1,6 @@
 import CONFIG, { TPoint } from "../config";
 import Unit from './Units/Unit';
-import Build from './Buildings/Building';
+import Building from './Buildings/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../pages/Village/UI/Allocation";
 import { ServerContext } from "../App";
@@ -9,7 +9,7 @@ const { WIDTH, HEIGHT } = CONFIG;
 
 class Game {
     private units:Unit[];
-    private buildings:Build[];
+    private buildings:Building[];
     private allocation:Allocation;
     
 
@@ -27,11 +27,11 @@ class Game {
     getScene() {
         return {
             units: this.units,
-            builds: this.buildings,
+            buildings: this.buildings,
         };
     }
 
-    getVillageMatrix(units:Unit[], builds:Build[]):number[][] {
+    getVillageMatrix(units:Unit[], buildings:Building[]):number[][] {
         let booleanMatrix:number[][] = new Array(29);
         for (let i = 0; i < 29; i++) {
             booleanMatrix[i] = new Array(29).fill(0);
@@ -39,7 +39,7 @@ class Game {
         units.forEach((element) => {
             booleanMatrix[element.cords.x][element.cords.y] = 1;
         })
-        builds.forEach((element) => {
+        buildings.forEach((element) => {
             booleanMatrix[element.cords[0].x][element.cords[0].y] = 1;
             booleanMatrix[element.cords[0].x + 1][element.cords[0].y] = 1;
             booleanMatrix[element.cords[0].x][element.cords[0].y + 1] = 1;

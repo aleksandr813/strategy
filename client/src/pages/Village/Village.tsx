@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import CONFIG, { BuildingType } from '../../config';
+import React, { Component, useContext, useEffect, useRef, useState } from 'react';
+import CONFIG from '../../config';
+import { BuildingType } from '../../services/server/types';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import Game from '../../game/Game';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units/Unit';
-import Build from '../../game/Buildings/Building';
+import Building from '../../game/Buildings/Building';
 import Allocation from './UI/Allocation';
 import { TPoint } from '../../config';
 import { ServerContext } from '../../App';
@@ -126,11 +127,11 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     }
 
 
-    function printBuilds(canvas: Canvas, builds: Build[]): void {
+    function printBuilds(canvas: Canvas, buildings: Building[]): void {
         const BAR_HEIGHT_UNITS = 0.2; 
         const OFFSET_Y_UNITS = 0.3;   
 
-        builds.forEach((element) => {
+        buildings.forEach((element) => {
             for (let i = 0; i < element.sprites.length; i++) {
                 printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]));
             }
@@ -159,10 +160,10 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     function render(FPS: number): void {
         if (canvas && game) {
             canvas.clear();
-            const { units, builds } = game.getScene();
+            const { units, buildings } = game.getScene();
 
             printUnits(canvas, units);
-            printBuilds(canvas, builds);
+            printBuilds(canvas, buildings);
 
             if (allocation.isSelectingStatus) {
                 const rect = allocation.getSelectionRect();
@@ -196,14 +197,8 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         setShowBuyMenu(false);
     };
 
-    const buyBuilding = (buildingId: string) => {
-        console.log(`Покупка здания с ID: ${buildingId}`);
-        
-        // Находим полную информацию о здании
-        const buildingInfo = buildingTypes.find(b => b.id === buildingId);
-        if (buildingInfo) {
-            console.log('Информация о здании:', buildingInfo);
-        }
+    const buyBuilding = (buildingType: string) => {
+        console.log(`Покупка здания с Типом: ${buildingType}`);
         
         // Здесь будет логика покупки здания
         closeBuyMenu();
@@ -248,9 +243,9 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
         const gridX = Math.floor(x);
         const gridY = Math.floor(y);
-        const { builds } = game.getScene();
+        const { buildings } = game.getScene();
 
-        for (const build of builds) {
+        for (const build of buildings) {
             const buildX = build.cords[0].x;
             const buildY = build.cords[0].y;
             if (gridX >= buildX && gridX < buildX + 2 && gridY >= buildY && gridY < buildY + 2) {
@@ -311,6 +306,26 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
             document.removeEventListener('keydown', keyDownHandler);
         };
     }, []);
+
+    useEffect(() => {
+        const fetchBuildingTypes = async () => {
+            try {
+                const types = await server.getBuildingTypes();
+                
+                if (types) {
+                    setBuildingTypes(types);
+                } else {
+                    console.error('Пустой массив типов зданий');
+                    setBuildingTypes([]);
+                }
+            } catch (error) {
+                console.error('Ошибка получения типов зданий:', error);
+                setBuildingTypes([]);
+            }
+        };
+
+        fetchBuildingTypes();
+    }, [server]);
 
 
     return (
