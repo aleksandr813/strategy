@@ -1,5 +1,6 @@
 import React, { Component, useContext, useEffect, useRef, useState } from 'react';
 import CONFIG from '../../config';
+import { BuildingType, BuildingTypeResponse } from '../../services/server/types';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import Game from '../../game/Game';
@@ -28,6 +29,9 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     let interval: NodeJS.Timer | null = null;
     const [[spritesImage], getSprite] = useSprites();
     const allocation = new Allocation();
+    const [showBuyMenu, setShowBuyMenu] = React.useState(false);
+    const server = useContext(ServerContext)
+    const [buildingTypes, setBuildingTypes] = useState<BuildingType[]>([]);
     
     const mouseDownPosition = React.useRef<TPoint | null>(null);
     const mouseDownTime = React.useRef<number>(0);
@@ -122,7 +126,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         const BAR_HEIGHT_UNITS = 0.2; 
         const OFFSET_Y_UNITS = 0.3;  
 
-        builds.forEach((element) => {
+        buildings.forEach((element) => {
             for (let i = 0; i < element.sprites.length; i++) {
                 //console.log(element.cords[i])
                 printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]));
@@ -151,10 +155,10 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     function render(FPS: number): void {
         if (canvas && game) {
             canvas.clear();
-            const { units, builds } = game.getScene();
+            const { units, buildings } = game.getScene();
 
             printUnits(canvas, units);
-            printBuilds(canvas, builds);
+            printBuilds(canvas, buildings);
 
             if (allocation.isSelectingStatus) {
                 const rect = allocation.getSelectionRect();
@@ -179,6 +183,21 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     const CalculatorClicHandler = () => setPage(PAGES.CALCULATOR);
     const GlobalMapClicHandler = () => setPage(PAGES.GLOBAL_MAP);
     const VillageClicHandler = () => setPage(PAGES.VILLAGE);
+
+    const buyHandler = () => {
+        setShowBuyMenu(true);
+    };
+
+    const closeBuyMenu = () => {
+        setShowBuyMenu(false);
+    };
+
+    const buyBuilding = (buildingType: string) => {
+        console.log(`Покупка здания с Типом: ${buildingType}`);
+        
+        // Здесь будет логика покупки здания
+        closeBuyMenu();
+    };
 
     const mouseDown = (x: number, y: number) => {
         if (!game) return;
@@ -219,9 +238,9 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
         const gridX = Math.floor(x);
         const gridY = Math.floor(y);
-        const { builds } = game.getScene();
+        const { buildings } = game.getScene();
 
-        for (const build of builds) {
+        for (const build of buildings) {
             const buildX = build.cords[0].x;
             const buildY = build.cords[0].y;
             if (gridX >= buildX && gridX < buildX + 2 && gridY >= buildY && gridY < buildY + 2) {
@@ -303,19 +322,78 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         };
     }, []);
 
+    useEffect(() => {
+        const fetchBuildingTypes = async () => {
+            try {
+                const response = await server.getBuildingTypes();
+                
+                if (response && response.building_types && response.building_types.length > 0) {
+                    const convertedTypes: BuildingType[] = response.building_types.map((type: BuildingTypeResponse) => ({
+                        id: Number(type.id),
+                        type: type.type,
+                        name: type.name,
+                        hp: Number(type.hp),
+                        price: Number(type.price)
+                    }));
+                    setBuildingTypes(convertedTypes);
+                } else {
+                    console.error('Пустой массив типов зданий');
+                    setBuildingTypes([]);
+                }
+            } catch (error) {
+                console.error('Ошибка получения типов зданий:', error);
+                setBuildingTypes([]);
+            }
+        };
+
+        fetchBuildingTypes();
+    }, [server]);
+
+
     return (
-        <div className='game'>
-            <h1>Менеджмент деревни</h1>
-            <Button onClick={BattleClicHandler} text='Battle'/>
-            <Button onClick={CalculatorClicHandler} text='Calculator'/>
-            <Button onClick={GlobalMapClicHandler} text='GlobalMap'/>
-            <Button onClick={VillageClicHandler} text='Village'/>
-            <Button onClick={backClickHandler} text='Назад' />
-            <div id={GAME_FIELD} className={GAME_FIELD}></div>
-            <div className='villageManagmentUI'>
-                <p>Монеты: 100</p>
-            </div>
+    <div className='game'>
+        <h1>Менеджмент деревни</h1>
+        <Button onClick={BattleClicHandler} text='Battle'/>
+        <Button onClick={CalculatorClicHandler} text='Calculator'/>
+        <Button onClick={GlobalMapClicHandler} text='GlobalMap'/>
+        <Button onClick={VillageClicHandler} text='Village'/>
+        <Button onClick={backClickHandler} text='Назад' />
+        <div id={GAME_FIELD} className={GAME_FIELD}></div>
+        <div className='villageManagmentUI'>
+            <Button onClick={buyHandler} text='Купить'/>
         </div>
+
+        {showBuyMenu && (
+            <div className="buy-menu-overlay" onClick={closeBuyMenu}>
+                <div className="buy-menu-container" onClick={(e) => e.stopPropagation()}>
+                    <h3 className="buy-menu-title">
+                        Выберите здание
+                    </h3>
+                    
+                    {buildingTypes.map((building) => (
+                        <div key={building.id} className="buy-menu-item">
+                            <div className="building-info">
+                                <span className="building-name">{building.name}</span>
+                                <span className="building-details">
+                                    HP: {building.hp} | Цена: {building.price}
+                                </span>
+                            </div>
+                            <Button 
+                                onClick={() => buyBuilding(building.name)} 
+                                text='Купить'
+                            />
+                        </div>
+                    ))}
+                    
+                    <Button 
+                        onClick={closeBuyMenu} 
+                        text='Закрыть'
+                        className="buy-menu-close-button"
+                    />
+                </div>
+            </div>
+        )}
+    </div>
     );
 };
 

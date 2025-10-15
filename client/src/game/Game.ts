@@ -9,7 +9,7 @@ const { WIDTH, HEIGHT } = CONFIG;
 
 class Game {
     private units:Unit[];
-    private builds:Build[];
+    private buildings:Building[];
     private allocation:Allocation;
     
     constructor() {
@@ -31,11 +31,11 @@ class Game {
     getScene() {
         return {
             units: this.units,
-            builds: this.builds,
+            buildings: this.buildings,
         };
     }
 
-    getVillageMatrix(units:Unit[], builds:Build[]):number[][] {
+    getVillageMatrix(units:Unit[], buildings:Building[]):number[][] {
         let booleanMatrix:number[][] = new Array(29);
         for (let i = 0; i < 29; i++) {
             booleanMatrix[i] = new Array(29).fill(0);
@@ -43,7 +43,7 @@ class Game {
         units.forEach((element) => {
             booleanMatrix[element.cords.x][element.cords.y] = 1;
         })
-        builds.forEach((element) => {
+        buildings.forEach((element) => {
             booleanMatrix[element.cords[0].x][element.cords[0].y] = 1;
             booleanMatrix[element.cords[0].x + 1][element.cords[0].y] = 1;
             booleanMatrix[element.cords[0].x][element.cords[0].y + 1] = 1;
@@ -65,7 +65,7 @@ class Game {
 
             let booleanMatrix = this.getVillageMatrix(
                 this.units.filter(u => u !== unit), 
-                this.builds
+                this.buildings
             );
 
             easystar.setGrid(booleanMatrix);
@@ -83,7 +83,7 @@ class Game {
                             const nextStep = path[stepIndex];
                             const currentMatrix = this.getVillageMatrix(
                                 this.units.filter(u => u !== unit), 
-                                this.builds
+                                this.buildings
                             );
                             
                             if (currentMatrix[nextStep.x][nextStep.y] === 0) {

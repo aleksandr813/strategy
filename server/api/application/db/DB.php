@@ -273,14 +273,14 @@ public function getMineById($mineId, $userId) {
 }
 
 public function getMinesByUser($userId) {
-    return $this->queryAll(
-        "SELECT b.*, bt.type, bt.income, bt.income_interval 
-         FROM buildings AS b 
-         JOIN building_types AS bt ON b.type_id = bt.id 
-         WHERE b.village_id = (SELECT id FROM villages WHERE user_id = ?)
-         AND bt.type = 'mine'", 
-        [$userId]
-    );
+    return $this->queryAll(
+        "SELECT b.*, bt.type, bt.income, bt.income_interval 
+         FROM buildings AS b 
+         JOIN building_types AS bt ON b.type_id = bt.id 
+         WHERE b.village_id = (SELECT id FROM villages WHERE user_id = ?)
+         AND bt.type = 'mine'", 
+        [$userId]
+    );
 }
 
 public function updateMineIncomeTime($mineId, $userId, $incomeTime) {
