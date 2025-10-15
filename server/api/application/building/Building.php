@@ -69,19 +69,34 @@ class Building {
         ];
     }
 
-    public function updateBuilding($buildingId, $userId, $buildingType, $x, $y) {
-        $result = $this->db->updateBuilding($buildingId, $userId, $buildingType, $x, $y);
-        if ($result) {
-            return [
-                'id' => $buildingId,
-                'user_id' => $userId,
-                'building_type' => $buildingType,
-                'x' => $x,
-                'y' => $y
-            ];
+    public function upgradeBuilding($buildingId, $user, $typeId) {
+        $village = $this->db->getVillageByUserId($user->id);
+        if (!$village) {
+            return ['error' => 310];
         }
 
-        return ['error' => 302];
+        $level = $this->db->getLevel($buildingId, $village->id);
+        if ($level->level >= 3) {
+            return ['error' => 312];
+        }
+
+        $building = $this->db->getBuildingType($typeId);
+        if (!$building) {
+            return ["error" => 301];
+        }
+
+        if ($user->money < $building->price) {
+            return ['error' => 305];
+        }
+
+        $newMoney = $user->money - $building->price;
+        $this->db->updateMoney($user->id, $newMoney);
+        $result = $this->db->upgradeBuilding($buildingId, $village->id);
+        if (!$result) {
+            return ['error' => 302];
+        }
+
+        return ['money' => $newMoney];
     }
 
     public function deleteBuilding($buildingId, $userId) {

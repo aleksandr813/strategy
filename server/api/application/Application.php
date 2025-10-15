@@ -200,12 +200,11 @@ class Application
         return ['error' => 242];
     }
 
-    public function updateBuilding($params)
-    {
-        if ($params['token'] && $params['id'] && $params['building_type'] && $params['x'] && $params['y']) {
+    public function upgradeBuilding($params) {
+        if ($params['token'] && $params['id'] && $params['typeId']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->building->updateBuilding($params['id'], $user->id, $params['building_type'], $params['x'], $params['y']);
+                return $this->building->upgradeBuilding($params['id'], $user, $params['typeId']);
             }
             return ['error' => 705];
         }
