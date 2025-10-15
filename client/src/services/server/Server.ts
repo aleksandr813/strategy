@@ -1,6 +1,7 @@
 import md5 from 'md5';
 import CONFIG from "../../config";
 import Store from "../store/Store";
+import { BuildingTypeResponse, TBuildingTypesResponse } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 
 const { CHAT_TIMESTAMP, HOST } = CONFIG;
@@ -117,7 +118,15 @@ class Server {
     });
     
     return await this.request<any>('getRoots', params);
-}
+    }
+
+    async getBuildingTypes(): Promise<TBuildingTypesResponse> {
+        const response = await this.request<TBuildingTypesResponse>('getBuildingTypes');
+        if (!response) {
+            return { building_types: [] };
+        }
+        return response;
+    }
 
 }
 

@@ -18,7 +18,9 @@ export type TWINDOW = {
 }
 
 const CONFIG = {
-    HOST: 'http://server/api',
+    //udsu 
+    // HOST: 'http://strategy/api',
+    HOST: 'http://strategy/api',
 
     CHAT_TIMESTAMP: 200, //ms
 
