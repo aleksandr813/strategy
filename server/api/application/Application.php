@@ -1,19 +1,25 @@
 <?php
-require_once ('db/DB.php');
-require_once ('user/User.php');
-require_once ('chat/Chat.php');
-require_once ('unit/Unit.php');
-require_once ('building/Building.php');
-require_once ('calculator/Calculator.php');
-require_once ('village/Money.php');
+require_once('db/DB.php');
+require_once('user/User.php');
+require_once('chat/Chat.php');
+require_once('unit/Unit.php');
+require_once('building/Building.php');
+require_once('calculator/Calculator.php');
+require_once('village/Money.php');
 
-class Application {
+class Application
+{
     private $user;
     private $chat;
+    private $unit;
+    private $building;
+    private $money;
 
     private $calculator;
 
-    function __construct() {
+
+    function __construct()
+    {
         $db = new DB();
         $this->user = new User($db);
         $this->chat = new Chat($db);
@@ -23,14 +29,16 @@ class Application {
         $this->money = new MineIncome($db);
     }
 
-    public function login($params) {
+    public function login($params)
+    {
         if ($params['login'] && $params['hash'] && $params['rnd']) {
             return $this->user->login($params['login'], $params['hash'], $params['rnd']);
         }
         return ['error' => 242];
     }
 
-    public function logout($params) {
+    public function logout($params)
+    {
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -48,7 +56,8 @@ class Application {
         return ['error' => 242];
     }
 
-    public function sendMessage($params) {
+    public function sendMessage($params)
+    {
         if ($params['token'] && $params['message']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -59,7 +68,8 @@ class Application {
         return ['error' => 242];
     }
 
-    public function getMessages($params) {
+    public function getMessages($params)
+    {
         if ($params['token'] && $params['hash']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -70,7 +80,8 @@ class Application {
         return ['error' => 242];
     }
 
-    public function getUnitById($params) {
+    public function getUnitById($params)
+    {
         if ($params['token'] && $params['id']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -81,7 +92,8 @@ class Application {
         return ['error' => 242];
     }
 
-    public function getUnitsByUser($params) {
+    public function getUnitsByUser($params)
+    {
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -92,7 +104,8 @@ class Application {
         return ['error' => 242];
     }
 
-    public function createUnit($params) {
+    public function createUnit($params)
+    {
         if ($params['token'] && $params['unit_type'] && isset($params['x']) && isset($params['y'])) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -103,7 +116,8 @@ class Application {
         return ['error' => 242];
     }
 
-    public function updateUnit($params) {
+    public function updateUnit($params)
+    {
         if ($params['token'] && $params['id'] && $params['unit_type'] && isset($params['x']) && isset($params['y'])) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -114,7 +128,8 @@ class Application {
         return ['error' => 242];
     }
 
-    public function deleteUnit($params) {
+    public function deleteUnit($params)
+    {
         if ($params['token'] && $params['id']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -125,7 +140,8 @@ class Application {
         return ['error' => 242];
     }
 
-    public function getBuildingById($params) {
+    public function getBuildingById($params)
+    {
         if ($params['token'] && $params['id']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -136,7 +152,8 @@ class Application {
         return ['error' => 242];
     }
 
-    public function getBuildings($params) {
+    public function getBuildings($params)
+    {
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -147,7 +164,8 @@ class Application {
         return ['error' => 242];
     }
 
-    public function getBuildingTypes($params) {
+    public function getBuildingTypes($params)
+    {
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -158,14 +176,27 @@ class Application {
         return ['error' => 242];
     }
 
-    public function buyBuilding($params) {
+    public function getUnitTypes($params)
+    {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->unit->getUnitTypes();
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function buyBuilding($params)
+    {
         if ($params['token'] && $params['typeId'] && isset($params['x']) && isset($params['y'])) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
                 return $this->building->buyBuilding($user, $params['typeId'], $params['x'], $params['y']);
             }
             return ['error' => 705];
-        }   
+        }
         return ['error' => 242];
     }
 
@@ -180,7 +211,8 @@ class Application {
         return ['error' => 242];
     }
 
-    public function deleteBuilding($params) {
+    public function deleteBuilding($params)
+    {
         if ($params['token'] && $params['id']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -191,7 +223,8 @@ class Application {
         return ['error' => 242];
     }
 
-    public function getRoots($params) {
+    public function getRoots($params)
+    {
         if ($params) {
             $result = $this->calculator->get($params);
             return $result;
@@ -199,36 +232,39 @@ class Application {
         return ['error' => 242];
     }
 
-    public function getMineIncome($params) {
-    if ($params['token'] && $params['mine_id']) {
-        $user = $this->user->getUser($params['token']);
-        if ($user) {
-            return $this->money->getMineIncome($params['mine_id'], $user->id);
+    public function getMineIncome($params)
+    {
+        if ($params['token'] && $params['mine_id']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->money->getIncome($params['mine_id'], $user->id);
+            }
+            return ['error' => 705];
         }
-        return ['error' => 705];
+        return ['error' => 242];
     }
-    return ['error' => 242];
-}
 
-public function getAllMinesIncome($params) {
-    if ($params['token']) {
-        $user = $this->user->getUser($params['token']);
-        if ($user) {
-            return $this->money->getAllMinesIncome($user->id);
+    public function getAllMinesIncome($params)
+    {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->money->getAllMinesIncome($user->id);
+            }
+            return ['error' => 705];
         }
-        return ['error' => 705];
+        return ['error' => 242];
     }
-    return ['error' => 242];
-}
 
-public function updateMineIncomeTime($params) {
-    if ($params['token'] && $params['mine_id'] && $params['income_time']) {
-        $user = $this->user->getUser($params['token']);
-        if ($user) {
-            return $this->money->updateMineIncomeTime($params['mine_id'], $user->id, $params['income_time']);
+    public function updateMineIncomeTime($params)
+    {
+        if ($params['token'] && $params['mine_id'] && $params['income_time']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->money->updateMineIncomeTime($params['mine_id'], $user->id, $params['income_time']);
+            }
+            return ['error' => 705];
         }
-        return ['error' => 705];
+        return ['error' => 242];
     }
-    return ['error' => 242];
-}
 }
