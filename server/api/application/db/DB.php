@@ -67,9 +67,8 @@ class DB
         $this->execute("UPDATE users SET token=? WHERE id=?", [$token, $userId]);
     }
 
-    public function registration($login, $password, $name)
+    public function registration($login, $hash, $name)
     {
-        $hash = md5($login . $password); // Создаем MD5-хеш от логина и пароля
         $this->execute("INSERT INTO users (login, password, name) VALUES (?, ?, ?)", [$login, $hash, $name]);
     }
 
@@ -227,7 +226,7 @@ class DB
 
     public function getBuildingTypes()
     {
-        return $this->queryAll("SELECT id, type, name, hp, price FROM building_types");
+        return $this->queryAll("SELECT id, type, name, sprite_id, hp, price FROM building_types");
     }
 
     public function getUnitTypes()

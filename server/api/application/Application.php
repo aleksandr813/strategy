@@ -49,10 +49,9 @@ class Application
         return ['error' => 242];
     }
 
-    public function registration($params)
-    {
-        if ($params['login'] && $params['password'] && $params['name']) {
-            return $this->user->registration($params['login'], $params['password'], $params['name']);
+    public function registration($params) {
+        if ($params['login'] && $params['hash'] && $params['name']) {
+            return $this->user->registration($params['login'], $params['hash'], $params['name']);
         }
         return ['error' => 242];
     }
