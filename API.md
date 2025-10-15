@@ -81,6 +81,7 @@ BuildingTypes: {
     id: number,
     type: string,
     name: string,
+    sprite_id: number,
     hp: number,
     price: number
 }
