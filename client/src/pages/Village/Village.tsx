@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'; 
+import React, { Component, useContext, useEffect, useRef, useState } from 'react';
 import CONFIG from '../../config';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
@@ -6,7 +6,7 @@ import Game from '../../game/Game';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units/Unit';
-import Build from '../../game/Builds/Building';
+import Build from '../../game/Buildings/Building';
 import Allocation from './UI/Allocation';
 import { TPoint } from '../../config';
 import Server,{ TBuildingFullData } from '../../services/server/Server';
