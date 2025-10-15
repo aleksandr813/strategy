@@ -96,4 +96,5 @@ return (<div className='login'>
         </div>
     </div>
 </div>)
+}
 export default Login;
