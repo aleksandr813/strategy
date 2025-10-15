@@ -317,6 +317,7 @@ MineIncome: {
     token: string; - токен
     typeId: number; - id типа здания 
 
+    typeId: number; - id типа здания
     x: number; координаты размещения здания по x
     y: number; координаты размещения здания по y
 }

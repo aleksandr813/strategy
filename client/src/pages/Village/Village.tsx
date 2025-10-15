@@ -125,6 +125,10 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         const BAR_HEIGHT_UNITS = 0.2;
         const OFFSET_Y_UNITS = 0.3;
 
+    function printBuilds(canvas: Canvas, buildings: Building[]): void {
+        const BAR_HEIGHT_UNITS = 0.2; 
+        const OFFSET_Y_UNITS = 0.3;   
+
         buildings.forEach((element) => {
             for (let i = 0; i < element.sprites.length; i++) {
                 printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]));
@@ -402,6 +406,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
         fetchBuildingTypes();
     }, [server]);
+
 
     return (
     <div className='game'>

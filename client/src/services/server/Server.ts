@@ -134,6 +134,16 @@ class Server {
         if (!response) {
             return { building_types: [] };
         }
+    });
+    
+    return await this.request<any>('getRoots', params);
+    }
+
+    async getBuildingTypes(): Promise<TBuildingTypesResponse> {
+        const response = await this.request<TBuildingTypesResponse>('getBuildingTypes');
+        if (!response) {
+            return { building_types: [] };
+        }
         return response;
     }
 
