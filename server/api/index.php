@@ -25,6 +25,7 @@ function result($params) {
             case 'sendMessage': return $app->sendMessage($params);
             case 'getMessages': return $app->getMessages($params);
             //unit
+            case 'getUnitTypes': return $app->getUnitTypes($params);
             case 'getUnitById': return $app->getUnitById($params);
             case 'getUnitsByUser': return $app->getUnitsByUser($params);
             case 'createUnit': return $app->createUnit($params);
@@ -37,6 +38,7 @@ function result($params) {
             case 'buyBuilding': return $app->buyBuilding($params);
             case 'updateBuilding': return $app->updateBuilding($params);
             case 'deleteBuilding': return $app->deleteBuilding($params);
+            //calc
             case 'getRoots': return $app->getRoots($params);
             //money
             case 'getMineIncome': return $app->getMineIncome($params);
