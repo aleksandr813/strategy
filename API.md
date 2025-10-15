@@ -29,6 +29,8 @@
     * 4.11. getAllMinesIncome
     * 4.12. updateMineIncomeTime
 
+    * 4.13. getUnitTypes
+
 ## 1. Общее
 ### 1.1. Адрес сервера
 `http://nopainnogame.local/api`
@@ -81,6 +83,7 @@ BuildingTypes: {
     id: number,
     type: string,
     name: string,
+    sprite_id: number,
     hp: number,
     price: number
 }
@@ -129,6 +132,7 @@ MineIncome: {
 | getMineIncome | Получить доход конкретной шахты |
 | getAllMinesIncome | Получить доход всех шахт пользователя |
 | updateMineIncomeTime | Обновить время начисления дохода шахты |
+| getUnitTypes | Получить типы юнитов |
 
 
 
@@ -415,3 +419,22 @@ last_income_time: number;
 **Ошибки**
 * `413` - ошибка обновления данных дохода шахты
 * `705` - невалидный токен. Пользователь не авторизован
+
+### 4.13. getUnitTypes
+Получить все типы юнитов
+
+**Параметры**
+```
+{
+    token: string; - токен
+}
+```
+**Успешный ответ**
+```
+    Answer<{
+        unit_types: UnitTypes[]
+    }>
+```
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
+

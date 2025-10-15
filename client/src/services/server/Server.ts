@@ -1,9 +1,25 @@
+// Server.ts
+
 import md5 from 'md5';
 import CONFIG from "../../config";
 import Store from "../store/Store";
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 
 const { CHAT_TIMESTAMP, HOST } = CONFIG;
+
+export type TBuildingFullData = {
+    id: number;
+    x: number;
+    y: number;
+    current_hp: number;
+    max_hp: number; 
+    type: string;
+    type_id: string;   
+};
+
+export type TBuildingsResponse = {
+    buildings: TBuildingFullData[];
+}
 
 class Server {
     HOST = HOST;
@@ -15,7 +31,6 @@ class Server {
         this.store = store;
     }
 
-    // посылает запрос и обрабатывает ответ
     private async request<T>(method: string, params: { [key: string]: string } = {}): Promise<T | null> {
         try {
             params.method = method;
@@ -74,7 +89,11 @@ class Server {
     sendMessage(message: string): void {
         this.request<boolean>('sendMessage', { message });
     }
-
+    
+    async getBuildings(): Promise<TBuildingsResponse | null> {
+        return await this.request<TBuildingsResponse>('getBuildings');
+    }
+    
     async getMessages(): Promise<TMessagesResponse | null> {
         const hash = this.store.getChatHash();
         const result = await this.request<TMessagesResponse>('getMessages', { hash });
@@ -106,19 +125,17 @@ class Server {
     }
 
     async getRoots(coeffs: number[]): Promise<any> {
-    const params: { [key: string]: string } = { method: 'getRoots' };
-    
-    // Создаем параметры a, b, c, d, e
-    const paramNames = ['a', 'b', 'c', 'd', 'e'];
-    coeffs.forEach((coeff, index) => {
-        if (index < paramNames.length) {
-            params[paramNames[index]] = coeff.toString();
-        }
-    });
-    
-    return await this.request<any>('getRoots', params);
-}
-
+        const params: { [key: string]: string } = { method: 'getRoots' };
+        
+        const paramNames = ['a', 'b', 'c', 'd', 'e'];
+        coeffs.forEach((coeff, index) => {
+            if (index < paramNames.length) {
+                params[paramNames[index]] = coeff.toString();
+            }
+        });
+        
+        return await this.request<any>('getRoots', params);
+    }
 }
 
 export default Server;

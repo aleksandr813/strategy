@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import CONFIG from '../../config';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
@@ -6,32 +6,38 @@ import Game from '../../game/Game';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units/Unit';
-import Build from '../../game/Builds/Build';
+import Build from '../../game/Builds/Building';
 import Allocation from './UI/Allocation';
 import { TPoint } from '../../config';
+import Server,{ TBuildingFullData } from '../../services/server/Server';
+import Store from '../../services/store/Store'; 
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
 
+let game: Game | null = null;
+let canvas: Canvas | null = null;
+let server: Server | null = null;
+
 const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     const { WINDOW, SPRITE_SIZE } = CONFIG;
     const { setPage } = props;
-    let game: Game | null = null;
-    let canvas: Canvas | null = null;
-    const Canvas = useCanvas(render);
+    
+    const [buildings, setBuildings] = useState<TBuildingFullData[]>([]);
+    const CanvasComponent = useCanvas(render);
     let interval: NodeJS.Timer | null = null;
     const [[spritesImage], getSprite] = useSprites();
     const allocation = new Allocation();
     
-    // Для отслеживания начала клика и перетаскивания
-    const mouseDownPosition = useRef<TPoint | null>(null);
-    const mouseDownTime = useRef<number>(0);
-    const wasDragging = useRef<boolean>(false);
-    const DRAG_THRESHOLD = 5; // Порог в пикселях для определения перетаскивания
-    const TIME_THRESHOLD = 200; // Порог времени в миллисекундах для короткого клика
+    const mouseDownPosition = React.useRef<TPoint | null>(null);
+    const mouseDownTime = React.useRef<number>(0);
+    const wasDragging = React.useRef<boolean>(false);
+    const DRAG_THRESHOLD = 5; 
+    const TIME_THRESHOLD = 200; 
 
-    function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void {
-        canvas.spriteFull(image, x, y, points[0], points[1], points[2]);
+
+    function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }: TPoint, points: number[]): void {
+        canvas.spriteFull(image, x, y, points[0], points[1], points[2], points[3]);
     }
 
     function printHPBar(
@@ -51,7 +57,6 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         const hpRatio = currentHp / maxHp;
         const currentHpWidthUnits = widthUnits * hpRatio;
 
-        // Фон (Потерянное HP - красный/темный)
         ctx.fillStyle = "#A00000"; 
         ctx.fillRect(
             canvas.xs(x),
@@ -60,7 +65,6 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
             canvas.dec(heightUnits)
         );
 
-        // Текущее HP (Зеленый)
         ctx.fillStyle = "#00FF00";
         ctx.fillRect(
             canvas.xs(x),
@@ -71,7 +75,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     }
 
     function printUnits(canvas: Canvas, units: Unit[]): void {
-        const BAR_WIDTH_UNITS = 0.8;  
+        const BAR_WIDTH_UNITS = 0.8; 
         const BAR_HEIGHT_UNITS = 0.1; 
         const OFFSET_Y_UNITS = 0.1; 
 
@@ -80,10 +84,8 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
                 ? allocation.isUnitInSelection(unit)
                 : unit.isSelected;
 
-            // 1. Отрисовка спрайта юнита
             printFillSprite(spritesImage, canvas, unit.cords, getSprite(unit.sprite));
             
-            // 2. Отрисовка рамки выделения
             if (displaySelected) {
                 const ctx = canvas.contextV;
                 const unitColor = 'rgba(0, 255, 0, 0.5)';
@@ -103,7 +105,6 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
                 const barX = unit.cords.x + (1 - BAR_WIDTH_UNITS) / 2; 
                 const barY = unit.cords.y - OFFSET_Y_UNITS; 
 
-                // 3. Отрисовка полоски здоровья
                 printHPBar(
                     canvas, 
                     barX, 
@@ -117,13 +118,13 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         });
     }
 
-
     function printBuilds(canvas: Canvas, builds: Build[]): void {
         const BAR_HEIGHT_UNITS = 0.2; 
-        const OFFSET_Y_UNITS = 0.3;   
+        const OFFSET_Y_UNITS = 0.3;  
 
         builds.forEach((element) => {
             for (let i = 0; i < element.sprites.length; i++) {
+                //console.log(element.cords[i])
                 printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]));
             }
 
@@ -146,7 +147,6 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
             }
         });
     }
-
 
     function render(FPS: number): void {
         if (canvas && game) {
@@ -173,7 +173,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
             canvas.render();
         }
     }
-
+    // ... (обработчики кнопок)
     const backClickHandler = () => setPage(PAGES.CHAT);
     const BattleClicHandler = () => setPage(PAGES.BATTLE);
     const CalculatorClicHandler = () => setPage(PAGES.CALCULATOR);
@@ -231,7 +231,6 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
             }
         }
 
-
         if (!allocation.isSelectingStatus) {
             game.moveUnits({ x, y });
             console.log('click: move units to', { x, y });
@@ -246,8 +245,28 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     };
 
     useEffect(() => {
-        game = new Game();
-        canvas = Canvas({
+        server = new Server(new Store()); 
+        
+        const loadBuildings = async () => {
+            console.log('Fetching buildings from server...');
+            const result = await server!.getBuildings(); 
+            if (result && result.buildings) {
+                setBuildings(result.buildings);
+            }
+        };
+
+        loadBuildings();
+        
+        return () => {
+            server = null; 
+        }
+    }, []); 
+    useEffect(() => {
+        game = new Game(); 
+        if (buildings.length > 0) {
+            game.loadBuildings(buildings);
+        }
+        canvas = CanvasComponent({
             parentId: GAME_FIELD,
             WIDTH: WINDOW.WIDTH * SPRITE_SIZE,
             HEIGHT: WINDOW.HEIGHT * SPRITE_SIZE,
@@ -257,22 +276,23 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
                 mouseDown,
                 mouseUp,
                 mouseRightClickDown,
-                //mouseRightClickUp: () => {},
                 mouseClick,
             },
         });
+
         return () => {
             game?.destructor();
             canvas?.destructor();
-            canvas = null;
             game = null;
+            canvas = null;
             if (interval) {
                 clearInterval(interval);
                 interval = null;
             }
         };
-    }, []);
+    }, [buildings]);
 
+    // ... (useEffect для keydown)
     useEffect(() => {
         const keyDownHandler = (event: KeyboardEvent) => {
             console.log("keyDownHandler");

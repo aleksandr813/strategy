@@ -32,7 +32,7 @@ const useSprites = (): [HTMLImageElement[], (spriteNo: number) => number[], Arra
     const getSprite = (spriteNo: number): number[] => {
         const y = Math.trunc(spriteNo / LINE_OF_SPRITES) * SPRITE_SIZE;
         const x = (spriteNo % LINE_OF_SPRITES - 1) * SPRITE_SIZE;
-        return [x, y, SPRITE_SIZE];
+        return [x, y, SPRITE_SIZE, SPRITE_SIZE];
     }
 
     return [

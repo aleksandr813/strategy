@@ -1,8 +1,9 @@
 import CONFIG, { TPoint } from "../config";
 import Unit from './Units/Unit';
-import Build from './Builds/Buildings';
+import Build from "./Builds/Building";
 import EasyStar from 'easystarjs';
 import Allocation from "../pages/Village/UI/Allocation";
+import { TBuildingFullData } from "../services/server/Server";
 
 const { WIDTH, HEIGHT } = CONFIG;
 
@@ -11,13 +12,17 @@ class Game {
     private builds:Build[];
     private allocation:Allocation;
     
-
     constructor() {
         this.units = [new Unit(5, 7), new Unit(0, 0)]
-        this.builds = [new Build(5, 5)]
+        this.builds = [] 
         this.allocation = new Allocation;
     }
     
+    public loadBuildings(buildingData: TBuildingFullData[]): void {
+        this.builds = buildingData
+            .map(data => new Build(data)); 
+        console.log(`[Game] Загружено ${this.builds.length} зданий из БД.`);
+    }
 
     destructor() {
         //...
@@ -58,7 +63,6 @@ class Game {
                 return;
             }
 
-            // Создаем копию матрицы без текущего юнита
             let booleanMatrix = this.getVillageMatrix(
                 this.units.filter(u => u !== unit), 
                 this.builds
@@ -76,7 +80,6 @@ class Game {
                     let stepIndex = 0;
                     let intervalId = setInterval(() => {
                         if (stepIndex < path.length) {
-                            // Перед каждым шагом проверяем, не занята ли клетка
                             const nextStep = path[stepIndex];
                             const currentMatrix = this.getVillageMatrix(
                                 this.units.filter(u => u !== unit), 
@@ -87,7 +90,6 @@ class Game {
                                 unit.cords = nextStep;
                                 stepIndex++;
                             }
-                            // Если клетка занята, ждем следующего интервала
                         } else {
                             clearInterval(intervalId);
                         }
@@ -96,24 +98,8 @@ class Game {
             });
         });
 
-    easystar.calculate();
-}
-
-    
-
-    /**
-    move(dx: number, dy: number): void {
-        if ((dx > 0 && this.kapitoshka.x + dx <= WIDTH - 1) ||
-            (dx < 0 && this.kapitoshka.x - dx >= 0)
-        ) {
-            this.kapitoshka.x += dx;
-        }
-        if ((dy > 0 && this.kapitoshka.y + dy <= HEIGHT - 1) ||
-            (dy < 0 && this.kapitoshka.y - dy >= 0)
-        ) {
-            this.kapitoshka.y += dy;
-        }
-    }  */
+        easystar.calculate();
+    }
 }
 
 export default Game;

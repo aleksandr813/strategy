@@ -15,7 +15,7 @@ class Building {
         }
 
         return [
-            'id' => $building->id,
+            'id' => $building->id,  
             'user_id' => $building->user_id,
             'building_type' => $building->building_type,
             'x' => $building->x,

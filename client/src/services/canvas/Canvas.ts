@@ -69,7 +69,7 @@ class Canvas {
         this.canvas.addEventListener('click', (event) => this.mouseClickHandler(event));
         this.canvas.addEventListener('contextmenu', (event) => {
             event.preventDefault();
-            this.mouseRightClickDownHandler(event); // Добавляем обработку правой кнопки
+            this.mouseRightClickDownHandler(event); 
         });
 
         this.interval = setInterval(() => {
@@ -186,8 +186,20 @@ class Canvas {
         this.contextV.fillRect(this.xs(x), this.ys(y), width, height);
     }
 
-    spriteFull(image: HTMLImageElement, dx: number, dy: number, sx: number, sy: number, size: number): void {
-        this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), size, size);
+    spriteFull(image: HTMLImageElement, dx: number, dy: number, sx: number, sy: number, sw: number, sh: number): void {
+        const dw = this.dec(1); 
+        const dh = this.dec(1); 
+        this.contextV.drawImage(
+            image, 
+        sx, 
+        sy, 
+        sw, 
+        sh, 
+        this.xs(dx), 
+        this.ys(dy), 
+        dw, 
+        dh  
+        );
     }
 
     render(): void {

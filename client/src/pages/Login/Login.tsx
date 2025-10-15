@@ -21,7 +21,7 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
             }
         }
     }
-    const backClickHandler = () => setPage(PAGES.PRELOADER);
+    const regClickHandler = () => setPage(PAGES.REGISTRATION);
 
     return (<div className='login'>
         <h1 id='title'>STRATEGY</h1>
@@ -34,7 +34,8 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
             </div>
             <div className='login-buttons'>
                 <Button onClick={loginClickHandler} text='Авторизоваться' />
-                <Button onClick={backClickHandler} text='Назад' />
+                <Button onClick={regClickHandler} text='Регистрация' />
+
             </div>
         </div>
     </div>)

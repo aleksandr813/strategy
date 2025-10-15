@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Окт 14 2025 г., 00:06
+-- Время создания: Окт 15 2025 г., 20:59
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -42,14 +42,9 @@ CREATE TABLE `buildings` (
 --
 
 INSERT INTO `buildings` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `current_hp`) VALUES
-(1, 1, 5, 15, 15, 1, 100),
+(1, 1, 5, 10, 10, 1, 100),
 (2, 2, 5, 5, 5, 1, 100),
-(3, 1, 6, 15, 15, 1, 100),
-(4, 2, 6, 5, 5, 1, 100),
-(5, 1, 7, 15, 15, 1, 100),
-(6, 2, 7, 5, 5, 1, 100),
-(7, 1, 8, 15, 15, 1, 100),
-(8, 2, 8, 5, 5, 1, 100);
+(3, 3, 5, 20, 20, 1, 100);
 
 -- --------------------------------------------------------
 
@@ -165,7 +160,8 @@ INSERT INTO `users` (`id`, `login`, `password`, `name`, `token`, `money`) VALUES
 (7, 'A2345678', 'd5174b43cb0ddd0ff65e49d6689684cb', '123', '8dc52f3a822ca8f0a0bdcb8c82a12937', 100),
 (8, 'A23456788', 'a0af848759b6a5928cbaad779d65898f', '123', 'b5a8070af061be665aef1b59bb04b825', 100),
 (9, 'DenisTest1234', 'b94ea1cdc0c9d69d15347de4f0b6009b', 'Den', '10218d8eed97cb8766b62e104afe5632', 100),
-(10, 'DenisTest12341', '9d3bb7d535d7c16a0e35b46c7271c7cd', 'Den', '81402df3b7e98df32d638126590d71d0', 100);
+(10, 'DenisTest12341', '9d3bb7d535d7c16a0e35b46c7271c7cd', 'Den', '81402df3b7e98df32d638126590d71d0', 100),
+(11, 'artemol', 'f758b0dd2576372c7d56998ab71b88e0', 'aboba', '5d9b0a7685e6f884c1fef03c5bba7176', 100);
 
 -- --------------------------------------------------------
 
@@ -188,7 +184,7 @@ CREATE TABLE `villages` (
 INSERT INTO `villages` (`id`, `user_id`, `x`, `y`, `last_income_datetime`) VALUES
 (3, 5, 836, 654, '2025-10-10 17:31:45'),
 (4, 6, 388, 245, '2025-10-10 17:34:00'),
-(5, 7, 2, 814, '2025-10-10 17:46:22'),
+(5, 11, 2, 814, '2025-10-10 17:46:22'),
 (6, 8, 617, 700, '2025-10-10 17:47:06'),
 (7, 9, 475, 315, '2025-10-13 23:13:11'),
 (8, 10, 490, 397, '2025-10-13 23:13:25');
@@ -290,7 +286,7 @@ ALTER TABLE `unit_types`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT для таблицы `villages`

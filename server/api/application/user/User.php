@@ -40,18 +40,12 @@ class User
         return ['error' => 1003];
     }
 
-    public function registration($login, $password, $name)
+    public function registration($login, $hash, $name)
     {
         // Валидация логина
         $loginValidation = $this->validateLogin($login);
         if ($loginValidation !== true) {
             return $loginValidation;
-        }
-
-        // Валидация пароля
-        $passwordValidation = $this->validatePassword($password, $login, $name);
-        if ($passwordValidation !== true) {
-            return $passwordValidation;
         }
 
         // Проверка уникальности логина
@@ -60,7 +54,7 @@ class User
         }
 
         // Регистрация пользователя
-        $this->db->registration($login, $password, $name);
+        $this->db->registration($login, $hash, $name);
         $user = $this->db->getUserByLogin($login);
 
         if ($user) {
@@ -141,35 +135,6 @@ class User
         // Проверка на пробелы и специальные символы
         if (preg_match('/[\s@#$%]/', $login)) {
             return ['error' => 1010];
-        }
-
-        return true;
-    }
-
-    //Валидация пароля
-    private function validatePassword($password, $login, $name)
-    {
-        // Проверка минимальной длины
-        if (strlen($password) < 8) {
-            return ['error' => 1011];
-        }
-
-        // Проверка наличия символов разных регистров
-        if (!preg_match('/[a-z]/', $password) || !preg_match('/[A-Z]/', $password)) {
-            return ['error' => 1012];
-        }
-
-        // Проверка наличия цифр
-        if (!preg_match('/[0-9]/', $password)) {
-            return ['error' => 1013];
-        }
-
-        // Проверка на содержание персональной информации
-        $personalInfo = [$login, $name];
-        foreach ($personalInfo as $info) {
-            if (!empty($info) && stripos($password, $info) !== false) {
-                return ['error' => 1014];
-            }
         }
 
         return true;

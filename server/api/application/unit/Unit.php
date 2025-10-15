@@ -1,6 +1,7 @@
 <?php
 
-class Unit {
+class Unit
+{
     private $db;
 
     public function __construct($db)
@@ -8,7 +9,8 @@ class Unit {
         $this->db = $db;
     }
 
-    public function getUnitById($unitId) {
+    public function getUnitById($unitId)
+    {
         $unit = $this->db->getUnitById($unitId);
         if (!$unit) {
             return ['error' => 500];
@@ -23,7 +25,8 @@ class Unit {
         ];
     }
 
-    public function getUnitsByUser($userId) {
+    public function getUnitsByUser($userId)
+    {
         if (!$userId) {
             return ['error' => 705];
         }
@@ -32,7 +35,8 @@ class Unit {
         return ['units' => $units];
     }
 
-    public function createUnit($userId, $unitType, $x, $y) {
+    public function createUnit($userId, $unitType, $x, $y)
+    {
         $unit = $this->db->createUnit($userId, $unitType, $x, $y);
         if ($unit) {
             return [
@@ -41,13 +45,13 @@ class Unit {
                 'x' => $x,
                 'y' => $y
             ];
-        }
-        else {
+        } else {
             return ['error' => 501];
         }
     }
 
-    public function updateUnit($unitId, $userId, $unitType, $x, $y) {
+    public function updateUnit($unitId, $userId, $unitType, $x, $y)
+    {
         $result = $this->db->updateUnit($unitId, $userId, $unitType, $x, $y);
         if ($result) {
             return [
@@ -61,12 +65,19 @@ class Unit {
         return ['error' => 502];
     }
 
-    public function deleteUnit($unitId, $userId) {
+    public function deleteUnit($unitId, $userId)
+    {
         $result = $this->db->deleteUnit($unitId, $userId);
         if (!$result) {
             return ['error' => 503];
         }
-        
+
         //Что возвращать при успешном удалении юнита?
+    }
+
+    public function getUnitTypes()
+    {
+        $types = $this->db->getUnitTypes();
+        return ["unit_types" => $types];
     }
 }
