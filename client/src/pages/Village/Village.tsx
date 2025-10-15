@@ -21,7 +21,6 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     const { WINDOW, SPRITE_SIZE } = CONFIG;
     const { setPage } = props;
     let game: Game | null = null;
-    // инициализация канваса
     let canvas: Canvas | null = null;
     const Canvas = useCanvas(render);
     let interval: NodeJS.Timer | null = null;
@@ -37,7 +36,6 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     const wasDragging = useRef<boolean>(false);
     const DRAG_THRESHOLD = 5; // Порог в пикселях для определения перетаскивания
     const TIME_THRESHOLD = 200; // Порог времени в миллисекундах для короткого клика
-
 
     function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void {
         canvas.spriteFull(image, x, y, points[0], points[1], points[2]);
