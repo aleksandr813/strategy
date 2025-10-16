@@ -126,8 +126,8 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         const OFFSET_Y_UNITS = 0.3;
 
     function printBuilds(canvas: Canvas, buildings: Building[]): void {
-        const BAR_HEIGHT_UNITS = 0.2; 
-        const OFFSET_Y_UNITS = 0.3;   
+        const BAR_HEIGHT_UNITS = 0.2;
+        const OFFSET_Y_UNITS = 0.3;
 
         buildings.forEach((element) => {
             for (let i = 0; i < element.sprites.length; i++) {
@@ -286,6 +286,11 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
                 const typeId = buildingPreview.getBuildingTypeId();
                 const pos = buildingPreview.getPlacementPosition();
 
+                console.log('=== DEBUG buyBuilding ===');
+                console.log('typeId:', typeId, 'type:', typeof typeId);
+                console.log('x:', pos.x, 'type:', typeof pos.x);
+                console.log('y:', pos.y, 'type:', typeof pos.y);
+
                 try {
                     const result = await server.buyBuilding(typeId, pos.x, pos.y);
 
@@ -329,6 +334,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     const mouseRightClickDown = (x: number, y: number) => {
         if (!game) return;
 
+        // Отмена размещения здания при ПКМ
         if (buildingPreview.isActiveStatus()) {
             buildingPreview.deactivate();
             console.log('Размещение здания отменено');
@@ -369,6 +375,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
     useEffect(() => {
         const keyDownHandler = (event: KeyboardEvent) => {
+            // Отмена размещения по ESC
             if (event.key === 'Escape' && buildingPreview.isActiveStatus()) {
                 buildingPreview.deactivate();
                 console.log('Размещение здания отменено (ESC)');
@@ -406,7 +413,6 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
         fetchBuildingTypes();
     }, [server]);
-
 
     return (
     <div className='game'>

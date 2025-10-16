@@ -26,9 +26,14 @@ class Server {
             }
             const url = `${this.HOST}/?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`;
             
+            // ОТЛАДКА: выводим URL запроса
+            console.log('Request URL:', url);
+            console.log('Request params:', params);
+            
             const response = await fetch(url);
             const answer: TAnswer<T> = await response.json();
             
+            console.log('Server response:', answer);
             
             if (answer.result === 'ok' && answer.data) {
                 return answer.data;
@@ -127,16 +132,6 @@ class Server {
         });
         
         return await this.request<any>('getRoots', params);
-    }
-
-    async getBuildingTypes(): Promise<TBuildingTypesResponse> {
-        const response = await this.request<TBuildingTypesResponse>('getBuildingTypes');
-        if (!response) {
-            return { building_types: [] };
-        }
-    });
-    
-    return await this.request<any>('getRoots', params);
     }
 
     async getBuildingTypes(): Promise<TBuildingTypesResponse> {
