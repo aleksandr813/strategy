@@ -125,10 +125,6 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
         const BAR_HEIGHT_UNITS = 0.2;
         const OFFSET_Y_UNITS = 0.3;
 
-    function printBuilds(canvas: Canvas, buildings: Building[]): void {
-        const BAR_HEIGHT_UNITS = 0.2; 
-        const OFFSET_Y_UNITS = 0.3;   
-
         buildings.forEach((element) => {
             for (let i = 0; i < element.sprites.length; i++) {
                 printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]));
@@ -286,16 +282,24 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
                 const typeId = buildingPreview.getBuildingTypeId();
                 const pos = buildingPreview.getPlacementPosition();
 
+                console.log('=== DEBUG buyBuilding ===');
+                console.log('typeId:', typeId, 'type:', typeof typeId);
+                console.log('x:', pos.x, 'type:', typeof pos.x);
+                console.log('y:', pos.y, 'type:', typeof pos.y);
+
                 try {
+                    // Используем метод buyBuilding из Server
                     const result = await server.buyBuilding(typeId, pos.x, pos.y);
 
                     console.log('Результат buyBuilding:', result);
 
                     if (result && !result.error) {
+                        // Успешно - добавляем здание
                         game.addBuilding(newBuilding);
                         console.log('Здание успешно построено!', result);
                     } else {
                         console.error('Ошибка при покупке здания:', result?.error || result);
+                        // Возвращаем preview обратно, так как здание не построено
                         buildingPreview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp);
                     }
                 } catch (error) {
@@ -329,6 +333,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
     const mouseRightClickDown = (x: number, y: number) => {
         if (!game) return;
 
+        // Отмена размещения здания при ПКМ
         if (buildingPreview.isActiveStatus()) {
             buildingPreview.deactivate();
             console.log('Размещение здания отменено');
@@ -369,6 +374,7 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
     useEffect(() => {
         const keyDownHandler = (event: KeyboardEvent) => {
+            // Отмена размещения по ESC
             if (event.key === 'Escape' && buildingPreview.isActiveStatus()) {
                 buildingPreview.deactivate();
                 console.log('Размещение здания отменено (ESC)');
@@ -406,7 +412,6 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
 
         fetchBuildingTypes();
     }, [server]);
-
 
     return (
     <div className='game'>
