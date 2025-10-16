@@ -33,7 +33,6 @@ class Server {
             const response = await fetch(url);
             const answer: TAnswer<T> = await response.json();
             
-            // ОТЛАДКА: выводим ответ сервера
             console.log('Server response:', answer);
             
             if (answer.result === 'ok' && answer.data) {
@@ -41,7 +40,6 @@ class Server {
             }
             answer.error && this.setError(answer.error);
             
-            // ОТЛАДКА: выводим ошибку
             if (answer.error) {
                 console.error('Server error:', answer.error);
             }
