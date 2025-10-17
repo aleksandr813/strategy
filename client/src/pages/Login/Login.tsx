@@ -7,79 +7,55 @@ import { validateLogin, validatePassword } from '../VerificationOfRegistrationAn
 import './Login.scss';
 
 const Login: React.FC<IBasePage> = (props: IBasePage) => {
-    const { setPage } = props;
-    const server = useContext(ServerContext);
-    const loginRef = useRef<HTMLInputElement>(null);
-    const passwordRef = useRef<HTMLInputElement>(null);
-    const [loginError, setLoginError] = useState('');
-    const [passwordError, setPasswordError] = useState('');
+const { setPage } = props;
+const server = useContext(ServerContext);
+const loginRef = useRef<HTMLInputElement>(null);
+const passwordRef = useRef<HTMLInputElement>(null);
+const [loginError, setLoginError] = useState('');
+const [passwordError, setPasswordError] = useState('');
 
-    // Валидация логина в реальном времени
-    useEffect(() => {
-        if (loginRef.current) {
-            const login = loginRef.current.value;
-            if (login.length > 0) {
-                const validation = validateLogin(login);
-                if (!validation.isValid) {
-                    setLoginError(validation.message);
-                } else {
-                    setLoginError('');
-                }
-            } else {
-                setLoginError('');
-            }
+ const loginClickHandler = async () => {
+    if (loginRef.current && passwordRef.current) {
+        const login = loginRef.current.value;
+        const password = passwordRef.current.value;
+
+        // Сбрасываем предыдущие ошибки
+        setLoginError('');
+        setPasswordError('');
+
+        let hasErrors = false;
+
+        // Проверка логина
+        const loginValidation = validateLogin(login);
+        if (!loginValidation.isValid) {
+            setLoginError(loginValidation.message);
+            hasErrors = true;
         }
-    }, [loginRef.current?.value]);
 
-    // Валидация пароля в реальном времени
-    useEffect(() => {
-        if (passwordRef.current) {
-            const password = passwordRef.current.value;
-            if (password.length > 0) {
-                const validation = validatePassword(password);
-                if (!validation.isValid) {
-                    setPasswordError(validation.message);
-                } else {
-                    setPasswordError('');
-                }
-            } else {
-                setPasswordError('');
-            }
+        // Проверка пароля
+        const passwordValidation = validatePassword(password);
+        if (!passwordValidation.isValid) {
+            setPasswordError(passwordValidation.message);
+            hasErrors = true;
         }
-    }, [passwordRef.current?.value]);
 
-    const loginClickHandler = async () => {
-        if (loginRef.current && passwordRef.current) {
-            const login = loginRef.current.value;
-            const password = passwordRef.current.value;
+        // Если есть ошибки - не отправляем на сервер
+        if (hasErrors) {
+            return;
+        }
 
-            // Финальная проверка перед отправкой
-            const loginValidation = validateLogin(login);
-            const passwordValidation = validatePassword(password);
-
-            if (!loginValidation.isValid) {
-                setLoginError(loginValidation.message);
-                return;
-            }
-
-            if (!passwordValidation.isValid) {
-                setPasswordError(passwordValidation.message);
-                return;
-            }
-
-            // Сбрасываем ошибки если все валидно
-            setLoginError('');
-            setPasswordError('');
-
-            //if (1) { // тестовое условие, чтобы логин всегда был успешный и работал без бекенда
-            if (login && password && await server.login(login, password)) {
-                setPage(PAGES.CHAT);
-            }
+        // Отправка данных на сервер
+        //if (1) { // тестовое условие, чтобы логин всегда был успешный и работал без бекенда
+        if (login && password && await server.login(login, password)) {
+            setPage(PAGES.CHAT);
         }
     }
-    const regClickHandler = () => setPage(PAGES.REGISTRATION);
+}
 
-    return (<div className='login'>
+const regClickHandler = () => setPage(PAGES.REGISTRATION);
+
+return (
+    <div className='login'>
         <h1 id='title'>STRATEGY</h1>
         <div className='login-wrapper'>
             <div className='login-inputs'>
@@ -95,6 +71,7 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
                 <Button onClick={regClickHandler} text='Регистрация' />
             </div>
         </div>
-    </div>)
-}
+    </div>
+)
+
 export default Login;
