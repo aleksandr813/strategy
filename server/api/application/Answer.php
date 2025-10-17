@@ -31,7 +31,7 @@ class Answer
         '1002' => 'Wrong login or password',
         '1003' => 'Error to logout user',
         '1004' => 'Error to register user',
-        '1005' => 'User is no exists',
+        '1090' => 'User is no exists',
         '404' => 'not found',
         '605' => 'invalid teamId',
         '700' => 'No skins',

@@ -7,6 +7,7 @@ import { validateLogin, validatePassword } from '../VerificationOfRegistrationAn
 import './Login.scss';
 
 const Login: React.FC<IBasePage> = (props: IBasePage) => {
+
 const { setPage } = props;
 const server = useContext(ServerContext);
 const loginRef = useRef<HTMLInputElement>(null);

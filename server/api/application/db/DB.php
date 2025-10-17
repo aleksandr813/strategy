@@ -186,6 +186,10 @@ class DB
         return $this->query("SELECT hp, price FROM building_types WHERE id = ?", [$buildingType]);
     }
 
+    public function getUnitType($unitType) {
+        return $this->query("SELECT hp, price FROM unit_types WHERE id = ?", [$unitType]);
+    }
+
     public function getPositionBuilding($villageId, $x, $y) {
         return $this->query(
             "SELECT village_id, x, y 
@@ -222,7 +226,12 @@ class DB
 
     public function getBuildingTypes()
     {
-        return $this->queryAll("SELECT id, type, name, hp, price FROM building_types");
+        return $this->queryAll("SELECT id, type, name, sprite_id, hp, price FROM building_types");
+    }
+
+    public function getUnitTypes()
+    {
+        return $this->queryAll("SELECT id, type, name, hp, price FROM unit_types");
     }
 
 
