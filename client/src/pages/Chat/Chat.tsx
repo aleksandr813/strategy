@@ -12,7 +12,7 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
     const store = useContext(StoreContext);
     const [messages, setMessages] = useState<TMessages>([]);
     const [_, setHash] = useState<string>('');
-    const messageRef = useRef<HTMLInputElement>(null);
+    const messageRef = useRef<HTMLInputElement>(null);  
     const user = store.getUser();
 
     useEffect(() => {

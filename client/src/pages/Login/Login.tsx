@@ -17,28 +17,30 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
             const password = passwordRef.current.value;
             //if (1) { // тестовое условие, чтобы логин всегда был успешный и работал без бекенда
             if (login && password && await server.login(login, password)) {
-                setPage(PAGES.VILLAGE);
+                setPage(PAGES.CHAT);
             }
         }
     }
     const regClickHandler = () => setPage(PAGES.REGISTRATION);
 
-    return (<div className='login'>
+    return (
+    <div className='login'>
         <h1 id='title'>STRATEGY</h1>
         <div className='login-wrapper'>
             <div className='login-inputs'>
                 <p>Логин</p>
-                <input ref={loginRef} />
+                <input ref={loginRef} id="Test-input-login"/>
                 <p>Пароль</p>
-                <input ref={passwordRef} type='password' />
+                <input ref={passwordRef} type='password' id="Test-input-password"/>
             </div>
             <div className='login-buttons'>
-                <Button onClick={loginClickHandler} text='Авторизоваться' />
-                <Button onClick={regClickHandler} text='Регистрация' />
+                <Button onClick={loginClickHandler} text='Авторизоваться' id="Test-button-autorization"/>
+                <Button onClick={regClickHandler} text='Регистрация' id="Test-button-back"/>
 
             </div>
         </div>
-    </div>)
+    </div>
+    )
 }
 
 export default Login;

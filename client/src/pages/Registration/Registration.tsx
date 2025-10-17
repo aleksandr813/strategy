@@ -42,18 +42,18 @@ const Registration: React.FC<IBasePage> = (props: IBasePage) => {
         <div className='registration-wrapper'>
             <div className='registration-inputs'>
                 <p>Логин</p>
-                <input ref={loginRef} />
+                <input ref={loginRef} id="Test-input-login"/>
                 <p>Пароль</p>
-                <input ref={passwordRef} type='password' />
+                <input ref={passwordRef} type='password' id="Test-input-password"/>
                 <p>Подтверждение</p>
-                <input ref={confirmPasswordRef} type='password' />
+                <input ref={confirmPasswordRef} type='password' id="Test-input-password-2"/>
                 {passwordError && <p style={{color: 'red', fontSize: 'smaller'}}>{passwordError}</p>}
                 <p>Отображаемое имя</p>
-                <input ref={nameRef} />
+                <input ref={nameRef} id="Test-input-name"/>
             </div>
             <div className='registration-buttons'>
-                <Button onClick={registerClickHandler} text='Зарегистрироваться' />
-                <Button onClick={backClickHandler} text='Назад' />
+                <Button onClick={registerClickHandler} text='Зарегистрироваться' id="Test-button-registration"/>
+                <Button onClick={backClickHandler} text='Назад' id="Test-button-back"/>
             </div>
         </div>
     </div>)
