@@ -268,4 +268,17 @@ class Application
         }
         return ['error' => 242];
     }
+
+    public function registrationWithConfirm($params)
+    {
+    if ($params['login'] && $params['hash'] && $params['confirmHash'] && $params['name']) {
+        return $this->user->registrationWithConfirm(
+            $params['login'], 
+            $params['hash'], 
+            $params['confirmHash'], 
+            $params['name']
+        );
+    }
+    return ['error' => 242];
+    }
 }

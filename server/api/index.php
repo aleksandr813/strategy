@@ -45,6 +45,8 @@ function result($params) {
             case 'getAllMinesIncome': return $app->getAllMinesIncome($params);
             case 'updateMineIncomeTime': return $app->updateMineIncomeTime($params);
 
+            case 'registrationWithConfirm': return $app->registrationWithConfirm($params);
+
             default: return ['error' => 102];
         }
     }

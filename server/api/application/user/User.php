@@ -14,6 +14,12 @@ class User
 
     public function login($login, $hash, $rnd)
     {
+        // Валидация логина при авторизации
+        $loginValidation = $this->validateLogin($login);
+        if ($loginValidation !== true) {
+            return $loginValidation;
+        }
+
         $user = $this->db->getUserByLogin($login);
         if ($user) {
             if (md5($user->password . $rnd) === $hash) {
@@ -25,9 +31,9 @@ class User
                     'token' => $token
                 ];
             }
-            return ['error' => 1002];
+            return ['error' => 1002]; // Wrong login or password
         }
-        return ['error' => 1005];
+        return ['error' => 1005]; // User is no exists
     }
 
     public function logout($token)
@@ -40,7 +46,7 @@ class User
         return ['error' => 1003];
     }
 
-    public function registration($login, $hash, $name)
+    public function registration($login, $hash, $name, $confirmHash = null)
     {
         // Валидация логина
         $loginValidation = $this->validateLogin($login);
@@ -61,7 +67,54 @@ class User
             // Создание стартовой деревни для пользователя
             $villageCreated = $this->createStarterVillage($user->id);
             if (!$villageCreated) {
-                return ['error' => 1006];
+                return ['error' => 1090]; 
+            }
+
+            $token = md5(rand());
+            $this->db->updateToken($user->id, $token);
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'token' => $token
+            ];
+        }
+        return ['error' => 1004];
+    }
+
+    
+    public function registrationWithConfirm($login, $hash, $confirmHash, $name)
+    {
+        // Валидация логина
+        $loginValidation = $this->validateLogin($login);
+        if ($loginValidation !== true) {
+            return $loginValidation;
+        }
+
+        // Проверка совпадения паролей
+        if ($hash !== $confirmHash) {
+            return ['error' => 1015]; // Пароли не совпадают
+        }
+
+        // Проверка уникальности логина
+        if ($this->db->getUserByLogin($login)) {
+            return ['error' => 1001];
+        }
+
+        // Валидация пароля
+        $passwordValidation = $this->validatePassword($hash, $login, $name);
+        if ($passwordValidation !== true) {
+            return $passwordValidation;
+        }
+
+        // Регистрация пользователя
+        $this->db->registration($login, $hash, $name);
+        $user = $this->db->getUserByLogin($login);
+
+        if ($user) {
+            // Создание стартовой деревни для пользователя
+            $villageCreated = $this->createStarterVillage($user->id);
+            if (!$villageCreated) {
+                return ['error' => 1090];
             }
 
             $token = md5(rand());
@@ -113,8 +166,7 @@ class User
         }
     }
 
-    //Валидация логина
-
+    // Валидация логина
     private function validateLogin($login)
     {
         // Проверка длины
@@ -135,6 +187,32 @@ class User
         // Проверка на пробелы и специальные символы
         if (preg_match('/[\s@#$%]/', $login)) {
             return ['error' => 1010];
+        }
+
+        return true;
+    }
+
+    // НОВЫЙ МЕТОД - Валидация пароля
+    private function validatePassword($password, $login, $name)
+    {
+        // Проверка длины пароля
+        if (strlen($password) < 8) {
+            return ['error' => 1011];
+        }
+
+        // Проверка разных регистров
+        if (!preg_match('/[a-z]/', $password) || !preg_match('/[A-Z]/', $password)) {
+            return ['error' => 1012];
+        }
+
+        // Проверка наличия цифр
+        if (!preg_match('/[0-9]/', $password)) {
+            return ['error' => 1013];
+        }
+
+        // Проверка на содержание персональной информации
+        if (stripos($password, $login) !== false || stripos($password, $name) !== false) {
+            return ['error' => 1014];
         }
 
         return true;
