@@ -178,6 +178,13 @@ class DB
         );
     }
 
+    public function buyUnit($villageId, $unitId, $x, $y, $hp) {
+    $this->execute("INSERT INTO units
+        (unit_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
+        [$unitId $villageId, $x, $y, $hp]
+    );
+}
+
     public function getVillageByUserId($userId) {
         return $this->query("SELECT id, user_id, x, y FROM villages WHERE user_id = ?", [$userId]);
     }

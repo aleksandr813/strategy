@@ -25,6 +25,46 @@ class Unit
         ];
     }
 
+   
+
+
+ public function buyUnit($user, $unitId,$x, $y) {
+    $village = $this->db->getVillageByUserId($user->id);
+    if (!$village) {
+        return ['error' => 310]; 
+    }
+    
+    $unit = $this->db->getUnitType($unitId);
+    if (!$unit) {
+        return ["error" => 401]; 
+    }
+    
+    if ($user->money < $unit->price) {
+        return ['error' => 305]; 
+    }
+
+    
+    $existingUnit = $this->db->getPositionUnit($village->id, $x, $y);
+    if ($existingUnit) {
+        return ['error' => 411]; 
+    }
+
+    $newMoney = $user->money - $unit->price;
+    $this->db->updateMoney($user->id, $newMoney);
+    $this->db->buyUnit(
+        $village->id,
+        $unitType,
+        $x,
+        $y,
+        $unit->hp
+    );
+
+    return [
+        'money' => $newMoney
+    ];
+}
+
+
     public function getUnitsByUser($userId)
     {
         if (!$userId) {
