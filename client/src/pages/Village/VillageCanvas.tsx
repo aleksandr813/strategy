@@ -1,12 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useContext } from 'react';
 import CONFIG from '../../config';
-import Game from '../../game/Game';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units/Unit';
 import Building from '../../game/Buildings/Building';
 import Allocation from './UI/Allocation';
-import BuildingPreview from './UI/BuildingPreview';
+import { GameContext } from '../../App';
 import { TPoint } from '../../config';
 
 import "./Village.scss"
@@ -18,18 +17,17 @@ const TIME_THRESHOLD = 200;
 
 const VillageCanvas: React.FC = () => {
     const { WINDOW, SPRITE_SIZE } = CONFIG;
-    
-    let game: Game | null = null;
+
+    const game = useContext(GameContext)
+
     let canvas: Canvas | null = null;
     const Canvas = useCanvas(render);
     
-    const allocationRef = useRef(new Allocation());
-    const buildingPreviewRef = useRef(new BuildingPreview());
-    const mouseStateRef = useRef({
-        downPosition: null as TPoint | null,
-        downTime: 0,
-        wasDragging: false
-    });
+    const allocation = new Allocation();
+
+    let mouseDownPosition: TPoint | null = null;
+    let mouseDownTime: number = 0;
+    let wasDragging: boolean = false;
     
     const [[spritesImage], getSprite] = useSprites();
 
@@ -55,7 +53,6 @@ const VillageCanvas: React.FC = () => {
     }
 
     function drawUnits(canvas: Canvas, units: Unit[]): void {
-        const allocation = allocationRef.current;
         const ctx = canvas.contextV;
 
         units.forEach((unit) => {
@@ -105,7 +102,7 @@ const VillageCanvas: React.FC = () => {
     }
 
     function drawBuildingPreview(canvas: Canvas): void {
-        const previewData = buildingPreviewRef.current.getRenderData();
+        const previewData = game.getScene().buildingPreview.getRenderData();
         if (!previewData) return;
 
         const { gridPosition, canPlace } = previewData;
@@ -121,7 +118,6 @@ const VillageCanvas: React.FC = () => {
     }
 
     function drawSelectionRect(canvas: Canvas): void {
-        const allocation = allocationRef.current;
         if (!allocation.isSelectingStatus) return;
 
         const rect = allocation.getSelectionRect();
@@ -152,54 +148,47 @@ const VillageCanvas: React.FC = () => {
     }
 
     const mouseDown = (x: number, y: number) => {
-        if (buildingPreviewRef.current.isActiveStatus()) return;
+        if (game.getScene().buildingPreview.isActiveStatus()) return;
 
-        mouseStateRef.current = {
-            downPosition: { x, y },
-            downTime: Date.now(),
-            wasDragging: false
-        };
-        allocationRef.current.start(x, y);
+        mouseDownPosition = { x, y };
+        mouseDownTime = Date.now();
+        wasDragging = false;
+        allocation.start(x, y);
     };
 
     const mouseMove = (x: number, y: number) => {
-        const buildingPreview = buildingPreviewRef.current;
-
-        if (buildingPreview.isActiveStatus() && game) {
+        if (game.getScene().buildingPreview.isActiveStatus() && game) {
             const { units, buildings } = game.getScene();
             const matrix = game.getVillageMatrix(units, buildings);
-            buildingPreview.update(x, y, matrix);
+            game.getScene().buildingPreview.update(x, y, matrix);
         } else {
-            allocationRef.current.update(x, y);
+            allocation.update(x, y);
         }
     };
 
     const mouseUp = (x: number, y: number) => {
         if (!game) return;
 
-        const mouseState = mouseStateRef.current;
-        const { downPosition, downTime } = mouseState;
-        
-        if (downPosition) {
+        if (mouseDownPosition) {
             const distance = Math.sqrt(
-                Math.pow(x - downPosition.x, 2) + Math.pow(y - downPosition.y, 2)
+                Math.pow(x - mouseDownPosition.x, 2) + Math.pow(y - mouseDownPosition.y, 2)
             );
-            const timeElapsed = Date.now() - downTime;
+            const timeElapsed = Date.now() - mouseDownTime;
 
             if (distance > DRAG_THRESHOLD || timeElapsed > TIME_THRESHOLD) {
-                mouseState.wasDragging = true;
-                allocationRef.current.end(game.getScene().units);
+                wasDragging = true;
+                allocation.end(game.getScene().units);
             } else {
-                allocationRef.current.cancel();
+                allocation.cancel();
             }
         }
         
-        mouseState.downPosition = null;
-        mouseState.downTime = 0;
+        mouseDownPosition = null;
+        mouseDownTime = 0;
     };
 
     const mouseClick = (x: number, y: number) => {
-        if (!game || mouseStateRef.current.wasDragging) return;
+        if (!game || wasDragging) return;
 
         const gridX = Math.floor(x);
         const gridY = Math.floor(y);
@@ -214,7 +203,7 @@ const VillageCanvas: React.FC = () => {
             }
         }
 
-        if (!allocationRef.current.isSelectingStatus) {
+        if (!allocation.isSelectingStatus) {
             game.moveUnits({ x, y });
             console.log('move units to', { x, y });
         }
@@ -223,19 +212,16 @@ const VillageCanvas: React.FC = () => {
     const mouseRightClickDown = (x: number, y: number) => {
         if (!game) return;
 
-        const buildingPreview = buildingPreviewRef.current;
-        
-        if (buildingPreview.isActiveStatus()) {
-            buildingPreview.deactivate();
+        if (game.getScene().buildingPreview.isActiveStatus()) {
+            game.getScene().buildingPreview.deactivate();
             console.log('Размещение здания отменено');
         } else {
-            allocationRef.current.clearSelection(game.getScene().units);
+            allocation.clearSelection(game.getScene().units);
             console.log('Выделение снято');
         }
     };
 
     useEffect(() => {
-        game = new Game();
         canvas = Canvas({
             parentId: GAME_FIELD,
             WIDTH: WINDOW.WIDTH * SPRITE_SIZE,
@@ -250,18 +236,9 @@ const VillageCanvas: React.FC = () => {
             },
         });
 
-        return () => {
-            game?.destructor();
-            canvas?.destructor();
-            canvas = null;
-            game = null;
-        };
-    });
-
-    useEffect(() => {
         const keyDownHandler = (event: KeyboardEvent) => {
-            if (event.key === 'Escape' && buildingPreviewRef.current.isActiveStatus()) {
-                buildingPreviewRef.current.deactivate();
+            if (event.key === 'Escape' && game.getScene().buildingPreview.isActiveStatus()) {
+                game.getScene().buildingPreview.deactivate();
                 console.log('Размещение здания отменено (ESC)');
             }
         };
@@ -269,9 +246,12 @@ const VillageCanvas: React.FC = () => {
         document.addEventListener('keydown', keyDownHandler);
 
         return () => {
+            game?.destructor();
+            canvas?.destructor();
+            canvas = null;
             document.removeEventListener('keydown', keyDownHandler);
         };
-    });
+    }, []);
 
     return (
         <div className='VillageCanvas'>

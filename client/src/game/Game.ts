@@ -3,7 +3,7 @@ import Unit from './Units/Unit';
 import Building from './Buildings/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../pages/Village/UI/Allocation";
-import { ServerContext } from "../App";
+import BuildingPreview from "../pages/Village/UI/BuildingPreview";
 
 const { WIDTH, HEIGHT } = CONFIG;
 
@@ -11,12 +11,14 @@ class Game {
     private units:Unit[];
     private buildings:Building[];
     private allocation:Allocation;
+    private buildingPreview;
     
 
     constructor() {
         this.units = [new Unit(5, 7), new Unit(0, 0)]
         this.buildings = []
         this.allocation = new Allocation;
+        this.buildingPreview = new BuildingPreview();
     }
     
 
@@ -28,6 +30,7 @@ class Game {
         return {
             units: this.units,
             buildings: this.buildings,
+            buildingPreview: this.buildingPreview,
         };
     }
 

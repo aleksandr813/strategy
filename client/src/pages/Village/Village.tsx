@@ -2,8 +2,8 @@ import React, { Component, useContext, useEffect, useRef, useState } from 'react
 import CONFIG from '../../config';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
-import Game from '../../game/Game';
 import VillageCanvas from './VillageCanvas';
+import UI from './UI';
 
 import "./Village.scss"
 
@@ -30,6 +30,7 @@ const Village: React.FC<IBasePage> = (props: IBasePage) => {
         <div>
             <VillageCanvas/>
         </div>
+        <UI/>
     </div>
     );
 };
