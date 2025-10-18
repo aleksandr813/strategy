@@ -53,6 +53,7 @@ class Answer
         '709' => ' session did not start or you need use previous method',
         '800' => 'not found object',
         '801' => 'unknown state',
+        '1016' => 'params login or password not set',
         '9000' => 'unknown error'
     );
 
