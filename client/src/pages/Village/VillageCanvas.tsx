@@ -1,8 +1,5 @@
-import React, { Component, useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import CONFIG from '../../config';
-import { BuildingType, BuildingTypeResponse } from '../../services/server/types';
-import Button from '../../components/Button/Button';
-import { IBasePage, PAGES } from '../PageManager';
 import Game from '../../game/Game';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
@@ -16,160 +13,127 @@ import "./Village.scss"
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
+const DRAG_THRESHOLD = 5;
+const TIME_THRESHOLD = 200;
 
 const VillageCanvas: React.FC = () => {
     const { WINDOW, SPRITE_SIZE } = CONFIG;
+    
     let game: Game | null = null;
     let canvas: Canvas | null = null;
     const Canvas = useCanvas(render);
-    let interval: NodeJS.Timer | null = null;
-    const [[spritesImage], getSprite] = useSprites();
-    const allocation = new Allocation();
+    
+    const allocationRef = useRef(new Allocation());
     const buildingPreviewRef = useRef(new BuildingPreview());
-    const buildingPreview = buildingPreviewRef.current;    
-    const mouseDownPosition = useRef<TPoint | null>(null);
-    const mouseDownTime = useRef<number>(0);
-    const wasDragging = useRef<boolean>(false);
-    const DRAG_THRESHOLD = 5;
-    const TIME_THRESHOLD = 200;
+    const mouseStateRef = useRef({
+        downPosition: null as TPoint | null,
+        downTime: 0,
+        wasDragging: false
+    });
+    
+    const [[spritesImage], getSprite] = useSprites();
 
-    function printFillSprite(image: HTMLImageElement, canvas: Canvas, { x = 0, y = 0 }, points: number[]): void {
-        canvas.spriteFull(image, x, y, points[0], points[1], points[2]);
-    }
-
-    function printHPBar(
+    function drawHPBar(
         canvas: Canvas,
         x: number, 
         y: number, 
-        widthUnits: number, 
-        heightUnits: number, 
+        width: number, 
+        height: number, 
         currentHp: number,
         maxHp: number
     ): void {
-        if (currentHp >= maxHp) {
-            return;
-        }
+        if (currentHp >= maxHp) return;
 
         const ctx = canvas.contextV;
         const hpRatio = currentHp / maxHp;
-        const currentHpWidthUnits = widthUnits * hpRatio;
-
-        ctx.fillStyle = "#A00000"; 
-        ctx.fillRect(
-            canvas.xs(x),
-            canvas.ys(y),
-            canvas.dec(widthUnits),
-            canvas.dec(heightUnits)
-        );
-
+        
+        ctx.fillStyle = "#A00000";
+        ctx.fillRect(canvas.xs(x), canvas.ys(y), canvas.dec(width), canvas.dec(height));
+        
         ctx.fillStyle = "#00FF00";
-        ctx.fillRect(
-            canvas.xs(x),
-            canvas.ys(y),
-            canvas.dec(currentHpWidthUnits),
-            canvas.dec(heightUnits)
-        );
+        ctx.fillRect(canvas.xs(x), canvas.ys(y), canvas.dec(width * hpRatio), canvas.dec(height));
     }
 
-    function printUnits(canvas: Canvas, units: Unit[]): void {
-        const BAR_WIDTH_UNITS = 0.8;
-        const BAR_HEIGHT_UNITS = 0.1;
-        const OFFSET_Y_UNITS = 0.1;
+    function drawUnits(canvas: Canvas, units: Unit[]): void {
+        const allocation = allocationRef.current;
+        const ctx = canvas.contextV;
 
         units.forEach((unit) => {
-            const displaySelected = allocation.isSelectingStatus
+            const sprite = getSprite(unit.sprite);
+            canvas.spriteFull(spritesImage, unit.cords.x, unit.cords.y, sprite[0], sprite[1], sprite[2]);
+            
+            const isSelected = allocation.isSelectingStatus 
                 ? allocation.isUnitInSelection(unit)
                 : unit.isSelected;
-
-            printFillSprite(spritesImage, canvas, unit.cords, getSprite(unit.sprite));
-            
-            if (displaySelected) {
-                const ctx = canvas.contextV;
-                const unitColor = 'rgba(0, 255, 0, 0.5)';
-                ctx.fillStyle = unitColor;
-
-                ctx.fillRect(
-                    canvas.xs(unit.cords.x),
-                    canvas.ys(unit.cords.y),
-                    canvas.dec(1), 
-                    canvas.dec(1) 
-                );
+                
+            if (isSelected) {
+                ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
+                ctx.fillRect(canvas.xs(unit.cords.x), canvas.ys(unit.cords.y), canvas.dec(1), canvas.dec(1));
             }
 
-            const maxHp = unit.maxHp; 
-            
-            if (unit.hp < maxHp) {
-                const barX = unit.cords.x + (1 - BAR_WIDTH_UNITS) / 2; 
-                const barY = unit.cords.y - OFFSET_Y_UNITS; 
-
-                printHPBar(
-                    canvas, 
-                    barX, 
-                    barY, 
-                    BAR_WIDTH_UNITS, 
-                    BAR_HEIGHT_UNITS, 
+            if (unit.hp < unit.maxHp) {
+                drawHPBar(canvas, 
+                    unit.cords.x + 0.1, 
+                    unit.cords.y - 0.1, 
+                    0.8, 
+                    0.1, 
                     unit.hp, 
-                    maxHp
-                );
-            }
-        });
-    }
-    function printBuildings(canvas: Canvas, buildings: Building[]): void {
-        const BAR_HEIGHT_UNITS = 0.2;
-        const OFFSET_Y_UNITS = 0.3;
-
-        buildings.forEach((element) => {
-            for (let i = 0; i < element.sprites.length; i++) {
-                printFillSprite(spritesImage, canvas, element.cords[i], getSprite(element.sprites[i]));
-            }
-
-            const maxHp = element.MAX_HP;
-            
-            if (element.hp < maxHp) {
-                const barWidthUnits = element.size;
-                const barX = element.cords[0].x;
-                const barY = element.cords[0].y - BAR_HEIGHT_UNITS - OFFSET_Y_UNITS;
-
-                printHPBar(
-                    canvas, 
-                    barX, 
-                    barY, 
-                    barWidthUnits, 
-                    BAR_HEIGHT_UNITS, 
-                    element.hp, 
-                    maxHp
+                    unit.maxHp
                 );
             }
         });
     }
 
-    function printBuildingPreview(canvas: Canvas): void {
-        const previewData = buildingPreview.getRenderData();
+    function drawBuildings(canvas: Canvas, buildings: Building[]): void {
+        buildings.forEach((building) => {
+            building.sprites.forEach((sprite, i) => {
+                const spriteData = getSprite(sprite);
+                canvas.spriteFull(spritesImage, building.cords[i].x, building.cords[i].y, spriteData[0], spriteData[1], spriteData[2]);
+            });
+
+            if (building.hp < building.MAX_HP) {
+                drawHPBar(canvas,
+                    building.cords[0].x,
+                    building.cords[0].y - 0.5,
+                    building.size,
+                    0.2,
+                    building.hp,
+                    building.MAX_HP
+                );
+            }
+        });
+    }
+
+    function drawBuildingPreview(canvas: Canvas): void {
+        const previewData = buildingPreviewRef.current.getRenderData();
         if (!previewData) return;
 
         const { gridPosition, canPlace } = previewData;
         const ctx = canvas.contextV;
-        
         const color = canPlace ? 'rgba(0, 255, 0, 0.4)' : 'rgba(255, 0, 0, 0.4)';
+        
         ctx.fillStyle = color;
-
-        // Рисуем область 2x2
-        ctx.fillRect(
-            canvas.xs(gridPosition.x),
-            canvas.ys(gridPosition.y),
-            canvas.dec(2),
-            canvas.dec(2)
-        );
-
-        // Рамка
+        ctx.fillRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(2), canvas.dec(2));
+        
         ctx.strokeStyle = canPlace ? '#00FF00' : '#FF0000';
         ctx.lineWidth = 2;
-        ctx.strokeRect(
-            canvas.xs(gridPosition.x),
-            canvas.ys(gridPosition.y),
-            canvas.dec(2),
-            canvas.dec(2)
-        );
+        ctx.strokeRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(2), canvas.dec(2));
+    }
+
+    function drawSelectionRect(canvas: Canvas): void {
+        const allocation = allocationRef.current;
+        if (!allocation.isSelectingStatus) return;
+
+        const rect = allocation.getSelectionRect();
+        if (rect) {
+            canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.5)";
+            canvas.contextV.fillRect(
+                canvas.xs(rect.x),
+                canvas.ys(rect.y),
+                canvas.dec(rect.width),
+                canvas.dec(rect.height)
+            );
+        }
     }
 
     function render(FPS: number): void {
@@ -177,23 +141,10 @@ const VillageCanvas: React.FC = () => {
             canvas.clear();
             const { units, buildings } = game.getScene();
 
-            printUnits(canvas, units);
-            printBuildings(canvas, buildings);
-
-            if (allocation.isSelectingStatus) {
-                const rect = allocation.getSelectionRect();
-                if (rect) {
-                    canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.5)";
-                    canvas.contextV.fillRect(
-                        canvas.xs(rect.x),
-                        canvas.ys(rect.y),
-                        canvas.dec(rect.width),
-                        canvas.dec(rect.height)
-                    );
-                }
-            }
-
-            printBuildingPreview(canvas);
+            drawUnits(canvas, units);
+            drawBuildings(canvas, buildings);
+            drawSelectionRect(canvas);
+            drawBuildingPreview(canvas);
 
             canvas.text(WINDOW.LEFT + 0.2, WINDOW.TOP + 0.5, String(FPS), GREEN);
             canvas.render();
@@ -201,86 +152,86 @@ const VillageCanvas: React.FC = () => {
     }
 
     const mouseDown = (x: number, y: number) => {
-        if (!game) return;
-        
-        if (buildingPreview.isActiveStatus()) {
-            return;
-        }
+        if (buildingPreviewRef.current.isActiveStatus()) return;
 
-        mouseDownPosition.current = { x, y };
-        mouseDownTime.current = Date.now();
-        wasDragging.current = false;
-        allocation.start(x, y);
+        mouseStateRef.current = {
+            downPosition: { x, y },
+            downTime: Date.now(),
+            wasDragging: false
+        };
+        allocationRef.current.start(x, y);
     };
 
     const mouseMove = (x: number, y: number) => {
+        const buildingPreview = buildingPreviewRef.current;
+
         if (buildingPreview.isActiveStatus() && game) {
             const { units, buildings } = game.getScene();
             const matrix = game.getVillageMatrix(units, buildings);
             buildingPreview.update(x, y, matrix);
         } else {
-            allocation.update(x, y);
+            allocationRef.current.update(x, y);
         }
     };
 
     const mouseUp = (x: number, y: number) => {
         if (!game) return;
-        const { units } = game.getScene();
 
-        const startPos = mouseDownPosition.current;
-        if (startPos) {
+        const mouseState = mouseStateRef.current;
+        const { downPosition, downTime } = mouseState;
+        
+        if (downPosition) {
             const distance = Math.sqrt(
-                Math.pow(x - startPos.x, 2) + Math.pow(y - startPos.y, 2)
+                Math.pow(x - downPosition.x, 2) + Math.pow(y - downPosition.y, 2)
             );
-            const timeElapsed = Date.now() - mouseDownTime.current;
+            const timeElapsed = Date.now() - downTime;
 
             if (distance > DRAG_THRESHOLD || timeElapsed > TIME_THRESHOLD) {
-                wasDragging.current = true;
-                allocation.end(units);
+                mouseState.wasDragging = true;
+                allocationRef.current.end(game.getScene().units);
             } else {
-                allocation.cancel();
+                allocationRef.current.cancel();
             }
         }
-        mouseDownPosition.current = null;
-        mouseDownTime.current = 0;
+        
+        mouseState.downPosition = null;
+        mouseState.downTime = 0;
     };
 
-    const mouseClick = async (x: number, y: number) => {
-        if (!game || wasDragging.current) return;
+    const mouseClick = (x: number, y: number) => {
+        if (!game || mouseStateRef.current.wasDragging) return;
 
         const gridX = Math.floor(x);
         const gridY = Math.floor(y);
         const { buildings } = game.getScene();
 
-        for (const build of buildings) {
-            const buildX = build.cords[0].x;
-            const buildY = build.cords[0].y;
-            if (gridX >= buildX && gridX < buildX + 2 && gridY >= buildY && gridY < buildY + 2) {
-                build.takeDamage(10); 
-                console.log(`Building HP: ${build.hp}`);
-                return; 
+        for (const building of buildings) {
+            const [bx, by] = [building.cords[0].x, building.cords[0].y];
+            if (gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2) {
+                building.takeDamage(10);
+                console.log(`Building HP: ${building.hp}`);
+                return;
             }
         }
 
-        if (!allocation.isSelectingStatus) {
+        if (!allocationRef.current.isSelectingStatus) {
             game.moveUnits({ x, y });
-            console.log('click: move units to', { x, y });
+            console.log('move units to', { x, y });
         }
     };
 
     const mouseRightClickDown = (x: number, y: number) => {
         if (!game) return;
 
-        // Отмена размещения здания при ПКМ
+        const buildingPreview = buildingPreviewRef.current;
+        
         if (buildingPreview.isActiveStatus()) {
             buildingPreview.deactivate();
             console.log('Размещение здания отменено');
-            return;
+        } else {
+            allocationRef.current.clearSelection(game.getScene().units);
+            console.log('Выделение снято');
         }
-
-        const { units } = game.getScene();
-        allocation.clearSelection(units);
-        console.log('right click: clear selection');
     };
 
     useEffect(() => {
@@ -298,36 +249,34 @@ const VillageCanvas: React.FC = () => {
                 mouseClick,
             },
         });
+
         return () => {
             game?.destructor();
             canvas?.destructor();
             canvas = null;
             game = null;
-            if (interval) {
-                clearInterval(interval);
-                interval = null;
-            }
         };
-    }, []);
+    });
 
     useEffect(() => {
         const keyDownHandler = (event: KeyboardEvent) => {
-            // Отмена размещения по ESC
-            if (event.key === 'Escape' && buildingPreview.isActiveStatus()) {
-                buildingPreview.deactivate();
+            if (event.key === 'Escape' && buildingPreviewRef.current.isActiveStatus()) {
+                buildingPreviewRef.current.deactivate();
                 console.log('Размещение здания отменено (ESC)');
             }
         };
+
         document.addEventListener('keydown', keyDownHandler);
+
         return () => {
             document.removeEventListener('keydown', keyDownHandler);
         };
-    }, []);
+    });
 
     return (
-    <div className='VillageCanvas'>
-        <div id={GAME_FIELD} className={GAME_FIELD}></div>
-    </div>
+        <div className='VillageCanvas'>
+            <div id={GAME_FIELD} className={GAME_FIELD}></div>
+        </div>
     );
 };
 
