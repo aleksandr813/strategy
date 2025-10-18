@@ -2,7 +2,7 @@ import React, { useContext, useRef, useState, useEffect } from 'react';
 import { ServerContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
-import { validateLogin, validatePassword } from '../VerificationOfRegistrationAndAuthorization/ValidationUtils';
+import { validateLogin, validatePassword } from '../Verification/Verification';
 
 import './Login.scss';
 
@@ -50,8 +50,8 @@ const [passwordError, setPasswordError] = useState('');
             setPage(PAGES.CHAT);
         }
     }
-}
 
+ }
 const regClickHandler = () => setPage(PAGES.REGISTRATION);
 
 return (
@@ -73,5 +73,5 @@ return (
         </div>
     </div>
 )
-
+}
 export default Login;
