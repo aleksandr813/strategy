@@ -11,14 +11,13 @@ import Building from '../../game/Buildings/Building';
 import Allocation from './UI/Allocation';
 import BuildingPreview from './UI/BuildingPreview';
 import { TPoint } from '../../config';
-import { ServerContext } from '../../App';
 
 import "./Village.scss"
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
 
-const VillageCanvas: React.FC<IBasePage> = (props: IBasePage) => {
+const VillageCanvas: React.FC = () => {
     const { WINDOW, SPRITE_SIZE } = CONFIG;
     let game: Game | null = null;
     let canvas: Canvas | null = null;
@@ -27,9 +26,7 @@ const VillageCanvas: React.FC<IBasePage> = (props: IBasePage) => {
     const [[spritesImage], getSprite] = useSprites();
     const allocation = new Allocation();
     const buildingPreviewRef = useRef(new BuildingPreview());
-    const buildingPreview = buildingPreviewRef.current;
-    const server = useContext(ServerContext)
-    
+    const buildingPreview = buildingPreviewRef.current;    
     const mouseDownPosition = useRef<TPoint | null>(null);
     const mouseDownTime = useRef<number>(0);
     const wasDragging = useRef<boolean>(false);
@@ -251,38 +248,6 @@ const VillageCanvas: React.FC<IBasePage> = (props: IBasePage) => {
     const mouseClick = async (x: number, y: number) => {
         if (!game || wasDragging.current) return;
 
-        // Режим размещения здания
-        if (buildingPreview.isActiveStatus()) {
-            const newBuilding = buildingPreview.tryPlace();
-            if (newBuilding) {
-                const typeId = buildingPreview.getBuildingTypeId();
-                const pos = buildingPreview.getPlacementPosition();
-
-                console.log('=== DEBUG buyBuilding ===');
-                console.log('typeId:', typeId, 'type:', typeof typeId);
-                console.log('x:', pos.x, 'type:', typeof pos.x);
-                console.log('y:', pos.y, 'type:', typeof pos.y);
-
-                try {
-                    const result = await server.buyBuilding(typeId, pos.x, pos.y);
-
-                    console.log('Результат buyBuilding:', result);
-
-                    if (result && !result.error) {
-                        game.addBuilding(newBuilding);
-                        console.log('Здание успешно построено!', result);
-                    } else {
-                        console.error('Ошибка при покупке здания:', result?.error || result);
-                        buildingPreview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp);
-                    }
-                } catch (error) {
-                    console.error('Ошибка запроса:', error);
-                    buildingPreview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp);
-                }
-            }
-            return;
-        }
-
         const gridX = Math.floor(x);
         const gridY = Math.floor(y);
         const { buildings } = game.getScene();
@@ -358,7 +323,7 @@ const VillageCanvas: React.FC<IBasePage> = (props: IBasePage) => {
             document.removeEventListener('keydown', keyDownHandler);
         };
     }, []);
-    
+
     return (
     <div className='VillageCanvas'>
         <div id={GAME_FIELD} className={GAME_FIELD}></div>

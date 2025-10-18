@@ -3,7 +3,7 @@ import CONFIG from '../../config';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import Game from '../../game/Game';
-import useSprites from './hooks/useSprites';
+import VillageCanvas from './VillageCanvas';
 
 import "./Village.scss"
 
@@ -27,7 +27,9 @@ const Village: React.FC<IBasePage> = (props: IBasePage) => {
         <Button onClick={GlobalMapClickHandler} text='GlobalMap'/>
         <Button onClick={VillageClickHandler} text='Village'/>
         <Button onClick={backClickHandler} text='Назад' />
-        <div id={GAME_FIELD} className={GAME_FIELD}></div>
+        <div>
+            <VillageCanvas/>
+        </div>
     </div>
     );
 };
