@@ -22,6 +22,7 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
         }
     }
     const regClickHandler = () => setPage(PAGES.REGISTRATION);
+    const goToVillageHandler = () => setPage(PAGES.VILLAGE);
 
     return (
     <div className='login'>
@@ -36,8 +37,8 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
             <div className='login-buttons'>
                 <Button onClick={loginClickHandler} text='Авторизоваться' id="Test-button-autorization"/>
                 <Button onClick={regClickHandler} text='Регистрация' id="Test-button-back"/>
-
             </div>
+            <Button onClick={goToVillageHandler} text='Вход без аккаунта' id="Temporary-debug-button"/>
         </div>
     </div>
     )
