@@ -89,7 +89,7 @@ const Calculator: React.FC<IBasePage> = ({ setPage }) => {
 
             <div style={{ marginTop: "10px" }}>
                 <Button onClick={sendRequest} text="Отправить" />
-                <Button onClick={() => setPage(PAGES.GAME)} text="Назад" />
+                <Button onClick={() => setPage(PAGES.VILLAGE)} text="Назад" />
             </div>
 
             {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}

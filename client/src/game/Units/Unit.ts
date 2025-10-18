@@ -12,6 +12,7 @@ export default class Unit {
     sy = 0;
     sprite = 2
     isSelected: boolean = false;
+    moveIntervalId: NodeJS.Timeout | null = null;
     
     constructor(x: number, y: number) {
         this.cords = {x: x, y: y};

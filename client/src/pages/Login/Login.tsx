@@ -2,7 +2,7 @@ import React, { useContext, useRef, useState, useEffect } from 'react';
 import { ServerContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
-import { validateLogin, validatePassword } from '../Verification/Verification';
+import { validateLogin, validatePassword } from '../Verification/VerificationUnit';
 
 import './Login.scss';
 
@@ -14,7 +14,7 @@ const passwordRef = useRef<HTMLInputElement>(null);
 const [loginError, setLoginError] = useState('');
 const [passwordError, setPasswordError] = useState('');
 
- const loginClickHandler = async () => {
+  const loginClickHandler = async () => {
     if (loginRef.current && passwordRef.current) {
         const login = loginRef.current.value;
         const password = passwordRef.current.value;
@@ -51,8 +51,13 @@ const [passwordError, setPasswordError] = useState('');
         }
     }
 
+
  }
-const regClickHandler = () => setPage(PAGES.REGISTRATION);
+
+
+    const regClickHandler = () => setPage(PAGES.REGISTRATION);
+    const goToVillageHandler = () => setPage(PAGES.VILLAGE);
+   
 
 return (
     <div className='login'>
@@ -60,18 +65,23 @@ return (
         <div className='login-wrapper'>
             <div className='login-inputs'>
                 <p>Логин</p>
-                <input ref={loginRef} />
+                <input ref={loginRef} id="Test-input-login"/>
                 {loginError && <p className="error-message">{loginError}</p>}
                 <p>Пароль</p>
-                <input ref={passwordRef} type='password' />
+                <input ref={passwordRef} type='password' id="Test-input-password"/>
                 {passwordError && <p className="error-message">{passwordError}</p>}
             </div>
             <div className='login-buttons'>
-                <Button onClick={loginClickHandler} text='Авторизоваться' />
-                <Button onClick={regClickHandler} text='Регистрация' />
+                <Button onClick={loginClickHandler} text='Авторизоваться' id="Test-button-autorization"/>
+                <Button onClick={regClickHandler} text='Регистрация' id="Test-button-back"/>
             </div>
+            <Button onClick={goToVillageHandler} text='Вход без аккаунта' id="Temporary-debug-button"/>
         </div>
     </div>
 )
+
+
 }
+
+
 export default Login;

@@ -1,36 +1,54 @@
 import CONFIG, { TPoint } from "../config";
 import Unit from './Units/Unit';
-import Build from './Builds/Build';
+import Building from './Buildings/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../pages/Village/UI/Allocation";
+import BuildingPreview from "../pages/Village/UI/BuildingPreview";
 
 const { WIDTH, HEIGHT } = CONFIG;
 
 class Game {
     private units:Unit[];
-    private builds:Build[];
+    private buildings:Building[];
     private allocation:Allocation;
+    private buildingPreview;
+    private easystar = new EasyStar.js();
     
 
     constructor() {
         this.units = [new Unit(5, 7), new Unit(0, 0)]
-        this.builds = [new Build(5, 5)]
+        this.buildings = []
         this.allocation = new Allocation;
+        this.buildingPreview = new BuildingPreview();
     }
     
 
     destructor() {
-        //...
+
     }
 
     getScene() {
         return {
             units: this.units,
-            builds: this.builds,
+            buildings: this.buildings,
+            buildingPreview: this.buildingPreview,
         };
     }
 
-    getVillageMatrix(units:Unit[], builds:Build[]):number[][] {
+
+    addBuilding(building: Building): void {
+        this.buildings.push(building);
+    }
+
+
+    removeBuilding(building: Building): void {
+        const index = this.buildings.indexOf(building);
+        if (index > -1) {
+            this.buildings.splice(index, 1);
+        }
+    }
+
+    getVillageMatrix(units:Unit[], buildings:Building[]):number[][] {
         let booleanMatrix:number[][] = new Array(29);
         for (let i = 0; i < 29; i++) {
             booleanMatrix[i] = new Array(29).fill(0);
@@ -38,7 +56,7 @@ class Game {
         units.forEach((element) => {
             booleanMatrix[element.cords.x][element.cords.y] = 1;
         })
-        builds.forEach((element) => {
+        buildings.forEach((element) => {
             booleanMatrix[element.cords[0].x][element.cords[0].y] = 1;
             booleanMatrix[element.cords[0].x + 1][element.cords[0].y] = 1;
             booleanMatrix[element.cords[0].x][element.cords[0].y + 1] = 1;
@@ -51,69 +69,56 @@ class Game {
         destination.x = Math.round(destination.x);
         destination.y = Math.round(destination.y);
         
-        let easystar = new EasyStar.js();
-
         this.units.forEach((unit) => {
             if (!unit.isSelected) {
                 return;
             }
 
-            // Создаем копию матрицы без текущего юнита
+            if (unit.moveIntervalId) {
+                clearInterval(unit.moveIntervalId);
+                unit.moveIntervalId = null;
+            }
+
             let booleanMatrix = this.getVillageMatrix(
                 this.units.filter(u => u !== unit), 
-                this.builds
+                this.buildings
             );
 
-            easystar.setGrid(booleanMatrix);
-            easystar.setAcceptableTiles([0]);
+            this.easystar.setGrid(booleanMatrix);
+            this.easystar.setAcceptableTiles([0]);
 
-            easystar.findPath(unit.cords.x, unit.cords.y, destination.x, destination.y, (path) => {
+            this.easystar.findPath(unit.cords.x, unit.cords.y, destination.x, destination.y, (path) => {
                 if (path === null) {
                     console.log("Path was not found");
                 } else {
                     path.shift();
 
                     let stepIndex = 0;
-                    let intervalId = setInterval(() => {
+                    unit.moveIntervalId = setInterval(() => {
                         if (stepIndex < path.length) {
-                            // Перед каждым шагом проверяем, не занята ли клетка
                             const nextStep = path[stepIndex];
                             const currentMatrix = this.getVillageMatrix(
                                 this.units.filter(u => u !== unit), 
-                                this.builds
+                                this.buildings
                             );
                             
                             if (currentMatrix[nextStep.x][nextStep.y] === 0) {
                                 unit.cords = nextStep;
                                 stepIndex++;
                             }
-                            // Если клетка занята, ждем следующего интервала
                         } else {
-                            clearInterval(intervalId);
+                            if (unit.moveIntervalId) {
+                                clearInterval(unit.moveIntervalId);
+                                unit.moveIntervalId = null;
+                            }
                         }
                     }, 100);
                 }
             });
         });
 
-    easystar.calculate();
-}
-
-    
-
-    /**
-    move(dx: number, dy: number): void {
-        if ((dx > 0 && this.kapitoshka.x + dx <= WIDTH - 1) ||
-            (dx < 0 && this.kapitoshka.x - dx >= 0)
-        ) {
-            this.kapitoshka.x += dx;
-        }
-        if ((dy > 0 && this.kapitoshka.y + dy <= HEIGHT - 1) ||
-            (dy < 0 && this.kapitoshka.y - dy >= 0)
-        ) {
-            this.kapitoshka.y += dy;
-        }
-    }  */
+        this.easystar.calculate();
+    }
 }
 
 export default Game;
