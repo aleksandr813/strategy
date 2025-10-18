@@ -37,7 +37,6 @@ const PageManager: React.FC = () => {
             {page === PAGES.REGISTRATION && <Registration setPage={setPage} />}
             {page === PAGES.CHAT && <Chat setPage={setPage} />}
             {page === PAGES.VILLAGE && <Village setPage={setPage} />}
-            {page === PAGES.CHAT && <Chat setPage={setPage} />}
             {page === PAGES.CALCULATOR && <Calculator setPage={setPage} />}
             {page === PAGES.BATTLE && <Battle setPage={setPage} />}
             {page === PAGES.GLOBAL_MAP && <GlobalMap setPage={setPage} />}

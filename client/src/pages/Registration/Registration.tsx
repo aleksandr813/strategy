@@ -17,7 +17,7 @@ const Registration: React.FC<IBasePage> = (props: IBasePage) => {
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const [nameError, setNameError] = useState('');
 
-  const registerClickHandler = async () => {
+const registerClickHandler = async () => {
     if (loginRef.current && passwordRef.current && confirmPasswordRef.current && nameRef.current) {
         const login = loginRef.current.value;
         const password = passwordRef.current.value;
@@ -87,21 +87,21 @@ return (
         <div className='registration-wrapper'>
             <div className='registration-inputs'>
                 <p>Логин</p>
-                <input ref={loginRef} />
+                <input ref={loginRef} id="Test-input-login"/>
                 {loginError && <p className="error-message">{loginError}</p>}
                 <p>Пароль</p>
-                <input ref={passwordRef} type='password' />
+                <input ref={passwordRef} type='password' id="Test-input-password"/>
                 {passwordError && <p className="error-message">{passwordError}</p>}
                 <p>Подтверждение</p>
-                <input ref={confirmPasswordRef} type='password' />
+                <input ref={confirmPasswordRef} type='password' id="Test-input-password-2"/>
                 {confirmPasswordError && <p className="error-message">{confirmPasswordError}</p>}
                 <p>Отображаемое имя</p>
-                <input ref={nameRef} />
+                <input ref={nameRef} id="Test-input-name"/>
                 {nameError && <p className="error-message">{nameError}</p>}
             </div>
             <div className='registration-buttons'>
-                <Button onClick={registerClickHandler} text='Зарегистрироваться' />
-                <Button onClick={backClickHandler} text='Назад' />
+                <Button onClick={registerClickHandler} text='Зарегистрироваться' id="Test-button-registration"/>
+                <Button onClick={backClickHandler} text='Назад' id="Test-button-back"/>
             </div>
         </div>
     </div>

@@ -120,11 +120,6 @@ const GamePage: React.FC<IBasePage> = (props: IBasePage) => {
             }
         });
     }
-
-    function printBuilds(canvas: Canvas, buildings: Building[]): void {
-        const BAR_HEIGHT_UNITS = 0.2;
-        const OFFSET_Y_UNITS = 0.3;
-
     function printBuilds(canvas: Canvas, buildings: Building[]): void {
         const BAR_HEIGHT_UNITS = 0.2;
         const OFFSET_Y_UNITS = 0.3;
