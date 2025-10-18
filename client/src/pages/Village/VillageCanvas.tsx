@@ -188,7 +188,6 @@ const VillageCanvas: React.FC = () => {
         mouseDownTime = 0;
     };
 
-    // ИСПРАВЛЕНО: добавлено async
     const mouseClick = async (x: number, y: number) => {
         if (!game || wasDragging) return;
 
