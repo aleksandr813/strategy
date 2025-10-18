@@ -5,7 +5,7 @@ import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units/Unit';
 import Building from '../../game/Buildings/Building';
 import Allocation from './UI/Allocation';
-import { GameContext } from '../../App';
+import { GameContext, ServerContext } from '../../App';
 import { TPoint } from '../../config';
 
 import "./Village.scss"
@@ -19,6 +19,7 @@ const VillageCanvas: React.FC = () => {
     const { WINDOW, SPRITE_SIZE } = CONFIG;
 
     const game = useContext(GameContext)
+    const server = useContext(ServerContext)
 
     let canvas: Canvas | null = null;
     const Canvas = useCanvas(render);
@@ -187,7 +188,8 @@ const VillageCanvas: React.FC = () => {
         mouseDownTime = 0;
     };
 
-    const mouseClick = (x: number, y: number) => {
+    // ИСПРАВЛЕНО: добавлено async
+    const mouseClick = async (x: number, y: number) => {
         if (!game || wasDragging) return;
 
         const gridX = Math.floor(x);
@@ -206,6 +208,38 @@ const VillageCanvas: React.FC = () => {
         if (!allocation.isSelectingStatus) {
             game.moveUnits({ x, y });
             console.log('move units to', { x, y });
+        }
+
+        // Режим размещения здания
+        if (game.getScene().buildingPreview.isActiveStatus()) {
+            const newBuilding = game.getScene().buildingPreview.tryPlace();
+            if (newBuilding) {
+                const typeId = game.getScene().buildingPreview.getBuildingTypeId();
+                const pos = game.getScene().buildingPreview.getPlacementPosition();
+
+                console.log('=== DEBUG buyBuilding ===');
+                console.log('typeId:', typeId, 'type:', typeof typeId);
+                console.log('x:', pos.x, 'type:', typeof pos.x);
+                console.log('y:', pos.y, 'type:', typeof pos.y);
+
+                try {
+                    const result = await server.buyBuilding(typeId, pos.x, pos.y);
+
+                    console.log('Результат buyBuilding:', result);
+
+                    if (result && !result.error) {
+                        game.addBuilding(newBuilding);
+                        console.log('Здание успешно построено!', result);
+                    } else {
+                        console.error('Ошибка при покупке здания:', result?.error || result);
+                        game.getScene().buildingPreview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp);
+                    }
+                } catch (error) {
+                    console.error('Ошибка запроса:', error);
+                    game.getScene().buildingPreview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp);
+                }
+            }
+            return;
         }
     };
 

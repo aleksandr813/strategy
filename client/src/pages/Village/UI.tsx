@@ -2,15 +2,10 @@ import React, { Component, useContext, useEffect, useRef, useState } from 'react
 import CONFIG from '../../config';
 import { BuildingType, BuildingTypeResponse } from '../../services/server/types';
 import Button from '../../components/Button/Button';
-import { IBasePage, PAGES } from '../PageManager';
 import { GameContext, ServerContext } from '../../App';
-import Game from '../../game/Game';
 
 import "./Village.scss"
-import BuildingPreview from './UI/BuildingPreview';
 
-const GAME_FIELD = 'game-field';
-const GREEN = '#00e81c';
 
 const UI: React.FC = () => {
     const [showBuyMenu, setShowBuyMenu] = React.useState(false);
@@ -35,7 +30,6 @@ const UI: React.FC = () => {
 
 
     useEffect(() => {
-
         const fetchBuildingTypes = async () => {
             try {
                 const response = await server.getBuildingTypes();

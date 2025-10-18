@@ -53,3 +53,11 @@ export interface BuildingType {
 export type TBuildingTypesResponse = {
     building_types: BuildingTypeResponse[];
 }
+
+export interface buyBuildingResponse {
+    id: string;
+    type: string;
+    name: string;
+    hp: string;
+    price: string;
+}
