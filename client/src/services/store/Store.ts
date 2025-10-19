@@ -1,4 +1,5 @@
 import { TMessages, TUser } from "../server/types";
+import Building from "../../game/Buildings/Building";
 
 const TOKEN = 'token';
 
@@ -6,6 +7,7 @@ class Store {
     user: TUser | null = null;
     messages: TMessages = [];
     chatHash: string = 'empty chat hash';
+    buildings: Building[] = [];
 
     setToken(token: string): void {
         localStorage.setItem(TOKEN, token);
@@ -54,6 +56,15 @@ class Store {
     setChatHash(hash: string): void {
         this.chatHash = hash;
     }
+
+    setBuildings(buildings: Building[]): void {
+    this.buildings = buildings;
+}
+
+    getBuildings(): Building[] {
+        return this.buildings;
+    }
+
 }
 
 export default Store;

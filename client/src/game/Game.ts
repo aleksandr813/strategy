@@ -4,6 +4,9 @@ import Building from './Buildings/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../pages/Village/UI/Allocation";
 import BuildingPreview from "../pages/Village/UI/BuildingPreview";
+import Server from "../services/server/Server";
+import BuildingManager from "./Buildings/BuildingManager";
+import Store from "../services/store/Store";
 
 const { WIDTH, HEIGHT } = CONFIG;
 
@@ -13,6 +16,7 @@ class Game {
     private allocation:Allocation;
     private buildingPreview;
     private easystar = new EasyStar.js();
+    private store: Store;
     
 
     constructor() {
@@ -20,6 +24,15 @@ class Game {
         this.buildings = []
         this.allocation = new Allocation;
         this.buildingPreview = new BuildingPreview();
+        this.store = new Store();
+    }
+
+    async loadBuildings(server: Server) {
+        console.log("Загружаем здания из Game...");
+        const buildingObjects = await BuildingManager.loadAll(server);
+
+        this.buildings = buildingObjects;
+        console.log("Загружено зданий:", this.buildings.length);
     }
     
 
@@ -119,6 +132,9 @@ class Game {
 
         this.easystar.calculate();
     }
+    getStore(): Store {
+        return this.store;
+    };
 }
 
 export default Game;

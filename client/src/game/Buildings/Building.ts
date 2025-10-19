@@ -1,24 +1,33 @@
-import { TPoint } from "../../config";
-
-const MAX_HP_BUILDS = 100;
+import { Building as BuildingData, BuildingType } from "../../services/server/types";
 
 export default class Building {
-    MAX_HP = MAX_HP_BUILDS; 
-    hp = 100;
-    sx = 0;
-    sy = 0;
-    size = 2;
-    sprites = [1, 1, 1, 1]
-    cords: TPoint[] = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }];
+    id: number;
+    type: BuildingType;
+    cords: { x: number, y: number }[];
+    hp: number;
+    maxHp: number;
+    level: number;
+    size: number; 
+    sprites: number[]; 
 
-    constructor(x: number, y: number) {
-        this.cords = [{ x: x, y: y }, { x: x + 1, y: y }, { x: x, y: y + 1 }, { x: x + 1, y: y + 1 }];
+    constructor(data: BuildingData, type: BuildingType) {
+        this.id = Number(data.id);
+        this.type = type;
+        this.hp = Number(data.current_hp);
+        this.maxHp = Number(type.hp);
+        this.level = Number(data.level);
+        this.size = 2; 
+        this.sprites = Array(this.size * this.size).fill(Number(type.sprite));
+
+        this.cords = [
+            { x: Number(data.x), y: Number(data.y) },
+            { x: Number(data.x) + 1, y: Number(data.y) },
+            { x: Number(data.x), y: Number(data.y) + 1 },
+            { x: Number(data.x) + 1, y: Number(data.y) + 1 },
+        ];
     }
 
-    public takeDamage(amount: number): void {
-        this.hp -= amount;
-        if (this.hp < 0) {
-            this.hp = 0;
-        }
+    takeDamage(amount: number) {
+        this.hp = Math.max(0, this.hp - amount);
     }
 }
