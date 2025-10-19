@@ -92,11 +92,10 @@
     }
 
     .version {
-        position: absolute;
+        margin-bottom: -25px;
+        margin-left:-10px;
         height: 50px;
         width: 50px;
-        top: 14%;
-        left: 39%;
         image-rendering: pixelated;
         transform: rotate(-30deg);
         color: yellow;

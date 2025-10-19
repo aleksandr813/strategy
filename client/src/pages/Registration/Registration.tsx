@@ -45,7 +45,6 @@ return (
     <div className="registration">
         <div className="background-characters left"></div>
         <div className="background-characters right"></div>
-        <h1 className='version'>Alpha</h1>
 
         <img src={arrow} className="arrow arrow-left" />
         <img src={arrow} className="arrow arrow-right" />
@@ -60,6 +59,7 @@ return (
     
 
         <div className="registration-content">
+            <h1 className='version'>Alpha</h1>
             <h1 className="title">STRATEGY</h1>
 
             <div className="registration-form">
