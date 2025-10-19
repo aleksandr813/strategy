@@ -15,6 +15,12 @@ class User
 
     public function login($login, $hash, $rnd)
     {
+        // Валидация логина при авторизации
+        $loginValidation = $this->validateLogin($login);
+        if ($loginValidation !== true) {
+            return $loginValidation;
+        }
+
         $user = $this->db->getUserByLogin($login);
         if ($user) {
             if (md5($user->password . $rnd) === $hash) {
@@ -62,7 +68,7 @@ class User
             // Создание стартовой деревни для пользователя
             $villageCreated = $this->createStarterVillage($user->id);
             if (!$villageCreated) {
-                return ['error' => 1006];
+                return ['error' => 1090];
             }
 
             $token = md5(rand());
@@ -115,7 +121,6 @@ class User
     }
 
     //Валидация логина
-
     private function validateLogin($login)
     {
         // Проверка длины
