@@ -29,6 +29,9 @@ const VillageCanvas: React.FC = () => {
     let mouseDownPosition: TPoint | null = null;
     let mouseDownTime: number = 0;
     let wasDragging: boolean = false;
+    let isMiddleMouseDragging: boolean = false;
+    let middleMouseStartPosition: TPoint | null = null;
+    let windowStartPosition: { LEFT: number, TOP: number } | null = null;
     
     const [[spritesImage], getSprite] = useSprites();
 
@@ -165,6 +168,16 @@ const VillageCanvas: React.FC = () => {
         } else {
             allocation.update(x, y);
         }
+
+        // Перемещение камеры средней кнопкой мыши
+        if (isMiddleMouseDragging && middleMouseStartPosition && windowStartPosition && canvas) {
+            const deltaX = x - middleMouseStartPosition.x;
+            const deltaY = y - middleMouseStartPosition.y;
+            
+            WINDOW.LEFT = windowStartPosition.LEFT - deltaX;
+            WINDOW.TOP = windowStartPosition.TOP - deltaY;
+        }
+        return
     };
 
     const mouseUp = (x: number, y: number) => {
@@ -254,6 +267,56 @@ const VillageCanvas: React.FC = () => {
         }
     };
 
+    const mouseLeave = () => {
+        console.log('Мышь покинула канвас');
+        wasDragging = false;
+        isMiddleMouseDragging = false;
+        middleMouseStartPosition = null;
+        windowStartPosition = null;
+        allocation.cancel();
+    };
+
+    const mouseWheel = (delta: number, x: number, y: number) => {
+        if (!canvas) return;
+
+        // Зум с центром в позиции мыши
+        const zoomFactor = delta > 0 ? 1.1 : 0.9;
+        
+        // Сохраняем мировые координаты под курсором
+        const worldX = x;
+        const worldY = y;
+        
+        // Изменяем размер окна
+        const oldWidth = WINDOW.WIDTH;
+        const oldHeight = WINDOW.HEIGHT;
+        
+        WINDOW.WIDTH *= zoomFactor;
+        WINDOW.HEIGHT *= zoomFactor;
+        
+        // Корректируем позицию окна так, чтобы точка под курсором осталась на месте
+        const relativeX = (worldX - WINDOW.LEFT) / oldWidth;
+        const relativeY = (worldY - WINDOW.TOP) / oldHeight;
+        
+        WINDOW.LEFT = worldX - relativeX * WINDOW.WIDTH;
+        WINDOW.TOP = worldY - relativeY * WINDOW.HEIGHT;
+        
+        console.log('Зум:', zoomFactor, 'Новый размер окна:', WINDOW.WIDTH, 'x', WINDOW.HEIGHT);
+    };
+
+    const mouseMiddleDown = (x: number, y: number) => {
+        console.log('Зажата средняя кнопка мыши в позиции:', { x, y });
+        isMiddleMouseDragging = true;
+        middleMouseStartPosition = { x, y };
+        windowStartPosition = { LEFT: WINDOW.LEFT, TOP: WINDOW.TOP };
+    };
+
+    const mouseMiddleUp = (x: number, y: number) => {
+        console.log('Отпущена средняя кнопка мыши в позиции:', { x, y });
+        isMiddleMouseDragging = false;
+        middleMouseStartPosition = null;
+        windowStartPosition = null;
+    };
+
     useEffect(() => {
         canvas = Canvas({
             parentId: GAME_FIELD,
@@ -266,6 +329,10 @@ const VillageCanvas: React.FC = () => {
                 mouseUp,
                 mouseRightClickDown,
                 mouseClick,
+                mouseLeave,
+                mouseWheel,
+                mouseMiddleDown,
+                mouseMiddleUp,
             },
         });
 
