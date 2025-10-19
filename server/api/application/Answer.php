@@ -53,7 +53,6 @@ class Answer
         '1014' => 'Пароль содержит персональную информацию',
         '1006' => 'Ошибка создания деревни',
         '1005' => 'Other user is playing wright now. If you doesn`t, please change the password',
-        '1006' => 'user with this email is already registered',
         '9000' => 'unknown error'
     );
 

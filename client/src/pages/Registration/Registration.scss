@@ -1,39 +1,217 @@
 .registration {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: 'PixelifySans-Bold', sans-serif;
+    color: white;
+
+
     @font-face {
         font-family: 'PixelifySans-Medium';
         src: url('../../assets/fonts/PixelifySans-Medium.ttf');
+    }
+
+    @font-face {
         font-family: 'PixelifySans-Bold';
         src: url('../../assets/fonts/PixelifySans-Bold.ttf');
     }
 
-    #title {
-        font-family: PixelifySans-Bold;
-        color: whitesmoke;
-        font-size: larger;
-    }
+    .arrow {
+        position: absolute;
+        height: 140px;
+        width: 140px;
+        image-rendering: pixelated;
 
-    &-inputs {
-        font-family: PixelifySans-Medium;
-        display: flex;
-        flex-direction: column;
-        color: black;
-        alignment-baseline: alphabetic;
+        &.arrow-left {
+            top: 15%;
+            left: 23%;
+            transform: rotate(65deg);
+        }
 
-        input {
-            margin: 10px;
-            padding: 0 10px 5px 10px;
-            background-color: whitesmoke;
-            width: 300px;
-            border-radius: 10px;
-            border: 2px;
-            border-style: solid;
-            border-color: gray;
+        &.arrow-right {
+            top: 20%;
+            right: 23%;
+            transform: rotate(-65deg);
         }
     }
 
-    &-buttons {
-        display: flex;
-        justify-content: space-between;
-        max-width: 500px;
+    .swordman {
+        position: absolute;
+        height: 200px;
+        width: 200px;
+        image-rendering: pixelated;
+        bottom: 12%;
+
+        &.swordman-left {
+            left: -3%;
+        }
+
+        &.swordman-right {
+            transform: scaleX(-1);
+            right: -3%;
+        }
     }
+
+    .archer {
+        position: absolute;
+        height: 250px;
+        width: 250px;
+        image-rendering: pixelated;
+        bottom: -2%;
+
+        &.archer-left {
+            left: 0%;
+        }
+
+        &.archer-right {
+            transform: scaleX(-1);
+            right: 0%;
+        }
+    }
+
+    .spearman {
+        position: absolute;
+        height: 200px;
+        width: 200px;
+        image-rendering: pixelated;
+
+        &.spearman-left {
+            bottom: -3%;
+            left: -3%;
+        }
+
+        &.spearman-right {
+            transform: scaleX(-1);
+            bottom: -3%;
+            right: -3%;
+        }
+    }
+
+    .version {
+        position: absolute;
+        height: 50px;
+        width: 50px;
+        top: 14%;
+        left: 39%;
+        image-rendering: pixelated;
+        transform: rotate(-30deg);
+        color: yellow;
+        text-shadow: 2px 2px #000;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: rotate(-30deg) scale(1);
+        }
+
+        50% {
+            transform: rotate(-30deg) scale(1.1);
+        }
+
+        100% {
+            transform: rotate(-30deg) scale(1);
+        }
+    }
+
+    .background-characters {
+        position: absolute;
+        bottom: 0;
+        width: 180px;
+        height: 260px;
+        background-repeat: no-repeat;
+        background-size: contain;
+        image-rendering: pixelated;
+
+        &.left {
+            left: 0;
+        }
+
+        &.right {
+            right: 0;
+            transform: scaleX(-1);
+        }
+    }
+
+    .registration-content {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 30px 50px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        min-width: 400px;
+    }
+
+    .title {
+        font-size: 48px;
+        color: white;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px #000;
+        letter-spacing: 3px;
+    }
+
+    .registration-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        font-family: 'PixelifySans-Medium';
+
+        label {
+            color: white;
+            font-size: 16px;
+            align-self: flex-start;
+        }
+
+        input {
+            width: 100%;
+            max-width: 300px;
+            height: 40px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            background-color: #f5f5f5;
+            color: #000;
+            font-size: 14px;
+            font-family: 'PixelifySans-Medium';
+            outline: none;
+
+            &:focus {
+                border-color: #000;
+                background-color: #fff;
+            }
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            margin: -5px 0 10px;
+        }
+
+        button {
+            width: 100%;
+            max-width: 320px;
+            background-color: #006400;
+            color: white;
+            border: 2px solid #222;
+            border-radius: 10px;
+            padding: 8px 0;
+            margin-top: 10px;
+            font-family: 'PixelifySans-Bold';
+            cursor: pointer;
+            transition: all 0.2s;
+            image-rendering: pixelated;
+
+            &:hover {
+                background-color: #00a000;
+                transform: scale(1.03);
+            }
+        }
+    }
+
+
 }
