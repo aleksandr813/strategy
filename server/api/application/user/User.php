@@ -13,8 +13,6 @@ class User
         return $this->db->getUserByToken($token);
     }
 
-
-    
     public function login($login, $hash, $rnd)
     {
         $user = $this->db->getUserByLogin($login);
@@ -146,6 +144,8 @@ class User
             return ['error' => 1009];
         }
 
+        // Проверка на пробелы и специальные символы
+        if (preg_match('/[\s@#$%]/', $login)) {
         // Проверка на пробелы
         if (strpos($login, ' ') !== false) {
             return ['error' => 1010];
@@ -153,6 +153,7 @@ class User
 
         return true;
     }
+}
 
     // Валидация пароля
     private function validatePassword($password, $login, $name)
