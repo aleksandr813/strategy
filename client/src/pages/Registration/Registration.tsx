@@ -17,10 +17,9 @@ const Registration: React.FC<IBasePage> = (props: IBasePage) => {
     const passwordRef = useRef<HTMLInputElement>(null);
     const confirmPasswordRef = useRef<HTMLInputElement>(null);
     const nameRef = useRef<HTMLInputElement>(null);
-    const [passwordError, setPasswordError] = useState('');
-    const [loginError, setLoginError] = useState('');
-    const [confirmPasswordError, setConfirmPasswordError] = useState('');
-    const [nameError, setNameError] = useState('');
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [errorCode, setErrorCode] = useState('');
 
     const registerClickHandler = async () => {
         if (loginRef.current && passwordRef.current && confirmPasswordRef.current && nameRef.current) {
@@ -30,22 +29,23 @@ const Registration: React.FC<IBasePage> = (props: IBasePage) => {
             const name = nameRef.current.value;
 
             // Сбрасываем предыдущие ошибки
-            setLoginError('');
-            setPasswordError('');
-            setConfirmPasswordError('');
-            setNameError('');
+            setShowError(false);
 
             let hasErrors = false;
 
             // Проверка логина
             const loginValidation = validateLogin(login);
             if (!loginValidation.isValid) {
-                setLoginError(loginValidation.message);
+                setErrorMessage(loginValidation.message);
+                setErrorCode('1001');
+                setShowError(true);
                 hasErrors = true;
             } else {
                 const availability = await checkLoginAvailability(login);
                 if (!availability.isValid) {
-                    setLoginError(availability.message);
+                    setErrorMessage(availability.message);
+                    setErrorCode('1003');
+                    setShowError(true);
                     hasErrors = true;
                 }
             }
@@ -53,22 +53,30 @@ const Registration: React.FC<IBasePage> = (props: IBasePage) => {
             // Проверка пароля
             const passwordValidation = validatePassword(password, login, name);
             if (!passwordValidation.isValid) {
-                setPasswordError(passwordValidation.message);
+                setErrorMessage(passwordValidation.message);
+                setErrorCode('1002');
+                setShowError(true);
                 hasErrors = true;
             }
 
             // Проверка подтверждения пароля
             if (password !== confirmPassword) {
-                setConfirmPasswordError('Пароли не совпадают');
+                setErrorMessage('Пароли не совпадают');
+                setErrorCode('1004');
+                setShowError(true);
                 hasErrors = true;
             }
 
             // Проверка имени
             if (name.length === 0) {
-                setNameError('Имя не может быть пустым');
+                setErrorMessage('Имя не может быть пустым');
+                setErrorCode('1006');
+                setShowError(true);
                 hasErrors = true;
             } else if (name.length > 50) {
-                setNameError('Имя слишком длинное');
+                setErrorMessage('Имя слишком длинное');
+                setErrorCode('1007');
+                setShowError(true);
                 hasErrors = true;
             }
 
@@ -80,6 +88,10 @@ const Registration: React.FC<IBasePage> = (props: IBasePage) => {
             // Отправка данных на сервер
             if (login && password && name && await server.registration(login, password, name)) {
                 setPage(PAGES.CHAT);
+            } else {
+                setErrorMessage('Ошибка регистрации');
+                setErrorCode('1008');
+                setShowError(true);
             }
         }
     };
@@ -88,6 +100,14 @@ const Registration: React.FC<IBasePage> = (props: IBasePage) => {
 
     return (
         <div className="registration">
+            {/* Уведомление об ошибке */}
+            {showError && (
+                <div className="error-notification">
+                    {errorCode && <div className="error-code">ОШИБКА №{errorCode}</div>}
+                    <div className="error-message">{errorMessage}</div>
+                </div>
+            )}
+
             <div className="background-characters left"></div>
             <div className="background-characters right"></div>
 
@@ -109,19 +129,15 @@ const Registration: React.FC<IBasePage> = (props: IBasePage) => {
                 <div className="registration-form">
                     <label>Логин</label>
                     <input ref={loginRef} id="Test-input-login" />
-                    {loginError && <p className="error-message">{loginError}</p>}
 
                     <label>Пароль</label>
                     <input ref={passwordRef} type="password" id="Test-input-password" />
-                    {passwordError && <p className="error-message">{passwordError}</p>}
 
                     <label>Подтверждение пароля</label>
                     <input ref={confirmPasswordRef} type="password" id="Test-input-password-2" />
-                    {confirmPasswordError && <p className="error-message">{confirmPasswordError}</p>}
 
                     <label>Отображаемое имя</label>
                     <input ref={nameRef} id="Test-input-name" />
-                    {nameError && <p className="error-message">{nameError}</p>}
 
                     <Button onClick={registerClickHandler} text="Зарегистрироваться" id="Test-button-registration" />
                     <Button onClick={backClickHandler} text="Назад" id="Test-button-back" />

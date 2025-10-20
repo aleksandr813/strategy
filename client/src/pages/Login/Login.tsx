@@ -15,8 +15,9 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
     const server = useContext(ServerContext);
     const loginRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
-    const [loginError, setLoginError] = useState('');
-    const [passwordError, setPasswordError] = useState('');
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [errorCode, setErrorCode] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
 
     const loginClickHandler = async () => {
@@ -25,22 +26,25 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
             const password = passwordRef.current.value;
 
             // Сбрасываем предыдущие ошибки
-            setLoginError('');
-            setPasswordError('');
+            setShowError(false);
 
             let hasErrors = false;
 
             // Проверка логина
             const loginValidation = validateLogin(login);
             if (!loginValidation.isValid) {
-                setLoginError(loginValidation.message);
+                setErrorMessage(loginValidation.message);
+                setErrorCode('1001');
+                setShowError(true);
                 hasErrors = true;
             }
 
             // Проверка пароля
             const passwordValidation = validatePassword(password);
             if (!passwordValidation.isValid) {
-                setPasswordError(passwordValidation.message);
+                setErrorMessage(passwordValidation.message);
+                setErrorCode('1002');
+                setShowError(true);
                 hasErrors = true;
             }
 
@@ -61,6 +65,10 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
             // Отправка данных на сервер
             if (login && password && await server.login(login, password)) {
                 setPage(PAGES.CHAT);
+            } else {
+                setErrorMessage('USER IS NO EXISTS');
+                setErrorCode('1005');
+                setShowError(true);
             }
         }
     }
@@ -99,6 +107,14 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
 
     return (
         <div className='login'>
+            {/* Уведомление об ошибке */}
+            {showError && (
+                <div className="error-notification">
+                    {errorCode && <div className="error-code">ОШИБКА №{errorCode}</div>}
+                    <div className="error-message">{errorMessage}</div>
+                </div>
+            )}
+
             <div className="background-characters left"></div>
             <div className="background-characters right"></div>
             
@@ -119,11 +135,9 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
                 <div className="login-form">
                     <label>Логин</label>
                     <input ref={loginRef} id="Test-input-login" />
-                    {loginError && <p className="error-message">{loginError}</p>}
                     
                     <label>Пароль</label>
                     <input ref={passwordRef} type='password' id="Test-input-password" />
-                    {passwordError && <p className="error-message">{passwordError}</p>}
                     
                     <div className="remember-me">
                         <input 
@@ -139,6 +153,7 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
                     <Button onClick={regClickHandler} text='Регистрация' id="Test-button-back" />
                 </div>
             </div>
+            <Button onClick={goToVillageHandler} text='Вход без аккаунта' id="Temporary-debug-button"/>
         </div>
     )
 }
