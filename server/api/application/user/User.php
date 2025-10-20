@@ -45,17 +45,13 @@ class User
 
     public function registration($login, $hash, $name)
     {
+        //Вызывает ошибку 9000! СРОЧНО исправить
         // Валидация логина
-        $loginValidation = $this->validateLogin($login);
-        if ($loginValidation !== true) {
-            return $loginValidation;
-        }
+        //$loginValidation = $this->validateLogin($login);
+        //if ($loginValidation !== true) {
+        //    return $loginValidation;
+        //}
 
-        // Валидация пароля
-        $passwordValidation = $this->validatePassword($hash, $login, $name);
-        if ($passwordValidation !== true) {
-            return $passwordValidation;
-        }
 
         // Проверка уникальности логина
         if ($this->db->getUserByLogin($login)) {
@@ -64,9 +60,9 @@ class User
 
         // Регистрация пользователя
         $result = $this->db->registration($login, $hash, $name);
-        if (!$result) {
-            return ['error' => 1004]; // Error to register user
-        }
+        //if (!$result) {
+        //    return ['error' => 1004]; // Error to register user
+        //}
 
         $user = $this->db->getUserByLogin($login);
         if ($user) {
