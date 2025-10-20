@@ -180,7 +180,7 @@ class DB
 
     public function buyUnit($villageId, $unitId, $x, $y, $hp) {
     $this->execute("INSERT INTO units
-        (unit_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
+        (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
         [$unitId $villageId, $x, $y, $hp]
     );
 }
