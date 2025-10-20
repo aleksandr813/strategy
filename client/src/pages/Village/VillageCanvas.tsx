@@ -7,6 +7,7 @@ import Building from '../../game/Buildings/Building';
 import Allocation from './UI/Allocation';
 import { GameContext, ServerContext } from '../../App';
 import { TPoint } from '../../config';
+import VillageManager from './villageDataManager';
 
 import "./Village.scss"
 
@@ -84,19 +85,20 @@ const VillageCanvas: React.FC = () => {
 
     function drawBuildings(canvas: Canvas, buildings: Building[]): void {
         buildings.forEach((building) => {
+            console.log(`Building ID: ${building.id}, Sprites Array:`, building.sprites);
             building.sprites.forEach((sprite, i) => {
                 const spriteData = getSprite(sprite);
                 canvas.spriteFull(spritesImage, building.cords[i].x, building.cords[i].y, spriteData[0], spriteData[1], spriteData[2]);
             });
 
-            if (building.hp < building.MAX_HP) {
+            if (building.hp < building.maxHp) {
                 drawHPBar(canvas,
                     building.cords[0].x,
                     building.cords[0].y - 0.5,
                     building.size,
                     0.2,
                     building.hp,
-                    building.MAX_HP
+                    building.maxHp
                 );
             }
         });
@@ -135,6 +137,7 @@ const VillageCanvas: React.FC = () => {
 
     function render(FPS: number): void {
         if (canvas && game) {
+            console.log('Sprites Image Loaded:', spritesImage ? 'YES' : 'NO');
             canvas.clear();
             const { units, buildings } = game.getScene();
 
@@ -268,6 +271,11 @@ const VillageCanvas: React.FC = () => {
                 mouseClick,
             },
         });
+
+        (async () => {
+        await game.loadBuildings(server);
+        game.getGame().setBuildings(game.getScene().buildings);
+    })();
 
         const keyDownHandler = (event: KeyboardEvent) => {
             if (event.key === 'Escape' && game.getScene().buildingPreview.isActiveStatus()) {
