@@ -10,6 +10,17 @@ import { TPoint } from '../../config';
 
 import "./Village.scss"
 
+import wooden_background from "../../assets/img/UI/wooden_background.png";
+import building_otions from "../../assets/img/UI/building_otions.png";
+import leaderboard from "../../assets/img/UI/leaderboard.png";
+import settings from "../../assets/img/UI/settings.png";
+import unit_options from "../../assets/img/UI/unit_options.png";
+import placeholder_village_icon from "../../assets/img/UI/placeholder_village_icon.png";
+import Rectangle from "../../assets/img/UI/Rectangle.png";
+import money_icon from "../../assets/img/UI/money_icon.png"
+import Group from "../../assets/img/UI/Group .png"
+
+
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
 const DRAG_THRESHOLD = 5;
@@ -23,21 +34,21 @@ const VillageCanvas: React.FC = () => {
 
     let canvas: Canvas | null = null;
     const Canvas = useCanvas(render);
-    
+
     const allocation = new Allocation();
 
     let mouseDownPosition: TPoint | null = null;
     let mouseDownTime: number = 0;
     let wasDragging: boolean = false;
-    
+
     const [[spritesImage], getSprite] = useSprites();
 
     function drawHPBar(
         canvas: Canvas,
-        x: number, 
-        y: number, 
-        width: number, 
-        height: number, 
+        x: number,
+        y: number,
+        width: number,
+        height: number,
         currentHp: number,
         maxHp: number
     ): void {
@@ -45,10 +56,10 @@ const VillageCanvas: React.FC = () => {
 
         const ctx = canvas.contextV;
         const hpRatio = currentHp / maxHp;
-        
+
         ctx.fillStyle = "#A00000";
         ctx.fillRect(canvas.xs(x), canvas.ys(y), canvas.dec(width), canvas.dec(height));
-        
+
         ctx.fillStyle = "#00FF00";
         ctx.fillRect(canvas.xs(x), canvas.ys(y), canvas.dec(width * hpRatio), canvas.dec(height));
     }
@@ -59,23 +70,23 @@ const VillageCanvas: React.FC = () => {
         units.forEach((unit) => {
             const sprite = getSprite(unit.sprite);
             canvas.spriteFull(spritesImage, unit.cords.x, unit.cords.y, sprite[0], sprite[1], sprite[2]);
-            
-            const isSelected = allocation.isSelectingStatus 
+
+            const isSelected = allocation.isSelectingStatus
                 ? allocation.isUnitInSelection(unit)
                 : unit.isSelected;
-                
+
             if (isSelected) {
                 ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
                 ctx.fillRect(canvas.xs(unit.cords.x), canvas.ys(unit.cords.y), canvas.dec(1), canvas.dec(1));
             }
 
             if (unit.hp < unit.maxHp) {
-                drawHPBar(canvas, 
-                    unit.cords.x + 0.1, 
-                    unit.cords.y - 0.1, 
-                    0.8, 
-                    0.1, 
-                    unit.hp, 
+                drawHPBar(canvas,
+                    unit.cords.x + 0.1,
+                    unit.cords.y - 0.1,
+                    0.8,
+                    0.1,
+                    unit.hp,
                     unit.maxHp
                 );
             }
@@ -109,10 +120,10 @@ const VillageCanvas: React.FC = () => {
         const { gridPosition, canPlace } = previewData;
         const ctx = canvas.contextV;
         const color = canPlace ? 'rgba(0, 255, 0, 0.4)' : 'rgba(255, 0, 0, 0.4)';
-        
+
         ctx.fillStyle = color;
         ctx.fillRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(2), canvas.dec(2));
-        
+
         ctx.strokeStyle = canPlace ? '#00FF00' : '#FF0000';
         ctx.lineWidth = 2;
         ctx.strokeRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(2), canvas.dec(2));
@@ -133,6 +144,134 @@ const VillageCanvas: React.FC = () => {
         }
     }
 
+    function drawMenu(canvas: Canvas): void {
+        if (!wooden_background) return;
+        const img1 = new Image();
+        img1.src = wooden_background;
+        img1.height = img1.height * canvas.WIDTH / img1.width;
+        img1.width = canvas.WIDTH;
+        canvas.drawImageFull(
+            img1,
+            0,
+            canvas.HEIGHT - img1.height,
+            img1.width,
+            img1.height
+        );
+
+        if (!building_otions) return;
+        const img2 = new Image();
+        img2.src = building_otions;
+        img2.height = img1.height / 2;
+        img2.width = img1.height / 2;
+        canvas.drawImageFull(
+            img2,
+            img1.width - img2.width,
+            canvas.HEIGHT - img2.height * 2,
+            img2.width,
+            img2.height
+        );
+
+        if (!leaderboard) return;
+        const img3 = new Image();
+        img3.src = leaderboard;
+        img3.height = img1.height / 2;
+        img3.width = img1.height / 2;
+        canvas.drawImageFull(
+            img3,
+            img1.width - img3.width * 2,
+            canvas.HEIGHT - img3.height * 2,
+            img3.width,
+            img3.height
+        );
+        
+        if (!settings) return;
+        const img4 = new Image();
+        img4.src = settings;
+        img4.height = img1.height / 2;
+        img4.width = img1.height / 2;
+        canvas.drawImageFull(
+            img4,
+            img1.width - img4.width *2,
+            canvas.HEIGHT - img4.height,
+            img4.width,
+            img4.height
+        );
+
+        if (!unit_options) return;
+        const img5 = new Image();
+        img5.src = unit_options;
+        img5.height = img1.height / 2;
+        img5.width = img1.height / 2;
+        canvas.drawImageFull(
+            img5,
+            img1.width - img5.width,
+            canvas.HEIGHT - img5.height ,
+            img5.width,
+            img5.height
+        );
+
+        if (!placeholder_village_icon && Rectangle) return;
+        const img6 = new Image();
+        const img7 = new Image();
+
+        img7.src = Rectangle;
+        img7.height = img1.height / 2;
+        img7.width = img1.height / 2;
+
+        img6.src = placeholder_village_icon;
+        img6.height = img1.height / 2;
+        img6.width = img1.height / 2;
+
+        canvas.drawImageFull(
+            img7,
+            0,
+            canvas.HEIGHT - img6.height *2,
+            img6.width,
+            img6.height
+        );
+
+        canvas.drawImageFull(
+            img6,
+            0,
+            canvas.HEIGHT - img6.height*2,
+            img6.width,
+            img6.height
+        );
+
+        if (!money_icon) return;
+        const img8 = new Image();
+        img8.src = money_icon;
+        img8.height = img1.height / 2;
+        img8.width = img1.height / 2;
+        canvas.drawImageFull(
+            img8,
+            0,
+            canvas.HEIGHT - img8.height+10,
+            img8.width,
+            img8.height
+        );
+
+        if (!Group) return;
+        const img9 = new Image();
+        img9.src = Group;
+        img9.height = img1.height;
+        img9.width = img1.height;
+        canvas.drawImageFull(
+            img9,
+            img1.width - img9.width * 2,
+            canvas.HEIGHT - img9.height,
+            img9.width,
+            img9.height
+        );
+        // if (!building_otions) return;
+        // const img2 = new Image();
+        // img2.src = building_otions;
+        // canvas.drawImageFull(
+        //     img2,
+        //     img1.
+        // )
+    }
+
     function render(FPS: number): void {
         if (canvas && game) {
             canvas.clear();
@@ -142,6 +281,7 @@ const VillageCanvas: React.FC = () => {
             drawBuildings(canvas, buildings);
             drawSelectionRect(canvas);
             drawBuildingPreview(canvas);
+            drawMenu(canvas);
 
             canvas.text(WINDOW.LEFT + 0.2, WINDOW.TOP + 0.5, String(FPS), GREEN);
             canvas.render();
@@ -183,7 +323,7 @@ const VillageCanvas: React.FC = () => {
                 allocation.cancel();
             }
         }
-        
+
         mouseDownPosition = null;
         mouseDownTime = 0;
     };

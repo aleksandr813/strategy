@@ -29,8 +29,8 @@ const Village: React.FC<IBasePage> = (props: IBasePage) => {
         <Button onClick={backClickHandler} text='Назад' />
         <div>
             <VillageCanvas/>
+            <UI/>
         </div>
-        <UI/>
     </div>
     );
 };

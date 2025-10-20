@@ -1,0 +1,126 @@
+@font-face {
+    font-family: 'PixelifySans-Medium';
+    src: url('../../assets/fonts/PixelifySans-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'PixelifySans-Bold';
+    src: url('../../assets/fonts/PixelifySans-Bold.ttf');
+}
+
+.village-ui {
+    font-family: 'PixelifySans-Medium', sans-serif;
+}
+
+.buy-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    font-family: 'PixelifySans-Medium', sans-serif;
+}
+
+.buy-menu-container {
+    background: rgba(44, 62, 80, 0.95);
+    padding: 30px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 400px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.buy-menu-title {
+    color: white;
+    text-align: center;
+    margin: 0 0 20px 0;
+    font-family: 'PixelifySans-Bold';
+    font-size: 24px;
+    text-shadow: 2px 2px #000;
+    letter-spacing: 2px;
+}
+
+.buy-menu-item {
+    background: rgba(52, 73, 94, 0.8);
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s;
+
+    &:hover {
+        background: rgba(52, 73, 94, 1);
+        transform: translateY(-2px);
+    }
+}
+
+.buy-menu-close-button {
+    margin-top: 10px;
+}
+
+.building-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.building-name {
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    font-family: 'PixelifySans-Bold';
+    text-shadow: 1px 1px #000;
+}
+
+.building-details {
+    color: #bdc3c7;
+    font-size: 14px;
+    font-family: 'PixelifySans-Medium';
+}
+
+.pixel-button {
+    background-color: #006400 !important;
+    color: white !important;
+    border: 2px solid #222 !important;
+    border-radius: 10px !important;
+    padding: 8px 20px !important;
+    font-family: 'PixelifySans-Bold' !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    image-rendering: pixelated !important;
+    font-size: 16px !important;
+
+    &:hover {
+        background-color: #00a000 !important;
+        transform: scale(1.03) !important;
+    }
+
+    &.small {
+        padding: 6px 15px !important;
+        font-size: 14px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .buy-menu-container {
+        min-width: 90vw;
+        margin: 20px;
+        padding: 20px;
+    }
+    
+    .buy-menu-item {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+}
