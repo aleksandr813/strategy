@@ -13,6 +13,8 @@ class User
         return $this->db->getUserByToken($token);
     }
 
+
+    
     public function login($login, $hash, $rnd)
     {
         $user = $this->db->getUserByLogin($login);
