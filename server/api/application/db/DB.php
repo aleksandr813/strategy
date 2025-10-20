@@ -131,6 +131,19 @@ class DB
         );
     }
 
+    public function getPositionUnit($villageId, $x, $y) {
+        $result = $this->query(
+            "SELECT EXISTS (
+                SELECT 1 FROM units WHERE village_id = ? AND x = ? AND y = ?
+            ) OR EXISTS (
+                SELECT 1 FROM buildings WHERE village_id = ? AND x = ? AND y = ?
+            ) AS occupied",
+            [$villageId, $x, $y, $villageId, $x, $y]
+        );
+
+        return !empty($result) && $result->occupied == 1;
+    }
+
     public function updateUnit($unitId, $userId, $unitType, $x, $y)
     {
         return $this->execute(

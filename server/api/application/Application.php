@@ -17,7 +17,6 @@ class Application
 
     private $calculator;
 
-
     function __construct()
     {
         $db = new DB();
@@ -31,10 +30,12 @@ class Application
 
     public function login($params)
     {
-        if ($params['login'] && $params['hash'] && $params['rnd']) {
-            return $this->user->login($params['login'], $params['hash'], $params['rnd']);
+        // Проверка на пустые поля
+        if (empty($params['login']) || empty($params['hash']) || empty($params['rnd'])) {
+            return ['error' => 1016];
         }
-        return ['error' => 242];
+        
+        return $this->user->login($params['login'], $params['hash'], $params['rnd']);
     }
 
     public function logout($params)
@@ -50,10 +51,12 @@ class Application
     }
 
     public function registration($params) {
-        if ($params['login'] && $params['hash'] && $params['name']) {
-            return $this->user->registration($params['login'], $params['hash'], $params['name']);
+        // Проверка на пустые поля
+        if (empty($params['login']) || empty($params['hash']) || empty($params['name'])) {
+            return ['error' => 1016];
         }
-        return ['error' => 242];
+        
+        return $this->user->registration($params['login'], $params['hash'], $params['name']);
     }
 
     public function sendMessage($params)
@@ -104,12 +107,12 @@ class Application
         return ['error' => 242];
     }
 
-    public function createUnit($params)
+    public function buyUnit($params)
     {
-        if ($params['token'] && $params['unit_type'] && isset($params['x']) && isset($params['y'])) {
+        if ($params['token'] && $params['typeId'] && isset($params['x']) && isset($params['y'])) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->unit->createUnit($user->id, $params['unit_type'], $params['x'], $params['y']);
+                return $this->unit->buyUnit($user, $params['typeId'], $params['x'], $params['y']);
             }
             return ['error' => 705];
         }

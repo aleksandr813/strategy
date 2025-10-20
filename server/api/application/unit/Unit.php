@@ -35,19 +35,38 @@ class Unit
         return ["units" => $units];
     }
 
-    public function createUnit($userId, $unitType, $x, $y)
+    public function buyUnit($user, $typeId, $x, $y)
     {
-        $unit = $this->db->createUnit($userId, $unitType, $x, $y);
-        if ($unit) {
-            return [
-                'user_id' => $userId,
-                'unit_type' => $unitType,
-                'x' => $x,
-                'y' => $y
-            ];
-        } else {
-            return ['error' => 501];
+        $village = $this->db->getVillageByUserId($user->id);
+        if (!$village) {
+            return ['error' => 310];
         }
+        $unit = $this->db->getUnitType($typeId);
+        if (!$unit) {
+            return ["error" => 501];
+        }
+        if ($user->money < $unit->price) {
+            return ['error' => 305];
+        }
+
+        $existingUnit = $this->db->getPositionUnit($village->id, $x, $y);
+        if ($existingUnit) {
+            return ['error' => 311];
+        }
+
+        $newMoney = $user->money - $unit->price;
+        $this->db->updateMoney($user->id, $newMoney);
+        $this->db->buyunit(
+            $village->id,
+            $typeId,
+            $x,
+            $y,
+            $unit->hp
+        );
+
+        return [
+            'money' => $newMoney
+        ];
     }
 
     public function updateUnit($unitId, $userId, $unitType, $x, $y)
