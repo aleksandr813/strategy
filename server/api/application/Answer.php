@@ -23,7 +23,7 @@ class Answer
         '412' => 'Failed to add income to user',
         '413' => 'Failed to update mine income data',
         '500' => 'Unit is not found',
-        '501' => 'Failed to create unit',
+        '501' => 'Failed to buy unit',
         '502' => 'Failed to update unit',
         '503' => 'Failed to delete unit',
         '705' => 'User is not found',
