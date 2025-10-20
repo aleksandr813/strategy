@@ -139,7 +139,6 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
                     <Button onClick={regClickHandler} text='Регистрация' id="Test-button-back" />
                 </div>
             </div>
-            <Button onClick={goToVillageHandler} text='Вход без аккаунта' id="Temporary-debug-button"/>
         </div>
     )
 }

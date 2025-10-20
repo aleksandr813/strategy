@@ -64,7 +64,7 @@ export default class BuildingPreview {
         ];
 
         for (const cell of cells) {
-            if (occupiedMatrix[cell.x][cell.y] !== 0) {
+            if (occupiedMatrix[cell.y][cell.x] !== 0) {
                 return false;
             }
         }

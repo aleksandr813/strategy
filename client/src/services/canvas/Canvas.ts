@@ -17,8 +17,12 @@ export type TCanvas = {
         mouseDown: (x: number, y: number) => void;
         mouseUp: (x: number, y: number) => void;
         mouseRightClickDown: (x: number, y: number) => void;
-        //mouseRightClickUp: (x: number, y: number) => void;
         mouseClick: (x: number, y: number) => void;
+        mouseLeave?: () => void;
+        mouseWheel?: (delta: number, x: number, y: number) => void;
+        mouseMiddleDown?: (x: number, y: number) => void;
+        mouseMiddleUp?: (x: number, y: number) => void;
+        keyDown?: (event: KeyboardEvent) => void;
     },
 }
 
@@ -41,6 +45,7 @@ class Canvas {
     dy = 0;
     interval: NodeJS.Timer;
     callbacks: TCanvas['callbacks'];
+    isMiddleMouseDown = false;
 
     constructor(options: TCanvas) {
         const { parentId, WINDOW, WIDTH, HEIGHT, callbacks } = options;
@@ -67,10 +72,13 @@ class Canvas {
         this.canvas.addEventListener('mousedown', (event) => this.mouseDownHandler(event));
         this.canvas.addEventListener('mouseup', (event) => this.mouseUpHandler(event));
         this.canvas.addEventListener('click', (event) => this.mouseClickHandler(event));
+        this.canvas.addEventListener('mouseleave', () => this.mouseLeaveHandler());
+        this.canvas.addEventListener('wheel', (event) => this.mouseWheelHandler(event));
         this.canvas.addEventListener('contextmenu', (event) => {
             event.preventDefault();
-            this.mouseRightClickDownHandler(event); // Добавляем обработку правой кнопки
+            this.mouseRightClickDownHandler(event);
         });
+        this.canvas.addEventListener('keydown', (event) => this.keyDownHandler(event));
 
         this.interval = setInterval(() => {
             if (this.dx === 0 && this.dy === 0) {
@@ -95,6 +103,11 @@ class Canvas {
         const { offsetX, offsetY, button } = event;
         if (button === 0) {
             this.callbacks.mouseDown(this.sx(offsetX), this.sy(offsetY));
+        } else if (button === 1) {
+            this.isMiddleMouseDown = true;
+            if (this.callbacks.mouseMiddleDown) {
+                this.callbacks.mouseMiddleDown(this.sx(offsetX), this.sy(offsetY));
+            }
         }
     }
 
@@ -103,6 +116,11 @@ class Canvas {
         const { offsetX, offsetY, button } = event;
         if (button === 0) {
             this.callbacks.mouseUp(this.sx(offsetX), this.sy(offsetY));
+        } else if (button === 1) {
+            this.isMiddleMouseDown = false;
+            if (this.callbacks.mouseMiddleUp) {
+                this.callbacks.mouseMiddleUp(this.sx(offsetX), this.sy(offsetY));
+            }
         }
     }
 
@@ -129,7 +147,28 @@ class Canvas {
     mouseLeaveHandler() {
         this.dx = 0;
         this.dy = 0;
+        if (this.callbacks.mouseLeave) {
+            this.callbacks.mouseLeave();
+        }
     }
+
+    mouseWheelHandler(event: WheelEvent) {
+        event.preventDefault();
+        const { offsetX, offsetY, deltaY } = event;
+        if (this.callbacks.mouseWheel) {
+            this.callbacks.mouseWheel(deltaY, this.sx(offsetX), this.sy(offsetY));
+        }
+    }
+
+    keyDownHandler = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+            if (this.callbacks.keyDown) { 
+                this.callbacks.keyDown(event);
+            }
+        }
+    };
+
+    
 
     xs(x: number): number {
         return (x - this.WINDOW.LEFT) / this.WINDOW.WIDTH * this.WIDTH;
@@ -187,7 +226,7 @@ class Canvas {
     }
 
     spriteFull(image: HTMLImageElement, dx: number, dy: number, sx: number, sy: number, size: number): void {
-        this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), size, size);
+        this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), this.dec(1), this.dec(1));
     }
 
     render(): void {

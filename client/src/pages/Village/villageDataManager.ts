@@ -15,7 +15,7 @@ export default class VillageManager {
         const buildings: BuildingResponse[] = buildingsResponse.buildings;
         const types: BuildingTypeResponse[] = typesResponse.building_types;
 
-return buildings
+    return buildings
     .map((b) => {
       const typeData = types.find((t) => Number(t.id) === Number(b.type_id));
       if (!typeData) return null;
@@ -28,7 +28,6 @@ return buildings
           price: Number(typeData.price),
           sprite: Number(typeData.sprite_id)
       };
-      console.log(`Building Type ID: ${type.id}, Sprite ID: ${type.sprite}`);
 
       const buildingData = {
           ...b,
