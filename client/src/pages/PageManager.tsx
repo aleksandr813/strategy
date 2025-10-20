@@ -28,7 +28,7 @@ export interface IBasePage {
 }
 
 const PageManager: React.FC = () => {
-    const [page, setPage] = useState<PAGES>(PAGES.VILLAGE);
+    const [page, setPage] = useState<PAGES>(PAGES.PRELOADER);
 
     return (
         <>
