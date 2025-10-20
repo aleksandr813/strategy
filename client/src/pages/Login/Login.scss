@@ -22,8 +22,8 @@
 
     .arrow {
         position: absolute;
-        height: 140px;
-        width: 140px;
+        width: 10%;
+        aspect-ratio: 1 / 1;
         image-rendering: pixelated;
 
         &.arrow-left {
@@ -41,8 +41,8 @@
 
     .swordman {
         position: absolute;
-        height: 200px;
-        width: 200px;
+        width: 10%;
+        aspect-ratio: 1 / 1;
         image-rendering: pixelated;
         bottom: 12%;
 
@@ -58,8 +58,8 @@
 
     .archer {
         position: absolute;
-        height: 250px;
-        width: 250px;
+        width: 13%;
+        aspect-ratio: 1 / 1;
         image-rendering: pixelated;
         bottom: -2%;
 
@@ -75,8 +75,8 @@
 
     .spearman {
         position: absolute;
-        height: 200px;
-        width: 200px;
+        width: 10%;
+        aspect-ratio: 1 / 1;
         image-rendering: pixelated;
 
         &.spearman-left {
@@ -114,25 +114,6 @@
 
         100% {
             transform: rotate(-30deg) scale(1);
-        }
-    }
-
-    .background-characters {
-        position: absolute;
-        bottom: 0;
-        width: 180px;
-        height: 260px;
-        background-repeat: no-repeat;
-        background-size: contain;
-        image-rendering: pixelated;
-
-        &.left {
-            left: 0;
-        }
-
-        &.right {
-            right: 0;
-            transform: scaleX(-1);
         }
     }
 
@@ -245,12 +226,13 @@
     }
 
     @media (max-width: 768px) {
-    .arrow,
-    .swordman,
-    .archer,
-    .spearman,
-    .background-characters {
-      display: none !important;
+
+        .arrow,
+        .swordman,
+        .archer,
+        .spearman,
+        .background-characters {
+            display: none !important;
+        }
     }
-  }
 }

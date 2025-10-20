@@ -1,7 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { ServerContext } from '../../App';
-import Button from '../Button/Button';
-
 import './Popup.scss';
 import { TError } from '../../services/server/types';
 
@@ -9,6 +7,7 @@ type TInnerButton = {
     isHover?: boolean;
     text: string;
     onClick: () => void;
+    variant?: 'primary' | 'secondary';
 }
 
 export type TPopupData = {
@@ -36,30 +35,33 @@ const Popup: React.FC = () => {
         server.showError(showErrorHandler);
     });
 
-    if (!data) return (<></>);
+    if (!data) return null;
 
     const { title, text, buttons = [] } = data;
 
-    return (<div className="popup">
-        <div className={'popup-wrapper'}>
-            <div className='popup-text-block'>
-                <div className="popup-title">{title}</div>
-                <div className="popup--info-text">{text}</div>
-            </div>
-            <div className='buttons-block'>
-                {buttons.map((data, index) => {
-                    const { text, onClick, isHover } = data;
-                    return <Button
-                        variant='main'
-                        key={index}
-                        text={text}
-                        onClick={onClick}
-                        isHover={isHover}
-                    />
-                })}
+    return (
+        <div className="popup">
+            <div className='popup-wrapper'>
+                <div className='popup-text-block'>
+                    {title && <div className="popup-title">{title}</div>}
+                    {text && <div className="popup--info-text">{text}</div>}
+                </div>
+                {buttons.length > 0 && (
+                    <div className='buttons-block'>
+                        {buttons.map((button, index) => (
+                            <button
+                                key={index}
+                                className={button.variant === 'secondary' ? 'secondary' : ''}
+                                onClick={button.onClick}
+                            >
+                                {button.text}
+                            </button>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
-    </div>);
+    );
 }
 
 export default Popup;

@@ -3,6 +3,8 @@ import { IBasePage, PAGES } from "../PageManager";
 
 import './Preloader.scss';
 
+import unit from '../../assets/img/background/unitsOnBackground.png';
+
 const Preloader: React.FC<IBasePage> = (props: IBasePage) => {
     const { setPage } = props;
 
@@ -12,8 +14,9 @@ const Preloader: React.FC<IBasePage> = (props: IBasePage) => {
 
     return (
         <div className="preloader">
+            <img src={unit} ></img>
             <h1>Загрузка</h1>
-            <p>...</p>
+            <h1>...</h1>
         </div>
     );
 }

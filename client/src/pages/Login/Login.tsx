@@ -1,4 +1,8 @@
-import React, { useContext, useRef, useState, useEffect } from 'react';
+
+
+
+
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ServerContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
@@ -95,13 +99,9 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
     }
 
     const regClickHandler = () => setPage(PAGES.REGISTRATION);
-    const goToVillageHandler = () => setPage(PAGES.VILLAGE);
 
     return (
         <div className='login'>
-            <div className="background-characters left"></div>
-            <div className="background-characters right"></div>
-            
             <img src={arrow} className="arrow arrow-left" />
             <img src={arrow} className="arrow arrow-right" />
 
