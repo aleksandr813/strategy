@@ -146,12 +146,7 @@ const VillageCanvas: React.FC = () => {
         const rect = allocation.getSelectionRect();
         if (rect) {
             canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.5)";
-            canvas.contextV.fillRect(
-                canvas.xs(rect.x),
-                canvas.ys(rect.y),
-                canvas.dec(rect.width),
-                canvas.dec(rect.height)
-            );
+            canvas.contextV.fillRect(canvas.xs(rect.x), canvas.ys(rect.y), canvas.dec(rect.width), canvas.dec(rect.height));
         }
     }
 
@@ -234,7 +229,6 @@ const VillageCanvas: React.FC = () => {
             const [bx, by] = [building.cords[0].x, building.cords[0].y];
             if (gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2) {
                 building.takeDamage(10);
-                console.log(`Building HP: ${building.hp}`);
                 return;
             }
         }
@@ -251,11 +245,6 @@ const VillageCanvas: React.FC = () => {
                 const typeId = game.getScene().buildingPreview.getBuildingTypeId();
                 const pos = game.getScene().buildingPreview.getPlacementPosition();
 
-                console.log('=== DEBUG buyBuilding ===');
-                console.log('typeId:', typeId, 'type:', typeof typeId);
-                console.log('x:', pos.x, 'type:', typeof pos.x);
-                console.log('y:', pos.y, 'type:', typeof pos.y);
-
                 try {
                     const result = await server.buyBuilding(typeId, pos.x, pos.y);
 
@@ -263,7 +252,6 @@ const VillageCanvas: React.FC = () => {
 
                     if (result && !result.error) {
                         game.addBuilding(newBuilding);
-                        console.log('Здание успешно построено!', result);
                     } else {
                         console.error('Ошибка при покупке здания:', result?.error || result);
                         game.getScene().buildingPreview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp);
@@ -306,35 +294,39 @@ const VillageCanvas: React.FC = () => {
         const worldX = x;
         const worldY = y;
         
+        //Зум
         const oldWidth = WINDOW.WIDTH;
         const oldHeight = WINDOW.HEIGHT;
         
         WINDOW.WIDTH *= zoomFactor;
         WINDOW.HEIGHT *= zoomFactor;
-        
+
         const relativeX = (worldX - WINDOW.LEFT) / oldWidth;
         const relativeY = (worldY - WINDOW.TOP) / oldHeight;
-        
+
         WINDOW.LEFT = worldX - relativeX * WINDOW.WIDTH;
         WINDOW.TOP = worldY - relativeY * WINDOW.HEIGHT;
-        
-        console.log('Зум:', zoomFactor, 'Новый размер окна:', WINDOW.WIDTH, 'x', WINDOW.HEIGHT);
 
         
     };
 
     const mouseMiddleDown = (x: number, y: number) => {
-        console.log('Зажата средняя кнопка мыши в позиции:', { x, y });
         isMiddleMouseDragging = true;
         middleMouseStartPosition = { x, y };
         windowStartPosition = { LEFT: WINDOW.LEFT, TOP: WINDOW.TOP };
     };
 
     const mouseMiddleUp = (x: number, y: number) => {
-        console.log('Отпущена средняя кнопка мыши в позиции:', { x, y });
         isMiddleMouseDragging = false;
         middleMouseStartPosition = null;
         windowStartPosition = null;
+    };
+
+    const keyDown = (event: KeyboardEvent) => {
+        if (game.getScene().buildingPreview.isActiveStatus()) {
+            game.getScene().buildingPreview.deactivate();
+            console.log('Размещение здания отменено (ESC)');
+        }
     };
 
     useEffect(() => {
@@ -353,6 +345,7 @@ const VillageCanvas: React.FC = () => {
                 mouseWheel,
                 mouseMiddleDown,
                 mouseMiddleUp,
+                keyDown,
             },
         });
 
@@ -361,21 +354,11 @@ const VillageCanvas: React.FC = () => {
         game.setBuildings(game.getScene().buildings);
     })();
 
-        const keyDownHandler = (event: KeyboardEvent) => {
-            if (event.key === 'Escape' && game.getScene().buildingPreview.isActiveStatus()) {
-                game.getScene().buildingPreview.deactivate();
-                console.log('Размещение здания отменено (ESC)');
-            }
-        };
-
-        document.addEventListener('keydown', keyDownHandler);
-        
 
         return () => {
             game?.destructor();
             canvas?.destructor();
             canvas = null;
-            document.removeEventListener('keydown', keyDownHandler);
         };
     }, []);
 

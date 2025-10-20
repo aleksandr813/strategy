@@ -22,6 +22,7 @@ export type TCanvas = {
         mouseWheel?: (delta: number, x: number, y: number) => void;
         mouseMiddleDown?: (x: number, y: number) => void;
         mouseMiddleUp?: (x: number, y: number) => void;
+        keyDown?: (event: KeyboardEvent) => void;
     },
 }
 
@@ -77,6 +78,7 @@ class Canvas {
             event.preventDefault();
             this.mouseRightClickDownHandler(event);
         });
+        this.canvas.addEventListener('keydown', (event) => this.keyDownHandler(event));
 
         this.interval = setInterval(() => {
             if (this.dx === 0 && this.dy === 0) {
@@ -157,6 +159,16 @@ class Canvas {
             this.callbacks.mouseWheel(deltaY, this.sx(offsetX), this.sy(offsetY));
         }
     }
+
+    keyDownHandler = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+            if (this.callbacks.keyDown) { 
+                this.callbacks.keyDown(event);
+            }
+        }
+    };
+
+    
 
     xs(x: number): number {
         return (x - this.WINDOW.LEFT) / this.WINDOW.WIDTH * this.WIDTH;
