@@ -25,14 +25,14 @@ class Unit
         ];
     }
 
-    public function getUnitsByUser($userId)
+    public function getUnits($userId)
     {
         if (!$userId) {
             return ['error' => 705];
         }
-        $units = $this->db->getUnitsByUser($userId);
+        $units = $this->db->getUnits($userId);
 
-        return ['units' => $units];
+        return ["units" => $units];
     }
 
     public function createUnit($userId, $unitType, $x, $y)
