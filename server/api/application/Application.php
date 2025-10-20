@@ -104,12 +104,12 @@ class Application
         return ['error' => 242];
     }
 
-    public function createUnit($params)
+    public function buyUnit($params)
     {
-        if ($params['token'] && $params['unit_type'] && isset($params['x']) && isset($params['y'])) {
+        if ($params['token'] && $params['typeId'] && isset($params['x']) && isset($params['y'])) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->unit->createUnit($user->id, $params['unit_type'], $params['x'], $params['y']);
+                return $this->unit->buyUnit($user, $params['typeId'], $params['x'], $params['y']);
             }
             return ['error' => 705];
         }
