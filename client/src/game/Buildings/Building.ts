@@ -1,18 +1,44 @@
+import { Building as BuildingData, BuildingType, BuildingTypeID } from "../../services/server/types";
 import { TPoint } from "../../config";
 
-const MAX_HP_BUILDS = 100;
-
 export default class Building {
-    MAX_HP = MAX_HP_BUILDS; 
-    hp = 100;
-    sx = 0;
-    sy = 0;
-    size = 2;
-    sprites = [1, 1, 1, 1]
-    cords: TPoint[] = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }];
+    id: number;
+    type: BuildingType;
+    cords:TPoint[] = [];
+    hp: number;
+    maxHp: number;
+    level: number;
+    size: number; 
+    sprites: number[];
 
-    constructor(x: number, y: number) {
-        this.cords = [{ x: x, y: y }, { x: x + 1, y: y }, { x: x, y: y + 1 }, { x: x + 1, y: y + 1 }];
+    private static SPRITE_MAP: Record<BuildingTypeID, number[]> = {
+        [BuildingTypeID.TownHall]: [7, 8, 9, 10], // TownHall (Ратуша)
+        [BuildingTypeID.Mine]:     [11, 12, 13, 14], // Mine (Шахта)
+    };
+
+
+    constructor(data: BuildingData, type: BuildingType) {
+        this.id = Number(data.id);
+        this.type = type;
+        this.hp = Number(data.current_hp);
+        this.maxHp = Number(type.hp);
+        this.level = Number(data.level);
+        this.size = 2; 
+        const typeId = Number(type.id);
+        
+        const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
+        this.sprites = spriteSet;
+
+        this.cords = [
+            // Верхний Левый тайл здания на карте
+            { x: Number(data.x), y: Number(data.y) },
+            // Верхний Правый
+            { x: Number(data.x) + 1, y: Number(data.y) },
+            // Нижний Левый
+            { x: Number(data.x), y: Number(data.y) + 1 },
+            // Нижний Правый
+            { x: Number(data.x) + 1, y: Number(data.y) + 1 },
+        ];
     }
 
     public takeDamage(amount: number): void {
