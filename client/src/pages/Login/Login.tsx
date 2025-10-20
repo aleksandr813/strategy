@@ -73,10 +73,6 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
 
     return (
         <div className='login'>
-            <div className="background-characters left"></div>
-            <div className="background-characters right"></div>
-            
-
             <img src={arrow} className="arrow arrow-left" />
             <img src={arrow} className="arrow arrow-right" />
 
@@ -94,7 +90,7 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
                 <div className="login-form">
 
                     <label>Логин</label>
-                    <input ref={loginRef} id="Test-input-login" />
+                    <input ref={loginRef} id="Test-input-login"/>
                     <label>Пароль</label>
                     <input ref={passwordRef} type='password' id="Test-input-password" />
                     {/* Жалетельно тут сделать красивый чекбокс и надпись Запомнить меня */}
