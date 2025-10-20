@@ -7,7 +7,7 @@ import Building from '../../game/Buildings/Building';
 import Allocation from './UI/Allocation';
 import { GameContext, ServerContext } from '../../App';
 import { TPoint } from '../../config';
-import BuildingManager from '../../game/Buildings/BuildingManager';
+import VillageManager from './villageDataManager';
 
 import "./Village.scss"
 
@@ -274,7 +274,7 @@ const VillageCanvas: React.FC = () => {
 
         (async () => {
         await game.loadBuildings(server);
-        game.getStore().setBuildings(game.getScene().buildings);
+        game.getGame().setBuildings(game.getScene().buildings);
     })();
 
         const keyDownHandler = (event: KeyboardEvent) => {

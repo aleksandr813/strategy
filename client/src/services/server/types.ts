@@ -77,6 +77,11 @@ export interface Building {
     level: number;
 }
 
+export enum BuildingTypeID {
+    TownHall = 1, // Ратуша
+    Mine = 2,     // Шахта
+}
+
 // Тип для ответа метода getBuildingTypes
 export type TBuildingResponse = {
     buildings: BuildingResponse[];

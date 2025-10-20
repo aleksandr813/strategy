@@ -1,14 +1,21 @@
-import { Building as BuildingData, BuildingType } from "../../services/server/types";
+import { Building as BuildingData, BuildingType, BuildingTypeID } from "../../services/server/types";
+import { TPoint } from "../../config";
 
 export default class Building {
     id: number;
     type: BuildingType;
-    cords: { x: number, y: number }[];
+    cords:TPoint[] = [];
     hp: number;
     maxHp: number;
     level: number;
     size: number; 
-    sprites: number[]; 
+    sprites: number[];
+
+    private static SPRITE_MAP: Record<BuildingTypeID, number[]> = {
+        [BuildingTypeID.TownHall]: [7, 8, 9, 10], // TownHall (Ратуша)
+        [BuildingTypeID.Mine]:     [11, 12, 13, 14], // Mine (Шахта)
+    };
+
 
     constructor(data: BuildingData, type: BuildingType) {
         this.id = Number(data.id);
@@ -17,17 +24,27 @@ export default class Building {
         this.maxHp = Number(type.hp);
         this.level = Number(data.level);
         this.size = 2; 
-        this.sprites = Array(this.size * this.size).fill(Number(type.sprite));
+        const typeId = Number(type.id);
+        
+        const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
+        this.sprites = spriteSet;
 
         this.cords = [
+            // Верхний Левый тайл здания на карте
             { x: Number(data.x), y: Number(data.y) },
+            // Верхний Правый
             { x: Number(data.x) + 1, y: Number(data.y) },
+            // Нижний Левый
             { x: Number(data.x), y: Number(data.y) + 1 },
+            // Нижний Правый
             { x: Number(data.x) + 1, y: Number(data.y) + 1 },
         ];
     }
 
-    takeDamage(amount: number) {
-        this.hp = Math.max(0, this.hp - amount);
+    public takeDamage(amount: number): void {
+        this.hp -= amount;
+        if (this.hp < 0) {
+            this.hp = 0;
+        }
     }
 }

@@ -1,8 +1,8 @@
-import Building from "./Building";
+import Building from "../../game/Buildings/Building";
 import Server from "../../services/server/Server";
-import { Building as BuildingData, BuildingType, BuildingResponse, BuildingTypeResponse } from "C:/Users/Admin/strategy/strategy/client/src/services/server/types";
+import { Building as BuildingData, BuildingType, BuildingResponse, BuildingTypeResponse } from "../../services/server/types";
 
-export default class BuildingManager {
+export default class VillageManager {
     static async loadAll(server: Server): Promise<Building[]> {
         const [buildingsResponse, typesResponse] = await Promise.all([
             server.getBuildings(),

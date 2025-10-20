@@ -5,18 +5,18 @@ import EasyStar from 'easystarjs';
 import Allocation from "../pages/Village/UI/Allocation";
 import BuildingPreview from "../pages/Village/UI/BuildingPreview";
 import Server from "../services/server/Server";
-import BuildingManager from "./Buildings/BuildingManager";
+import VillageManager from "../pages/Village/villageDataManager";
 import Store from "../services/store/Store";
 
 const { WIDTH, HEIGHT } = CONFIG;
 
 class Game {
     private units:Unit[];
-    private buildings:Building[];
+    private buildings:Building[] = [];
     private allocation:Allocation;
     private buildingPreview;
     private easystar = new EasyStar.js();
-    private store: Store;
+    private game: this;
     
 
     constructor() {
@@ -24,12 +24,20 @@ class Game {
         this.buildings = []
         this.allocation = new Allocation;
         this.buildingPreview = new BuildingPreview();
-        this.store = new Store();
+        this.game = this;
+    }
+
+    setBuildings(buildings: Building[]): void {
+        this.buildings = buildings;
+    }
+    
+        getBuildings(): Building[] {
+            return this.buildings;
     }
 
     async loadBuildings(server: Server) {
         console.log("Загружаем здания из Game...");
-        const buildingObjects = await BuildingManager.loadAll(server);
+        const buildingObjects = await VillageManager.loadAll(server);
 
         this.buildings = buildingObjects;
         console.log("Загружено зданий:", this.buildings.length);
@@ -132,8 +140,8 @@ class Game {
 
         this.easystar.calculate();
     }
-    getStore(): Store {
-        return this.store;
+    getGame(): Game {
+        return this.game;
     };
 }
 
