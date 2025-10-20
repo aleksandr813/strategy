@@ -26,9 +26,6 @@ class Server {
             }
             const url = `${this.HOST}/?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`;
             
-            // ОТЛАДКА: выводим URL запроса
-            console.log('Request URL:', url);
-            console.log('Request params:', params);
             
             const response = await fetch(url);
             const answer: TAnswer<T> = await response.json();

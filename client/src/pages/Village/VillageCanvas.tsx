@@ -90,7 +90,6 @@ const VillageCanvas: React.FC = () => {
 
     function drawBuildings(canvas: Canvas, buildings: Building[]): void {
         buildings.forEach((building) => {
-            console.log(`Building ID: ${building.id}, Sprites Array:`, building.sprites);
             building.sprites.forEach((sprite, i) => {
                 const spriteData = getSprite(sprite);
                 canvas.spriteFull(spritesImage, building.cords[i].x, building.cords[i].y, spriteData[0], spriteData[1], spriteData[2]);
@@ -142,7 +141,6 @@ const VillageCanvas: React.FC = () => {
 
     function render(FPS: number): void {
         if (canvas && game) {
-            console.log('Sprites Image Loaded:', spritesImage ? 'YES' : 'NO');
             canvas.clear();
             const { units, buildings } = game.getScene();
 
@@ -284,21 +282,17 @@ const VillageCanvas: React.FC = () => {
     const mouseWheel = (delta: number, x: number, y: number) => {
         if (!canvas) return;
 
-        // Зум с центром в позиции мыши
         zoomFactor = delta > 0 ? 1.1 : 0.9;
         
-        // Сохраняем мировые координаты под курсором
         const worldX = x;
         const worldY = y;
         
-        // Изменяем размер окна
         const oldWidth = WINDOW.WIDTH;
         const oldHeight = WINDOW.HEIGHT;
         
         WINDOW.WIDTH *= zoomFactor;
         WINDOW.HEIGHT *= zoomFactor;
         
-        // Корректируем позицию окна так, чтобы точка под курсором осталась на месте
         const relativeX = (worldX - WINDOW.LEFT) / oldWidth;
         const relativeY = (worldY - WINDOW.TOP) / oldHeight;
         
@@ -345,7 +339,7 @@ const VillageCanvas: React.FC = () => {
 
         (async () => {
         await game.loadBuildings(server);
-        game.getGame().setBuildings(game.getScene().buildings);
+        game.setBuildings(game.getScene().buildings);
     })();
 
         const keyDownHandler = (event: KeyboardEvent) => {
