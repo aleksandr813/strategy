@@ -17,6 +17,7 @@ class Application
 
     private $calculator;
 
+
     function __construct()
     {
         $db = new DB();
@@ -30,12 +31,10 @@ class Application
 
     public function login($params)
     {
-        // Проверка на пустые поля
-        if (empty($params['login']) || empty($params['hash']) || empty($params['rnd'])) {
-            return ['error' => 1016];
+        if ($params['login'] && $params['hash'] && $params['rnd']) {
+            return $this->user->login($params['login'], $params['hash'], $params['rnd']);
         }
-        
-        return $this->user->login($params['login'], $params['hash'], $params['rnd']);
+        return ['error' => 1016];
     }
 
     public function logout($params)
@@ -51,12 +50,10 @@ class Application
     }
 
     public function registration($params) {
-        // Проверка на пустые поля
-        if (empty($params['login']) || empty($params['hash']) || empty($params['name'])) {
-            return ['error' => 1016];
+        if ($params['login'] && $params['hash'] && $params['name']) {
+            return $this->user->registration($params['login'], $params['hash'], $params['name']);
         }
-        
-        return $this->user->registration($params['login'], $params['hash'], $params['name']);
+        return ['error' => 242];
     }
 
     public function sendMessage($params)
