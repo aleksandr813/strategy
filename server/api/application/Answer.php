@@ -42,6 +42,7 @@ class Answer
         '1013' => 'Пароль без цифр',
         '1014' => 'Пароль содержит персональную информацию',
         '1015' => 'Пароли не совпадают',
+        '1016' => 'params login or password not set',
         '1090' => 'Ошибка создания деревни',
         '404' => 'not found',
         '605' => 'invalid teamId',
@@ -53,7 +54,6 @@ class Answer
         '709' => ' session did not start or you need use previous method',
         '800' => 'not found object',
         '801' => 'unknown state',
-        '1016' => 'params login or password not set',
         '9000' => 'unknown error'
     );
 
@@ -66,7 +66,7 @@ class Answer
                     'result' => 'error',
                     'error' => [
                         'code' => $code,
-                        'text' => self::$CODES[$code]
+                        'text' => self::$CODES[$code] ?? self::$CODES['9000']
                     ]
                 ];
             }
