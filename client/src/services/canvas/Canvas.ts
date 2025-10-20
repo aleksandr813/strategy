@@ -214,7 +214,7 @@ class Canvas {
     }
 
     spriteFull(image: HTMLImageElement, dx: number, dy: number, sx: number, sy: number, size: number): void {
-        this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), size, size);
+        this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), this.dec(1), this.dec(1));
     }
 
     render(): void {

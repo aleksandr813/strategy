@@ -15,6 +15,8 @@ const GREEN = '#00e81c';
 const DRAG_THRESHOLD = 5;
 const TIME_THRESHOLD = 200;
 
+let zoomFactor = 1;
+
 const VillageCanvas: React.FC = () => {
     const { WINDOW, SPRITE_SIZE } = CONFIG;
 
@@ -177,6 +179,7 @@ const VillageCanvas: React.FC = () => {
             WINDOW.LEFT = windowStartPosition.LEFT - deltaX;
             WINDOW.TOP = windowStartPosition.TOP - deltaY;
         }
+
     };
 
     const mouseUp = (x: number, y: number) => {
@@ -279,7 +282,7 @@ const VillageCanvas: React.FC = () => {
         if (!canvas) return;
 
         // Зум с центром в позиции мыши
-        const zoomFactor = delta > 0 ? 1.1 : 0.9;
+        zoomFactor = delta > 0 ? 1.1 : 0.9;
         
         // Сохраняем мировые координаты под курсором
         const worldX = x;
@@ -300,6 +303,8 @@ const VillageCanvas: React.FC = () => {
         WINDOW.TOP = worldY - relativeY * WINDOW.HEIGHT;
         
         console.log('Зум:', zoomFactor, 'Новый размер окна:', WINDOW.WIDTH, 'x', WINDOW.HEIGHT);
+
+        
     };
 
     const mouseMiddleDown = (x: number, y: number) => {
@@ -343,6 +348,7 @@ const VillageCanvas: React.FC = () => {
         };
 
         document.addEventListener('keydown', keyDownHandler);
+        
 
         return () => {
             game?.destructor();
