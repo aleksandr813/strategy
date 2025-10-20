@@ -40,7 +40,8 @@ const UI: React.FC = () => {
                         type: type.type,
                         name: type.name,
                         hp: Number(type.hp),
-                        price: Number(type.price)
+                        price: Number(type.price),
+                        sprite: Number(type.sprite_id)
                     }));
                     setBuildingTypes(convertedTypes);
                 } else {
