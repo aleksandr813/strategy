@@ -177,7 +177,6 @@ const VillageCanvas: React.FC = () => {
             WINDOW.LEFT = windowStartPosition.LEFT - deltaX;
             WINDOW.TOP = windowStartPosition.TOP - deltaY;
         }
-        return
     };
 
     const mouseUp = (x: number, y: number) => {
