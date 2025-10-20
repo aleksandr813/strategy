@@ -16,7 +16,6 @@ class Game {
     private allocation:Allocation;
     private buildingPreview;
     private easystar = new EasyStar.js();
-    private game: this;
     
 
     constructor() {
@@ -24,7 +23,6 @@ class Game {
         this.buildings = []
         this.allocation = new Allocation;
         this.buildingPreview = new BuildingPreview();
-        this.game = this;
     }
 
     setBuildings(buildings: Building[]): void {
@@ -70,18 +68,18 @@ class Game {
     }
 
     getVillageMatrix(units:Unit[], buildings:Building[]):number[][] {
-        let booleanMatrix:number[][] = new Array(29);
+        let booleanMatrix:number[][] = Array(29).fill(null).map(() => Array(87).fill(0));
         for (let i = 0; i < 29; i++) {
-            booleanMatrix[i] = new Array(29).fill(0);
+            booleanMatrix[i] = new Array(87).fill(0);
         }
         units.forEach((element) => {
             booleanMatrix[element.cords.x][element.cords.y] = 1;
         })
         buildings.forEach((element) => {
-            booleanMatrix[element.cords[0].x][element.cords[0].y] = 1;
-            booleanMatrix[element.cords[0].x + 1][element.cords[0].y] = 1;
-            booleanMatrix[element.cords[0].x][element.cords[0].y + 1] = 1;
-            booleanMatrix[element.cords[0].x + 1][element.cords[0].y + 1] = 1;
+            booleanMatrix[element.cords[0].y][element.cords[0].x] = 1;
+            booleanMatrix[element.cords[0].y + 1][element.cords[0].x] = 1;
+            booleanMatrix[element.cords[0].y][element.cords[0].x + 1] = 1;
+            booleanMatrix[element.cords[0].y + 1][element.cords[0].x + 1] = 1;
         })
         return booleanMatrix;
     }
@@ -105,8 +103,12 @@ class Game {
                 this.buildings
             );
 
+            if (destination.x+1 > booleanMatrix[0].length || destination.y+1 > booleanMatrix.length || destination.x < 0 || destination.y < 0) {
+                return
+            }
+
             this.easystar.setGrid(booleanMatrix);
-            this.easystar.setAcceptableTiles([0]);
+            this.easystar.setAcceptableTiles(0);
 
             this.easystar.findPath(unit.cords.x, unit.cords.y, destination.x, destination.y, (path) => {
                 if (path === null) {
@@ -123,7 +125,7 @@ class Game {
                                 this.buildings
                             );
                             
-                            if (currentMatrix[nextStep.x][nextStep.y] === 0) {
+                            if (currentMatrix[nextStep.y][nextStep.x] === 0) {
                                 unit.cords = nextStep;
                                 stepIndex++;
                             }
@@ -140,9 +142,7 @@ class Game {
 
         this.easystar.calculate();
     }
-    getGame(): Game {
-        return this.game;
-    };
+
 }
 
 export default Game;
