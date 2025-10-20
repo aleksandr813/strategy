@@ -488,8 +488,8 @@ last_income_time: number;
 * `311` - не верные координаты (Coordinates are busy)
 
 
-### 4.7. getBuildings
-Получить все здания в деревне
+### 4.7. getUnits
+Получить всех юнитов в деревне
 
 **Параметры**
 ```
