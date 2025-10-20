@@ -34,7 +34,7 @@ class Application
         if ($params['login'] && $params['hash'] && $params['rnd']) {
             return $this->user->login($params['login'], $params['hash'], $params['rnd']);
         }
-        return ['error' => 242];
+        return ['error' => 1016];
     }
 
     public function logout($params)
@@ -53,7 +53,7 @@ class Application
         if ($params['login'] && $params['hash'] && $params['name']) {
             return $this->user->registration($params['login'], $params['hash'], $params['name']);
         }
-        return ['error' => 242];
+        return ['error' => 1016];
     }
 
     public function sendMessage($params)
