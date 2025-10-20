@@ -137,7 +137,7 @@ const VillageCanvas: React.FC = () => {
         
         ctx.strokeStyle = canPlace ? '#00FF00' : '#FF0000';
         ctx.lineWidth = 2;
-        ctx.strokeRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(2), canvas.dec(2));
+        ctx.fillRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(2), canvas.dec(2));
     }
 
     function drawSelectionRect(canvas: Canvas): void {
