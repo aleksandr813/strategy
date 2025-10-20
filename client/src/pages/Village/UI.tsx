@@ -4,13 +4,15 @@ import { BuildingType, BuildingTypeResponse } from '../../services/server/types'
 import Button from '../../components/Button/Button';
 import { GameContext, ServerContext } from '../../App';
 
-import "./UI.scss"
+import "./Village.scss"
+
 
 const UI: React.FC = () => {
     const [showBuyMenu, setShowBuyMenu] = React.useState(false);
     const server = useContext(ServerContext)
     const game = useContext(GameContext)
     const [buildingTypes, setBuildingTypes] = useState<BuildingType[]>([]);
+
 
     const buyButtonHandler = () => {
         setShowBuyMenu(true);
@@ -25,6 +27,7 @@ const UI: React.FC = () => {
         game.getScene().buildingPreview.activate(building.name, building.id, building.hp);
         closeBuyMenu();
     };
+
 
     useEffect(() => {
         const fetchBuildingTypes = async () => {
@@ -55,9 +58,8 @@ const UI: React.FC = () => {
     }, [server]);
 
     return (
-    <div className='village-ui'>
-        
-        <Button text='Купить здания' onClick={buyButtonHandler} className="pixel-button"/>
+    <div className='VillageUI'>
+        <Button text='Купить здания' onClick={buyButtonHandler}/>
         {showBuyMenu && (
             <div className="buy-menu-overlay" onClick={closeBuyMenu}>
                 <div className="buy-menu-container" onClick={(e) => e.stopPropagation()}>
@@ -76,7 +78,6 @@ const UI: React.FC = () => {
                             <Button 
                                 onClick={() => buyBuilding(building)} 
                                 text='Купить'
-                                className="pixel-button small"
                             />
                         </div>
                     ))}
@@ -84,7 +85,7 @@ const UI: React.FC = () => {
                     <Button 
                         onClick={closeBuyMenu} 
                         text='Закрыть'
-                        className="pixel-button buy-menu-close-button"
+                        className="buy-menu-close-button"
                     />
                 </div>
             </div>

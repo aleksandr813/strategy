@@ -1,117 +1,56 @@
 @import '../../scss/variables.scss';
 
+$width-wrapper: 500px;
+$height-wrapper: 200px;
+
 .popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    position: absolute;
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-    font-family: 'PixelifySans-Bold', sans-serif;
-
-    @font-face {
-        font-family: 'PixelifySans-Medium';
-        src: url('../../assets/fonts/PixelifySans-Medium.ttf');
-    }
-
-    @font-face {
-        font-family: 'PixelifySans-Bold';
-        src: url('../../assets/fonts/PixelifySans-Bold.ttf');
-    }
 
     &-wrapper {
-        background: rgba(0, 0, 0, 0.8);
-        padding: 40px 60px;
-        border-radius: 16px;
         text-align: center;
-        box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
-        min-width: 500px;
-        border: 2px solid #333;
+        min-width: $width-wrapper;
+        min-height: $height-wrapper;
+        background-color: black;
+        border: 6px solid $button-border-color;
+        border-radius: 10px;
+        padding: 0 20px 0 20px;
     }
 
     &-text-block {
-        margin-bottom: 30px;
+        font-weight: 500;
+        text-transform: uppercase;
     }
 
     &-title {
-        font-size: 36px;
-        color: white;
-        margin-bottom: 20px;
-        text-shadow: 2px 2px #000;
-        letter-spacing: 2px;
+        height: 100px;
+        margin-top: 10px;
+        font-size: 60px;
+        color: $text-color;
+        background-color: $button-hover-color;
+        -webkit-background-clip: text;
+        -webkit-text-stroke: 8px transparent;
     }
 
     &--info-text {
-        font-size: 20px;
-        color: white;
-        text-shadow: 1px 1px #000;
-        font-family: 'PixelifySans-Medium';
-        line-height: 1.4;
+        font-size: 40px;
+        color: $text-color;
+        background-color: $button-hover-color;
+        -webkit-background-clip: text;
+        -webkit-text-stroke: 4px transparent;
     }
 
     & .buttons-block {
+        margin-top: 1.2rem;
         display: flex;
-        gap: 20px;
-        justify-content: center;
-
-        button {
-            min-width: 150px;
-            background-color: #006400;
-            color: white;
-            border: 2px solid #222;
-            border-radius: 10px;
-            padding: 10px 20px;
-            font-family: 'PixelifySans-Bold';
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 16px;
-            image-rendering: pixelated;
-
-            &:hover {
-                background-color: #00a000;
-                transform: scale(1.05);
-            }
-
-            &.secondary {
-                background-color: #8B0000;
-                
-                &:hover {
-                    background-color: #FF0000;
-                }
-            }
-        }
+        flex-direction: row;
+        justify-content: space-around;
     }
 
     &__hide {
         display: none;
-    }
-
-    @media (max-width: 768px) {
-        &-wrapper {
-            min-width: 300px;
-            padding: 30px 40px;
-            margin: 20px;
-        }
-
-        &-title {
-            font-size: 28px;
-        }
-
-        &--info-text {
-            font-size: 18px;
-        }
-
-        & .buttons-block {
-            flex-direction: column;
-            gap: 15px;
-            
-            button {
-                min-width: 100%;
-            }
-        }
     }
 }

@@ -229,18 +229,9 @@ class Canvas {
         this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), this.dec(1), this.dec(1));
     }
 
-    drawImageFull(image: HTMLImageElement, dx = 0, dy = 0, width?: number, height?: number): void {
-        if (width && height) {
-            this.contextV.drawImage(image, dx, dy, width, height);
-        } else {
-            this.contextV.drawImage(image, dx, dy);
-        }
-    }
-
     render(): void {
         this.context.drawImage(this.canvasV, 0, 0);
     }
-
 }
 
 export default Canvas;
