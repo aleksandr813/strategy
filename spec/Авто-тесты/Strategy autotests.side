@@ -17,9 +17,9 @@
       "id": "59e3690e-3c01-49f8-8c57-cbf6272b415d",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -28,9 +28,9 @@
       "id": "df12492a-3c94-4bba-b1a6-f7d4dc0bd206",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -39,9 +39,9 @@
       "id": "5379bc74-a5ca-46ef-badf-76e5af87359a",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -51,9 +51,9 @@
       "id": "726eb0b7-25d4-41e5-b8ba-022b3593b0a4",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -63,9 +63,9 @@
       "id": "08bfc326-cc9f-4d43-941f-d7defbdf9fc3",
       "comment": "",
       "command": "click",
-      "target": "css=.button:nth-child(1)",
+      "target": "id=Test-button-autorization",
       "targets": [
-        ["css=.button:nth-child(1)", "css:finder"],
+        ["id=Test-button-autorization", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div[2]/button", "xpath:idRelative"],
         ["xpath=//button", "xpath:position"],
         ["xpath=//button[contains(.,'Авторизоваться')]", "xpath:innerText"]
@@ -114,9 +114,9 @@
       "id": "23ba6c25-039e-43c4-a60b-1b4b7dbf312d",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -125,9 +125,9 @@
       "id": "13aaa7f0-13ee-4a6c-a288-61043f03382d",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -136,9 +136,9 @@
       "id": "6f996519-cb74-4592-8982-744ff16c8364",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -148,9 +148,9 @@
       "id": "7fa7c810-b31f-4509-a27c-c35dcbabd63a",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -160,9 +160,9 @@
       "id": "812c24c5-0b4d-4914-a11e-8d4b1e7746a0",
       "comment": "",
       "command": "click",
-      "target": "css=.button:nth-child(1)",
+      "target": "id=Test-button-autorization",
       "targets": [
-        ["css=.button:nth-child(1)", "css:finder"],
+        ["id=Test-button-autorization", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div[2]/button", "xpath:idRelative"],
         ["xpath=//button", "xpath:position"],
         ["xpath=//button[contains(.,'Авторизоваться')]", "xpath:innerText"]
@@ -211,9 +211,9 @@
       "id": "f6f9b05c-09e3-4e3f-aa03-8a4eeb316fc5",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -222,9 +222,9 @@
       "id": "7edf373e-246a-49e5-9087-1038260cbad2",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -233,9 +233,9 @@
       "id": "cfa9cdbc-b236-48f0-83bd-f36a37ea1830",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -245,9 +245,9 @@
       "id": "040d8b20-5936-4906-89c1-b4b31e28f5d8",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -257,9 +257,9 @@
       "id": "b841a659-efa0-4a98-b67d-3c73d6834278",
       "comment": "",
       "command": "click",
-      "target": "css=.button:nth-child(1)",
+      "target": "id=Test-button-autorization",
       "targets": [
-        ["css=.button:nth-child(1)", "css:finder"],
+        ["id=Test-button-autorization", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div[2]/button", "xpath:idRelative"],
         ["xpath=//button", "xpath:position"],
         ["xpath=//button[contains(.,'Авторизоваться')]", "xpath:innerText"]
@@ -308,9 +308,9 @@
       "id": "afc91050-6c81-45f7-a057-33b2cccc5e48",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -319,9 +319,9 @@
       "id": "39e922ee-4157-4412-84eb-2b354ef60afb",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -330,9 +330,9 @@
       "id": "3eb8f3c0-344e-449f-a3cf-59a2c9b3d97c",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -342,9 +342,9 @@
       "id": "b2a80973-66e3-4427-92b0-c61ad530ae17",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -354,9 +354,9 @@
       "id": "ef9dc27d-6a92-4b84-acbe-300f7ef42fee",
       "comment": "",
       "command": "click",
-      "target": "css=.button:nth-child(1)",
+      "target": "id=Test-button-autorization",
       "targets": [
-        ["css=.button:nth-child(1)", "css:finder"],
+        ["id=Test-button-autorization", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div[2]/button", "xpath:idRelative"],
         ["xpath=//button", "xpath:position"],
         ["xpath=//button[contains(.,'Авторизоваться')]", "xpath:innerText"]
@@ -405,9 +405,9 @@
       "id": "bb4dd1c1-2102-482c-94e5-e389152c0a19",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -416,9 +416,9 @@
       "id": "27b42231-da44-48c7-9d48-0f1367e5c900",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -427,9 +427,9 @@
       "id": "8d41220d-8011-4aea-8d1f-e14d47c1a07e",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -439,9 +439,9 @@
       "id": "38b1a5b1-0536-4cfc-af9b-8a62747679ad",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -451,9 +451,9 @@
       "id": "0a1de67c-c4c7-48c4-bd85-86387edcfaff",
       "comment": "",
       "command": "click",
-      "target": "css=.button:nth-child(1)",
+      "target": "id=Test-button-autorization",
       "targets": [
-        ["css=.button:nth-child(1)", "css:finder"],
+        ["id=Test-button-autorization", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div[2]/button", "xpath:idRelative"],
         ["xpath=//button", "xpath:position"],
         ["xpath=//button[contains(.,'Авторизоваться')]", "xpath:innerText"]
@@ -502,9 +502,9 @@
       "id": "c6d110ba-3793-4d25-8a6a-d1ccec9524f3",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -513,9 +513,9 @@
       "id": "4e9f176e-9e83-4ec0-8cb3-a302f6e5061a",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -524,9 +524,9 @@
       "id": "a7bb90e8-281f-41aa-b698-82705828957f",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -536,9 +536,9 @@
       "id": "84cf3af9-0c7a-40b7-9204-2195e5d9082d",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -548,9 +548,9 @@
       "id": "81449edd-dae4-482e-aab1-2d506d5cdac2",
       "comment": "",
       "command": "click",
-      "target": "css=.button:nth-child(1)",
+      "target": "id=Test-button-autorization",
       "targets": [
-        ["css=.button:nth-child(1)", "css:finder"],
+        ["id=Test-button-autorization", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div[2]/button", "xpath:idRelative"],
         ["xpath=//button", "xpath:position"],
         ["xpath=//button[contains(.,'Авторизоваться')]", "xpath:innerText"]
@@ -599,9 +599,9 @@
       "id": "a45c2e26-8f46-4b7e-88e4-eed4fe3feeb8",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -610,9 +610,9 @@
       "id": "a67f0ce0-bdb4-4773-bc61-13b5e685144a",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -621,9 +621,9 @@
       "id": "6c42f49b-298d-492a-a61d-ed1d5d352b95",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -633,9 +633,9 @@
       "id": "0075419f-48b5-438b-a720-1ec8315756c8",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -645,9 +645,9 @@
       "id": "5a4f08b2-1098-481c-b2cd-624c8f1d6bcb",
       "comment": "",
       "command": "click",
-      "target": "css=.button:nth-child(1)",
+      "target": "id=Test-button-autorization",
       "targets": [
-        ["css=.button:nth-child(1)", "css:finder"],
+        ["id=Test-button-autorization", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div[2]/button", "xpath:idRelative"],
         ["xpath=//button", "xpath:position"],
         ["xpath=//button[contains(.,'Авторизоваться')]", "xpath:innerText"]
@@ -696,9 +696,9 @@
       "id": "5803384b-7dd0-4c87-a68c-1f24b3dc721d",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -707,9 +707,9 @@
       "id": "6216f5d2-aa52-4fd0-ab6c-59138a52a7d6",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -718,9 +718,9 @@
       "id": "fed2f6f2-f888-471a-b62b-27388a191c7f",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -730,9 +730,9 @@
       "id": "99812299-451e-4b4a-9f89-33d91731bb0f",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -742,9 +742,9 @@
       "id": "c3554208-7783-44a9-b33e-4ca34a18d060",
       "comment": "",
       "command": "click",
-      "target": "css=.button:nth-child(1)",
+      "target": "id=Test-button-autorization",
       "targets": [
-        ["css=.button:nth-child(1)", "css:finder"],
+        ["id=Test-button-autorization", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div[2]/button", "xpath:idRelative"],
         ["xpath=//button", "xpath:position"],
         ["xpath=//button[contains(.,'Авторизоваться')]", "xpath:innerText"]
@@ -793,9 +793,9 @@
       "id": "8327a2aa-4b2f-4337-9a5a-71e59e7eccf8",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -804,9 +804,9 @@
       "id": "2a6b9395-3352-4723-8605-86ff089f6f92",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -815,9 +815,9 @@
       "id": "cb351fd1-f891-4937-be4c-aae63de4b52d",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -827,9 +827,9 @@
       "id": "618e50ec-855d-4667-bedc-7555689a8526",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -839,9 +839,9 @@
       "id": "41450edf-19b7-4dbf-b55b-d3c4cb309768",
       "comment": "",
       "command": "click",
-      "target": "css=.button:nth-child(1)",
+      "target": "id=Test-button-autorization",
       "targets": [
-        ["css=.button:nth-child(1)", "css:finder"],
+        ["id=Test-button-autorization", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div[2]/button", "xpath:idRelative"],
         ["xpath=//button", "xpath:position"],
         ["xpath=//button[contains(.,'Авторизоваться')]", "xpath:innerText"]
@@ -890,9 +890,9 @@
       "id": "919db6d3-43cc-4444-9800-3622fc92083b",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -901,9 +901,9 @@
       "id": "f142683b-9496-4c56-a49d-337f1781334d",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -912,9 +912,9 @@
       "id": "9d33a914-fb2a-4e50-8676-a2aca492f2a1",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -924,9 +924,9 @@
       "id": "3321bb66-6c5b-4f08-b8de-d16d0b815422",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -936,9 +936,9 @@
       "id": "d0ceefca-b4ea-4ee9-b26b-71592d0d8237",
       "comment": "",
       "command": "click",
-      "target": "css=.button:nth-child(1)",
+      "target": "id=Test-button-autorization",
       "targets": [
-        ["css=.button:nth-child(1)", "css:finder"],
+        ["id=Test-button-autorization", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div[2]/button", "xpath:idRelative"],
         ["xpath=//button", "xpath:position"],
         ["xpath=//button[contains(.,'Авторизоваться')]", "xpath:innerText"]
@@ -987,9 +987,9 @@
       "id": "09033baa-ee63-40d4-8f4e-1f9c135125a3",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -998,9 +998,9 @@
       "id": "e53febce-044a-4dbe-95e7-ce4817a8c910",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -1009,9 +1009,9 @@
       "id": "4ecca57d-7853-4f83-abcc-82492588cd45",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -1021,9 +1021,9 @@
       "id": "32501973-99b2-4110-985c-db64e1e565c6",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -1033,9 +1033,9 @@
       "id": "d458ddba-bc08-4547-b3bb-bd0bd465ecb0",
       "comment": "",
       "command": "click",
-      "target": "css=.button:nth-child(1)",
+      "target": "id=Test-button-autorization",
       "targets": [
-        ["css=.button:nth-child(1)", "css:finder"],
+        ["id=Test-button-autorization", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div[2]/button", "xpath:idRelative"],
         ["xpath=//button", "xpath:position"],
         ["xpath=//button[contains(.,'Авторизоваться')]", "xpath:innerText"]
@@ -1084,9 +1084,9 @@
       "id": "9824aa02-a967-4d02-a11d-417a44043e6e",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -1095,9 +1095,9 @@
       "id": "9b12d7ae-6732-4ee2-804a-0e4d272418b6",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(2)",
+      "target": "id=Test-input-login",
       "targets": [
-        ["css=input:nth-child(2)", "css:finder"],
+        ["id=Test-input-login", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
@@ -1106,9 +1106,9 @@
       "id": "1d00e945-735b-46c1-86b0-91245e37ef57",
       "comment": "",
       "command": "click",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -1118,9 +1118,9 @@
       "id": "235aad3b-ae7b-4ef9-8680-f379eb001dc8",
       "comment": "",
       "command": "type",
-      "target": "css=input:nth-child(4)",
+      "target": "id=Test-input-password",
       "targets": [
-        ["css=input:nth-child(4)", "css:finder"],
+        ["id=Test-input-password", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/div/div/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
@@ -1130,9 +1130,9 @@
       "id": "9baa2799-9bb4-4fc4-bb9f-694b01cb7989",
       "comment": "",
       "command": "click",
-      "target": "css=.button:nth-child(1)",
+      "target": "id=Test-button-autorization",
       "targets": [
-        ["css=.button:nth-child(1)", "css:finder"],
+        ["id=Test-button-autorization", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div[2]/button", "xpath:idRelative"],
         ["xpath=//button", "xpath:position"],
         ["xpath=//button[contains(.,'Авторизоваться')]", "xpath:innerText"]
