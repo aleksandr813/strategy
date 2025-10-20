@@ -8,6 +8,7 @@ import Allocation from './UI/Allocation';
 import { GameContext, ServerContext } from '../../App';
 import { TPoint } from '../../config';
 import VillageManager from './villageDataManager';
+import villageBackground from '../../assets/img/background/villageBackground.png'
 
 import "./Village.scss"
 
@@ -23,6 +24,9 @@ const VillageCanvas: React.FC = () => {
 
     const game = useContext(GameContext)
     const server = useContext(ServerContext)
+
+    const background = new Image()
+    background.src = villageBackground
 
     let canvas: Canvas | null = null;
     const Canvas = useCanvas(render);
@@ -57,6 +61,18 @@ const VillageCanvas: React.FC = () => {
         
         ctx.fillStyle = "#00FF00";
         ctx.fillRect(canvas.xs(x), canvas.ys(y), canvas.dec(width * hpRatio), canvas.dec(height));
+    }
+
+    function drawBackground(canvas:Canvas):void {
+            if (background.complete) {
+                canvas.contextV.drawImage(
+                    background,
+                    canvas.xs(0),
+                    canvas.ys(0),
+                    canvas.dec(87),
+                    canvas.dec(29) 
+                );
+            }
     }
 
     function drawUnits(canvas: Canvas, units: Unit[]): void {
@@ -142,6 +158,9 @@ const VillageCanvas: React.FC = () => {
     function render(FPS: number): void {
         if (canvas && game) {
             canvas.clear();
+
+            drawBackground(canvas);
+
             const { units, buildings } = game.getScene();
 
             drawUnits(canvas, units);
