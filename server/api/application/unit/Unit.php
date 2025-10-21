@@ -33,7 +33,7 @@ class Unit
             return ['error' => 305];
         }
 
-        $existingUnit = $this->db->getPositionUnit($village->id, $x, $y);
+        $existingUnit = $this->db->isOccupied($village->id, $x, $y);
         if ($existingUnit) {
             return ['error' => 311];
         }
@@ -75,7 +75,6 @@ class Unit
             return ['error' => 503];
         }
 
-        //Что возвращать при успешном удалении юнита?
     }
 
     public function getUnitTypes()

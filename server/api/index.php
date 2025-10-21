@@ -38,10 +38,6 @@ function result($params) {
             case 'deleteBuilding': return $app->deleteBuilding($params);
             //calc
             case 'getRoots': return $app->getRoots($params);
-            //money
-            case 'getMineIncome': return $app->getMineIncome($params);
-            case 'getAllMinesIncome': return $app->getAllMinesIncome($params);
-            case 'updateMineIncomeTime': return $app->updateMineIncomeTime($params);
 
             default: return ['error' => 102];
         }

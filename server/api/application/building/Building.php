@@ -34,7 +34,7 @@ class Building {
             return ['error' => 305];
         }
 
-        $existingBuilding = $this->db->getPositionBuilding($village->id, $x, $y);
+        $existingBuilding = $this->db->isOccupied($village->id, $x, $y);
         if ($existingBuilding) {
             return ['error' => 311];
         }
