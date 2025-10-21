@@ -98,18 +98,6 @@ class DB
         );
     }
 
-    public function getUnitById($unitId)
-    {
-        return $this->query(
-            "SELECT u.*
-            FROM units AS u
-            JOIN users ON u.user_id = users.id
-            WHERE u.id = ?
-        ",
-            [$unitId]
-        );
-    }
-
     public function getUnitsByUser($userId)
     {
         return $this->queryAll(
@@ -153,17 +141,6 @@ class DB
     public function deleteUnit($unitId, $userId)
     {
         return $this->execute("DELETE FROM units WHERE id = ? AND user_id = ?", [$unitId, $userId]);
-    }
-
-    public function getBuildingById($buildingId)
-    {
-        return $this->query(
-            "SELECT b.*
-            FROM buildings AS b
-            JOIN users AS u ON b.user_id = u.id
-            WHERE b.id = ?",
-            [$buildingId]
-        );
     }
 
     public function getBuildings($userId)

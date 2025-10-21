@@ -8,21 +8,6 @@ class Building {
         $this->db = $db;
     }
 
-    public function getBuildingById($buildingId) {
-        $building = $this->db->getBuildingById($buildingId);
-        if (!$building) {
-            return ['error' => 300];
-        }
-
-        return [
-            'id' => $building->id,
-            'user_id' => $building->user_id,
-            'building_type' => $building->building_type,
-            'x' => $building->x,
-            'y' => $building->y
-        ];
-    }
-
     public function getBuildings($userId) {
         if (!$userId) {
             return ['error' => 705];

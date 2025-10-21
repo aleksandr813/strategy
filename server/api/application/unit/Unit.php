@@ -9,22 +9,6 @@ class Unit
         $this->db = $db;
     }
 
-    public function getUnitById($unitId)
-    {
-        $unit = $this->db->getUnitById($unitId);
-        if (!$unit) {
-            return ['error' => 500];
-        }
-
-        return [
-            'id' => $unit->id,
-            'user_id' => $unit->user_id,
-            'unit_type' => $unit->unit_type,
-            'x' => $unit->x,
-            'y' => $unit->y
-        ];
-    }
-
     public function getUnitsByUser($userId)
     {
         if (!$userId) {

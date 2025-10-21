@@ -26,13 +26,11 @@ function result($params) {
             case 'getMessages': return $app->getMessages($params);
             //unit
             case 'getUnitTypes': return $app->getUnitTypes($params);
-            case 'getUnitById': return $app->getUnitById($params);
             case 'getUnitsByUser': return $app->getUnitsByUser($params);
             case 'buyUnit': return $app->buyUnit($params);
             case 'updateUnit': return $app->updateUnit($params);
             case 'deleteUnit': return $app->deleteUnit($params);
             //building
-            case 'getBuilding': return $app->getBuildingById($params);
             case 'getBuildingTypes': return $app->getBuildingTypes($params);
             case 'getBuildings': return $app->getBuildings($params);
             case 'buyBuilding': return $app->buyBuilding($params);

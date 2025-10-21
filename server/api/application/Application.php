@@ -83,18 +83,6 @@ class Application
         return ['error' => 242];
     }
 
-    public function getUnitById($params)
-    {
-        if ($params['token'] && $params['id']) {
-            $user = $this->user->getUser($params['token']);
-            if ($user) {
-                return $this->unit->getUnitById($params['id']);
-            }
-            return ['error' => 705];
-        }
-        return ['error' => 242];
-    }
-
     public function getUnitsByUser($params)
     {
         if ($params['token']) {
@@ -137,18 +125,6 @@ class Application
             $user = $this->user->getUser($params['token']);
             if ($user) {
                 return $this->unit->deleteUnit($params['id'], $user->id);
-            }
-            return ['error' => 705];
-        }
-        return ['error' => 242];
-    }
-
-    public function getBuildingById($params)
-    {
-        if ($params['token'] && $params['id']) {
-            $user = $this->user->getUser($params['token']);
-            if ($user) {
-                return $this->building->getBuildingById($params['id']);
             }
             return ['error' => 705];
         }
