@@ -36,7 +36,7 @@ function result($params) {
             case 'getBuildingTypes': return $app->getBuildingTypes($params);
             case 'getBuildings': return $app->getBuildings($params);
             case 'buyBuilding': return $app->buyBuilding($params);
-            case 'updateBuilding': return $app->updateBuilding($params);
+            case 'upgradeBuilding': return $app->upgradeBuilding($params);
             case 'deleteBuilding': return $app->deleteBuilding($params);
             //calc
             case 'getRoots': return $app->getRoots($params);

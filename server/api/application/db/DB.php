@@ -207,9 +207,9 @@ class DB
         return $this->execute("UPDATE users SET money = ? WHERE id = ?", [$money, $userId]);
     }
 
-    public function updateBuilding($buildingId, $userId, $buildingType, $x, $y) {
-        return $this->execute("UPDATE buildings SET building_type = ?, x = ?, y = ? WHERE id = ? AND user_id = ?",
-            [$buildingType, $x, $y, $buildingId, $userId]
+    public function upgradeBuilding($buildingId, $villageId) {
+        return $this->execute("UPDATE buildings SET level = level + 1 WHERE id = ? AND village_id = ?",
+            [$buildingId, $villageId]
         );
     }
 
