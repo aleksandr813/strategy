@@ -168,8 +168,8 @@ class DB
         );
     }
 
-    public function getVillageByUserId($userId) {
-        return $this->query("SELECT id, user_id, x, y FROM villages WHERE user_id = ?", [$userId]);
+    public function getVillage($userId) {
+        return $this->query("SELECT id, last_income_datetime FROM villages WHERE user_id = ?", [$userId]);
     }
 
     public function getBuildingType($buildingType) {
@@ -199,6 +199,12 @@ class DB
 
     public function upgradeBuilding($buildingId, $villageId) {
         return $this->execute("UPDATE buildings SET level = level + 1 WHERE id = ? AND village_id = ?",
+            [$buildingId, $villageId]
+        );
+    }
+
+    public function getLevel($buildingId, $villageId) {
+        return $this->query("SELECT level FROM buildings WHERE id = ? AND village_id = ?",
             [$buildingId, $villageId]
         );
     }

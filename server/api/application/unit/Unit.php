@@ -21,7 +21,7 @@ class Unit
 
     public function buyUnit($user, $typeId, $x, $y)
     {
-        $village = $this->db->getVillageByUserId($user->id);
+        $village = $this->db->getVillage($user->id);
         if (!$village) {
             return ['error' => 310];
         }

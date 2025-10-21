@@ -101,20 +101,6 @@ Buildings: {
 }
 ```
 
-### 2.6. Доход шахты
-```
-MineIncome: {
-    success: boolean;
-    needs_update: boolean;
-    income_amount?: number;
-    intervals_passed?: number;
-    last_income_time: number;
-    current_time: number;
-    mine_id: number;
-    time_remaining?: number;
-}
-
-
 ```
 
 ## 3. Список запросов
@@ -134,10 +120,6 @@ MineIncome: {
 | updateMineIncomeTime | Обновить время начисления дохода шахты |
 | getUnitTypes | Получить типы юнитов |
 | buyUint | Купить юнита в деревню |
-
-
-
-| buyBuilding | Купить здание в деревню |
 
 ### 3.1. Общие ошибки
 * `101` - если не передан параметр `method`

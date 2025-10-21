@@ -22,7 +22,7 @@ class Building {
     }
 
     public function buyBuilding($user, $typeId, $x, $y) {
-        $village = $this->db->getVillageByUserId($user->id);
+        $village = $this->db->getVillage($user->id);
         if (!$village) {
             return ['error' => 310];
         }
@@ -55,7 +55,7 @@ class Building {
     }
 
     public function upgradeBuilding($buildingId, $user, $typeId) {
-        $village = $this->db->getVillageByUserId($user->id);
+        $village = $this->db->getVillage($user->id);
         if (!$village) {
             return ['error' => 310];
         }

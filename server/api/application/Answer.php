@@ -18,6 +18,7 @@ class Answer
         '306' => 'Transaction error',
         '310' => 'Village not found',
         '311' => 'Coordinates are busy',
+        '312' => 'Maximum level',
         '410' => 'Mine is not found',
         '411' => 'Failed to update mine income time', 
         '412' => 'Failed to add income to user',
