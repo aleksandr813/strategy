@@ -2,7 +2,8 @@ import React, { Component, useContext, useEffect, useRef, useState } from 'react
 import CONFIG from '../../config';
 import { BuildingType, BuildingTypeResponse } from '../../services/server/types';
 import Button from '../../components/Button/Button';
-import { GameContext, ServerContext } from '../../App';
+import { VillageContext, ServerContext } from '../../App';
+import VillageManager from './villageDataManager';
 
 import "./Village.scss"
 
@@ -10,8 +11,9 @@ import "./Village.scss"
 const UI: React.FC = () => {
     const [showBuyMenu, setShowBuyMenu] = React.useState(false);
     const server = useContext(ServerContext)
-    const game = useContext(GameContext)
+    const village = useContext(VillageContext)
     const [buildingTypes, setBuildingTypes] = useState<BuildingType[]>([]);
+    const villageManager = new VillageManager(server)
 
 
     const buyButtonHandler = () => {
@@ -24,38 +26,16 @@ const UI: React.FC = () => {
 
     const buyBuilding = async (building: BuildingType) => {
         console.log(`Покупка здания: ${building.name}`);
-        game.getScene().buildingPreview.activate(building.name, building.id, building.hp);
+        village.getScene().buildingPreview.activate(building.name, building.id, building.hp);
         closeBuyMenu();
     };
 
 
     useEffect(() => {
-        const fetchBuildingTypes = async () => {
-            try {
-                const response = await server.getBuildingTypes();
-                
-                if (response && response.building_types && response.building_types.length > 0) {
-                    const convertedTypes: BuildingType[] = response.building_types.map((type: BuildingTypeResponse) => ({
-                        id: Number(type.id),
-                        type: type.type,
-                        name: type.name,
-                        hp: Number(type.hp),
-                        price: Number(type.price),
-                        sprite: Number(type.sprite_id)
-                    }));
-                    setBuildingTypes(convertedTypes);
-                } else {
-                    console.error('Пустой массив типов зданий');
-                    setBuildingTypes([]);
-                }
-            } catch (error) {
-                console.error('Ошибка получения типов зданий:', error);
-                setBuildingTypes([]);
-            }
-        };
-
-        fetchBuildingTypes();
-    }, [server]);
+        (async () => {
+            setBuildingTypes(await villageManager.loadBuildingTypes());
+        })();
+    }, []);
 
     return (
     <div className='VillageUI'>
