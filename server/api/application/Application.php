@@ -95,12 +95,12 @@ class Application
         return ['error' => 242];
     }
 
-    public function getUnitsByUser($params)
+    public function getUnits($params)
     {
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->unit->getUnitsByUser($user->id);
+                return $this->unit->getUnits($user->id);
             }
             return ['error' => 705];
         }

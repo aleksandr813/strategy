@@ -27,7 +27,7 @@ function result($params) {
             //unit
             case 'getUnitTypes': return $app->getUnitTypes($params);
             case 'getUnitById': return $app->getUnitById($params);
-            case 'getUnitsByUser': return $app->getUnitsByUser($params);
+            case 'getUnits': return $app->getUnits($params);
             case 'buyUnit': return $app->buyUnit($params);
             case 'updateUnit': return $app->updateUnit($params);
             case 'deleteUnit': return $app->deleteUnit($params);

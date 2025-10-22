@@ -30,6 +30,7 @@
 
     * 4.13. getUnitTypes
     * 4.14. buyUnit
+    * 4.15. getUnits
 
 ## 1. Общее
 ### 1.1. Адрес сервера
@@ -117,6 +118,30 @@ MineIncome: {
 
 ```
 
+### 2.7. Юниты
+```
+Units: {
+    id: number;
+    type_id: number;
+    village_id: number;
+    x: number;
+    y: number;
+    level: number;
+    current_hp: number;
+}
+```
+
+### 2.8. Типы юнитов
+```
+Buildings: {
+    id: number;
+    type: string;
+    name: string;
+    hp: number;
+    price: number;
+}
+```
+
 ## 3. Список запросов
 | Название | О чем |
 | - | - |
@@ -134,10 +159,8 @@ MineIncome: {
 | updateMineIncomeTime | Обновить время начисления дохода шахты |
 | getUnitTypes | Получить типы юнитов |
 | buyUint | Купить юнита в деревню |
+| getUints | Получить всех юнитов в деревне |
 
-
-
-| buyBuilding | Купить здание в деревню |
 
 ### 3.1. Общие ошибки
 * `101` - если не передан параметр `method`
@@ -463,3 +486,22 @@ last_income_time: number;
 * `305` - недостаточно монеток для покупки юнита (Not enough funds to buy)
 * `310` - деревня не найдена (Village not found)
 * `311` - не верные координаты (Coordinates are busy)
+
+
+### 4.7. getUnits
+Получить всех юнитов в деревне
+
+**Параметры**
+```
+{
+    token: string; - токен
+}
+```
+**Успешный ответ**
+```
+    Answer<{
+        units: units[];
+    }>
+```
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
