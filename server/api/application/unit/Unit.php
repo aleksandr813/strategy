@@ -9,22 +9,6 @@ class Unit
         $this->db = $db;
     }
 
-    public function getUnitById($unitId)
-    {
-        $unit = $this->db->getUnitById($unitId);
-        if (!$unit) {
-            return ['error' => 500];
-        }
-
-        return [
-            'id' => $unit->id,
-            'user_id' => $unit->user_id,
-            'unit_type' => $unit->unit_type,
-            'x' => $unit->x,
-            'y' => $unit->y
-        ];
-    }
-
     public function getUnits($userId)
     {
         if (!$userId) {
@@ -37,7 +21,7 @@ class Unit
 
     public function buyUnit($user, $typeId, $x, $y)
     {
-        $village = $this->db->getVillageByUserId($user->id);
+        $village = $this->db->getVillage($user->id);
         if (!$village) {
             return ['error' => 310];
         }
@@ -49,7 +33,7 @@ class Unit
             return ['error' => 305];
         }
 
-        $existingUnit = $this->db->getPositionUnit($village->id, $x, $y);
+        $existingUnit = $this->db->isOccupied($village->id, $x, $y);
         if ($existingUnit) {
             return ['error' => 311];
         }
@@ -91,7 +75,6 @@ class Unit
             return ['error' => 503];
         }
 
-        //Что возвращать при успешном удалении юнита?
     }
 
     public function getUnitTypes()

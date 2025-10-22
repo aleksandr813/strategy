@@ -23,11 +23,6 @@
     * 4.7. getBuildings
     * 4.8. deleteBuilding
     * 4.9. buyBuilding
-
-    * 4.10. getMineIncome
-    * 4.11. getAllMinesIncome
-    * 4.12. updateMineIncomeTime
-
     * 4.13. getUnitTypes
     * 4.14. buyUnit
     * 4.15. getUnits
@@ -102,20 +97,6 @@ Buildings: {
 }
 ```
 
-### 2.6. Доход шахты
-```
-MineIncome: {
-    success: boolean;
-    needs_update: boolean;
-    income_amount?: number;
-    intervals_passed?: number;
-    last_income_time: number;
-    current_time: number;
-    mine_id: number;
-    time_remaining?: number;
-}
-
-
 ```
 
 ### 2.7. Юниты
@@ -154,13 +135,9 @@ Buildings: {
 | getBuildings | Получить все здания в деревне |
 | deleteBuilding | Удалить здание из деревни |
 | buyBuilding | Купить здание в деревню |
-| getMineIncome | Получить доход конкретной шахты |
-| getAllMinesIncome | Получить доход всех шахт пользователя |
-| updateMineIncomeTime | Обновить время начисления дохода шахты |
 | getUnitTypes | Получить типы юнитов |
 | buyUint | Купить юнита в деревню |
 | getUints | Получить всех юнитов в деревне |
-
 
 ### 3.1. Общие ошибки
 * `101` - если не передан параметр `method`
@@ -371,76 +348,6 @@ Buildings: {
 * `310` - деревня не найдена (Village not found)
 * `311` - не верные координаты (Coordinates not defined)
 
-
-```markdown
-### 4.10. getMineIncome
-Получить доход конкретной шахты. Если с момента последнего начисления прошел достаточный интервал, доход будет начислен автоматически.
-**Параметры**
-{
-token: string; - токен
-mine_id: number; - идентификатор шахты
-}
-**Успешный ответ (доход начислен)**
-Answer<{
-success: true;
-needs_update: true;
-income_amount: number;
-intervals_passed: number;
-last_income_time: number;
-current_time: number;
-mine_id: number;
-}>
-**Успешный ответ (доход еще не готов)**
-Answer<{
-success: true;
-needs_update: false;
-time_remaining: number;
-last_income_time: number;
-current_time: number;
-mine_id: number;
-}>
-**Ошибки**
-* `410` - шахта не найдена
-* `411` - ошибка обновления времени дохода шахты
-* `412` - ошибка начисления дохода пользователю
-* `705` - невалидный токен. Пользователь не авторизован
-
-### 4.11. getAllMinesIncome
-Получить доход всех шахт пользователя. Для каждой шахты автоматически проверяется и начисляется доход.
-
-**Параметры**
-{
-token: string; - токен
-}
-**Успешный ответ**
-Answer<{
-mines_income: [{
-mine_id: number;
-mine_type: string;
-income_result: MineIncome;
-}]>
-}>
-**Ошибки**
-* `705` - невалидный токен. Пользователь не авторизован
-
-### 4.12. updateMineIncomeTime
-Обновить время последнего начисления дохода для шахты (ручное обновление)
-
-**Параметры**
-{
-token: string; - токен
-mine_id: number; - идентификатор шахты
-income_time: number; - новое время начисления (timestamp)
-}
-**Успешный ответ**
-Answer<{
-id: number;
-user_id: number;
-last_income_time: number;
-}>
-**Ошибки**
-* `413` - ошибка обновления данных дохода шахты
-* `705` - невалидный токен. Пользователь не авторизован
 
 ### 4.13. getUnitTypes
 Получить все типы юнитов

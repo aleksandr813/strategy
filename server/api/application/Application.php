@@ -83,18 +83,6 @@ class Application
         return ['error' => 242];
     }
 
-    public function getUnitById($params)
-    {
-        if ($params['token'] && $params['id']) {
-            $user = $this->user->getUser($params['token']);
-            if ($user) {
-                return $this->unit->getUnitById($params['id']);
-            }
-            return ['error' => 705];
-        }
-        return ['error' => 242];
-    }
-
     public function getUnits($params)
     {
         if ($params['token']) {
@@ -137,18 +125,6 @@ class Application
             $user = $this->user->getUser($params['token']);
             if ($user) {
                 return $this->unit->deleteUnit($params['id'], $user->id);
-            }
-            return ['error' => 705];
-        }
-        return ['error' => 242];
-    }
-
-    public function getBuildingById($params)
-    {
-        if ($params['token'] && $params['id']) {
-            $user = $this->user->getUser($params['token']);
-            if ($user) {
-                return $this->building->getBuildingById($params['id']);
             }
             return ['error' => 705];
         }
@@ -203,12 +179,11 @@ class Application
         return ['error' => 242];
     }
 
-    public function updateBuilding($params)
-    {
-        if ($params['token'] && $params['id'] && $params['building_type'] && $params['x'] && $params['y']) {
+    public function upgradeBuilding($params) {
+        if ($params['token'] && $params['id'] && $params['typeId']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->building->updateBuilding($params['id'], $user->id, $params['building_type'], $params['x'], $params['y']);
+                return $this->building->upgradeBuilding($params['id'], $user, $params['typeId']);
             }
             return ['error' => 705];
         }
@@ -236,39 +211,4 @@ class Application
         return ['error' => 242];
     }
 
-    public function getMineIncome($params)
-    {
-        if ($params['token'] && $params['mine_id']) {
-            $user = $this->user->getUser($params['token']);
-            if ($user) {
-                return $this->money->getIncome($params['mine_id'], $user->id);
-            }
-            return ['error' => 705];
-        }
-        return ['error' => 242];
-    }
-
-    public function getAllMinesIncome($params)
-    {
-        if ($params['token']) {
-            $user = $this->user->getUser($params['token']);
-            if ($user) {
-                return $this->money->getAllMinesIncome($user->id);
-            }
-            return ['error' => 705];
-        }
-        return ['error' => 242];
-    }
-
-    public function updateMineIncomeTime($params)
-    {
-        if ($params['token'] && $params['mine_id'] && $params['income_time']) {
-            $user = $this->user->getUser($params['token']);
-            if ($user) {
-                return $this->money->updateMineIncomeTime($params['mine_id'], $user->id, $params['income_time']);
-            }
-            return ['error' => 705];
-        }
-        return ['error' => 242];
-    }
 }
