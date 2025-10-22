@@ -350,7 +350,7 @@ const VillageCanvas: React.FC = () => {
         });
 
         (async () => {
-        await village.loadBuildings(server);
+        village.loadBuildings()
         village.setBuildings(village.getScene().buildings);
     })();
 

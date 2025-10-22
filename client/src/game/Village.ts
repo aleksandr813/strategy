@@ -12,14 +12,20 @@ const { WIDTH, HEIGHT } = CONFIG;
 
 class Village extends Game{
     private buildingPreview;
+    private store;
+    private server;
+    private villageManager;
     
 
-    constructor() {
+    constructor(store: Store, server: Server) {
         super()
+        this.store = store
+        this.server = server
         this.units = [new Unit(5, 7), new Unit(0, 0)]
         this.buildings = []
         this.allocation = new Allocation;
         this.buildingPreview = new BuildingPreview();
+        this.villageManager = new VillageManager(server)
     }
 
     setBuildings(buildings: Building[]): void {
@@ -30,9 +36,9 @@ class Village extends Game{
         return this.buildings;
     }
 
-    async loadBuildings(server: Server) {
+    async loadBuildings() {
         console.log("Загружаем здания из Game...");
-        const buildingObjects = await VillageManager.loadAll(server);
+        const buildingObjects = await this.villageManager.loadBuildings();
 
         this.buildings = buildingObjects;
         console.log("Загружено зданий:", this.buildings.length);

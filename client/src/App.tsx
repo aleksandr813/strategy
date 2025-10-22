@@ -14,7 +14,7 @@ export const VillageContext = React.createContext<Village>(null!);
 const App: React.FC = () => {
     const store = new Store();
     const server = new Server(store);
-    const village = new Village();
+    const village = new Village(store, server);
 
     return (
         <StoreContext.Provider value={store}>
