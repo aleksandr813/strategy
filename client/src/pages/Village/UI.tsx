@@ -2,7 +2,7 @@ import React, { Component, useContext, useEffect, useRef, useState } from 'react
 import CONFIG from '../../config';
 import { BuildingType, BuildingTypeResponse } from '../../services/server/types';
 import Button from '../../components/Button/Button';
-import { GameContext, ServerContext } from '../../App';
+import { VillageContext, ServerContext } from '../../App';
 
 import "./Village.scss"
 
@@ -10,7 +10,7 @@ import "./Village.scss"
 const UI: React.FC = () => {
     const [showBuyMenu, setShowBuyMenu] = React.useState(false);
     const server = useContext(ServerContext)
-    const game = useContext(GameContext)
+    const game = useContext(VillageContext)
     const [buildingTypes, setBuildingTypes] = useState<BuildingType[]>([]);
 
 
