@@ -3,9 +3,6 @@ import Unit from './Units/Unit';
 import Building from './Buildings/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../pages/Village/UI/Allocation";
-import BuildingPreview from "../pages/Village/UI/BuildingPreview";
-import Server from "../services/server/Server";
-import VillageManager from "../pages/Village/villageDataManager";
 import Store from "../services/store/Store";
 
 const { WIDTH, HEIGHT } = CONFIG;
