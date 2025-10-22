@@ -98,12 +98,14 @@ class DB
         );
     }
 
-    public function getUnitsByUser($userId)
+    public function getUnits($userId)
     {
         return $this->queryAll(
-            "SELECT * FROM units
-            WHERE user_id = ?
-            ORDER BY unit_type
+            "SELECT u.id, u.type_id, u.village_id, u.x, u.y, u.level, u.current_hp 
+            FROM units AS u
+            INNER JOIN villages AS v
+            ON u.village_id = v.id
+            WHERE v.user_id = ?
         ",
             [$userId]
         );

@@ -9,14 +9,14 @@ class Unit
         $this->db = $db;
     }
 
-    public function getUnitsByUser($userId)
+    public function getUnits($userId)
     {
         if (!$userId) {
             return ['error' => 705];
         }
-        $units = $this->db->getUnitsByUser($userId);
+        $units = $this->db->getUnits($userId);
 
-        return ['units' => $units];
+        return ["units" => $units];
     }
 
     public function buyUnit($user, $typeId, $x, $y)
