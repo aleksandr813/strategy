@@ -214,7 +214,7 @@ class DB
 
     public function getBuildingTypes()
     {
-        return $this->queryAll("SELECT id, type, name, sprite_id, hp, price FROM building_types");
+        return $this->queryAll("SELECT id, type, name, hp, price FROM building_types");
     }
 
     public function getUnitTypes()
