@@ -5,24 +5,22 @@ class DB {
 
     function __construct() {
         // MySQL
-        /*
         $host = '127.0.0.1';
         $port = '3306';
         $user = 'root';
-        $pass = '---';
-        $db = 'nopainnogame';
+        $pass = 'root';
+        $db = 'strategy';
         $connect = "mysql:host=$host;port=$port;dbname=$db;charset=utf8";
         $this->pdo = new PDO($connect, $user, $pass);
-        */
 
         // Postgres
-        $host = 'localhost';
-        $port = '5432';
-        $user = 'postgres';
-        $pass = '---';
-        $db = 'nopainnogame';
-        $connect = "pgsql:host=$host;port=$port;dbname=$db;";
-        $this->pdo = new PDO($connect, $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        // $host = 'localhost';
+        // $port = '5432';
+        // $user = 'postgres';
+        // $pass = '---';
+        // $db = 'nopainnogame';
+        // $connect = "pgsql:host=$host;port=$port;dbname=$db;";
+        // $this->pdo = new PDO($connect, $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
     }
 
     public function __destruct() {
@@ -83,5 +81,75 @@ class DB {
                                 LEFT JOIN users as u on u.id = m.user_id 
                                 ORDER BY m.created DESC"
         );
+    }
+
+    public function getUnitById($unitId) {
+        return $this->query(
+            "SELECT u.*
+            FROM units AS u
+            JOIN users ON u.user_id = users.id
+            WHERE u.id = ?
+        ", [$unitId]);
+    }
+
+    public function getUnitsByUser($userId) {
+        return $this->queryAll(
+            "SELECT * FROM units
+            WHERE user_id = ?
+            ORDER BY unit_type
+        ", [$userId]);
+    }
+
+    public function createUnit($userId, $unitType, $x, $y) {
+        return $this->execute("INSERT INTO units (user_id, unit_type, x, y) VALUES (?, ?, ?, ?)", 
+            [$userId, $unitType, $x, $y]
+        );
+    }
+
+    public function updateUnit($unitId, $userId, $unitType, $x, $y) {
+        return $this->execute("UPDATE units SET unit_type = ?, x = ?, y = ? WHERE id = ? AND user_id = ?", 
+            [$unitType, $x, $y, $unitId, $userId]
+        );
+    }
+
+    public function deleteUnit($unitId, $userId) {
+        return $this->execute("DELETE FROM units WHERE id = ? AND user_id = ?", [$unitId, $userId]);
+    }
+
+    public function getBuildingById($buildingId) {
+        return $this->query(
+            "SELECT b.*
+            FROM buildings AS b
+            JOIN users AS u ON b.user_id = u.id
+            WHERE b.id = ?", 
+        [$buildingId]);
+    }
+
+    public function getBuildingsByUser($userId) {
+        return $this->queryAll(
+            "SELECT * FROM buildings
+            WHERE user_id = ?
+            ORDER BY building_type
+        ", [$userId]);
+    }
+
+    public function createBuilding($userId, $buildingType, $x, $y) {
+        return $this->execute("INSERT INTO buildings (user_id, building_type, x, y) VALUES (?, ?, ?, ?)",
+            [$userId, $buildingType, $x, $y]
+        );
+    }
+
+    public function updateBuilding($buildingId, $userId, $buildingType, $x, $y) {
+        return $this->execute("UPDATE buildings SET building_type = ?, x = ?, y = ? WHERE id = ? AND user_id = ?",
+            [$buildingType, $x, $y, $buildingId, $userId]
+        );
+    }
+
+    public function deleteBuilding($buildingId, $userId) {
+        return $this->execute("DELETE FROM buildings WHERE id = ? AND user_id = ?", [$buildingId, $userId]);
+    }
+
+    public function getBuildingTypes() {
+        return $this->queryAll("SELECT id, type, name, hp, price FROM building_types");
     }
 }
