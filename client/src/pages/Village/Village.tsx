@@ -1,18 +1,38 @@
-import React, { useRef, useContext } from 'react';
-import { ServerContext } from '../../App';
+import React, { Component, useContext, useEffect, useRef, useState } from 'react';
+import CONFIG from '../../config';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
+import VillageCanvas from './VillageCanvas';
+import UI from './UI';
+
+import "./Village.scss"
+
+const GAME_FIELD = 'game-field';
+const GREEN = '#00e81c';
 
 const Village: React.FC<IBasePage> = (props: IBasePage) => {
     const { setPage } = props;
-    const server = useContext(ServerContext);
 
-    const backclickHandler = () => setPage(PAGES.GAME);
+    const backClickHandler = () => setPage(PAGES.CHAT);
+    const BattleClickHandler = () => setPage(PAGES.BATTLE);
+    const CalculatorClickHandler = () => setPage(PAGES.CALCULATOR);
+    const GlobalMapClickHandler = () => setPage(PAGES.GLOBAL_MAP);
+    const VillageClickHandler = () => setPage(PAGES.VILLAGE);
 
-    return(<>
-        <h1>Village</h1>
-        <Button onClick={backclickHandler} text='Назад'/>
-    </>)
-}
+    return (
+    <div className='game'>
+        <h1>Менеджмент деревни</h1>
+        <Button onClick={BattleClickHandler} text='Battle'/>
+        <Button onClick={CalculatorClickHandler} text='Calculator'/>
+        <Button onClick={GlobalMapClickHandler} text='GlobalMap'/>
+        <Button onClick={VillageClickHandler} text='Village'/>
+        <Button onClick={backClickHandler} text='Назад' />
+        <div>
+            <VillageCanvas/>
+        </div>
+        <UI/>
+    </div>
+    );
+};
 
 export default Village;

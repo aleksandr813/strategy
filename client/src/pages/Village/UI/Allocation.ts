@@ -2,7 +2,6 @@ import CONFIG from '../../../config';
 import { TPoint } from '../../../config';
 import Unit from '../../../game/Units/Unit';
 
-const { SPRITE_SIZE } = CONFIG;
 
 export default class Allocation {
     private _start: TPoint | null = null;

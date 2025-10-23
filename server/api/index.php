@@ -1,5 +1,9 @@
 <?php
 
+header('Access-Control-Allow-Origin: http://localhost:3000');
+header('Access-Control-Allow-Methods: GET, POST');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
 error_reporting(1);
 
 header('Content-Type: application/json; charset=utf-8');
@@ -21,18 +25,20 @@ function result($params) {
             case 'sendMessage': return $app->sendMessage($params);
             case 'getMessages': return $app->getMessages($params);
             //unit
-            case 'getUnitById': return $app->getUnitById($params);
-            case 'getUnitsByUser': return $app->getUnitsByUser($params);
-            case 'createUnit': return $app->createUnit($params);
+            case 'getUnitTypes': return $app->getUnitTypes($params);
+            case 'getUnits': return $app->getUnits($params);
+            case 'buyUnit': return $app->buyUnit($params);
             case 'updateUnit': return $app->updateUnit($params);
             case 'deleteUnit': return $app->deleteUnit($params);
             //building
-            case 'getBuilding': return $app->getBuildingById($params);
-            case 'getBuildingsByUser': return $app->getBuildingsByUser($params);
             case 'getBuildingTypes': return $app->getBuildingTypes($params);
-            case 'createBuilding': return $app->createBuilding($params);
-            case 'updateBuilding': return $app->updateBuilding($params);
+            case 'getBuildings': return $app->getBuildings($params);
+            case 'buyBuilding': return $app->buyBuilding($params);
+            case 'upgradeBuilding': return $app->upgradeBuilding($params);
             case 'deleteBuilding': return $app->deleteBuilding($params);
+            //calc
+            case 'getRoots': return $app->getRoots($params);
+
             default: return ['error' => 102];
         }
     }

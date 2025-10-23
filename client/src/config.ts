@@ -18,7 +18,9 @@ export type TWINDOW = {
 }
 
 const CONFIG = {
-    HOST: 'http://nopainnogame.local/api',
+    //udsu 
+    HOST: 'http://strategy/api',
+    //HOST: 'http://server/api',
 
     CHAT_TIMESTAMP: 200, //ms
 

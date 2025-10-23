@@ -1,48 +1,50 @@
 import CONFIG, { TPoint } from "../config";
 import Unit from './Units/Unit';
-import Build from './Builds/Build';
+import Building from './Buildings/Building';
 import EasyStar from 'easystarjs';
-import Allocation from "../pages/Game/UI/Allocation";
+import Allocation from "../pages/Village/UI/Allocation";
+import Store from "../services/store/Store";
 
 const { WIDTH, HEIGHT } = CONFIG;
 
 class Game {
-    private units:Unit[];
-    private builds:Build[];
-    private allocation:Allocation;
+    protected units:Unit[];
+    protected buildings:Building[] = [];
+    protected allocation:Allocation;
+    protected easystar = new EasyStar.js();
     
 
     constructor() {
-        this.units = [new Unit(5, 7), new Unit(0, 0)]
-        this.builds = [new Build(5, 5)]
+        this.units = []
+        this.buildings = []
         this.allocation = new Allocation;
     }
     
 
     destructor() {
-        //...
+
     }
 
     getScene() {
         return {
             units: this.units,
-            builds: this.builds,
+            buildings: this.buildings,
         };
     }
 
-    getVillageMatrix(units:Unit[], builds:Build[]):number[][] {
-        let booleanMatrix:number[][] = new Array(29);
+    getMatrixForEasyStar(units:Unit[], buildings:Building[]):number[][] {
+        let booleanMatrix:number[][] = Array(29).fill(null).map(() => Array(87).fill(0));
         for (let i = 0; i < 29; i++) {
-            booleanMatrix[i] = new Array(29).fill(0);
+            booleanMatrix[i] = new Array(87).fill(0);
         }
         units.forEach((element) => {
             booleanMatrix[element.cords.x][element.cords.y] = 1;
         })
-        builds.forEach((element) => {
-            booleanMatrix[element.cords[0].x][element.cords[0].y] = 1;
-            booleanMatrix[element.cords[0].x + 1][element.cords[0].y] = 1;
-            booleanMatrix[element.cords[0].x][element.cords[0].y + 1] = 1;
-            booleanMatrix[element.cords[0].x + 1][element.cords[0].y + 1] = 1;
+        buildings.forEach((element) => {
+            booleanMatrix[element.cords[0].y][element.cords[0].x] = 1;
+            booleanMatrix[element.cords[0].y + 1][element.cords[0].x] = 1;
+            booleanMatrix[element.cords[0].y][element.cords[0].x + 1] = 1;
+            booleanMatrix[element.cords[0].y + 1][element.cords[0].x + 1] = 1;
         })
         return booleanMatrix;
     }
@@ -51,69 +53,61 @@ class Game {
         destination.x = Math.round(destination.x);
         destination.y = Math.round(destination.y);
         
-        let easystar = new EasyStar.js();
-
         this.units.forEach((unit) => {
             if (!unit.isSelected) {
                 return;
             }
 
-            // Создаем копию матрицы без текущего юнита
-            let booleanMatrix = this.getVillageMatrix(
+            if (unit.moveIntervalId) {
+                clearInterval(unit.moveIntervalId);
+                unit.moveIntervalId = null;
+            }
+
+            let booleanMatrix = this.getMatrixForEasyStar(
                 this.units.filter(u => u !== unit), 
-                this.builds
+                this.buildings
             );
 
-            easystar.setGrid(booleanMatrix);
-            easystar.setAcceptableTiles([0]);
+            if (destination.x+1 > booleanMatrix[0].length || destination.y+1 > booleanMatrix.length || destination.x < 0 || destination.y < 0) {
+                return
+            }
 
-            easystar.findPath(unit.cords.x, unit.cords.y, destination.x, destination.y, (path) => {
+            this.easystar.setGrid(booleanMatrix);
+            this.easystar.setAcceptableTiles(0);
+
+            this.easystar.findPath(unit.cords.x, unit.cords.y, destination.x, destination.y, (path) => {
                 if (path === null) {
                     console.log("Path was not found");
                 } else {
                     path.shift();
 
                     let stepIndex = 0;
-                    let intervalId = setInterval(() => {
+                    unit.moveIntervalId = setInterval(() => {
                         if (stepIndex < path.length) {
-                            // Перед каждым шагом проверяем, не занята ли клетка
                             const nextStep = path[stepIndex];
-                            const currentMatrix = this.getVillageMatrix(
+                            const currentMatrix = this.getMatrixForEasyStar(
                                 this.units.filter(u => u !== unit), 
-                                this.builds
+                                this.buildings
                             );
                             
-                            if (currentMatrix[nextStep.x][nextStep.y] === 0) {
+                            if (currentMatrix[nextStep.y][nextStep.x] === 0) {
                                 unit.cords = nextStep;
                                 stepIndex++;
                             }
-                            // Если клетка занята, ждем следующего интервала
                         } else {
-                            clearInterval(intervalId);
+                            if (unit.moveIntervalId) {
+                                clearInterval(unit.moveIntervalId);
+                                unit.moveIntervalId = null;
+                            }
                         }
                     }, 100);
                 }
             });
         });
 
-    easystar.calculate();
-}
+        this.easystar.calculate();
+    }
 
-    
-
-    /**
-    move(dx: number, dy: number): void {
-        if ((dx > 0 && this.kapitoshka.x + dx <= WIDTH - 1) ||
-            (dx < 0 && this.kapitoshka.x - dx >= 0)
-        ) {
-            this.kapitoshka.x += dx;
-        }
-        if ((dy > 0 && this.kapitoshka.y + dy <= HEIGHT - 1) ||
-            (dy < 0 && this.kapitoshka.y - dy >= 0)
-        ) {
-            this.kapitoshka.y += dy;
-        }
-    }  */
 }
 
 export default Game;
