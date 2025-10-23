@@ -64,7 +64,7 @@ export default class BuildingPreview {
         ];
 
         for (const cell of cells) {
-            if (occupiedMatrix[cell.x][cell.y] !== 0) {
+            if (occupiedMatrix[cell.y][cell.x] !== 0) {
                 return false;
             }
         }
@@ -84,17 +84,35 @@ export default class BuildingPreview {
     }
 
     public tryPlace(): Building | null {
-        if (!this.isActive || !this.canPlace) {
-            return null;
-        }
-
-        const building = new Building(this.gridPosition.x, this.gridPosition.y);
-        building.hp = this.buildingHp;
-        building.MAX_HP = this.buildingHp;
-        
-        this.deactivate();
-        return building;
+    if (!this.isActive || !this.canPlace) {
+        return null;
     }
+
+    const buildingData = {
+        id: 0, 
+        type_id: this.buildingTypeId,
+        village_id: 0,
+        x: this.gridPosition.x,
+        y: this.gridPosition.y,
+        current_hp: this.buildingHp,
+        level: 1,
+    };
+
+    const buildingType = {
+        id: this.buildingTypeId,
+        type: this.buildingType,
+        name: "Preview Building",
+        hp: this.buildingHp,
+        price: 0,
+        sprite: 1,
+    };
+
+    const building = new Building(buildingData, buildingType);
+
+    this.deactivate();
+    return building;
+}
+
 
 
     public getBuildingTypeId(): number {

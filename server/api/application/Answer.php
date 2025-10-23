@@ -18,12 +18,9 @@ class Answer
         '306' => 'Transaction error',
         '310' => 'Village not found',
         '311' => 'Coordinates are busy',
-        '410' => 'Mine is not found',
-        '411' => 'Failed to update mine income time', 
-        '412' => 'Failed to add income to user',
-        '413' => 'Failed to update mine income data',
+        '312' => 'Maximum level',
         '500' => 'Unit is not found',
-        '501' => 'Failed to create unit',
+        '501' => 'Failed to buy unit',
         '502' => 'Failed to update unit',
         '503' => 'Failed to delete unit',
         '705' => 'User is not found',
@@ -31,18 +28,8 @@ class Answer
         '1002' => 'Wrong login or password',
         '1003' => 'Error to logout user',
         '1004' => 'Error to register user',
-        '1090' => 'User is no exists',
-        '404' => 'not found',
-        '605' => 'invalid teamId',
-        '700' => 'No skins',
-        '701' => 'Skin is not found',
-        '706' => 'text message is empty',
-        '707' => 'could not send message', // e-mail;
-        '708' => 'invalid code from E-mail',
-        '709' => ' session did not start or you need use previous method',
-        '800' => 'not found object',
-        '801' => 'unknown state',
-        '1001' => 'params login or password not set',
+        '1005' => 'User is no exists',
+        '1006' => 'User with this email is already registered',
         '1007' => 'Неправильная длина логина',
         '1008' => 'Логин начинается с цифры или подчеркивания',
         '1009' => 'Недопустимые символы в логине',
@@ -51,9 +38,19 @@ class Answer
         '1012' => 'Пароль без разных регистров',
         '1013' => 'Пароль без цифр',
         '1014' => 'Пароль содержит персональную информацию',
-        '1006' => 'Ошибка создания деревни',
-        '1005' => 'Other user is playing wright now. If you doesn`t, please change the password',
-        '1006' => 'user with this email is already registered',
+        '1015' => 'Пароли не совпадают',
+        '1016' => 'params login or password not set',
+        '1090' => 'Ошибка создания деревни',
+        '404' => 'not found',
+        '605' => 'invalid teamId',
+        '700' => 'No skins',
+        '701' => 'Skin is not found',
+        '706' => 'text message is empty',
+        '707' => 'could not send message',
+        '708' => 'invalid code from E-mail',
+        '709' => ' session did not start or you need use previous method',
+        '800' => 'not found object',
+        '801' => 'unknown state',
         '9000' => 'unknown error'
     );
 
@@ -66,7 +63,7 @@ class Answer
                     'result' => 'error',
                     'error' => [
                         'code' => $code,
-                        'text' => self::$CODES[$code]
+                        'text' => self::$CODES[$code] ?? self::$CODES['9000']
                     ]
                 ];
             }
