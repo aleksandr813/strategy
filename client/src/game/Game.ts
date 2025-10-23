@@ -38,7 +38,7 @@ class Game {
             booleanMatrix[i] = new Array(87).fill(0);
         }
         units.forEach((element) => {
-            booleanMatrix[element.cords.x][element.cords.y] = 1;
+            booleanMatrix[element.cords[0].x][element.cords[0].y] = 1;
         })
         buildings.forEach((element) => {
             booleanMatrix[element.cords[0].y][element.cords[0].x] = 1;
@@ -75,7 +75,7 @@ class Game {
             this.easystar.setGrid(booleanMatrix);
             this.easystar.setAcceptableTiles(0);
 
-            this.easystar.findPath(unit.cords.x, unit.cords.y, destination.x, destination.y, (path) => {
+            this.easystar.findPath(unit.cords[0].x, unit.cords[0].y, destination.x, destination.y, (path) => {
                 if (path === null) {
                     console.log("Path was not found");
                 } else {
@@ -91,7 +91,7 @@ class Game {
                             );
                             
                             if (currentMatrix[nextStep.y][nextStep.x] === 0) {
-                                unit.cords = nextStep;
+                                unit.cords[0] = nextStep;
                                 stepIndex++;
                             }
                         } else {

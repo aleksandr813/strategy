@@ -79,8 +79,10 @@ const VillageCanvas: React.FC = () => {
         const ctx = canvas.contextV;
 
         units.forEach((unit) => {
-            const sprite = getSprite(unit.sprite);
-            canvas.spriteFull(spritesImage, unit.cords.x, unit.cords.y, sprite[0], sprite[1], sprite[2]);
+            unit.sprites.forEach((sprite, i) => {
+            const spriteData = getSprite(sprite);
+            canvas.spriteFull(spritesImage, unit.cords[0].x, unit.cords[0].y, spriteData[0], spriteData[1], spriteData[2]);
+        });
             
             const isSelected = allocation.isSelectingStatus 
                 ? allocation.isUnitInSelection(unit)
@@ -88,13 +90,13 @@ const VillageCanvas: React.FC = () => {
                 
             if (isSelected) {
                 ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
-                ctx.fillRect(canvas.xs(unit.cords.x), canvas.ys(unit.cords.y), canvas.dec(1), canvas.dec(1));
+                ctx.fillRect(canvas.xs(unit.cords[0].x), canvas.ys(unit.cords[0].y), canvas.dec(1), canvas.dec(1));
             }
 
             if (unit.hp < unit.maxHp) {
                 drawHPBar(canvas, 
-                    unit.cords.x + 0.1, 
-                    unit.cords.y - 0.1, 
+                    unit.cords[0].x, 
+                    unit.cords[0].y - 0.5, 
                     0.8, 
                     0.1, 
                     unit.hp, 
@@ -352,6 +354,11 @@ const VillageCanvas: React.FC = () => {
         (async () => {
         village.loadBuildings()
         village.setBuildings(village.getScene().buildings);
+    })();
+
+        (async () => {
+        village.loadUnits()
+        village.setUnits(village.getScene().units);
     })();
 
 

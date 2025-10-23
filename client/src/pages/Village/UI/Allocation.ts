@@ -38,8 +38,8 @@ export default class Allocation {
         const unitH = 1;
 
         units.forEach((unit) => {
-            const ux = unit.cords.x;
-            const uy = unit.cords.y;
+            const ux = unit.cords[0].x;
+            const uy = unit.cords[0].y;
 
             const intersects = !(
                 ux + unitW <= rect.x ||
@@ -77,8 +77,8 @@ export default class Allocation {
         const rectW = rect.width;
         const rectH = rect.height;
 
-        const unitLocalX = unit.cords.x;
-        const unitLocalY = unit.cords.y;
+        const unitLocalX = unit.cords[0].x;
+        const unitLocalY = unit.cords[0].y;
         const unitW = 1;
         const unitH = 1;
 
