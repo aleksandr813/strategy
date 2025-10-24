@@ -5,7 +5,7 @@ import { Unit as UnitData, UnitType, UnitTypeID } from "../../services/server/ty
 export default class Unit {
     id: number;
     type: UnitType;
-    cords:TPoint[] = [];
+    cords:TPoint;
     hp: number;
     maxHp: number;
     level: number;
@@ -29,9 +29,7 @@ export default class Unit {
         const spriteSet = Unit.SPRITE_MAP[typeId as UnitTypeID];
         this.sprites = spriteSet;
 
-        this.cords = [
-            { x: Number(data.x), y: Number(data.y) },
-        ];
+        this.cords = { x: Number(data.x), y: Number(data.y) }
 
         
     }
