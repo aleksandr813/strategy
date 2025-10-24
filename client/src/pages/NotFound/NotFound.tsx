@@ -7,10 +7,12 @@ const NotFound: React.FC<IBasePage> = (props: IBasePage) => {
 
     const clickHandler = () => setPage(PAGES.PRELOADER);
 
-    return (<>
-        <h1>Упс... Нету такой страницы</h1>
-        <Button onClick={clickHandler} text='Назад'/>
-    </>)
+    return (
+        <>
+            <h1>Упс... Нету такой страницы</h1>
+            <Button onClick={clickHandler} text='Назад' />
+        </>
+    )
 }
 
 export default NotFound;

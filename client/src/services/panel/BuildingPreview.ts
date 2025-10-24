@@ -1,6 +1,6 @@
-import CONFIG from '../../../config';
-import { TPoint } from '../../../config';
-import Building from '../../../game/Buildings/Building';
+import CONFIG from '../../config';
+import { TPoint } from '../../config';
+import Building from '../../game/Buildings/Building';
 
 const { SPRITE_SIZE } = CONFIG;
 

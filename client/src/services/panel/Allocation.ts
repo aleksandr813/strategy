@@ -1,6 +1,5 @@
-import CONFIG from '../../../config';
-import { TPoint } from '../../../config';
-import Unit from '../../../game/Units/Unit';
+import { TPoint } from '../../config';
+import Unit from '../../game/Units/Unit';
 
 
 export default class Allocation {

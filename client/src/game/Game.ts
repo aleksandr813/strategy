@@ -2,8 +2,8 @@ import CONFIG, { TPoint } from "../config";
 import Unit from './Units/Unit';
 import Building from './Buildings/Building';
 import EasyStar from 'easystarjs';
-import Allocation from "../pages/Village/UI/Allocation";
-import BuildingPreview from "../pages/Village/UI/BuildingPreview";
+import Allocation from "../services/panel/Allocation";
+import BuildingPreview from "../services/panel/BuildingPreview";
 
 const { WIDTH, HEIGHT } = CONFIG;
 

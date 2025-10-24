@@ -4,7 +4,7 @@ import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
 import Unit from '../../game/Units/Unit';
 import Building from '../../game/Buildings/Building';
-import Allocation from './UI/Allocation';
+import Allocation from '../../services/panel/Allocation';
 import { GameContext, ServerContext } from '../../App';
 import { TPoint } from '../../config';
 
