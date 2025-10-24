@@ -2,6 +2,7 @@ import md5 from 'md5';
 import CONFIG from "../../config";
 import Store from "../store/Store";
 import { BuildingTypeResponse, TBuildingTypesResponse, TBuildingResponse } from './types';
+import { UnitTypeResponse, TUnitTypesResponse, TUnitResponse } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 
 const { CHAT_TIMESTAMP, HOST } = CONFIG;
@@ -143,6 +144,22 @@ class Server {
         const response = await this.request<TBuildingTypesResponse>('getBuildingTypes');
         if (!response) {
             return { building_types: [] };
+        }
+        return response;
+    }
+
+    async getUnits(): Promise<TUnitResponse> {
+        const response = await this.request<TUnitResponse>('getUnits');
+        if (!response) {
+            return { units: [] };
+        }
+        return response;
+    }
+
+    async getUnitsTypes(): Promise<TUnitTypesResponse> {
+        const response = await this.request<TUnitTypesResponse>('getUnitTypes');
+        if (!response) {
+            return { unit_types: [] };
         }
         return response;
     }
