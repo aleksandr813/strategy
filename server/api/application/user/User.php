@@ -16,19 +16,21 @@ class User
     public function login($login, $hash, $rnd)
     {
         $user = $this->db->getUserByLogin($login);
-        if ($user) {
-            if (md5($user->password . $rnd) === $hash) {
-                $token = md5(rand());
-                $this->db->updateToken($user->id, $token);
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'token' => $token
-                ];
-            }
-            return ['error' => 1002];
+        if (!$user) {
+            return ['error' => 1005]; // User is no exists
         }
-        return ['error' => 1005];
+
+        if (md5($user->password . $rnd) === $hash) {
+            $token = md5(rand());
+            $this->db->updateToken($user->id, $token);
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'token' => $token
+            ];
+        }
+        
+        return ['error' => 1002]; // Wrong login or password
     }
 
     public function logout($token)
@@ -43,26 +45,31 @@ class User
 
     public function registration($login, $hash, $name)
     {
+        //Вызывает ошибку 9000! СРОЧНО исправить
         // Валидация логина
-        $loginValidation = $this->validateLogin($login);
-        if ($loginValidation !== true) {
-            return $loginValidation;
-        }
+        //$loginValidation = $this->validateLogin($login);
+        //if ($loginValidation !== true) {
+        //    return $loginValidation;
+        //}
+
 
         // Проверка уникальности логина
         if ($this->db->getUserByLogin($login)) {
-            return ['error' => 1001];
+            return ['error' => 1001]; // Is it unique login?
         }
 
         // Регистрация пользователя
-        $this->db->registration($login, $hash, $name);
-        $user = $this->db->getUserByLogin($login);
+        $result = $this->db->registration($login, $hash, $name);
+        //if (!$result) {
+        //    return ['error' => 1004]; // Error to register user
+        //}
 
+        $user = $this->db->getUserByLogin($login);
         if ($user) {
             // Создание стартовой деревни для пользователя
             $villageCreated = $this->createStarterVillage($user->id);
             if (!$villageCreated) {
-                return ['error' => 1006];
+                return ['error' => 1090];
             }
 
             $token = md5(rand());
@@ -73,7 +80,8 @@ class User
                 'token' => $token
             ];
         }
-        return ['error' => 1004];
+        
+        return ['error' => 9000]; // unknown error
     }
 
     private function createStarterVillage($userId){
@@ -114,8 +122,7 @@ class User
         }
     }
 
-    //Валидация логина
-
+    // Валидация логина
     private function validateLogin($login)
     {
         // Проверка длины
@@ -128,14 +135,48 @@ class User
             return ['error' => 1008];
         }
 
-        // Проверка допустимых символов
+        // Проверка допустимых символов (только буквы, цифры и подчеркивание)
         if (!preg_match('/^[a-zA-Z0-9_]+$/', $login)) {
             return ['error' => 1009];
         }
 
         // Проверка на пробелы и специальные символы
         if (preg_match('/[\s@#$%]/', $login)) {
+        // Проверка на пробелы
+        if (strpos($login, ' ') !== false) {
             return ['error' => 1010];
+        }
+
+        return true;
+    }
+}
+
+    // Валидация пароля
+    private function validatePassword($password, $login, $name)
+    {
+        // Проверка длины пароля
+        if (strlen($password) < 8) {
+            return ['error' => 1011];
+        }
+
+        // Проверка разных регистров
+        if (!preg_match('/[a-z]/', $password) || !preg_match('/[A-Z]/', $password)) {
+            return ['error' => 1012];
+        }
+
+        // Проверка на наличие цифр
+        if (!preg_match('/[0-9]/', $password)) {
+            return ['error' => 1013];
+        }
+
+        // Проверка на персональную информацию (содержит логин или имя)
+        if (stripos($password, $login) !== false || stripos($password, $name) !== false) {
+            return ['error' => 1014];
+        }
+
+        // Проверка на дату (простой паттерн для дат)
+        if (preg_match('/(19|20)\d{2}|(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[012])/', $password)) {
+            return ['error' => 1014];
         }
 
         return true;

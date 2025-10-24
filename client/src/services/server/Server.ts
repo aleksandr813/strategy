@@ -1,7 +1,7 @@
 import md5 from 'md5';
 import CONFIG from "../../config";
 import Store from "../store/Store";
-import { BuildingTypeResponse, TBuildingTypesResponse } from './types';
+import { BuildingTypeResponse, TBuildingTypesResponse, TBuildingResponse } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 
 const { CHAT_TIMESTAMP, HOST } = CONFIG;
@@ -26,9 +26,6 @@ class Server {
             }
             const url = `${this.HOST}/?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`;
             
-            // ОТЛАДКА: выводим URL запроса
-            console.log('Request URL:', url);
-            console.log('Request params:', params);
             
             const response = await fetch(url);
             const answer: TAnswer<T> = await response.json();
@@ -134,6 +131,14 @@ class Server {
         return await this.request<any>('getRoots', params);
     }
 
+    async getBuildings(): Promise<TBuildingResponse> {
+        const response = await this.request<TBuildingResponse>('getBuildings');
+        if (!response) {
+            return { buildings: [] };
+        }
+        return response;
+    }
+
     async getBuildingTypes(): Promise<TBuildingTypesResponse> {
         const response = await this.request<TBuildingTypesResponse>('getBuildingTypes');
         if (!response) {
@@ -153,5 +158,6 @@ class Server {
         return result;
     }
 }
+
 
 export default Server;

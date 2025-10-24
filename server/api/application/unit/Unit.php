@@ -9,45 +9,48 @@ class Unit
         $this->db = $db;
     }
 
-    public function getUnitById($unitId)
-    {
-        $unit = $this->db->getUnitById($unitId);
-        if (!$unit) {
-            return ['error' => 500];
-        }
-
-        return [
-            'id' => $unit->id,
-            'user_id' => $unit->user_id,
-            'unit_type' => $unit->unit_type,
-            'x' => $unit->x,
-            'y' => $unit->y
-        ];
-    }
-
-    public function getUnitsByUser($userId)
+    public function getUnits($userId)
     {
         if (!$userId) {
             return ['error' => 705];
         }
-        $units = $this->db->getUnitsByUser($userId);
+        $units = $this->db->getUnits($userId);
 
-        return ['units' => $units];
+        return ["units" => $units];
     }
 
-    public function createUnit($userId, $unitType, $x, $y)
+    public function buyUnit($user, $typeId, $x, $y)
     {
-        $unit = $this->db->createUnit($userId, $unitType, $x, $y);
-        if ($unit) {
-            return [
-                'user_id' => $userId,
-                'unit_type' => $unitType,
-                'x' => $x,
-                'y' => $y
-            ];
-        } else {
-            return ['error' => 501];
+        $village = $this->db->getVillage($user->id);
+        if (!$village) {
+            return ['error' => 310];
         }
+        $unit = $this->db->getUnitType($typeId);
+        if (!$unit) {
+            return ["error" => 501];
+        }
+        if ($user->money < $unit->price) {
+            return ['error' => 305];
+        }
+
+        $existingUnit = $this->db->isOccupied($village->id, $x, $y);
+        if ($existingUnit) {
+            return ['error' => 311];
+        }
+
+        $newMoney = $user->money - $unit->price;
+        $this->db->updateMoney($user->id, $newMoney);
+        $this->db->buyunit(
+            $village->id,
+            $typeId,
+            $x,
+            $y,
+            $unit->hp
+        );
+
+        return [
+            'money' => $newMoney
+        ];
     }
 
     public function updateUnit($unitId, $userId, $unitType, $x, $y)
@@ -72,7 +75,6 @@ class Unit
             return ['error' => 503];
         }
 
-        //Что возвращать при успешном удалении юнита?
     }
 
     public function getUnitTypes()
