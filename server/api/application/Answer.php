@@ -42,6 +42,7 @@ class Answer
         '1016' => 'params login or password not set',
         '1090' => 'Ошибка создания деревни',
         '404' => 'not found',
+        '410' => 'Mine is not found',
         '605' => 'invalid teamId',
         '700' => 'No skins',
         '701' => 'Skin is not found',
