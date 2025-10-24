@@ -185,9 +185,7 @@ class DB
     );
 }
 
-    public function getVillageByUserId($userId) {
-        return $this->query("SELECT id, user_id, x, y FROM villages WHERE user_id = ?", [$userId]);
-    }
+   
 
     public function getBuildingType($buildingType) {
         return $this->query("SELECT hp, price FROM building_types WHERE id = ?", [$buildingType]);
