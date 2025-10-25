@@ -5,7 +5,7 @@ require_once('chat/Chat.php');
 require_once('unit/Unit.php');
 require_once('building/Building.php');
 require_once('calculator/Calculator.php');
-require_once('village/Money.php');
+require_once('village/Village.php');
 
 class Application
 {
@@ -13,7 +13,7 @@ class Application
     private $chat;
     private $unit;
     private $building;
-    private $money;
+    private $village;
 
     private $calculator;
 
@@ -25,7 +25,7 @@ class Application
         $this->unit = new Unit($db);
         $this->building = new Building($db);
         $this->calculator = new Calculator();
-        $this->money = new MineIncome($db);
+        $this->village = new Village($db);
     }
 
     public function login($params)
@@ -207,6 +207,17 @@ class Application
         if ($params) {
             $result = $this->calculator->get($params);
             return $result;
+        }
+        return ['error' => 242];
+    }
+
+    public function getIncome($params) {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->village->getIncome($user->id);
+            }
+            return ['error' => 705];
         }
         return ['error' => 242];
     }
