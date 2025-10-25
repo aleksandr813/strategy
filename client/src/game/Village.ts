@@ -21,7 +21,7 @@ class Village extends Game{
         super()
         this.store = store
         this.server = server
-        this.units = [new Unit(5, 7), new Unit(0, 0)]
+        this.units = []
         this.buildings = []
         this.allocation = new Allocation;
         this.buildingPreview = new BuildingPreview();
@@ -36,12 +36,28 @@ class Village extends Game{
         return this.buildings;
     }
 
+    setUnits(units: Unit[]): void {
+        this.units = units;
+    }
+    
+    getUnits(): Unit[] {
+        return this.units;
+    }
+
     async loadBuildings() {
         console.log("Загружаем здания из Game...");
         const buildingObjects = await this.villageManager.loadBuildings();
 
         this.buildings = buildingObjects;
         console.log("Загружено зданий:", this.buildings.length);
+    }
+
+    async loadUnits() {
+        console.log("Загружаем юнитов из Game...");
+        const unitObjects = await this.villageManager.loadUnits();
+
+        this.units = unitObjects;
+        console.log("Загружено юниов:", this.units.length);
     }
     
 
