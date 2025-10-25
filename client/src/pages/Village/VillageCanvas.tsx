@@ -9,6 +9,7 @@ import { VillageContext, ServerContext } from '../../App';
 import { TPoint } from '../../config';
 import VillageManager from './villageDataManager';
 import villageBackground from '../../assets/img/background/villageBackground.png'
+import BuildingMenu from './UI/BuildingMenu';
 
 import "./Village.scss"
 
@@ -18,6 +19,7 @@ const DRAG_THRESHOLD = 5;
 const TIME_THRESHOLD = 200;
 
 let zoomFactor = 1;
+
 
 const VillageCanvas: React.FC = () => {
     const { WINDOW, SPRITE_SIZE } = CONFIG;
@@ -32,6 +34,7 @@ const VillageCanvas: React.FC = () => {
     const Canvas = useCanvas(render);
     
     const allocation = new Allocation();
+    let menuManager: BuildingMenu | null = null;
 
     let mouseDownPosition: TPoint | null = null;
     let mouseDownTime: number = 0;
@@ -230,6 +233,11 @@ const VillageCanvas: React.FC = () => {
         for (const building of buildings) {
             const [bx, by] = [building.cords[0].x, building.cords[0].y];
             if (gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2) {
+                building.selected()
+                console.log("Выбранное здание",building);
+                if (menuManager) {
+                    menuManager.showMenu(building);
+                }
                 building.takeDamage(10);
                 return;
             }
@@ -350,6 +358,8 @@ const VillageCanvas: React.FC = () => {
                 keyDown,
             },
         });
+
+        menuManager = new BuildingMenu(GAME_FIELD);
 
         (async () => {
         village.loadBuildings()
