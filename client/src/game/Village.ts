@@ -1,4 +1,5 @@
 import CONFIG, { TPoint } from "../config";
+import { EventEmitter } from 'events';
 import Unit from './Units/Unit';
 import Building from './Buildings/Building';
 import EasyStar from 'easystarjs';
@@ -11,6 +12,7 @@ import Game from "./Game";
 const { WIDTH, HEIGHT } = CONFIG;
 
 class Village extends Game{
+    private eventEmitter = new EventEmitter();
     private buildingPreview;
     private store;
     private server;
@@ -26,6 +28,21 @@ class Village extends Game{
         this.allocation = new Allocation;
         this.buildingPreview = new BuildingPreview();
         this.villageManager = new VillageManager(server)
+    }
+
+    public on(event: 'buildingSelected', listener: (building: Building | null) => void): void {
+        this.eventEmitter.on(event, listener);
+    }
+
+    public off(event: 'buildingSelected', listener: (building: Building | null) => void): void {
+        this.eventEmitter.off(event, listener);
+    }
+
+    public selectBuilding(building: Building | null): void {
+        this.buildings.forEach(b => b.deselected?.());
+        if (building) building.selected?.();
+
+        this.eventEmitter.emit('buildingSelected', building);
     }
 
     setBuildings(buildings: Building[]): void {

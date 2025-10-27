@@ -9,7 +9,6 @@ import { VillageContext, ServerContext } from '../../App';
 import { TPoint } from '../../config';
 import VillageManager from './villageDataManager';
 import villageBackground from '../../assets/img/background/villageBackground.png'
-import BuildingMenu from './UI/BuildingMenu';
 
 import "./Village.scss"
 
@@ -34,7 +33,6 @@ const VillageCanvas: React.FC = () => {
     const Canvas = useCanvas(render);
     
     const allocation = new Allocation();
-    let menuManager: BuildingMenu | null = null;
 
     let mouseDownPosition: TPoint | null = null;
     let mouseDownTime: number = 0;
@@ -230,18 +228,20 @@ const VillageCanvas: React.FC = () => {
         const gridY = Math.floor(y);
         const { buildings } = village.getScene();
 
+        let selectedBuilding: Building | null = null;
+
         for (const building of buildings) {
             const [bx, by] = [building.cords[0].x, building.cords[0].y];
             if (gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2) {
                 building.selected()
                 console.log("Выбранное здание",building);
-                if (menuManager) {
-                    menuManager.showMenu(building);
-                }
+                selectedBuilding = building;
                 building.takeDamage(10);
-                return;
+                break;
             }
         }
+        
+        village.selectBuilding(selectedBuilding);
 
         if (!allocation.isSelectingStatus) {
             village.moveUnits({ x, y });
@@ -358,8 +358,6 @@ const VillageCanvas: React.FC = () => {
                 keyDown,
             },
         });
-
-        menuManager = new BuildingMenu(GAME_FIELD);
 
         (async () => {
         village.loadBuildings()
