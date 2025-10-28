@@ -5,12 +5,11 @@ import Button from '../../components/Button/Button';
 import { VillageContext, ServerContext } from '../../App';
 import VillageManager from './villageDataManager';
 import Building from '../../game/Buildings/Building';
-import "./BuildingMenu.css";
+import BuildingMenu from './UI/BuildingMenu';
 
 const UI: React.FC = () => {
     const [showBuyMenu, setShowBuyMenu] = useState(false);
     const [buildingTypes, setBuildingTypes] = useState<BuildingType[]>([]);
-    const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
     const server = useContext(ServerContext);
     const village = useContext(VillageContext);
     const villageManager = new VillageManager(server);
@@ -29,18 +28,6 @@ const UI: React.FC = () => {
             setBuildingTypes(await villageManager.loadBuildingTypes());
         })();
     }, []);
-
-    useEffect(() => {
-        const handleBuildingSelected = (building: Building | null) => {
-            setSelectedBuilding(building);
-        };
-
-        village.on('buildingSelected', handleBuildingSelected);
-
-        return () => {
-            village.off('buildingSelected', handleBuildingSelected);
-        };
-    }, [village]);
 
     return (
         <div className="VillageUI">
@@ -69,32 +56,7 @@ const UI: React.FC = () => {
                     </div>
                 </div>
             )}
-            {selectedBuilding && (
-                <div className="BuildingMenu">
-                    <h3>Меню здания</h3>
-                    <div 
-                    className="menu-overlay"
-                    onClick={() => village.selectBuilding(null)}
-                    >
-                        <div className="menu-container"
-                        onClick={(e) => e.stopPropagation()}
-                        >
-                            <div className="menu-header">
-                                <div className="name-lvl">
-                                    {selectedBuilding.type.name} (lvl {selectedBuilding.level})
-                                </div>
-                                <div className="hp-status">
-                                    HP: {selectedBuilding.hp}/{selectedBuilding.maxHp}
-                                </div>
-                            </div>
-                            <div className="menu-footer">
-                                <button className="levelup-button">Level Up</button>
-                                <button className="delete-button">Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <BuildingMenu />
         </div>
     );
 };

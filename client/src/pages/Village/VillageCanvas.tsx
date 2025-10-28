@@ -228,20 +228,18 @@ const VillageCanvas: React.FC = () => {
         const gridY = Math.floor(y);
         const { buildings } = village.getScene();
 
-        let selectedBuilding: Building | null = null;
-
+        let clickedBuilding: Building | null = null;
         for (const building of buildings) {
             const [bx, by] = [building.cords[0].x, building.cords[0].y];
             if (gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2) {
-                building.selected()
+                clickedBuilding = building;
                 console.log("Выбранное здание",building);
-                selectedBuilding = building;
                 building.takeDamage(10);
                 break;
             }
         }
         
-        village.selectBuilding(selectedBuilding);
+        village.selectBuilding(clickedBuilding);
 
         if (!allocation.isSelectingStatus) {
             village.moveUnits({ x, y });
