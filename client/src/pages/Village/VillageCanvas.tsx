@@ -37,7 +37,7 @@ const VillageCanvas: React.FC = () => {
     let mouseDownTime: number = 0;
     let wasDragging: boolean = false;
     let isMiddleMouseDragging: boolean = false;
-    let middleMouseStartPosition: TPoint | null = null;
+    let middleMouseStartScreenPosition: TPoint | null = null;
     let windowStartPosition: { LEFT: number, TOP: number } | null = null;
     
     const [[spritesImage], getSprite] = useSprites();
@@ -197,7 +197,7 @@ const VillageCanvas: React.FC = () => {
         allocation.start(x, y);
     };
 
-    const mouseMove = (x: number, y: number) => {
+    const mouseMove = (x: number, y: number, screenX?: number, screenY?: number) => {
         if (village.getScene().buildingPreview.isActiveStatus() && village) {
             const { units, buildings } = village.getScene();
             const matrix = village.getVillageMatrix(units, buildings);
@@ -211,13 +211,16 @@ const VillageCanvas: React.FC = () => {
             village.getScene().unitPreview.update(x, y, matrix);
         }
 
-        // Перемещение камеры средней кнопкой мыши
-        if (isMiddleMouseDragging && middleMouseStartPosition && windowStartPosition && canvas) {
-            const deltaX = x - middleMouseStartPosition.x;
-            const deltaY = y - middleMouseStartPosition.y;
+        // Переиещение камеры средней кнопкой мыши
+        if (isMiddleMouseDragging && middleMouseStartScreenPosition && windowStartPosition && canvas && screenX !== undefined && screenY !== undefined) {
+            const deltaScreenX = screenX - middleMouseStartScreenPosition.x;
+            const deltaScreenY = screenY - middleMouseStartScreenPosition.y;
             
-            WINDOW.LEFT = windowStartPosition.LEFT - deltaX;
-            WINDOW.TOP = windowStartPosition.TOP - deltaY;
+            const worldDeltaX = (deltaScreenX / canvas.WIDTH) * WINDOW.WIDTH;
+            const worldDeltaY = (deltaScreenY / canvas.HEIGHT) * WINDOW.HEIGHT;
+            
+            WINDOW.LEFT = windowStartPosition.LEFT - worldDeltaX;
+            WINDOW.TOP = windowStartPosition.TOP - worldDeltaY;
         }
 
     };
@@ -336,7 +339,7 @@ const VillageCanvas: React.FC = () => {
         console.log('Мышь покинула канвас');
         wasDragging = false;
         isMiddleMouseDragging = false;
-        middleMouseStartPosition = null;
+        middleMouseStartScreenPosition = null;
         windowStartPosition = null;
         allocation.cancel();
     };
@@ -365,15 +368,17 @@ const VillageCanvas: React.FC = () => {
         
     };
 
-    const mouseMiddleDown = (x: number, y: number) => {
+    const mouseMiddleDown = (x: number, y: number, screenX?: number, screenY?: number) => {
         isMiddleMouseDragging = true;
-        middleMouseStartPosition = { x, y };
+        middleMouseStartScreenPosition = screenX !== undefined && screenY !== undefined 
+            ? { x: screenX, y: screenY } 
+            : null;
         windowStartPosition = { LEFT: WINDOW.LEFT, TOP: WINDOW.TOP };
     };
 
     const mouseMiddleUp = (x: number, y: number) => {
         isMiddleMouseDragging = false;
-        middleMouseStartPosition = null;
+        middleMouseStartScreenPosition = null;
         windowStartPosition = null;
     };
 
