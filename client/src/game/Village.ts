@@ -3,21 +3,61 @@ import Unit from './Units/Unit';
 import Building from './Buildings/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../pages/Village/UI/Allocation";
+import BuildingPreview from "../pages/Village/UI/BuildingPreview";
+import Server from "../services/server/Server";
+import VillageManager from "../pages/Village/villageDataManager";
 import Store from "../services/store/Store";
-
+import Game from "./Game";
 const { WIDTH, HEIGHT } = CONFIG;
 
-class Game {
-    protected units:Unit[];
-    protected buildings:Building[] = [];
-    protected allocation:Allocation;
-    protected easystar = new EasyStar.js();
+class Village extends Game{
+    private buildingPreview;
+    private store;
+    private server;
+    private villageManager;
     
 
-    constructor() {
+    constructor(store: Store, server: Server) {
+        super()
+        this.store = store
+        this.server = server
         this.units = []
         this.buildings = []
         this.allocation = new Allocation;
+        this.buildingPreview = new BuildingPreview();
+        this.villageManager = new VillageManager(server)
+    }
+
+    setBuildings(buildings: Building[]): void {
+        this.buildings = buildings;
+    }
+    
+    getBuildings(): Building[] {
+        return this.buildings;
+    }
+
+    setUnits(units: Unit[]): void {
+        this.units = units;
+    }
+    
+    getUnits(): Unit[] {
+        return this.units;
+    }
+
+    async loadBuildings() {
+        console.log("Загружаем здания из Game...");
+        const buildingObjects = await this.villageManager.loadBuildings();
+
+        this.buildings = buildingObjects;
+        console.log("Загружено зданий:", this.buildings.length);
+    }
+
+    async loadUnits() {
+        console.log("Загружаем юнитов из Game...");
+        const unitObjects = await this.villageManager.loadUnits();
+
+        this.units = unitObjects;
+        console.log("Загружено юниов:", this.units.length);
     }
     
 
@@ -29,10 +69,24 @@ class Game {
         return {
             units: this.units,
             buildings: this.buildings,
+            buildingPreview: this.buildingPreview,
         };
     }
 
-    getMatrixForEasyStar(units:Unit[], buildings:Building[]):number[][] {
+
+    addBuilding(building: Building): void {
+        this.buildings.push(building);
+    }
+
+
+    removeBuilding(building: Building): void {
+        const index = this.buildings.indexOf(building);
+        if (index > -1) {
+            this.buildings.splice(index, 1);
+        }
+    }
+
+    getVillageMatrix(units:Unit[], buildings:Building[]):number[][] {
         let booleanMatrix:number[][] = Array(29).fill(null).map(() => Array(87).fill(0));
         for (let i = 0; i < 29; i++) {
             booleanMatrix[i] = new Array(87).fill(0);
@@ -63,7 +117,7 @@ class Game {
                 unit.moveIntervalId = null;
             }
 
-            let booleanMatrix = this.getMatrixForEasyStar(
+            let booleanMatrix = this.getVillageMatrix(
                 this.units.filter(u => u !== unit), 
                 this.buildings
             );
@@ -85,12 +139,12 @@ class Game {
                     unit.moveIntervalId = setInterval(() => {
                         if (stepIndex < path.length) {
                             const nextStep = path[stepIndex];
-                            const currentMatrix = this.getMatrixForEasyStar(
+                            const currentMatrix = this.getVillageMatrix(
                                 this.units.filter(u => u !== unit), 
                                 this.buildings
                             );
                             
-                            if (currentMatrix[nextStep.y][nextStep.x] === 0) {
+                            if (currentMatrix[nextStep.y][nextStep.x] == 0) {
                                 unit.cords = nextStep;
                                 stepIndex++;
                             }
@@ -110,4 +164,4 @@ class Game {
 
 }
 
-export default Game;
+export default Village;

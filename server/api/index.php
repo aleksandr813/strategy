@@ -36,6 +36,7 @@ function result($params) {
             case 'buyBuilding': return $app->buyBuilding($params);
             case 'upgradeBuilding': return $app->upgradeBuilding($params);
             case 'deleteBuilding': return $app->deleteBuilding($params);
+            case 'getIncome': return $app->getIncome($params);
             //calc
             case 'getRoots': return $app->getRoots($params);
 

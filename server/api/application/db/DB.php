@@ -214,7 +214,7 @@ class DB
 
     public function getBuildingTypes()
     {
-        return $this->queryAll("SELECT id, type, name, sprite_id, hp, price FROM building_types");
+        return $this->queryAll("SELECT id, type, name, hp, price FROM building_types");
     }
 
     public function getUnitTypes()
@@ -228,6 +228,25 @@ class DB
         return $this->execute(
             "INSERT INTO villages (user_id, x, y) VALUES (?, ?, ?)",
             [$userId, $x, $y]
+        );
+    }
+
+    public function getMine($villageId) {
+        return $this->query(
+            "SELECT b.level AS level
+            FROM buildings AS b
+            INNER JOIN building_types AS bt
+            ON b.type_id = bt.id AND bt.type = 'mine'
+            WHERE b.village_id = ?",
+            [$villageId]
+        );
+    }
+
+    public function updateLastIncome($villageId) {
+        $now = date('Y-m-d H:i:s');
+        return $this->execute(
+            "UPDATE villages SET last_income_datetime = ? WHERE id = ?",
+            [$now, $villageId]
         );
     }
 }
