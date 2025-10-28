@@ -96,7 +96,7 @@ class User
         }
 
         // Получаем ID созданной деревни
-        $village = $this->db->getVillageByUserId($userId);
+        $village = $this->db->getVillage($userId);
 
         // Создание стартовых построек
         $this->createStarterBuildings($village->id);
