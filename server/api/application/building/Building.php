@@ -18,7 +18,7 @@ class Building {
 
     public function getBuildingTypes() {
         $types = $this->db->getBuildingTypes();
-        return ["building_types" => $building_types];
+        return ["building_types" => $types];
     }
 
     public function buyBuilding($user, $typeId, $x, $y) {
