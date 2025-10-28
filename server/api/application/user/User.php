@@ -45,12 +45,11 @@ class User
 
     public function registration($login, $hash, $name)
     {
-        //Вызывает ошибку 9000! СРОЧНО исправить
         // Валидация логина
-        //$loginValidation = $this->validateLogin($login);
-        //if ($loginValidation !== true) {
-        //    return $loginValidation;
-        //}
+        $loginValidation = $this->validateLogin($login);
+        if ($loginValidation !== true) {
+            return $loginValidation;
+        }
 
 
         // Проверка уникальности логина
@@ -59,10 +58,7 @@ class User
         }
 
         // Регистрация пользователя
-        $result = $this->db->registration($login, $hash, $name);
-        //if (!$result) {
-        //    return ['error' => 1004]; // Error to register user
-        //}
+        $this->db->registration($login, $hash, $name);
 
         $user = $this->db->getUserByLogin($login);
         if ($user) {
@@ -142,41 +138,11 @@ class User
 
         // Проверка на пробелы и специальные символы
         if (preg_match('/[\s@#$%]/', $login)) {
+            return ['error' => 1010]; 
+        }
         // Проверка на пробелы
         if (strpos($login, ' ') !== false) {
             return ['error' => 1010];
-        }
-
-        return true;
-    }
-}
-
-    // Валидация пароля
-    private function validatePassword($password, $login, $name)
-    {
-        // Проверка длины пароля
-        if (strlen($password) < 8) {
-            return ['error' => 1011];
-        }
-
-        // Проверка разных регистров
-        if (!preg_match('/[a-z]/', $password) || !preg_match('/[A-Z]/', $password)) {
-            return ['error' => 1012];
-        }
-
-        // Проверка на наличие цифр
-        if (!preg_match('/[0-9]/', $password)) {
-            return ['error' => 1013];
-        }
-
-        // Проверка на персональную информацию (содержит логин или имя)
-        if (stripos($password, $login) !== false || stripos($password, $name) !== false) {
-            return ['error' => 1014];
-        }
-
-        // Проверка на дату (простой паттерн для дат)
-        if (preg_match('/(19|20)\d{2}|(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[012])/', $password)) {
-            return ['error' => 1014];
         }
 
         return true;
