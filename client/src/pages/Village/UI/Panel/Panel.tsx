@@ -72,7 +72,7 @@ const Panel: React.FC<IBasePagePanel> = (props: IBasePagePanel) => {
                     <div className='param'>
                         <img src={moneyIcon} className='money' />
                         <img src={rectangle} className='rectangle' />
-                        <img src={chat} className='chat' />
+                        <img src={chat} className='chat-panel' />
                     </div>
                 </div>
 
