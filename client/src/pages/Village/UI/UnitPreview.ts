@@ -51,7 +51,7 @@ export default class UnitPreview {
         const {x, y} = this.gridPosition;
 
         //проверка границ карты
-        if (x < 0 || y < 0 || x >= occupiedMatrix.length || y >= occupiedMatrix[0].length) {
+        if (x < 0 || y < 0 || x + 1 >= occupiedMatrix.length || y + 1 >= occupiedMatrix[0].length) {
             return false;
         }
 

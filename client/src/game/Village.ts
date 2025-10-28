@@ -82,6 +82,10 @@ class Village extends Game{
         this.buildings.push(building);
     }
 
+    addUnit(unit: Unit): void {
+        this.units.push(unit);
+    }
+
 
     removeBuilding(building: Building): void {
         const index = this.buildings.indexOf(building);

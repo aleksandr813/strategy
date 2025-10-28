@@ -142,6 +142,22 @@ const VillageCanvas: React.FC = () => {
         ctx.fillRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(2), canvas.dec(2));
     }
 
+    function drawUnitPreview(canvas: Canvas): void {
+        const previewData = village.getScene().unitPreview.getRenderData();
+        if (!previewData) return;
+
+        const { gridPosition, canPlace } = previewData;
+        const ctx = canvas.contextV;
+        const color = canPlace ? 'rgba(0, 255, 0, 0.4)' : 'rgba(255, 0, 0, 0.4)';
+
+        ctx.fillStyle = color;
+        ctx.fillRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(1), canvas.dec(1));
+
+        ctx.strokeStyle = canPlace ? '#00FF00' : '#FF0000';
+        ctx.lineWidth = 2;
+        ctx.fillRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(1), canvas.dec(1));
+    }
+
     function drawSelectionRect(canvas: Canvas): void {
         if (!allocation.isSelectingStatus) return;
 
@@ -164,6 +180,7 @@ const VillageCanvas: React.FC = () => {
             drawBuildings(canvas, buildings);
             drawSelectionRect(canvas);
             drawBuildingPreview(canvas);
+            drawUnitPreview(canvas);
 
             canvas.text(WINDOW.LEFT + 0.2, WINDOW.TOP + 0.5, String(FPS), GREEN);
             canvas.render();
@@ -172,6 +189,7 @@ const VillageCanvas: React.FC = () => {
 
     const mouseDown = (x: number, y: number) => {
         if (village.getScene().buildingPreview.isActiveStatus()) return;
+        if (village.getScene().unitPreview.isActiveStatus()) return;
 
         mouseDownPosition = { x, y };
         mouseDownTime = Date.now();
@@ -186,6 +204,11 @@ const VillageCanvas: React.FC = () => {
             village.getScene().buildingPreview.update(x, y, matrix);
         } else {
             allocation.update(x, y);
+        }
+        if (village.getScene().unitPreview.isActiveStatus() && village) {
+            const {units, buildings} = village.getScene();
+            const matrix = village.getVillageMatrix(units, buildings);
+            village.getScene().unitPreview.update(x, y, matrix);
         }
 
         // Перемещение камеры средней кнопкой мыши
@@ -265,6 +288,32 @@ const VillageCanvas: React.FC = () => {
             }
             return;
         }
+
+        // Режим размещения юнита
+        if (village.getScene().unitPreview.isActiveStatus()) {
+            const newUnit = village.getScene().unitPreview.tryPlace();
+            if (newUnit) {
+                const typeId = village.getScene().unitPreview.getUnitTypeId();
+                const pos = village.getScene().unitPreview.getPlacementPosition();
+            
+
+                try {
+                    const result = await server.buyUnit(typeId, pos.x, pos.y);
+
+                    console.log('Результат buyUnit:', result);
+
+                    if (result && !result.error) {
+                        village.addUnit(newUnit);
+                    } else {
+                        console.error('Ошибка при покупке юнита:', result?.error || result);
+                        village.getScene().unitPreview.activate(newUnit.sprites[0].toString(), typeId, newUnit.hp);
+                    }
+                } catch (error) {
+                    console.error('Ошибка запроса:', error);
+                    village.getScene().unitPreview.activate(newUnit.sprites[0].toString(), typeId, newUnit.hp)
+                }
+            }
+        }
     };
 
     const mouseRightClickDown = (x: number, y: number) => {
@@ -273,6 +322,10 @@ const VillageCanvas: React.FC = () => {
         if (village.getScene().buildingPreview.isActiveStatus()) {
             village.getScene().buildingPreview.deactivate();
             console.log('Размещение здания отменено');
+        }
+        if (village.getScene().unitPreview.isActiveStatus()) {
+            village.getScene().unitPreview.deactivate();
+            console.log('Размещение юнита отменено');
         } else {
             allocation.clearSelection(village.getScene().units);
             console.log('Выделение снято');
@@ -328,6 +381,11 @@ const VillageCanvas: React.FC = () => {
         if (village.getScene().buildingPreview.isActiveStatus()) {
             village.getScene().buildingPreview.deactivate();
             console.log('Размещение здания отменено (ESC)');
+        }
+
+        if (village.getScene().unitPreview.isActiveStatus()) {
+            village.getScene().unitPreview.deactivate();
+            console.log('Размещение юнита отменено (ESC)');
         }
     };
 
