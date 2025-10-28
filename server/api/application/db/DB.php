@@ -111,13 +111,12 @@ class DB
         );
     }
 
-    public function createUnit($userId, $unitType, $x, $y)
-    {
-        return $this->execute(
-            "INSERT INTO units (user_id, unit_type, x, y) VALUES (?, ?, ?, ?)",
-            [$userId, $unitType, $x, $y]
-        );
-    }
+    public function buyUnit($villageId, $unitId, $x, $y, $hp) {
+    $this->execute("INSERT INTO units
+        (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
+        [$unitId, $villageId, $x, $y, $hp]
+    );
+}
 
     public function isOccupied($villageId, $x, $y) {
         $result = $this->query(

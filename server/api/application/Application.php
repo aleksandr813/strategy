@@ -2,8 +2,6 @@
 require_once('db/DB.php');
 require_once('user/User.php');
 require_once('chat/Chat.php');
-require_once('unit/Unit.php');
-require_once('building/Building.php');
 require_once('calculator/Calculator.php');
 require_once('village/Village.php');
 
@@ -11,8 +9,6 @@ class Application
 {
     private $user;
     private $chat;
-    private $unit;
-    private $building;
     private $village;
 
     private $calculator;
@@ -22,8 +18,6 @@ class Application
         $db = new DB();
         $this->user = new User($db);
         $this->chat = new Chat($db);
-        $this->unit = new Unit($db);
-        $this->building = new Building($db);
         $this->calculator = new Calculator();
         $this->village = new Village($db);
     }
@@ -88,7 +82,7 @@ class Application
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->unit->getUnits($user->id);
+                return $this->village->getUnits($user->id);
             }
             return ['error' => 705];
         }
@@ -100,7 +94,7 @@ class Application
         if ($params['token'] && $params['typeId'] && isset($params['x']) && isset($params['y'])) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->unit->buyUnit($user, $params['typeId'], $params['x'], $params['y']);
+                return $this->village->buyUnit($user, $params['typeId'], $params['x'], $params['y']);
             }
             return ['error' => 705];
         }
@@ -112,7 +106,7 @@ class Application
         if ($params['token'] && $params['id'] && $params['unit_type'] && isset($params['x']) && isset($params['y'])) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->unit->updateUnit($params['id'], $user->id, $params['unit_type'], $params['x'], $params['y']);
+                return $this->village->updateUnit($params['id'], $user->id, $params['unit_type'], $params['x'], $params['y']);
             }
             return ['error' => 705];
         }
@@ -124,7 +118,7 @@ class Application
         if ($params['token'] && $params['id']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->unit->deleteUnit($params['id'], $user->id);
+                return $this->village->deleteUnit($params['id'], $user->id);
             }
             return ['error' => 705];
         }
@@ -136,7 +130,7 @@ class Application
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->building->getBuildings($user->id);
+                return $this->village->getBuildings($user->id);
             }
             return ['error' => 705];
         }
@@ -148,7 +142,7 @@ class Application
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->building->getBuildingTypes();
+                return $this->village->getBuildingTypes();
             }
             return ['error' => 705];
         }
@@ -160,7 +154,7 @@ class Application
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->unit->getUnitTypes();
+                return $this->village->getUnitTypes();
             }
             return ['error' => 705];
         }
@@ -172,7 +166,7 @@ class Application
         if ($params['token'] && $params['typeId'] && isset($params['x']) && isset($params['y'])) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->building->buyBuilding($user, $params['typeId'], $params['x'], $params['y']);
+                return $this->village->buyBuilding($user, $params['typeId'], $params['x'], $params['y']);
             }
             return ['error' => 705];
         }
@@ -183,7 +177,7 @@ class Application
         if ($params['token'] && $params['id'] && $params['typeId']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->building->upgradeBuilding($params['id'], $user, $params['typeId']);
+                return $this->village->upgradeBuilding($params['id'], $user, $params['typeId']);
             }
             return ['error' => 705];
         }
@@ -195,7 +189,7 @@ class Application
         if ($params['token'] && $params['id']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->building->deleteBuilding($params['id'], $user->id);
+                return $this->village->deleteBuilding($params['id'], $user->id);
             }
             return ['error' => 705];
         }
