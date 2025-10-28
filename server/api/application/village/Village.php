@@ -196,4 +196,8 @@ class Village {
         $types = $this->db->getUnitTypes();
         return ["unit_types" => $types];
     }
+
+    public function moveUnit($unit) {
+        
+    }
 }
