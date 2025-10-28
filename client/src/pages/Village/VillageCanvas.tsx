@@ -188,12 +188,11 @@ const VillageCanvas: React.FC = () => {
             allocation.update(x, y);
         }
 
-        // Перемещение камеры средней кнопкой мыши
+        // Переиещение камеры средней кнопкой мыши
         if (isMiddleMouseDragging && middleMouseStartScreenPosition && windowStartPosition && canvas && screenX !== undefined && screenY !== undefined) {
             const deltaScreenX = screenX - middleMouseStartScreenPosition.x;
             const deltaScreenY = screenY - middleMouseStartScreenPosition.y;
             
-            // Используем текущие размеры canvas для преобразования
             const worldDeltaX = (deltaScreenX / canvas.WIDTH) * WINDOW.WIDTH;
             const worldDeltaY = (deltaScreenY / canvas.HEIGHT) * WINDOW.HEIGHT;
             
