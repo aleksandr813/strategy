@@ -1,12 +1,11 @@
-import React, { Component, useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import CONFIG from '../../config';
 import { BuildingType, BuildingTypeResponse, UnitType, UnitTypeResponse } from '../../services/server/types';
 import Button from '../../components/Button/Button';
 import { VillageContext, ServerContext } from '../../App';
 import VillageManager from './villageDataManager';
-
-import "./Village.scss"
-
+import Building from '../../game/Buildings/Building';
+import BuildingMenu from './UI/BuildingMenu';
 
 const UI: React.FC = () => {
     const [showBuyMenu, setShowBuyMenu] = React.useState(false);
@@ -45,7 +44,6 @@ const UI: React.FC = () => {
         village.getScene().buildingPreview.activate(building.name, building.id, building.hp);
         closeBuyMenu();
     };
-
 
     useEffect(() => {
         (async () => {
