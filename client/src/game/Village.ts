@@ -4,6 +4,7 @@ import Building from './Buildings/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../pages/Village/UI/Allocation";
 import BuildingPreview from "../pages/Village/UI/BuildingPreview";
+import UnitPreview from "../pages/Village/UI/UnitPreview";
 import Server from "../services/server/Server";
 import VillageManager from "../pages/Village/villageDataManager";
 import Store from "../services/store/Store";
@@ -12,6 +13,7 @@ const { WIDTH, HEIGHT } = CONFIG;
 
 class Village extends Game{
     private buildingPreview;
+    private unitPreview;
     private store;
     private server;
     private villageManager;
@@ -25,6 +27,7 @@ class Village extends Game{
         this.buildings = []
         this.allocation = new Allocation;
         this.buildingPreview = new BuildingPreview();
+        this.unitPreview = new UnitPreview();
         this.villageManager = new VillageManager(server)
     }
 
@@ -80,12 +83,17 @@ class Village extends Game{
             units: this.units,
             buildings: this.buildings,
             buildingPreview: this.buildingPreview,
+            unitPreview: this.unitPreview,
         };
     }
 
 
     addBuilding(building: Building): void {
         this.buildings.push(building);
+    }
+
+    addUnit(unit: Unit): void {
+        this.units.push(unit);
     }
 
 
