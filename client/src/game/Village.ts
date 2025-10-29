@@ -113,65 +113,6 @@ class Village extends Game{
         return booleanMatrix;
     }
 
-    moveUnits(destination: TPoint) {
-        destination.x = Math.round(destination.x);
-        destination.y = Math.round(destination.y);
-        
-        this.units.forEach((unit) => {
-            if (!unit.isSelected) {
-                return;
-            }
-
-            if (unit.moveIntervalId) {
-                clearInterval(unit.moveIntervalId);
-                unit.moveIntervalId = null;
-            }
-
-            let booleanMatrix = this.getVillageMatrix(
-                this.units.filter(u => u !== unit), 
-                this.buildings
-            );
-
-            if (destination.x+1 > booleanMatrix[0].length || destination.y+1 > booleanMatrix.length || destination.x < 0 || destination.y < 0) {
-                return
-            }
-
-            this.easystar.setGrid(booleanMatrix);
-            this.easystar.setAcceptableTiles(0);
-
-            this.easystar.findPath(unit.cords.x, unit.cords.y, destination.x, destination.y, (path) => {
-                if (path === null) {
-                    console.log("Path was not found");
-                } else {
-                    path.shift();
-
-                    let stepIndex = 0;
-                    unit.moveIntervalId = setInterval(() => {
-                        if (stepIndex < path.length) {
-                            const nextStep = path[stepIndex];
-                            const currentMatrix = this.getVillageMatrix(
-                                this.units.filter(u => u !== unit), 
-                                this.buildings
-                            );
-                            
-                            if (currentMatrix[nextStep.y][nextStep.x] == 0) {
-                                unit.cords = nextStep;
-                                stepIndex++;
-                            }
-                        } else {
-                            if (unit.moveIntervalId) {
-                                clearInterval(unit.moveIntervalId);
-                                unit.moveIntervalId = null;
-                            }
-                        }
-                    }, 100);
-                }
-            });
-        });
-
-        this.easystar.calculate();
-    }
-
 }
 
 export default Village;
