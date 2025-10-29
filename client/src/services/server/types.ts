@@ -87,6 +87,58 @@ export type TBuildingResponse = {
     buildings: BuildingResponse[];
 }
 
+
+export interface UnitTypeResponse {
+    id: string;
+    type: string;
+    name: string;
+    hp: string;
+    price: string;
+}
+
+// Тип для использования в приложении (числовые поля)
+export interface UnitType {
+    id: number;
+    type: string;
+    name: string;
+    hp: number;
+    price: number;
+}
+
+export type TUnitTypesResponse = {
+    unit_types: UnitTypeResponse[];
+}
+
+export interface UnitResponse { 
+    id: string;
+    type_id: string;
+    village_id: string;
+    x: string;
+    y: string;
+    level: string;  
+    current_hp: string;
+}
+
+// Тип для использования в приложении (числовые поля)
+export interface Unit {
+    id: number;
+    type_id: number;
+    village_id: number;
+    x: number;
+    y: number;
+    level: number;
+    current_hp: number;
+}
+
+export enum UnitTypeID {
+    Knight = 1, // Рыцарь
+}
+
+// Тип для ответа метода getBuildingTypes
+export type TUnitResponse = {
+    units: UnitResponse[];
+}
+
 export interface buyBuildingResponse {
     id: string;
     type: string;

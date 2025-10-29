@@ -2,6 +2,7 @@ import md5 from 'md5';
 import CONFIG from "../../config";
 import Store from "../store/Store";
 import { BuildingTypeResponse, TBuildingTypesResponse, TBuildingResponse } from './types';
+import { UnitTypeResponse, TUnitTypesResponse, TUnitResponse } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 
 const { CHAT_TIMESTAMP, HOST } = CONFIG;
@@ -147,6 +148,22 @@ class Server {
         return response;
     }
 
+    async getUnits(): Promise<TUnitResponse> {
+        const response = await this.request<TUnitResponse>('getUnits');
+        if (!response) {
+            return { units: [] };
+        }
+        return response;
+    }
+
+    async getUnitsTypes(): Promise<TUnitTypesResponse> {
+        const response = await this.request<TUnitTypesResponse>('getUnitTypes');
+        if (!response) {
+            return { unit_types: [] };
+        }
+        return response;
+    }
+
     async buyBuilding(typeId: number, x: number, y: number): Promise<any> {
         console.log('buyBuilding called with:', { typeId, x, y });
         const result = await this.request<any>('buyBuilding', { 
@@ -155,6 +172,17 @@ class Server {
             y: y.toString() 
         });
         console.log('buyBuilding result:', result);
+        return result;
+    }
+
+    async buyUnit(typeId: number, x: number, y: number): Promise<any> {
+        console.log('buyUnit called with', { typeId, x, y});
+        const result = await this.request<any>('buyUnit', {
+            typeId: typeId.toString(),
+            x: x.toString(),
+            y: y.toString()
+        });
+        console.log('buyUnit result:', result);
         return result;
     }
 }

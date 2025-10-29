@@ -24,18 +24,18 @@ function result($params) {
             // chat
             case 'sendMessage': return $app->sendMessage($params);
             case 'getMessages': return $app->getMessages($params);
-            //unit
+            //village
             case 'getUnitTypes': return $app->getUnitTypes($params);
             case 'getUnits': return $app->getUnits($params);
             case 'buyUnit': return $app->buyUnit($params);
             case 'updateUnit': return $app->updateUnit($params);
             case 'deleteUnit': return $app->deleteUnit($params);
-            //building
             case 'getBuildingTypes': return $app->getBuildingTypes($params);
             case 'getBuildings': return $app->getBuildings($params);
             case 'buyBuilding': return $app->buyBuilding($params);
             case 'upgradeBuilding': return $app->upgradeBuilding($params);
             case 'deleteBuilding': return $app->deleteBuilding($params);
+            case 'getIncome': return $app->getIncome($params);
             //calc
             case 'getRoots': return $app->getRoots($params);
 

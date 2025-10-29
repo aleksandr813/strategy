@@ -13,12 +13,17 @@ export type TCanvas = {
     WIDTH: number;
     HEIGHT: number;
     callbacks: {
-        mouseMove: (x: number, y: number) => void;
+        mouseMove: (x: number, y: number, screenX?: number, screenY?: number) => void;
         mouseDown: (x: number, y: number) => void;
         mouseUp: (x: number, y: number) => void;
         mouseRightClickDown: (x: number, y: number) => void;
         //mouseRightClickUp: (x: number, y: number) => void;
         mouseClick: (x: number, y: number) => void;
+        mouseLeave?: () => void;
+        mouseWheel?: (delta: number, x: number, y: number) => void;
+        mouseMiddleDown?: (x: number, y: number, screenX?: number, screenY?: number) => void;
+        mouseMiddleUp?: (x: number, y: number) => void;
+        keyDown?: (event: KeyboardEvent) => void;
     },
 }
 
@@ -95,6 +100,11 @@ class Canvas {
         const { offsetX, offsetY, button } = event;
         if (button === 0) {
             this.callbacks.mouseDown(this.sx(offsetX), this.sy(offsetY));
+        } else if (button === 1) {
+            this.isMiddleMouseDown = true;
+            if (this.callbacks.mouseMiddleDown) {
+                this.callbacks.mouseMiddleDown(this.sx(offsetX), this.sy(offsetY), offsetX, offsetY);
+            }
         }
     }
 
@@ -123,7 +133,7 @@ class Canvas {
 
     mouseMoveHandler(event: MouseEvent) {
         const { offsetX, offsetY } = event;
-        this.callbacks.mouseMove(this.sx(offsetX), this.sy(offsetY));
+        this.callbacks.mouseMove(this.sx(offsetX), this.sy(offsetY), offsetX, offsetY);
     }
 
     mouseLeaveHandler() {
