@@ -278,6 +278,9 @@ const VillageCanvas: React.FC = () => {
             },
         });
 
+        canvas.context.imageSmoothingEnabled = false;
+        canvas.contextV.imageSmoothingEnabled = false;
+
         village.loadBuildings();
         village.setBuildings(village.getScene().buildings);
         village.loadUnits();
