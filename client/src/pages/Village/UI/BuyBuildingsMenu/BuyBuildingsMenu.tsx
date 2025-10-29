@@ -1,25 +1,25 @@
 import React, { useEffect, useContext, useState } from 'react';
 import Button from '../../../../components/Button/Button';
-import { IBasePagePanel, PAGESPANEL } from '../UI';
+import { UIELEMENT, IBaseUIElement } from '../UI';
 import { VillageContext, ServerContext } from '../../../../App';
 import { BuildingTypeResponse, BuildingType } from '../../../../services/server/types';
 import VillageManager from '../../villageDataManager';
 
-const Buildings: React.FC<IBasePagePanel> = (props: IBasePagePanel) => {
+const Buildings: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
 
-    const { setPagePanel } = props;
+    const { setUIElement } = props;
 
     const village = useContext(VillageContext);
     const server = useContext(ServerContext);
     const [buildingTypes, setBuildingTypes] = useState<BuildingType[]>([]);
     const villageManager = new VillageManager(server);
 
-    const closeBuyMenu = () => setPagePanel(PAGESPANEL.NULL);
+    const closeBuyMenu = () => setUIElement(UIELEMENT.NULL);
 
     const buyBuilding = async (building: BuildingType) => {
         console.log(`Покупка здания: ${building.name}`);
         village.getScene().buildingPreview.activate(building.name, building.id, building.hp);
-        setPagePanel(PAGESPANEL.NULL);
+        setUIElement(UIELEMENT.NULL);
     };
 
     useEffect(() => {

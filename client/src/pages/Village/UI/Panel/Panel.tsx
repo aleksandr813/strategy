@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '../../../../components/Button/Button';
-import { PAGESPANEL, IBasePagePanel } from '../UI';
+import { UIELEMENT, IBaseUIElement } from '../UI';
 
 import "./Panel.scss";
 
@@ -19,17 +19,17 @@ import icon from "../../../../assets/img/panel/icon.png";
 
 
 
-const Panel: React.FC<IBasePagePanel> = (props: IBasePagePanel) => {
+const Panel: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
 
-    const { setPagePanel } = props;
+    const { setUIElement } = props;
 
-    const buildingsHandler = () => setPagePanel(PAGESPANEL.BUILDINGS);
-    const settingsHandler = () => setPagePanel(PAGESPANEL.NULL);
-    const unitsHandler = () => setPagePanel(PAGESPANEL.NULL);
-    const globalmapHandler = () => setPagePanel(PAGESPANEL.NULL);
-    const lidersHandler = () => setPagePanel(PAGESPANEL.NULL);
-    const villageHandler = () => setPagePanel(PAGESPANEL.NULL);
-    const chatHandler = () => setPagePanel(PAGESPANEL.NULL);
+    const buildingsHandler = () => setUIElement(UIELEMENT.BUILDINGS);
+    const settingsHandler = () => setUIElement(UIELEMENT.NULL);
+    const unitsHandler = () => setUIElement(UIELEMENT.NULL);
+    const globalmapHandler = () => setUIElement(UIELEMENT.NULL);
+    const lidersHandler = () => setUIElement(UIELEMENT.NULL);
+    const villageHandler = () => setUIElement(UIELEMENT.NULL);
+    const chatHandler = () => setUIElement(UIELEMENT.NULL);
 
 
     return (

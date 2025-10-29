@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import Buildings from './Buildings/Buildings';
+import Buildings from './BuyBuildingsMenu/BuyBuildingsMenu';
 
 import "./UI.scss";
 import Panel from './Panel/Panel';
 
-export enum PAGESPANEL {
+export enum UIELEMENT {
     //CHAT,
     SETTING,
     UNITS,
@@ -12,23 +12,19 @@ export enum PAGESPANEL {
     NULL
 }
 
-export interface IBasePagePanel {
-    setPagePanel: (name: PAGESPANEL) => void
+export interface IBaseUIElement {
+    setUIElement: (name: UIELEMENT) => void
 }
 
 const UI: React.FC = () => {
 
-    const [page, setPagePanel] = useState<PAGESPANEL>(PAGESPANEL.NULL);
+    const [uiElement, setUIElement] = useState<UIELEMENT>(UIELEMENT.NULL);
 
     
     return (
         <div className='UI'>
-            {/* 
-            {page === PAGES.SETTING && <Preloader setPagePanel={setPage} />}
-            {page === PAGES.UNITS && <Preloader setPagePanel={setPage} />} 
-            */}
-            {page === PAGESPANEL.BUILDINGS && <Buildings setPagePanel={setPagePanel} />}
-            <Panel setPagePanel={setPagePanel}/>
+            {uiElement === UIELEMENT.BUILDINGS && <Buildings setUIElement={setUIElement} />}
+            <Panel setUIElement={setUIElement}/>
         </div>
     );
 };
