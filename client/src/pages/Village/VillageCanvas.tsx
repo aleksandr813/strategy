@@ -19,6 +19,7 @@ const TIME_THRESHOLD = 200;
 
 let zoomFactor = 1;
 
+
 const VillageCanvas: React.FC = () => {
     const { WINDOW, SPRITE_SIZE } = CONFIG;
 
@@ -230,13 +231,18 @@ const VillageCanvas: React.FC = () => {
         const gridY = Math.floor(y);
         const { buildings } = village.getScene();
 
+        let clickedBuilding: Building | null = null;
         for (const building of buildings) {
             const [bx, by] = [building.cords[0].x, building.cords[0].y];
             if (gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2) {
+                clickedBuilding = building;
+                console.log("Выбранное здание",building);
                 building.takeDamage(10);
-                return;
+                break;
             }
         }
+        
+        village.selectBuilding(clickedBuilding);
 
         if (!allocation.isSelectingStatus) {
             village.moveUnits({ x, y });

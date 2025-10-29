@@ -28,6 +28,16 @@ class Village extends Game{
         this.villageManager = new VillageManager(server)
     }
 
+    public selectedBuilding: Building | null = null;  
+
+    public selectBuilding(building: Building | null): void {
+        this.buildings.forEach(b => b.deselected?.());
+        if (building) building.selected?.();
+        
+        this.selectedBuilding = building;
+    }
+
+
     setBuildings(buildings: Building[]): void {
         this.buildings = buildings;
     }
