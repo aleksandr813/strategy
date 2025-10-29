@@ -87,7 +87,7 @@ const UI: React.FC = () => {
         )}
         <Button onClick={buyUnitButtonHandler} text='Купить юнита'/>
         {showBuyUnitMenu && (
-            <div className='buy-menu-overplay' onClick={closeBuyUnitMenu}>
+            <div className='buy-menu-overlay' onClick={closeBuyUnitMenu}>
                 <div className='buy-menu-container' onClick={(e) => e.stopPropagation()}>
                     <h3 className='buy-menu-title'>
                         Выберите юнита
