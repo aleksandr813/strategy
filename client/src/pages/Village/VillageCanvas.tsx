@@ -99,7 +99,7 @@ const VillageCanvas: React.FC = () => {
         if (!previewData) return;
         const { gridPosition, canPlace} = previewData;
         const color = canPlace ? 'rgba(0, 255, 0, 0.4)' : 'rgba(255, 0, 0, 0.4)';
-        drawRect(canvas, gridPosition.x, gridPosition.y, 2, 2, color);
+        drawRect(canvas, gridPosition.x, gridPosition.y, 1, 1, color);
         canvas.contextV.strokeStyle = canPlace ? '#00FF00' : '#FF0000';
         canvas.contextV.lineWidth = 1;
         canvas.contextV.strokeRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(1), canvas.dec(1));
