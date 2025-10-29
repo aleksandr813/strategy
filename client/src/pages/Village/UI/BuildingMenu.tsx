@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { VillageContext } from '../../../App';
 import Building from '../../../game/Buildings/Building';
+import Button from '../../../components/Button/Button';
 import "./BuildingMenu.css";
 
 const BuildingMenu: React.FC = () => {
@@ -18,6 +19,10 @@ const BuildingMenu: React.FC = () => {
     }, [village]);
 
     if (!selectedBuilding) return null;
+
+    const deleteHandler = () => {
+        
+    }
 
     return (
         <div className="BuildingMenu">
@@ -38,8 +43,8 @@ const BuildingMenu: React.FC = () => {
                         </div>
                     </div>
                     <div className="menu-footer">
-                        <button className="levelup-button">Level Up</button>
-                        <button className="delete-button">Delete</button>
+                        <button className="levelup-button">Улучшить</button>
+                        <Button onClick={deleteHandler} className='delete-button' text='Удалить' />
                     </div>
                 </div>
             </div>
