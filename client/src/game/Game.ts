@@ -71,15 +71,6 @@ class Game {
         }
     }
 
-    private reserveCell(x: number, y: number, unit: Unit, reservations: Map<string, Unit>): boolean {
-        const key = `${x},${y}`;
-        if (!reservations.has(key)) {
-            reservations.set(key, unit);
-            return true;
-        }
-        return false;
-    }
-
     moveUnits(destination: TPoint) {
         destination.x = Math.round(destination.x);
         destination.y = Math.round(destination.y);
