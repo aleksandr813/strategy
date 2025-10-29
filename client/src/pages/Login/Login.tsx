@@ -2,7 +2,6 @@ import React, { useContext, useRef, useState, useEffect } from 'react';
 import { ServerContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
-import { validateLogin, validatePassword } from '../Verification/Verification';
 import './Login.scss';
 
 import arrow from '../../assets/img/sprites/arrow.png';
@@ -27,27 +26,6 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
             // Сбрасываем предыдущие ошибки
             setLoginError('');
             setPasswordError('');
-
-            let hasErrors = false;
-
-            // Проверка логина
-            const loginValidation = validateLogin(login);
-            if (!loginValidation.isValid) {
-                setLoginError(loginValidation.message);
-                hasErrors = true;
-            }
-
-            // Проверка пароля
-            const passwordValidation = validatePassword(password);
-            if (!passwordValidation.isValid) {
-                setPasswordError(passwordValidation.message);
-                hasErrors = true;
-            }
-
-            // Если есть ошибки - не отправляем на сервер
-            if (hasErrors) {
-                return;
-            }
 
             // Сохранение логина и пароля в cookies если отмечено "Запомнить меня"
             if (rememberMe) {
