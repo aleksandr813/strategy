@@ -110,7 +110,7 @@ class Village extends Game{
             booleanMatrix[i] = new Array(87).fill(0);
         }
         units.forEach((element) => {
-            booleanMatrix[element.cords[0].x][element.cords[0].y] = 1;
+            booleanMatrix[element.cords.x][element.cords.y] = 1;
         })
         buildings.forEach((element) => {
             booleanMatrix[element.cords[0].y][element.cords[0].x] = 1;

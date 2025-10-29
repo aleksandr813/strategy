@@ -94,6 +94,17 @@ const VillageCanvas: React.FC = () => {
         canvas.contextV.strokeRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(2), canvas.dec(2));
     };
 
+    const drawUnitPreview = (canvas: Canvas) => {
+        const previewData = village.getScene().unitPreview.getRenderData();
+        if (!previewData) return;
+        const { gridPosition, canPlace} = previewData;
+        const color = canPlace ? 'rgba(0, 255, 0, 0.4)' : 'rgba(255, 0, 0, 0.4)';
+        drawRect(canvas, gridPosition.x, gridPosition.y, 2, 2, color);
+        canvas.contextV.strokeStyle = canPlace ? '#00FF00' : '#FF0000';
+        canvas.contextV.lineWidth = 1;
+        canvas.contextV.strokeRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(1), canvas.dec(1));
+    }
+
     const drawSelectionRect = (canvas: Canvas) => {
         if (!allocation.isSelectingStatus) return;
         const rect = allocation.getSelectionRect();
@@ -114,6 +125,7 @@ const VillageCanvas: React.FC = () => {
         drawBuildings(canvas, buildings);
         drawSelectionRect(canvas);
         drawBuildingPreview(canvas);
+        drawUnitPreview(canvas);
         canvas.text(WINDOW.LEFT + 0.2, WINDOW.TOP + 0.5, String(FPS), GREEN);
         canvas.render();
     }
@@ -139,6 +151,28 @@ const VillageCanvas: React.FC = () => {
             preview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp);
         }
     };
+
+    const handleUnitClick = async (x: number, y: number) => {
+        const preview = village.getScene().unitPreview;
+        const newUnit = preview.tryPlace();
+        if (!newUnit) return;
+
+        const typeId = preview.getUnitTypeId();
+        const pos = preview.getPlacementPosition();
+
+        try {
+            const result = await server.buyUnit(typeId, pos.x, pos.y);
+            if (result && !result.error) {
+                village.addUnit(newUnit);
+            } else {
+                console.error('Ошибка размещения юнита:', result?.error || result);
+                preview.activate(newUnit.sprites[0].toString(), typeId, newUnit.hp);
+            }
+        } catch (error) {
+            console.error('Ошибка запроса:', error);
+            preview.activate(newUnit.sprites[0].toString(), typeId, newUnit.hp);
+        }
+    }
 
     const mouseDown = (x: number, y: number) => {
         if (village.getScene().buildingPreview.isActiveStatus()) return;
@@ -208,6 +242,10 @@ const VillageCanvas: React.FC = () => {
 
         if (village.getScene().buildingPreview.isActiveStatus()) {
             await handleBuildingClick(x, y);
+        }
+
+        if (village.getScene().unitPreview.isActiveStatus()) {
+            await handleUnitClick(x, y);
         }
     };
 
