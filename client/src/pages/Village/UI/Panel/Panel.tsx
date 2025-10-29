@@ -23,9 +23,9 @@ const Panel: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
 
     const { setUIElement } = props;
 
-    const buildingsHandler = () => setUIElement(UIELEMENT.BUILDINGS);
+    const buildingsHandler = () => setUIElement(UIELEMENT.BUYBUILDINGSMENU);
+    const unitsHandler = () => setUIElement(UIELEMENT.BUYUNITSMENU);    
     const settingsHandler = () => setUIElement(UIELEMENT.NULL);
-    const unitsHandler = () => setUIElement(UIELEMENT.NULL);
     const globalmapHandler = () => setUIElement(UIELEMENT.NULL);
     const lidersHandler = () => setUIElement(UIELEMENT.NULL);
     const villageHandler = () => setUIElement(UIELEMENT.NULL);

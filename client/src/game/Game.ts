@@ -6,24 +6,23 @@ import Allocation from "../pages/Village/UI/Allocation";
 import Store from "../services/store/Store";
 
 const { WIDTH, HEIGHT } = CONFIG;
+const GRID_WIDTH = 87;
+const GRID_HEIGHT = 29;
+const MOVE_INTERVAL = 100;
 
 class Game {
-    protected units:Unit[];
-    protected buildings:Building[] = [];
-    protected allocation:Allocation;
+    protected units: Unit[];
+    protected buildings: Building[] = [];
+    protected allocation: Allocation;
     protected easystar = new EasyStar.js();
-    
 
     constructor() {
-        this.units = []
-        this.buildings = []
-        this.allocation = new Allocation;
+        this.units = [];
+        this.buildings = [];
+        this.allocation = new Allocation();
     }
-    
 
-    destructor() {
-
-    }
+    destructor() {}
 
     getScene() {
         return {
@@ -32,82 +31,111 @@ class Game {
         };
     }
 
-    getMatrixForEasyStar(units:Unit[], buildings:Building[]):number[][] {
-        let booleanMatrix:number[][] = Array(29).fill(null).map(() => Array(87).fill(0));
-        for (let i = 0; i < 29; i++) {
-            booleanMatrix[i] = new Array(87).fill(0);
+    getMatrixForEasyStar(excludedUnit?: Unit): number[][] {
+        const matrix: number[][] = Array.from(
+            { length: GRID_HEIGHT }, 
+            () => Array(GRID_WIDTH).fill(0)
+        );
+
+        this.units.forEach((unit) => {
+            if (unit !== excludedUnit && unit.cords.y < GRID_HEIGHT && unit.cords.x < GRID_WIDTH) {
+                matrix[unit.cords.y][unit.cords.x] = 1;
+            }
+        });
+
+        this.buildings.forEach((building) => {
+            const { x, y } = building.cords[0];
+            for (let dy = 0; dy <= 1; dy++) {
+                for (let dx = 0; dx <= 1; dx++) {
+                    if (y + dy < GRID_HEIGHT && x + dx < GRID_WIDTH) {
+                        matrix[y + dy][x + dx] = 1;
+                    }
+                }
+            }
+        });
+
+        return matrix;
+    }
+
+    private isValidDestination(destination: TPoint): boolean {
+        return destination.x >= 0 && 
+               destination.x < GRID_WIDTH && 
+               destination.y >= 0 && 
+               destination.y < GRID_HEIGHT;
+    }
+
+    private clearUnitMovement(unit: Unit): void {
+        if (unit.moveIntervalId) {
+            clearInterval(unit.moveIntervalId);
+            unit.moveIntervalId = null;
         }
-        units.forEach((element) => {
-            booleanMatrix[element.cords.x][element.cords.y] = 1;
-        })
-        buildings.forEach((element) => {
-            booleanMatrix[element.cords[0].y][element.cords[0].x] = 1;
-            booleanMatrix[element.cords[0].y + 1][element.cords[0].x] = 1;
-            booleanMatrix[element.cords[0].y][element.cords[0].x + 1] = 1;
-            booleanMatrix[element.cords[0].y + 1][element.cords[0].x + 1] = 1;
-        })
-        return booleanMatrix;
     }
 
     moveUnits(destination: TPoint) {
         destination.x = Math.round(destination.x);
         destination.y = Math.round(destination.y);
-        
+
+        if (!this.isValidDestination(destination)) {
+            return;
+        }
+
+        const cellReservations = new Map<string, Unit>();
+
         this.units.forEach((unit) => {
-            if (!unit.isSelected) {
-                return;
-            }
+            if (!unit.isSelected) return;
 
-            if (unit.moveIntervalId) {
-                clearInterval(unit.moveIntervalId);
-                unit.moveIntervalId = null;
-            }
+            this.clearUnitMovement(unit);
 
-            let booleanMatrix = this.getMatrixForEasyStar(
-                this.units.filter(u => u !== unit), 
-                this.buildings
-            );
+            const matrix = this.getMatrixForEasyStar(unit);
+            
+            this.easystar.setGrid(matrix);
+            this.easystar.setAcceptableTiles([0]);
 
-            if (destination.x+1 > booleanMatrix[0].length || destination.y+1 > booleanMatrix.length || destination.x < 0 || destination.y < 0) {
-                return
-            }
+            this.easystar.findPath(
+                unit.cords.x, 
+                unit.cords.y, 
+                destination.x, 
+                destination.y, 
+                (path) => {
+                    if (!path) {
+                        console.log("Path was not found");
+                        return;
+                    }
 
-            this.easystar.setGrid(booleanMatrix);
-            this.easystar.setAcceptableTiles(0);
-
-            this.easystar.findPath(unit.cords.x, unit.cords.y, destination.x, destination.y, (path) => {
-                if (path === null) {
-                    console.log("Path was not found");
-                } else {
                     path.shift();
-
                     let stepIndex = 0;
+
                     unit.moveIntervalId = setInterval(() => {
-                        if (stepIndex < path.length) {
-                            const nextStep = path[stepIndex];
-                            const currentMatrix = this.getMatrixForEasyStar(
-                                this.units.filter(u => u !== unit), 
-                                this.buildings
-                            );
+                        if (stepIndex >= path.length) {
+                            this.clearUnitMovement(unit);
+                            return;
+                        }
+
+                        const nextStep = path[stepIndex];
+                        const currentMatrix = this.getMatrixForEasyStar(unit);
+
+                        if (currentMatrix[nextStep.y][nextStep.x] === 0) {
+                            const key = `${nextStep.x},${nextStep.y}`;
+                            const reservingUnit = cellReservations.get(key);
                             
-                            if (currentMatrix[nextStep.y][nextStep.x] === 0) {
+                            const oldKey = `${unit.cords.x},${unit.cords.y}`;
+                            if (cellReservations.get(oldKey) === unit) {
+                                cellReservations.delete(oldKey);
+                            }
+
+                            if (!reservingUnit || reservingUnit === unit) {
+                                cellReservations.set(key, unit);
                                 unit.cords = nextStep;
                                 stepIndex++;
                             }
-                        } else {
-                            if (unit.moveIntervalId) {
-                                clearInterval(unit.moveIntervalId);
-                                unit.moveIntervalId = null;
-                            }
                         }
-                    }, 100);
+                    }, MOVE_INTERVAL);
                 }
-            });
+            );
         });
 
         this.easystar.calculate();
     }
-
 }
 
 export default Game;

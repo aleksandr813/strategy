@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import Buildings from './BuyBuildingsMenu/BuyBuildingsMenu';
+import BuyBuildingsMenu from './BuyBuildingsMenu/BuyBuildingsMenu';
+import BuyUnitsMenu from './BuyUnitsMenu/BuyUnitsMenu';
 
 import "./UI.scss";
 import Panel from './Panel/Panel';
@@ -7,8 +8,8 @@ import Panel from './Panel/Panel';
 export enum UIELEMENT {
     //CHAT,
     SETTING,
-    UNITS,
-    BUILDINGS,
+    BUYUNITSMENU,
+    BUYBUILDINGSMENU,
     NULL
 }
 
@@ -23,7 +24,8 @@ const UI: React.FC = () => {
     
     return (
         <div className='UI'>
-            {uiElement === UIELEMENT.BUILDINGS && <Buildings setUIElement={setUIElement} />}
+            {uiElement === UIELEMENT.BUYBUILDINGSMENU && <BuyBuildingsMenu setUIElement={setUIElement} />}
+            {uiElement === UIELEMENT.BUYUNITSMENU && <BuyUnitsMenu setUIElement={setUIElement} />}
             <Panel setUIElement={setUIElement}/>
         </div>
     );

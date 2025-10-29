@@ -5,7 +5,7 @@ import { VillageContext, ServerContext } from '../../../../App';
 import { BuildingTypeResponse, BuildingType } from '../../../../services/server/types';
 import VillageManager from '../../villageDataManager';
 
-const Buildings: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
+const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
 
     const { setUIElement } = props;
 
@@ -67,4 +67,4 @@ const Buildings: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
     )
 }
 
-export default Buildings;
+export default BuyBuildingsMenu;
