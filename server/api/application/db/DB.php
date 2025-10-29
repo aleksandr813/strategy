@@ -98,14 +98,24 @@ class DB
         );
     }
 
-    public function getUnits($userId)
+    public function getUnitById($unitId)
+    {
+        return $this->query(
+            "SELECT u.*
+            FROM units AS u
+            JOIN users ON u.user_id = users.id
+            WHERE u.id = ?
+        ",
+            [$unitId]
+        );
+    }
+
+    public function getUnitsByUser($userId)
     {
         return $this->queryAll(
-            "SELECT u.id, u.type_id, u.village_id, u.x, u.y, u.level, u.current_hp 
-            FROM units AS u
-            INNER JOIN villages AS v
-            ON u.village_id = v.id
-            WHERE v.user_id = ?
+            "SELECT * FROM units
+            WHERE user_id = ?
+            ORDER BY unit_type
         ",
             [$userId]
         );
@@ -117,19 +127,6 @@ class DB
         [$unitId, $villageId, $x, $y, $hp]
     );
 }
-
-    public function isOccupied($villageId, $x, $y) {
-        $result = $this->query(
-            "SELECT EXISTS (
-                SELECT 1 FROM units WHERE village_id = ? AND x = ? AND y = ?
-            ) OR EXISTS (
-                SELECT 1 FROM buildings WHERE village_id = ? AND x = ? AND y = ?
-            ) AS occupied",
-            [$villageId, $x, $y, $villageId, $x, $y]
-        );
-
-        return !empty($result) && $result->occupied == 1;
-    }
 
     public function updateUnit($unitId, $userId, $unitType, $x, $y)
     {
@@ -144,11 +141,23 @@ class DB
         return $this->execute("DELETE FROM units WHERE id = ? AND user_id = ?", [$unitId, $userId]);
     }
 
+    public function getBuildingById($buildingId)
+    {
+        return $this->query(
+            "SELECT b.*
+            FROM buildings AS b
+            JOIN users AS u ON b.user_id = u.id
+            WHERE b.id = ?",
+            [$buildingId]
+        );
+    }
+
     public function getBuildings($userId)
     {
         return $this->queryAll(
             "SELECT id, type_id, village_id, x, y, level, current_hp FROM buildings
             WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)
+            ORDER BY type_id
         ",
             [$userId]
         );
@@ -168,9 +177,14 @@ class DB
         );
     }
 
-    public function getVillage($userId) {
-        return $this->query("SELECT id, last_income_datetime FROM villages WHERE user_id = ?", [$userId]);
-    }
+    public function buyUnit($villageId, $unitId, $x, $y, $hp) {
+    $this->execute("INSERT INTO units
+        (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
+        [$unitId $villageId, $x, $y, $hp]
+    );
+}
+
+   
 
     public function getBuildingType($buildingType) {
         return $this->query("SELECT hp, price FROM building_types WHERE id = ?", [$buildingType]);
@@ -178,6 +192,15 @@ class DB
 
     public function getUnitType($unitType) {
         return $this->query("SELECT hp, price FROM unit_types WHERE id = ?", [$unitType]);
+    }
+
+    public function getPositionBuilding($villageId, $x, $y) {
+        return $this->query(
+            "SELECT village_id, x, y 
+            FROM buildings 
+            WHERE village_id = ? AND x = ? AND y = ?",
+            [$villageId, $x, $y]
+        );
     }
 
     public function getMoney($userId) {
@@ -188,15 +211,9 @@ class DB
         return $this->execute("UPDATE users SET money = ? WHERE id = ?", [$money, $userId]);
     }
 
-    public function upgradeBuilding($buildingId, $villageId) {
-        return $this->execute("UPDATE buildings SET level = level + 1 WHERE id = ? AND village_id = ?",
-            [$buildingId, $villageId]
-        );
-    }
-
-    public function getLevel($buildingId, $villageId) {
-        return $this->query("SELECT level FROM buildings WHERE id = ? AND village_id = ?",
-            [$buildingId, $villageId]
+    public function updateBuilding($buildingId, $userId, $buildingType, $x, $y) {
+        return $this->execute("UPDATE buildings SET building_type = ?, x = ?, y = ? WHERE id = ? AND user_id = ?",
+            [$buildingType, $x, $y, $buildingId, $userId]
         );
     }
 
@@ -230,6 +247,8 @@ class DB
         );
     }
 
+ 
+
     public function getMine($villageId) {
         return $this->query(
             "SELECT b.level AS level
@@ -248,4 +267,5 @@ class DB
             [$now, $villageId]
         );
     }
+
 }
