@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { VillageContext } from '../../../App';
-import Building from '../../../game/Buildings/Building';
-import Button from '../../../components/Button/Button';
+import { VillageContext } from '../../../../App';
+import Building from '../../../../game/Buildings/Building';
+import Button from '../../../../components/Button/Button';
 import "./BuildingMenu.css";
 
 const BuildingMenu: React.FC = () => {
