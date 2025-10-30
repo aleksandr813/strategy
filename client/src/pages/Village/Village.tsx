@@ -23,12 +23,12 @@ const Village: React.FC<IBasePage> = (props: IBasePage) => {
     return (
     <div className='game'>
         <h1>Менеджмент деревни</h1>
-        <Button onClick={BattleClickHandler} text='Battle'/>
-        <Button onClick={CalculatorClickHandler} text='Calculator'/>
-        <Button onClick={GlobalMapClickHandler} text='GlobalMap'/>
-        <Button onClick={VillageClickHandler} text='Village'/>
-        <Button onClick={backClickHandler} text='Выход' />
-        <Button onClick={chatClickHandler} text='Чат' />
+        <Button className='button-main1' onClick={BattleClickHandler} text='Battle'/>
+        <Button className='button-main1' onClick={CalculatorClickHandler} text='Calculator'/>
+        <Button  className='button-main1'onClick={GlobalMapClickHandler} text='GlobalMap'/>
+        <Button className='button-main1' onClick={VillageClickHandler} text='Village'/>
+        <Button className='button-main1' onClick={backClickHandler} text='Выход' />
+        <Button className='button-main1' onClick={chatClickHandler} text='Чат' />
         <div>
             <VillageCanvas/>
         </div>

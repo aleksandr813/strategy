@@ -126,7 +126,7 @@ const VillageCanvas: React.FC = () => {
         drawSelectionRect(canvas);
         drawBuildingPreview(canvas);
         drawUnitPreview(canvas);
-        canvas.text(WINDOW.LEFT + 0.2, WINDOW.TOP + 0.5, String(FPS), GREEN);
+        canvas.drawFPS(String(FPS), GREEN);
         canvas.render();
     }
 

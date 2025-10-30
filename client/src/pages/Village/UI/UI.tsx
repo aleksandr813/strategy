@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import BuyBuildingsMenu from './BuyBuildingsMenu/BuyBuildingsMenu';
 import BuyUnitsMenu from './BuyUnitsMenu/BuyUnitsMenu';
+import BuildingMenu from './BuildingMenu/BuildingMenu';
 
 import "./UI.scss";
 import Panel from './Panel/Panel';
@@ -24,6 +25,7 @@ const UI: React.FC = () => {
     
     return (
         <div className='UI'>
+            <BuildingMenu></BuildingMenu>
             {uiElement === UIELEMENT.BUYBUILDINGSMENU && <BuyBuildingsMenu setUIElement={setUIElement} />}
             {uiElement === UIELEMENT.BUYUNITSMENU && <BuyUnitsMenu setUIElement={setUIElement} />}
             <Panel setUIElement={setUIElement}/>
