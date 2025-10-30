@@ -3,7 +3,7 @@ import CONFIG from '../../config';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import VillageCanvas from './VillageCanvas';
-import UI from './UI';
+import UI from './UI/UI';
 
 import "./Village.scss"
 
@@ -13,11 +13,12 @@ const GREEN = '#00e81c';
 const Village: React.FC<IBasePage> = (props: IBasePage) => {
     const { setPage } = props;
 
-    const backClickHandler = () => setPage(PAGES.CHAT);
+    const backClickHandler = () => setPage(PAGES.LOGIN);
     const BattleClickHandler = () => setPage(PAGES.BATTLE);
     const CalculatorClickHandler = () => setPage(PAGES.CALCULATOR);
     const GlobalMapClickHandler = () => setPage(PAGES.GLOBAL_MAP);
     const VillageClickHandler = () => setPage(PAGES.VILLAGE);
+    const chatClickHandler = () => setPage(PAGES.CHAT);
 
     return (
     <div className='game'>
@@ -26,7 +27,8 @@ const Village: React.FC<IBasePage> = (props: IBasePage) => {
         <Button onClick={CalculatorClickHandler} text='Calculator'/>
         <Button onClick={GlobalMapClickHandler} text='GlobalMap'/>
         <Button onClick={VillageClickHandler} text='Village'/>
-        <Button onClick={backClickHandler} text='Назад' />
+        <Button onClick={backClickHandler} text='Выход' />
+        <Button onClick={chatClickHandler} text='Чат' />
         <div>
             <VillageCanvas/>
         </div>

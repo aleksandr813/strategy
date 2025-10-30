@@ -38,7 +38,7 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
 
             // Отправка данных на сервер
             if (login && password && await server.login(login, password)) {
-                setPage(PAGES.CHAT);
+                setPage(PAGES.VILLAGE);
             }
         }
     }
