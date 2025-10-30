@@ -5,6 +5,8 @@ import { VillageContext, ServerContext } from '../../../../App';
 import { UnitType, BuildingType } from '../../../../services/server/types';
 import VillageManager from '../../villageDataManager';
 
+import './BuyUnitsMenu.scss'
+
 const BuyUnitsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
 
     const { setUIElement } = props;
