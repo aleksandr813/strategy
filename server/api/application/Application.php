@@ -185,16 +185,12 @@ class Application
     }
 
     public function deleteBuilding($params)
-    {
-        if ($params['token'] && $params['id']) {
-            $user = $this->user->getUser($params['token']);
-            if ($user) {
-                return $this->village->deleteBuilding($params['id'], $user->id);
-            }
-            return ['error' => 705];
-        }
-        return ['error' => 242];
+{
+    if ($params['token'] && $params['buildingId'] && $params['villageId']) {
+        return $this->village->deleteBuilding($params['buildingId'], $params['villageId']);
     }
+    return ['error' => 242, 'text' => 'Params not set fully'];
+}
 
     public function getRoots($params)
     {

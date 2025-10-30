@@ -10,7 +10,8 @@ export default class Building {
     level: number;
     size: number; 
     sprites: number[];
-    isselected: boolean = false;  
+    isselected: boolean = false;
+    villageId:number;  
 
     private static SPRITE_MAP: Record<BuildingTypeID, number[]> = {
         [BuildingTypeID.TownHall]: [7, 8, 9, 10], // TownHall (Ратуша)
@@ -26,6 +27,7 @@ export default class Building {
         this.level = Number(data.level);
         this.size = 2; 
         const typeId = Number(type.id);
+        this.villageId = Number(data.village_id)
         
         const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
         this.sprites = spriteSet;

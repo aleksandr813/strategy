@@ -26,6 +26,8 @@ class Server {
                 params.token = token;
             }
             const url = `${this.HOST}/?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`;
+
+            console.log('REQUEST URL:', url);
             
             
             const response = await fetch(url);
@@ -146,6 +148,14 @@ class Server {
             return { building_types: [] };
         }
         return response;
+    }
+
+    async deleteBuilding(buildingId: number, villageId: number): Promise<boolean> {
+        const response = await this.request<any>('deleteBuilding',{
+            buildingId: buildingId.toString(),
+            villageId: villageId.toString()
+        });
+        return response === true;
     }
 
     async getUnits(): Promise<TUnitResponse> {

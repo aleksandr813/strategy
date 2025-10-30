@@ -114,8 +114,8 @@ class Village {
         return ['money' => $newMoney];
     }
 
-    public function deleteBuilding($buildingId, $userId) {
-        $result = $this->db->deleteBuilding($buildingId, $userId);
+    public function deleteBuilding($buildingId, $villageId) {
+        $result = $this->db->deleteBuilding($buildingId, $villageId);
         if (!$result) {
             return ['error' => 303];
         }
