@@ -1,5 +1,15 @@
-import Game from "./Game";
+import Manager from "./Manager";
+import Store from "../services/store/Store";
+import Server from "../services/server/Server";
 
-class Battle extends Game {
-    
+class Battle extends Manager {
+    private store: Store;
+    private server: Server;
+
+    constructor(store: Store, server: Server) {
+        super();
+        this.store = store;
+        this.server = server;
+    }
 }
+export default Battle

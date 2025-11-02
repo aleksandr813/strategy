@@ -5,7 +5,7 @@ import useSprites from './hooks/useSprites';
 import Unit from '../../game/Entities/Unit';
 import Building from '../../game/Entities/Building';
 import Allocation from '../../services/canvas/Allocation';
-import { VillageContext, ServerContext } from '../../App';
+import { GameContext } from '../../App';
 import { TPoint } from '../../config';
 import villageBackground from '../../assets/img/background/villageBackground.png';
 import "./Village.scss";
@@ -19,8 +19,9 @@ let zoomFactor = 1;
 
 const VillageCanvas: React.FC = () => {
     const { WINDOW, SPRITE_SIZE } = CONFIG;
-    const village = useContext(VillageContext);
-    const server = useContext(ServerContext);
+    const game = useContext(GameContext);
+    const village = game.getVillage();
+    
     const background = new Image();
     background.src = villageBackground;
 
@@ -139,7 +140,8 @@ const VillageCanvas: React.FC = () => {
         const pos = preview.getPlacementPosition();
 
         try {
-            const result = await server.buyBuilding(typeId, pos.x, pos.y);
+            // Используем server из game
+            const result = await game['server'].buyBuilding(typeId, pos.x, pos.y);
             if (result && !result.error) {
                 village.addBuilding(newBuilding);
             } else {
@@ -161,7 +163,7 @@ const VillageCanvas: React.FC = () => {
         const pos = preview.getPlacementPosition();
 
         try {
-            const result = await server.buyUnit(typeId, pos.x, pos.y);
+            const result = await game['server'].buyUnit(typeId, pos.x, pos.y);
             if (result && !result.error) {
                 village.addUnit(newUnit);
             } else {
@@ -334,9 +336,7 @@ const VillageCanvas: React.FC = () => {
         canvas.contextV.imageSmoothingEnabled = false;
 
         village.loadBuildings();
-        village.setBuildings(village.getScene().buildings);
         village.loadUnits();
-        village.setUnits(village.getScene().units);
 
         return () => {
             village?.destructor();

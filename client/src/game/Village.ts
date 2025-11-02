@@ -1,81 +1,50 @@
 import CONFIG, { TPoint } from "../config";
 import Unit from './Entities/Unit';
 import Building from './Entities/Building';
-import EasyStar from 'easystarjs';
-import Allocation from "../services/canvas/Allocation";
 import BuildingPreview from "../services/canvas/BuildingPreview";
 import UnitPreview from "../services/canvas/UnitPreview";
 import Server from "../services/server/Server";
 import VillageManager from "../pages/Village/villageDataManager";
 import Store from "../services/store/Store";
-import Game from "./Game";
+import Manager from "./Manager";
+
 const { WIDTH, HEIGHT } = CONFIG;
 
-class Village extends Game{
-    private buildingPreview;
-    private unitPreview;
-    private store;
-    private server;
-    private villageManager;
-    
+class Village extends Manager {
+    private buildingPreview: BuildingPreview;
+    private unitPreview: UnitPreview;
+    private store: Store;
+    private server: Server;
+    private villageManager: VillageManager;
+    public selectedBuilding: Building | null = null;
 
     constructor(store: Store, server: Server) {
-        super()
-        this.store = store
-        this.server = server
-        this.units = []
-        this.buildings = []
-        this.allocation = new Allocation;
+        super();
+        this.store = store;
+        this.server = server;
         this.buildingPreview = new BuildingPreview();
         this.unitPreview = new UnitPreview();
-        this.villageManager = new VillageManager(server)
+        this.villageManager = new VillageManager(server);
     }
-
-    public selectedBuilding: Building | null = null;  
 
     public selectBuilding(building: Building | null): void {
         this.buildings.forEach(b => b.deselected?.());
         if (building) building.selected?.();
-        
         this.selectedBuilding = building;
     }
 
-
-    setBuildings(buildings: Building[]): void {
-        this.buildings = buildings;
-    }
-    
-    getBuildings(): Building[] {
-        return this.buildings;
-    }
-
-    setUnits(units: Unit[]): void {
-        this.units = units;
-    }
-    
-    getUnits(): Unit[] {
-        return this.units;
-    }
-
-    async loadBuildings() {
-        console.log("Загружаем здания из Game...");
+    async loadBuildings(): Promise<void> {
+        console.log("Загружаем здания из сервера...");
         const buildingObjects = await this.villageManager.loadBuildings();
-
         this.buildings = buildingObjects;
         console.log("Загружено зданий:", this.buildings.length);
     }
 
-    async loadUnits() {
-        console.log("Загружаем юнитов из Game...");
+    async loadUnits(): Promise<void> {
+        console.log("Загружаем юнитов из сервера...");
         const unitObjects = await this.villageManager.loadUnits();
-
         this.units = unitObjects;
         console.log("Загружено юниов:", this.units.length);
-    }
-    
-
-    destructor() {
-
     }
 
     getScene() {
@@ -87,7 +56,6 @@ class Village extends Game{
         };
     }
 
-
     addBuilding(building: Building): void {
         this.buildings.push(building);
     }
@@ -96,7 +64,6 @@ class Village extends Game{
         this.units.push(unit);
     }
 
-
     removeBuilding(building: Building): void {
         const index = this.buildings.indexOf(building);
         if (index > -1) {
@@ -104,23 +71,22 @@ class Village extends Game{
         }
     }
 
-    getVillageMatrix(units:Unit[], buildings:Building[]):number[][] {
-        let booleanMatrix:number[][] = Array(29).fill(null).map(() => Array(87).fill(0));
+    getVillageMatrix(units: Unit[], buildings: Building[]): number[][] {
+        let booleanMatrix: number[][] = Array(29).fill(null).map(() => Array(87).fill(0));
         for (let i = 0; i < 29; i++) {
             booleanMatrix[i] = new Array(87).fill(0);
         }
         units.forEach((element) => {
             booleanMatrix[element.cords.x][element.cords.y] = 1;
-        })
+        });
         buildings.forEach((element) => {
             booleanMatrix[element.cords[0].y][element.cords[0].x] = 1;
             booleanMatrix[element.cords[0].y + 1][element.cords[0].x] = 1;
             booleanMatrix[element.cords[0].y][element.cords[0].x + 1] = 1;
             booleanMatrix[element.cords[0].y + 1][element.cords[0].x + 1] = 1;
-        })
+        });
         return booleanMatrix;
     }
-
 }
 
 export default Village;

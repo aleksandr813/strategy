@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { VillageContext } from '../../../../App';
+import { GameContext } from '../../../../App';
 import Building from '../../../../game/Entities/Building';
 import Button from '../../../../components/Button/Button';
 import "./BuildingMenu.css";
 
 const BuildingMenu: React.FC = () => {
-    const village = useContext(VillageContext);
+    const game = useContext(GameContext);
+    const village = game.getVillage();
     const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
 
     useEffect(() => {
@@ -21,7 +22,7 @@ const BuildingMenu: React.FC = () => {
     if (!selectedBuilding) return null;
 
     const deleteHandler = () => {
-        
+        // Реализация удаления здания
     }
 
     return (

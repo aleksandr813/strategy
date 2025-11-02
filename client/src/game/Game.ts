@@ -1,140 +1,45 @@
-import CONFIG, { TPoint } from "../config";
-import Unit from './Entities/Unit';
-import Building from './Entities/Building';
-import EasyStar from 'easystarjs';
-import Allocation from "../services/canvas/Allocation";
+import GlobalMap from "./GlobalMap";
+import Village from "./Village";
+import Battle from "./Battle";
 import Store from "../services/store/Store";
-
-const { WIDTH, HEIGHT } = CONFIG;
-const GRID_WIDTH = 87;
-const GRID_HEIGHT = 29;
-const MOVE_INTERVAL = 100;
+import Server from "../services/server/Server";
 
 class Game {
-    protected units: Unit[];
-    protected buildings: Building[] = [];
-    protected allocation: Allocation;
-    protected easystar = new EasyStar.js();
+    private store: Store;
+    private server: Server;
+    
+    public village: Village;
+    public globalMap: GlobalMap;
+    public battle: Battle;
 
-    constructor() {
-        this.units = [];
-        this.buildings = [];
-        this.allocation = new Allocation();
+    constructor(store: Store, server: Server) {
+        this.store = store;
+        this.server = server;
+        
+        // Создаём экземпляры всех менеджеров
+        this.village = new Village(store, server);
+        this.globalMap = new GlobalMap(store, server);
+        this.battle = new Battle(store, server);
     }
 
-    destructor() {}
-
-    getScene() {
-        return {
-            units: this.units,
-            buildings: this.buildings,
-        };
+    // Методы для доступа к менеджерам
+    getVillage(): Village {
+        return this.village;
     }
 
-    getMatrixForEasyStar(excludedUnit?: Unit): number[][] {
-        const matrix: number[][] = Array.from(
-            { length: GRID_HEIGHT }, 
-            () => Array(GRID_WIDTH).fill(0)
-        );
-
-        this.units.forEach((unit) => {
-            if (unit !== excludedUnit && unit.cords.y < GRID_HEIGHT && unit.cords.x < GRID_WIDTH) {
-                matrix[unit.cords.y][unit.cords.x] = 1;
-            }
-        });
-
-        this.buildings.forEach((building) => {
-            const { x, y } = building.cords[0];
-            for (let dy = 0; dy <= 1; dy++) {
-                for (let dx = 0; dx <= 1; dx++) {
-                    if (y + dy < GRID_HEIGHT && x + dx < GRID_WIDTH) {
-                        matrix[y + dy][x + dx] = 1;
-                    }
-                }
-            }
-        });
-
-        return matrix;
+    getGlobalMap(): GlobalMap {
+        return this.globalMap;
     }
 
-    private isValidDestination(destination: TPoint): boolean {
-        return destination.x >= 0 && 
-               destination.x < GRID_WIDTH && 
-               destination.y >= 0 && 
-               destination.y < GRID_HEIGHT;
+    getBattle(): Battle {
+        return this.battle;
     }
 
-    private clearUnitMovement(unit: Unit): void {
-        if (unit.moveIntervalId) {
-            clearInterval(unit.moveIntervalId);
-            unit.moveIntervalId = null;
-        }
-    }
-
-    moveUnits(destination: TPoint) {
-        destination.x = Math.round(destination.x);
-        destination.y = Math.round(destination.y);
-
-        if (!this.isValidDestination(destination)) {
-            return;
-        }
-
-        const cellReservations = new Map<string, Unit>();
-
-        this.units.forEach((unit) => {
-            if (!unit.isSelected) return;
-
-            this.clearUnitMovement(unit);
-
-            const matrix = this.getMatrixForEasyStar(unit);
-            
-            this.easystar.setGrid(matrix);
-            this.easystar.setAcceptableTiles([0]);
-
-            this.easystar.findPath(
-                unit.cords.x, 
-                unit.cords.y, 
-                destination.x, 
-                destination.y, 
-                (path) => {
-                    if (!path) {
-                        console.log("Path was not found");
-                        return;
-                    }
-
-                    path.shift();
-                    let stepIndex = 0;
-
-                    unit.moveIntervalId = setInterval(() => {
-                        if (stepIndex >= path.length) {
-                            this.clearUnitMovement(unit);
-                            return;
-                        }
-
-                        const nextStep = path[stepIndex];
-                        const currentMatrix = this.getMatrixForEasyStar(unit);
-
-                        if (currentMatrix[nextStep.y][nextStep.x] === 0) {
-                            const key = `${nextStep.x},${nextStep.y}`;
-                            const reservingUnit = cellReservations.get(key);
-                            
-                            const oldKey = `${unit.cords.x},${unit.cords.y}`;
-                            if (cellReservations.get(oldKey) === unit) {
-                                cellReservations.delete(oldKey);
-                            }
-
-                            if (!reservingUnit || reservingUnit === unit) {
-                                cellReservations.set(key, unit);
-                                unit.cords = nextStep;
-                                stepIndex++;
-                            }
-                        }
-                    }, MOVE_INTERVAL);
-                }
-            );
-        });
-
-        this.easystar.calculate();
+    // Общий метод очистки ресурсов
+    destructor(): void {
+        this.village.destructor();
+        this.globalMap.destructor();
+        this.battle.destructor();
     }
 }
 
