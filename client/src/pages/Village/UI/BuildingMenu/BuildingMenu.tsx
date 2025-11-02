@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { VillageContext } from '../../../../App';
-import Building from '../../../../game/Buildings/Building';
+import Building from '../../../../game/Entities/Building';
 import Button from '../../../../components/Button/Button';
 import "./BuildingMenu.css";
 

@@ -1,10 +1,10 @@
 import CONFIG, { TPoint } from "../config";
-import Unit from './Units/Unit';
-import Building from './Buildings/Building';
+import Unit from './Entities/Unit';
+import Building from './Entities/Building';
 import EasyStar from 'easystarjs';
-import Allocation from "../pages/Village/UI/Allocation";
-import BuildingPreview from "../pages/Village/UI/BuildingPreview";
-import UnitPreview from "../pages/Village/UI/UnitPreview";
+import Allocation from "../services/canvas/Allocation";
+import BuildingPreview from "../services/canvas/BuildingPreview";
+import UnitPreview from "../services/canvas/UnitPreview";
 import Server from "../services/server/Server";
 import VillageManager from "../pages/Village/villageDataManager";
 import Store from "../services/store/Store";

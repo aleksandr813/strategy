@@ -1,8 +1,8 @@
 import CONFIG, { TPoint } from "../config";
-import Unit from './Units/Unit';
-import Building from './Buildings/Building';
+import Unit from './Entities/Unit';
+import Building from './Entities/Building';
 import EasyStar from 'easystarjs';
-import Allocation from "../pages/Village/UI/Allocation";
+import Allocation from "../services/canvas/Allocation";
 import Store from "../services/store/Store";
 
 const { WIDTH, HEIGHT } = CONFIG;
