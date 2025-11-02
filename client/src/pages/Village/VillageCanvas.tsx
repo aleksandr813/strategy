@@ -145,7 +145,8 @@ const VillageCanvas: React.FC = () => {
             const result = await game['server'].buyBuilding(typeId, pos.x, pos.y);
             if (result && !result.error) {
                 village.addBuilding(newBuilding);
-            } else {
+            } 
+            else {
                 console.error('Ошибка при покупке здания:', result?.error || result);
                 preview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp);
             }
