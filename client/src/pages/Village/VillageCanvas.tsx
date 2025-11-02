@@ -8,6 +8,7 @@ import Allocation from '../../services/canvas/Allocation';
 import { GameContext } from '../../App';
 import { TPoint } from '../../config';
 import villageBackground from '../../assets/img/background/villageBackground.png';
+
 import "./Village.scss";
 
 const GAME_FIELD = 'game-field';

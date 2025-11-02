@@ -12,7 +12,7 @@ const MOVE_INTERVAL = 100;
 
 class Manager {
     protected units: Unit[];
-    protected buildings: Building[] = [];
+    protected buildings: Building[];
     protected allocation: Allocation;
     protected easystar = new EasyStar.js();
 
