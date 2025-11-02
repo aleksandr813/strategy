@@ -16,13 +16,11 @@ class Game {
         this.store = store;
         this.server = server;
         
-        // Создаём экземпляры всех менеджеров
         this.village = new Village(store, server);
         this.globalMap = new GlobalMap(store, server);
         this.battle = new Battle(store, server);
     }
 
-    // Методы для доступа к менеджерам
     getVillage(): Village {
         return this.village;
     }
@@ -35,7 +33,6 @@ class Game {
         return this.battle;
     }
 
-    // Общий метод очистки ресурсов
     destructor(): void {
         this.village.destructor();
         this.globalMap.destructor();
