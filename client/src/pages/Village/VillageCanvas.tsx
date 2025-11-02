@@ -229,7 +229,8 @@ const VillageCanvas: React.FC = () => {
         } else {
             zoomFactor = 0.9;
         }
-        const oldWidth = WINDOW.WIDTH, oldHeight = WINDOW.HEIGHT;
+        const oldWidth = WINDOW.WIDTH;
+        const oldHeight = WINDOW.HEIGHT;
         WINDOW.WIDTH *= zoomFactor;
         WINDOW.HEIGHT *= zoomFactor;
         const relativeX = (x - WINDOW.LEFT) / oldWidth;
