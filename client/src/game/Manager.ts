@@ -3,22 +3,30 @@ import Unit from './Entities/Unit';
 import Building from './Entities/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../services/canvas/Allocation";
-import Store from "../services/store/Store";
 
 const { WIDTH, HEIGHT } = CONFIG;
 const GRID_WIDTH = 87;
 const GRID_HEIGHT = 29;
 const MOVE_INTERVAL = 100;
 
+export interface GameDataInterface {
+    getUnits: () => Unit[];
+    getBuildings: () => Building[];
+    setUnits: (units: Unit[]) => void;
+    setBuildings: (buildings: Building[]) => void;
+    addUnit: (unit: Unit) => void;
+    addBuilding: (building: Building) => void;
+    removeUnit: (unit: Unit) => void;
+    removeBuilding: (building: Building) => void;
+}
+
 class Manager {
-    protected units: Unit[];
-    protected buildings: Building[];
+    protected gameData: GameDataInterface;
     protected allocation: Allocation;
     protected easystar = new EasyStar.js();
 
-    constructor() {
-        this.units = [];
-        this.buildings = [];
+    constructor(gameData: GameDataInterface) {
+        this.gameData = gameData;
         this.allocation = new Allocation();
     }
 
@@ -26,8 +34,8 @@ class Manager {
 
     getScene() {
         return {
-            units: this.units,
-            buildings: this.buildings,
+            units: this.gameData.getUnits(),
+            buildings: this.gameData.getBuildings(),
         };
     }
 
@@ -37,13 +45,13 @@ class Manager {
             () => Array(GRID_WIDTH).fill(0)
         );
 
-        this.units.forEach((unit) => {
+        this.gameData.getUnits().forEach((unit) => {
             if (unit !== excludedUnit && unit.cords.y < GRID_HEIGHT && unit.cords.x < GRID_WIDTH) {
                 matrix[unit.cords.y][unit.cords.x] = 1;
             }
         });
 
-        this.buildings.forEach((building) => {
+        this.gameData.getBuildings().forEach((building) => {
             const { x, y } = building.cords[0];
             for (let dy = 0; dy <= 1; dy++) {
                 for (let dx = 0; dx <= 1; dx++) {
@@ -81,7 +89,7 @@ class Manager {
 
         const cellReservations = new Map<string, Unit>();
 
-        this.units.forEach((unit) => {
+        this.gameData.getUnits().forEach((unit) => {
             if (!unit.isSelected) return;
 
             this.clearUnitMovement(unit);

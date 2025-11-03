@@ -3,10 +3,15 @@ import Village from "./Village";
 import Battle from "./Battle";
 import Store from "../services/store/Store";
 import Server from "../services/server/Server";
+import Unit from './Entities/Unit';
+import Building from './Entities/Building';
 
 class Game {
     private store: Store;
     private server: Server;
+    
+    private units: Unit[] = [];
+    private buildings: Building[] = [];
     
     public village: Village;
     public globalMap: GlobalMap;
@@ -16,9 +21,36 @@ class Game {
         this.store = store;
         this.server = server;
         
-        this.village = new Village(store, server);
-        this.globalMap = new GlobalMap(store, server);
-        this.battle = new Battle(store, server);
+        this.village = new Village(store, server, this.getGameData());
+        this.globalMap = new GlobalMap(store, server, this.getGameData());
+        this.battle = new Battle(store, server, this.getGameData());
+    }
+
+    private removeUnit(unit: Unit): void {
+        const index = this.units.indexOf(unit);
+        if (index > -1) {
+            this.units.splice(index, 1);
+        }
+    }
+
+    private removeBuilding(building: Building): void {
+        const index = this.buildings.indexOf(building);
+        if (index > -1) {
+            this.buildings.splice(index, 1);
+        }
+    }
+
+    private getGameData() {
+        return {
+            getUnits: () => this.units,
+            getBuildings: () => this.buildings,
+            setUnits: (units: Unit[]) => { this.units = units; },
+            setBuildings: (buildings: Building[]) => { this.buildings = buildings; },
+            addUnit: (unit: Unit) => { this.units.push(unit); },
+            addBuilding: (building: Building) => { this.buildings.push(building); },
+            removeUnit: (unit: Unit) => this.removeUnit(unit),
+            removeBuilding: (building: Building) => this.removeBuilding(building)
+        };
     }
 
     getVillage(): Village {
@@ -31,6 +63,14 @@ class Game {
 
     getBattle(): Battle {
         return this.battle;
+    }
+
+    getUnits(): Unit[] {
+        return this.units;
+    }
+
+    getBuildings(): Building[] {
+        return this.buildings;
     }
 
     destructor(): void {

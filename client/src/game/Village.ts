@@ -6,7 +6,7 @@ import UnitPreview from "../services/canvas/UnitPreview";
 import Server from "../services/server/Server";
 import VillageManager from "../pages/Village/villageDataManager";
 import Store from "../services/store/Store";
-import Manager from "./Manager";
+import Manager, { GameDataInterface } from "./Manager";
 
 const { WIDTH, HEIGHT } = CONFIG;
 
@@ -18,8 +18,8 @@ class Village extends Manager {
     private villageManager: VillageManager;
     public selectedBuilding: Building | null = null;
 
-    constructor(store: Store, server: Server) {
-        super();
+    constructor(store: Store, server: Server, gameData: GameDataInterface) {
+        super(gameData);
         this.store = store;
         this.server = server;
         this.buildingPreview = new BuildingPreview();
@@ -28,7 +28,7 @@ class Village extends Manager {
     }
 
     public selectBuilding(building: Building | null): void {
-        this.buildings.forEach(b => b.deselected?.());
+        this.gameData.getBuildings().forEach(b => b.deselected?.());
         if (building) building.selected?.();
         this.selectedBuilding = building;
     }
@@ -43,7 +43,7 @@ class Village extends Manager {
         try {
             const result = await server.buyBuilding(typeId, pos.x, pos.y);
             if (result && !result.error) {
-                this.addBuilding(newBuilding);
+                this.gameData.addBuilding(newBuilding);
             }
             else {
                 console.error('Ошибка при покупке здания:', result?.error || result);
@@ -65,7 +65,7 @@ class Village extends Manager {
         try {
             const result = await server.buyUnit(typeId, pos.x, pos.y);
             if (result && !result.error) {
-                this.addUnit(newUnit);
+                this.gameData.addUnit(newUnit);
             } else {
                 console.error('Ошибка размещения юнита:', result?.error || result);
                 this.unitPreview.activate(newUnit.sprites[0].toString(), typeId, newUnit.hp);
@@ -78,7 +78,7 @@ class Village extends Manager {
 
     public handleBuildingClick(x: number, y: number): void {
         const gridX = Math.floor(x), gridY = Math.floor(y);
-        const clickedBuilding = this.buildings.find(b => {
+        const clickedBuilding = this.gameData.getBuildings().find(b => {
             const [bx, by] = [b.cords[0].x, b.cords[0].y];
             return gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2; 
         }) || null;
@@ -93,39 +93,24 @@ class Village extends Manager {
     async loadBuildings(): Promise<void> {
         console.log("Загружаем здания из сервера...");
         const buildingObjects = await this.villageManager.loadBuildings();
-        this.buildings = buildingObjects;
-        console.log("Загружено зданий:", this.buildings.length);
+        this.gameData.setBuildings(buildingObjects);
+        console.log("Загружено зданий:", this.gameData.getBuildings().length);
     }
 
     async loadUnits(): Promise<void> {
         console.log("Загружаем юнитов из сервера...");
         const unitObjects = await this.villageManager.loadUnits();
-        this.units = unitObjects;
-        console.log("Загружено юниов:", this.units.length);
+        this.gameData.setUnits(unitObjects);
+        console.log("Загружено юниов:", this.gameData.getUnits().length);
     }
 
     getScene() {
         return {
-            units: this.units,
-            buildings: this.buildings,
+            units: this.gameData.getUnits(),
+            buildings: this.gameData.getBuildings(),
             buildingPreview: this.buildingPreview,
             unitPreview: this.unitPreview,
         };
-    }
-
-    addBuilding(building: Building): void {
-        this.buildings.push(building);
-    }
-
-    addUnit(unit: Unit): void {
-        this.units.push(unit);
-    }
-
-    removeBuilding(building: Building): void {
-        const index = this.buildings.indexOf(building);
-        if (index > -1) {
-            this.buildings.splice(index, 1);
-        }
     }
 
     getVillageMatrix(units: Unit[], buildings: Building[]): number[][] {
