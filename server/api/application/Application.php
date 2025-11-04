@@ -161,6 +161,17 @@ class Application
         return ['error' => 242];
     }
 
+    public function moveUnit($params) {
+        if ($params['token'] && $params['unitId'] && isset($params['x']) && isset($params['y']))  {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->village->moveUnit($params['unitId'], $user->id, $params['x'], $params['y']);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
     public function buyBuilding($params)
     {
         if ($params['token'] && $params['typeId'] && isset($params['x']) && isset($params['y'])) {

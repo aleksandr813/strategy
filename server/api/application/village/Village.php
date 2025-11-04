@@ -197,7 +197,23 @@ class Village {
         return ["unit_types" => $types];
     }
 
-    public function moveUnit($unit) {
+    public function moveUnit($unitId, $userId, $x, $y) {
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
+        }
         
+        $unit = $this->db->getUnit($unitId, $village->id);
+        if (!$unit) {
+            return ['error' => 500];
+        }
+
+        $freeCell = $this->db->isOccupied($village->id, $x, $y);
+        if ($freeCell) {
+            return ['error' => 311];
+        }
+
+        $unit = $this->db->updatePositionUnit($x, $y, $unitId, $village->id);
+        return true;
     }
 }
