@@ -1,118 +1,137 @@
 import CONFIG, { TPoint } from "../config";
-import Unit from './Units/Unit';
-import Building from './Buildings/Building';
-import EasyStar from 'easystarjs';
-import Allocation from "../pages/Village/UI/Allocation";
-import BuildingPreview from "../pages/Village/UI/BuildingPreview";
+import Unit from './Entities/Unit';
+import Building from './Entities/Building';
+import BuildingPreview from "../services/canvas/BuildingPreview";
+import UnitPreview from "../services/canvas/UnitPreview";
 import Server from "../services/server/Server";
 import VillageManager from "../pages/Village/villageDataManager";
 import Store from "../services/store/Store";
-import Game from "./Game";
+import Manager, { GameDataInterface } from "./Manager";
+
 const { WIDTH, HEIGHT } = CONFIG;
 
-class Village extends Game{
-    private buildingPreview;
-    private store;
-    private server;
-    private villageManager;
-    
+class Village extends Manager {
+    private buildingPreview: BuildingPreview;
+    private unitPreview: UnitPreview;
+    private store: Store;
+    private server: Server;
+    private villageManager: VillageManager;
+    public selectedBuilding: Building | null = null;
 
-    constructor(store: Store, server: Server) {
-        super()
-        this.store = store
-        this.server = server
-        this.units = []
-        this.buildings = []
-        this.allocation = new Allocation;
+    constructor(store: Store, server: Server, gameData: GameDataInterface) {
+        super(gameData);
+        this.store = store;
+        this.server = server;
         this.buildingPreview = new BuildingPreview();
-        this.villageManager = new VillageManager(server)
+        this.unitPreview = new UnitPreview();
+        this.villageManager = new VillageManager(server);
     }
 
-    public selectedBuilding: Building | null = null;  
-
     public selectBuilding(building: Building | null): void {
-        this.buildings.forEach(b => b.deselected?.());
+        this.gameData.getBuildings().forEach(b => b.deselected?.());
         if (building) building.selected?.();
-        
         this.selectedBuilding = building;
     }
 
+    public async handleBuildingPlacement(x: number, y: number, server: Server): Promise<void> {
+        const newBuilding = this.buildingPreview.tryPlace();
+        if (!newBuilding) return;
 
-    setBuildings(buildings: Building[]): void {
-        this.buildings = buildings;
-    }
-    
-    getBuildings(): Building[] {
-        return this.buildings;
+        const typeId = this.buildingPreview.getBuildingTypeId();
+        const pos = this.buildingPreview.getPlacementPosition();
+
+        try {
+            const result = await server.buyBuilding(typeId, pos.x, pos.y);
+            if (result && !result.error) {
+                this.gameData.addBuilding(newBuilding);
+            }
+            else {
+                console.error('Ошибка при покупке здания:', result?.error || result);
+                this.buildingPreview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp); 
+            }
+        } catch (error) {
+            console.error('Ошибка запроса:', error);
+            this.buildingPreview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp);
+        }
     }
 
-    setUnits(units: Unit[]): void {
-        this.units = units;
-    }
-    
-    getUnits(): Unit[] {
-        return this.units;
+    public async handleUnitPlacement(x: number, y: number, server: Server): Promise<void> {
+        const newUnit = this.unitPreview.tryPlace();
+        if (!newUnit) return;
+
+        const typeId = this.unitPreview.getUnitTypeId();
+        const pos = this.unitPreview.getPlacementPosition();
+
+        try {
+            const result = await server.buyUnit(typeId, pos.x, pos.y);
+            if (result && !result.error) {
+                this.gameData.addUnit(newUnit);
+            } else {
+                console.error('Ошибка размещения юнита:', result?.error || result);
+                this.unitPreview.activate(newUnit.sprites[0].toString(), typeId, newUnit.hp);
+            }
+        } catch (error) {
+            console.error('Ошибка запроса:', error);
+            this.unitPreview.activate(newUnit.sprites[0].toString(), typeId, newUnit.hp);
+        }
     }
 
-    async loadBuildings() {
-        console.log("Загружаем здания из Game...");
+    public handleBuildingClick(x: number, y: number): void {
+        const gridX = Math.floor(x), gridY = Math.floor(y);
+        const clickedBuilding = this.gameData.getBuildings().find(b => {
+            const [bx, by] = [b.cords[0].x, b.cords[0].y];
+            return gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2; 
+        }) || null;
+
+        if (clickedBuilding) {
+            console.log("Выбранное здание", clickedBuilding);
+            clickedBuilding.takeDamage(10);
+        }
+        this.selectBuilding(clickedBuilding);
+    }
+
+    async loadBuildings(): Promise<void> {
+        console.log("Загружаем здания из сервера...");
         const buildingObjects = await this.villageManager.loadBuildings();
-
-        this.buildings = buildingObjects;
-        console.log("Загружено зданий:", this.buildings.length);
+        this.gameData.setBuildings(buildingObjects);
+        console.log("Загружено зданий:", this.gameData.getBuildings().length);
     }
 
-    async loadUnits() {
-        console.log("Загружаем юнитов из Game...");
+    async loadUnits(): Promise<void> {
+        console.log("Загружаем юнитов из сервера...");
         const unitObjects = await this.villageManager.loadUnits();
-
-        this.units = unitObjects;
-        console.log("Загружено юниов:", this.units.length);
-    }
-    
-
-    destructor() {
-
+        this.gameData.setUnits(unitObjects);
+        console.log("Загружено юниов:", this.gameData.getUnits().length);
     }
 
     getScene() {
         return {
-            units: this.units,
-            buildings: this.buildings,
+            units: this.gameData.getUnits(),
+            buildings: this.gameData.getBuildings(),
             buildingPreview: this.buildingPreview,
+            unitPreview: this.unitPreview,
         };
     }
 
-
-    addBuilding(building: Building): void {
-        this.buildings.push(building);
-    }
-
-
-    removeBuilding(building: Building): void {
-        const index = this.buildings.indexOf(building);
-        if (index > -1) {
-            this.buildings.splice(index, 1);
-        }
-    }
-
-    getVillageMatrix(units:Unit[], buildings:Building[]):number[][] {
-        let booleanMatrix:number[][] = Array(29).fill(null).map(() => Array(87).fill(0));
+    getVillageMatrix(units: Unit[], buildings: Building[]): number[][] {
+        let booleanMatrix: number[][] = Array(29).fill(null).map(() => Array(87).fill(0));
         for (let i = 0; i < 29; i++) {
             booleanMatrix[i] = new Array(87).fill(0);
         }
         units.forEach((element) => {
-            booleanMatrix[element.cords.x][element.cords.y] = 1;
-        })
+            if (element.cords.y < 29 && element.cords.x < 87) { 
+                booleanMatrix[element.cords.y][element.cords.x] = 1;
+            }
+        });
         buildings.forEach((element) => {
-            booleanMatrix[element.cords[0].y][element.cords[0].x] = 1;
-            booleanMatrix[element.cords[0].y + 1][element.cords[0].x] = 1;
-            booleanMatrix[element.cords[0].y][element.cords[0].x + 1] = 1;
-            booleanMatrix[element.cords[0].y + 1][element.cords[0].x + 1] = 1;
-        })
+            const [bx, by] = [element.cords[0].x, element.cords[0].y];
+            if (by < 29 && bx < 87) booleanMatrix[by][bx] = 1;
+            if (by + 1 < 29 && bx < 87) booleanMatrix[by + 1][bx] = 1;
+            if (by < 29 && bx + 1 < 87) booleanMatrix[by][bx + 1] = 1;
+            if (by + 1 < 29 && bx + 1 < 87) booleanMatrix[by + 1][bx + 1] = 1;
+        });
         return booleanMatrix;
     }
-
 }
 
 export default Village;

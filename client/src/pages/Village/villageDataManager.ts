@@ -1,5 +1,5 @@
-import Building from "../../game/Buildings/Building";
-import Unit from "../../game/Units/Unit";
+import Building from "../../game/Entities/Building";
+import Unit from "../../game/Entities/Unit";
 import Server from "../../services/server/Server";
 import { Building as BuildingData, BuildingType, BuildingResponse, BuildingTypeResponse, UnitResponse, UnitTypeResponse,UnitType } from "../../services/server/types";
 import { ServerContext } from "../../App";    

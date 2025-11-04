@@ -174,6 +174,17 @@ class Server {
         console.log('buyBuilding result:', result);
         return result;
     }
+
+    async buyUnit(typeId: number, x: number, y: number): Promise<any> {
+        console.log('buyUnit called with', { typeId, x, y});
+        const result = await this.request<any>('buyUnit', {
+            typeId: typeId.toString(),
+            x: x.toString(),
+            y: y.toString()
+        });
+        console.log('buyUnit result:', result);
+        return result;
+    }
 }
 
 
