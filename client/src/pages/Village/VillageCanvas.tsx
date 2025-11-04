@@ -2,12 +2,13 @@ import React, { useEffect, useContext } from 'react';
 import CONFIG from '../../config';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
-import Unit from '../../game/Units/Unit';
-import Building from '../../game/Buildings/Building';
-import Allocation from './UI/Allocation';
-import { VillageContext, ServerContext } from '../../App';
+import Unit from '../../game/Entities/Unit';
+import Building from '../../game/Entities/Building';
+import Allocation from '../../services/canvas/Allocation';
+import { GameContext } from '../../App';
 import { TPoint } from '../../config';
 import villageBackground from '../../assets/img/background/villageBackground.png';
+
 import "./Village.scss";
 
 const GAME_FIELD = 'game-field';
@@ -19,8 +20,9 @@ let zoomFactor = 1;
 
 const VillageCanvas: React.FC = () => {
     const { WINDOW, SPRITE_SIZE } = CONFIG;
-    const village = useContext(VillageContext);
-    const server = useContext(ServerContext);
+    const game = useContext(GameContext);
+    const village = game.getVillage(); 
+    
     const background = new Image();
     background.src = villageBackground;
 
@@ -35,6 +37,7 @@ const VillageCanvas: React.FC = () => {
     let isMiddleMouseDragging = false;
     let middleMouseStartScreenPosition: TPoint | null = null;
     let windowStartPosition: { LEFT: number, TOP: number } | null = null;
+
 
     const drawRect = (canvas: Canvas, x: number, y: number, width: number, height: number, fillStyle: string) => {
         canvas.contextV.fillStyle = fillStyle;
@@ -130,52 +133,10 @@ const VillageCanvas: React.FC = () => {
         canvas.render();
     }
 
-    const handleBuildingClick = async (x: number, y: number) => {
-        const preview = village.getScene().buildingPreview;
-        const newBuilding = preview.tryPlace();
-        if (!newBuilding) return;
-        
-        const typeId = preview.getBuildingTypeId();
-        const pos = preview.getPlacementPosition();
-
-        try {
-            const result = await server.buyBuilding(typeId, pos.x, pos.y);
-            if (result && !result.error) {
-                village.addBuilding(newBuilding);
-            } else {
-                console.error('Ошибка при покупке здания:', result?.error || result);
-                preview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp);
-            }
-        } catch (error) {
-            console.error('Ошибка запроса:', error);
-            preview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp);
-        }
-    };
-
-    const handleUnitClick = async (x: number, y: number) => {
-        const preview = village.getScene().unitPreview;
-        const newUnit = preview.tryPlace();
-        if (!newUnit) return;
-
-        const typeId = preview.getUnitTypeId();
-        const pos = preview.getPlacementPosition();
-
-        try {
-            const result = await server.buyUnit(typeId, pos.x, pos.y);
-            if (result && !result.error) {
-                village.addUnit(newUnit);
-            } else {
-                console.error('Ошибка размещения юнита:', result?.error || result);
-                preview.activate(newUnit.sprites[0].toString(), typeId, newUnit.hp);
-            }
-        } catch (error) {
-            console.error('Ошибка запроса:', error);
-            preview.activate(newUnit.sprites[0].toString(), typeId, newUnit.hp);
-        }
-    }
 
     const mouseDown = (x: number, y: number) => {
-        if (village.getScene().buildingPreview.isActiveStatus()) return;
+        if (village.getScene().buildingPreview.isActiveStatus() || village.getScene().unitPreview.isActiveStatus()) return;
+        
         mouseDownPosition = { x, y };
         mouseDownTime = Date.now();
         wasDragging = false;
@@ -183,18 +144,15 @@ const VillageCanvas: React.FC = () => {
     };
 
     const mouseMove = (x: number, y: number, screenX?: number, screenY?: number) => {
-        const preview = village.getScene().buildingPreview;
-        
-        if (preview.isActiveStatus()) {
-            const { units, buildings } = village.getScene();
-            preview.update(x, y, village.getVillageMatrix(units, buildings));
+        const { buildingPreview, unitPreview, units, buildings } = village.getScene();
+        const matrix = village.getVillageMatrix(units, buildings);
+
+        if (buildingPreview.isActiveStatus()) {
+            buildingPreview.update(x, y, matrix);
+        } else if (unitPreview.isActiveStatus()) {
+            unitPreview.update(x, y, matrix);
         } else {
             allocation.update(x, y);
-        }
-        if (village.getScene().unitPreview.isActiveStatus() && village) {
-            const {units, buildings} = village.getScene();
-            const matrix = village.getVillageMatrix(units, buildings);
-            village.getScene().unitPreview.update(x, y, matrix);
         }
 
         if (isMiddleMouseDragging && middleMouseStartScreenPosition && windowStartPosition && canvas && screenX !== undefined && screenY !== undefined) {
@@ -222,46 +180,35 @@ const VillageCanvas: React.FC = () => {
 
     const mouseClick = async (x: number, y: number) => {
         if (!village || wasDragging) return;
-        const gridX = Math.floor(x), gridY = Math.floor(y);
-        const { buildings } = village.getScene();
-        const clickedBuilding = buildings.find(b => {
-            const [bx, by] = [b.cords[0].x, b.cords[0].y];
-            return gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2;
-        }) || null;
         
-        if (clickedBuilding) {
-            console.log("Выбранное здание", clickedBuilding);
-            clickedBuilding.takeDamage(10);
-        }
-        village.selectBuilding(clickedBuilding);
+        const { buildingPreview, unitPreview, units } = village.getScene();
 
-        if (!allocation.isSelectingStatus) {
-            village.moveUnits({ x, y });
-            console.log('move units to', { x, y });
-        }
-
-        if (village.getScene().buildingPreview.isActiveStatus()) {
-            await handleBuildingClick(x, y);
-        }
-
-        if (village.getScene().unitPreview.isActiveStatus()) {
-            await handleUnitClick(x, y);
+        if (buildingPreview.isActiveStatus()) {
+            village.handleBuildingPlacement(x, y, game['server']);
+        } else if (unitPreview.isActiveStatus()) {
+            village.handleUnitPlacement(x, y, game['server']);
+        } else {
+            village.handleBuildingClick(x, y);
+            
+            if (!allocation.isSelectingStatus) {
+                village.moveUnits({ x, y });
+                console.log('move units to', { x, y });
+            }
         }
     };
 
     const mouseRightClickDown = (x: number, y: number) => {
         if (!village) return;
-        const preview = village.getScene().buildingPreview;
+        const { buildingPreview, unitPreview, units } = village.getScene();
         
-        if (preview.isActiveStatus()) {
-            preview.deactivate();
+        if (buildingPreview.isActiveStatus()) {
+            buildingPreview.deactivate();
             console.log('Размещение здания отменено');
-        }
-        if (village.getScene().unitPreview.isActiveStatus()) {
-            village.getScene().unitPreview.deactivate();
+        } else if (unitPreview.isActiveStatus()) {
+            unitPreview.deactivate();
             console.log('Размещение юнита отменено');
         } else {
-            allocation.clearSelection(village.getScene().units);
+            allocation.clearSelection(units);
             console.log('Выделение снято');
         }
     };
@@ -282,7 +229,8 @@ const VillageCanvas: React.FC = () => {
         } else {
             zoomFactor = 0.9;
         }
-        const oldWidth = WINDOW.WIDTH, oldHeight = WINDOW.HEIGHT;
+        const oldWidth = WINDOW.WIDTH;
+        const oldHeight = WINDOW.HEIGHT;
         WINDOW.WIDTH *= zoomFactor;
         WINDOW.HEIGHT *= zoomFactor;
         const relativeX = (x - WINDOW.LEFT) / oldWidth;
@@ -306,15 +254,17 @@ const VillageCanvas: React.FC = () => {
     };
 
     const keyDown = (event: KeyboardEvent) => {
-        const preview = village.getScene().buildingPreview;
-        if (preview.isActiveStatus()) {
-            preview.deactivate();
-            console.log('Размещение здания отменено (ESC)');
-        }
-
-        if (village.getScene().unitPreview.isActiveStatus()) {
-            village.getScene().unitPreview.deactivate();
-            console.log('Размещение юнита отменено (ESC)');
+        const { buildingPreview, unitPreview } = village.getScene();
+        if (event.key === 'Escape') {
+            if (buildingPreview.isActiveStatus()) {
+                buildingPreview.deactivate();
+                console.log('Размещение здания отменено (ESC)');
+            }
+    
+            if (unitPreview.isActiveStatus()) {
+                unitPreview.deactivate();
+                console.log('Размещение юнита отменено (ESC)');
+            }
         }
     };
 
@@ -334,9 +284,7 @@ const VillageCanvas: React.FC = () => {
         canvas.contextV.imageSmoothingEnabled = false;
 
         village.loadBuildings();
-        village.setBuildings(village.getScene().buildings);
         village.loadUnits();
-        village.setUnits(village.getScene().units);
 
         return () => {
             village?.destructor();

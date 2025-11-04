@@ -1,5 +1,5 @@
 import { TMessages, TUser } from "../server/types";
-import Building from "../../game/Buildings/Building";
+import Building from "../../game/Entities/Building";
 
 const TOKEN = 'token';
 

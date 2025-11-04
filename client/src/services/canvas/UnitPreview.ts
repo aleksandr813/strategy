@@ -1,7 +1,6 @@
-import CONFIG from "../../../config";
-import { TPoint } from "../../../config";
-import Unit from "../../../game/Units/Unit";
-
+import CONFIG from "../../config";
+import { TPoint } from "../../config";
+import Unit from "../../game/Entities/Unit";
 const {SPRITE_SIZE} = CONFIG;
 
 export default class UnitPreview {
