@@ -1,4 +1,5 @@
 import { TMessages, TUser } from "../server/types";
+import Building from "../../game/Entities/Building";
 
 const TOKEN = 'token';
 
@@ -54,6 +55,8 @@ class Store {
     setChatHash(hash: string): void {
         this.chatHash = hash;
     }
+
+
 }
 
 export default Store;

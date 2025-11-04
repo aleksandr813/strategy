@@ -1,16 +1,73 @@
 @import '../../scss/variables';
 
 .button {
-    font-size: 2vh;
-    background-color: $button-background-color;
-    border-radius: 10px;
-    border: solid $button-border-color 3px;
-    min-width: 120px;
+    padding: 15px 10px;
+    border: 3px solid #000;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
     text-align: center;
-    padding: 0 5px 8px 5px;
-
+    line-height: 1.2;
+    transition: background-color 0.1s;
+    user-select: none;
+    min-width: 120px;
+    
+    border-radius: 0;
+    background: none;
+    
     &:hover {
-        background-color: $button-hover-color;
+        filter: brightness(1.2);
+    }
+    
+    &:active {
+        filter: brightness(0.9);
+    }
+    
+    &.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        
+        &:hover {
+            filter: none;
+        }
     }
 }
 
+.button-main1 {
+    background-color: #8B4513;
+    color: #FFD700;
+}
+
+.button-delete {
+    background-color: #8B0000;
+    color: #FFF;
+}
+
+.button-levelup {
+    background-color: #6B8E23;
+    color: #FFD700;
+    
+    &::before {
+        content: "Cost";
+        display: block;
+        font-size: 18px;
+    }
+    
+    &::after {
+        content: "to lvlup";
+        display: block;
+        font-size: 14px;
+        font-weight: normal;
+    }
+}
+
+.button-accent {
+    background-color: #FFD700;
+    color: #8B4513;
+}
+
+.button.hover {
+    filter: brightness(1.2);
+}

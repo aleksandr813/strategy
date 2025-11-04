@@ -1,119 +1,83 @@
-import CONFIG, { TPoint } from "../config";
-import Unit from './Units/Unit';
-import Build from './Builds/Build';
-import EasyStar from 'easystarjs';
-import Allocation from "../pages/Village/UI/Allocation";
-
-const { WIDTH, HEIGHT } = CONFIG;
+import GlobalMap from "./GlobalMap";
+import Village from "./Village";
+import Battle from "./Battle";
+import Store from "../services/store/Store";
+import Server from "../services/server/Server";
+import Unit from './Entities/Unit';
+import Building from './Entities/Building';
 
 class Game {
-    private units:Unit[];
-    private builds:Build[];
-    private allocation:Allocation;
+    private store: Store;
+    private server: Server;
     
-
-    constructor() {
-        this.units = [new Unit(5, 7), new Unit(0, 0)]
-        this.builds = [new Build(5, 5)]
-        this.allocation = new Allocation;
-    }
+    private units: Unit[] = [];
+    private buildings: Building[] = [];
     
+    public village: Village;
+    public globalMap: GlobalMap;
+    public battle: Battle;
 
-    destructor() {
-        //...
+    constructor(store: Store, server: Server) {
+        this.store = store;
+        this.server = server;
+        
+        this.village = new Village(store, server, this.getGameData());
+        this.globalMap = new GlobalMap(store, server, this.getGameData());
+        this.battle = new Battle(store, server, this.getGameData());
     }
 
-    getScene() {
+    private removeUnit(unit: Unit): void {
+        const index = this.units.indexOf(unit);
+        if (index > -1) {
+            this.units.splice(index, 1);
+        }
+    }
+
+    private removeBuilding(building: Building): void {
+        const index = this.buildings.indexOf(building);
+        if (index > -1) {
+            this.buildings.splice(index, 1);
+        }
+    }
+
+    private getGameData() {
         return {
-            units: this.units,
-            builds: this.builds,
+            getUnits: () => this.units,
+            getBuildings: () => this.buildings,
+            setUnits: (units: Unit[]) => { this.units = units; },
+            setBuildings: (buildings: Building[]) => { this.buildings = buildings; },
+            addUnit: (unit: Unit) => { this.units.push(unit); },
+            addBuilding: (building: Building) => { this.buildings.push(building); },
+            removeUnit: (unit: Unit) => this.removeUnit(unit),
+            removeBuilding: (building: Building) => this.removeBuilding(building)
         };
     }
 
-    getVillageMatrix(units:Unit[], builds:Build[]):number[][] {
-        let booleanMatrix:number[][] = new Array(29);
-        for (let i = 0; i < 29; i++) {
-            booleanMatrix[i] = new Array(29).fill(0);
-        }
-        units.forEach((element) => {
-            booleanMatrix[element.cords.x][element.cords.y] = 1;
-        })
-        builds.forEach((element) => {
-            booleanMatrix[element.cords[0].x][element.cords[0].y] = 1;
-            booleanMatrix[element.cords[0].x + 1][element.cords[0].y] = 1;
-            booleanMatrix[element.cords[0].x][element.cords[0].y + 1] = 1;
-            booleanMatrix[element.cords[0].x + 1][element.cords[0].y + 1] = 1;
-        })
-        return booleanMatrix;
+    getVillage(): Village {
+        return this.village;
     }
 
-    moveUnits(destination: TPoint) {
-        destination.x = Math.round(destination.x);
-        destination.y = Math.round(destination.y);
-        
-        let easystar = new EasyStar.js();
+    getGlobalMap(): GlobalMap {
+        return this.globalMap;
+    }
 
-        this.units.forEach((unit) => {
-            if (!unit.isSelected) {
-                return;
-            }
+    getBattle(): Battle {
+        return this.battle;
+    }
 
-            // Создаем копию матрицы без текущего юнита
-            let booleanMatrix = this.getVillageMatrix(
-                this.units.filter(u => u !== unit), 
-                this.builds
-            );
+    getUnits(): Unit[] {
+        return this.units;
+    }
 
-            easystar.setGrid(booleanMatrix);
-            easystar.setAcceptableTiles([0]);
+    getBuildings(): Building[] {
+        return this.buildings;
+    }
 
-            easystar.findPath(unit.cords.x, unit.cords.y, destination.x, destination.y, (path) => {
-                if (path === null) {
-                    console.log("Path was not found");
-                } else {
-                    path.shift();
-
-                    let stepIndex = 0;
-                    let intervalId = setInterval(() => {
-                        if (stepIndex < path.length) {
-                            // Перед каждым шагом проверяем, не занята ли клетка
-                            const nextStep = path[stepIndex];
-                            const currentMatrix = this.getVillageMatrix(
-                                this.units.filter(u => u !== unit), 
-                                this.builds
-                            );
-                            
-                            if (currentMatrix[nextStep.x][nextStep.y] === 0) {
-                                unit.cords = nextStep;
-                                stepIndex++;
-                            }
-                            // Если клетка занята, ждем следующего интервала
-                        } else {
-                            clearInterval(intervalId);
-                        }
-                    }, 100);
-                }
-            });
-        });
-
-    easystar.calculate();
-}
-
-    
-
-    /**
-    move(dx: number, dy: number): void {
-        if ((dx > 0 && this.kapitoshka.x + dx <= WIDTH - 1) ||
-            (dx < 0 && this.kapitoshka.x - dx >= 0)
-        ) {
-            this.kapitoshka.x += dx;
-        }
-        if ((dy > 0 && this.kapitoshka.y + dy <= HEIGHT - 1) ||
-            (dy < 0 && this.kapitoshka.y - dy >= 0)
-        ) {
-            this.kapitoshka.y += dy;
-        }
-    }  */
+    destructor(): void {
+        this.village.destructor();
+        this.globalMap.destructor();
+        this.battle.destructor();
+    }
 }
 
 export default Game;

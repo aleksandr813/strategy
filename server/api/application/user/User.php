@@ -2,6 +2,7 @@
 
 class User
 {
+    private $db;
     function __construct($db)
     {
         $this->db = $db;
@@ -15,19 +16,21 @@ class User
     public function login($login, $hash, $rnd)
     {
         $user = $this->db->getUserByLogin($login);
-        if ($user) {
-            if (md5($user->password . $rnd) === $hash) {
-                $token = md5(rand());
-                $this->db->updateToken($user->id, $token);
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'token' => $token
-                ];
-            }
-            return ['error' => 1002];
+        if (!$user) {
+            return ['error' => 1005]; // User is no exists
         }
-        return ['error' => 1005];
+
+        if (md5($user->password . $rnd) === $hash) {
+            $token = md5(rand());
+            $this->db->updateToken($user->id, $token);
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'token' => $token
+            ];
+        }
+        
+        return ['error' => 1002]; // Wrong login or password
     }
 
     public function logout($token)
@@ -48,20 +51,21 @@ class User
             return $loginValidation;
         }
 
+
         // Проверка уникальности логина
         if ($this->db->getUserByLogin($login)) {
-            return ['error' => 1001];
+            return ['error' => 1001]; // Is it unique login?
         }
 
         // Регистрация пользователя
         $this->db->registration($login, $hash, $name);
-        $user = $this->db->getUserByLogin($login);
 
+        $user = $this->db->getUserByLogin($login);
         if ($user) {
             // Создание стартовой деревни для пользователя
             $villageCreated = $this->createStarterVillage($user->id);
             if (!$villageCreated) {
-                return ['error' => 1006];
+                return ['error' => 1090];
             }
 
             $token = md5(rand());
@@ -72,7 +76,8 @@ class User
                 'token' => $token
             ];
         }
-        return ['error' => 1004];
+        
+        return ['error' => 9000]; // unknown error
     }
 
     private function createStarterVillage($userId){
@@ -87,7 +92,7 @@ class User
         }
 
         // Получаем ID созданной деревни
-        $village = $this->db->getVillageByUserId($userId);
+        $village = $this->db->getVillage($userId);
 
         // Создание стартовых построек
         $this->createStarterBuildings($village->id);
@@ -113,8 +118,7 @@ class User
         }
     }
 
-    //Валидация логина
-
+    // Валидация логина
     private function validateLogin($login)
     {
         // Проверка длины
@@ -127,13 +131,17 @@ class User
             return ['error' => 1008];
         }
 
-        // Проверка допустимых символов
+        // Проверка допустимых символов (только буквы, цифры и подчеркивание)
         if (!preg_match('/^[a-zA-Z0-9_]+$/', $login)) {
             return ['error' => 1009];
         }
 
         // Проверка на пробелы и специальные символы
         if (preg_match('/[\s@#$%]/', $login)) {
+            return ['error' => 1010]; 
+        }
+        // Проверка на пробелы
+        if (strpos($login, ' ') !== false) {
             return ['error' => 1010];
         }
 

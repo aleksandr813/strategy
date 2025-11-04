@@ -7,7 +7,7 @@ const GlobalMap: React.FC<IBasePage> = (props: IBasePage) => {
     const { setPage } = props;
     const server = useContext(ServerContext);
 
-    const backclickHandler = () => setPage(PAGES.GAME);
+    const backclickHandler = () => setPage(PAGES.VILLAGE);
 
     return(<>
         <h1>GlobalMap</h1>

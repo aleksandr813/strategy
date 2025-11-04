@@ -98,35 +98,37 @@ class DB
         );
     }
 
-    public function getUnitById($unitId)
-    {
-        return $this->query(
-            "SELECT u.*
-            FROM units AS u
-            JOIN users ON u.user_id = users.id
-            WHERE u.id = ?
-        ",
-            [$unitId]
-        );
-    }
-
-    public function getUnitsByUser($userId)
+    public function getUnits($userId)
     {
         return $this->queryAll(
-            "SELECT * FROM units
-            WHERE user_id = ?
-            ORDER BY unit_type
+            "SELECT u.id, u.type_id, u.village_id, u.x, u.y, u.level, u.current_hp 
+            FROM units AS u
+            INNER JOIN villages AS v
+            ON u.village_id = v.id
+            WHERE v.user_id = ?
         ",
             [$userId]
         );
     }
 
-    public function createUnit($userId, $unitType, $x, $y)
-    {
-        return $this->execute(
-            "INSERT INTO units (user_id, unit_type, x, y) VALUES (?, ?, ?, ?)",
-            [$userId, $unitType, $x, $y]
+    public function buyUnit($villageId, $unitId, $x, $y, $hp) {
+    $this->execute("INSERT INTO units
+        (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
+        [$unitId, $villageId, $x, $y, $hp]
+    );
+}
+
+    public function isOccupied($villageId, $x, $y) {
+        $result = $this->query(
+            "SELECT EXISTS (
+                SELECT 1 FROM units WHERE village_id = ? AND x = ? AND y = ?
+            ) OR EXISTS (
+                SELECT 1 FROM buildings WHERE village_id = ? AND x = ? AND y = ?
+            ) AS occupied",
+            [$villageId, $x, $y, $villageId, $x, $y]
         );
+
+        return !empty($result) && $result->occupied == 1;
     }
 
     public function updateUnit($unitId, $userId, $unitType, $x, $y)
@@ -142,23 +144,11 @@ class DB
         return $this->execute("DELETE FROM units WHERE id = ? AND user_id = ?", [$unitId, $userId]);
     }
 
-    public function getBuildingById($buildingId)
-    {
-        return $this->query(
-            "SELECT b.*
-            FROM buildings AS b
-            JOIN users AS u ON b.user_id = u.id
-            WHERE b.id = ?",
-            [$buildingId]
-        );
-    }
-
     public function getBuildings($userId)
     {
         return $this->queryAll(
             "SELECT id, type_id, village_id, x, y, level, current_hp FROM buildings
             WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)
-            ORDER BY type_id
         ",
             [$userId]
         );
@@ -171,8 +161,8 @@ class DB
         );
     }
 
-    public function getVillageByUserId($userId) {
-        return $this->query("SELECT id, user_id, x, y FROM villages WHERE user_id = ?", [$userId]);
+    public function getVillage($userId) {
+        return $this->query("SELECT id, last_income_datetime FROM villages WHERE user_id = ?", [$userId]);
     }
 
     public function getBuildingType($buildingType) {
@@ -181,15 +171,6 @@ class DB
 
     public function getUnitType($unitType) {
         return $this->query("SELECT hp, price FROM unit_types WHERE id = ?", [$unitType]);
-    }
-
-    public function getPositionBuilding($villageId, $x, $y) {
-        return $this->query(
-            "SELECT village_id, x, y 
-            FROM buildings 
-            WHERE village_id = ? AND x = ? AND y = ?",
-            [$villageId, $x, $y]
-        );
     }
 
     public function getMoney($userId) {
@@ -225,7 +206,7 @@ class DB
 
     public function getBuildingTypes()
     {
-        return $this->queryAll("SELECT id, type, name, sprite_id, hp, price FROM building_types");
+        return $this->queryAll("SELECT id, type, name, hp, price FROM building_types");
     }
 
     public function getUnitTypes()
@@ -242,52 +223,22 @@ class DB
         );
     }
 
+    public function getMine($villageId) {
+        return $this->query(
+            "SELECT b.level AS level
+            FROM buildings AS b
+            INNER JOIN building_types AS bt
+            ON b.type_id = bt.id AND bt.type = 'mine'
+            WHERE b.village_id = ?",
+            [$villageId]
+        );
+    }
 
-    // Методы для работы с доходом шахт
-public function getMineById($mineId, $userId) {
-    return $this->query(
-        "SELECT b.*, bt.income, bt.income_interval 
-         FROM buildings AS b 
-         JOIN building_types AS bt ON b.type_id = bt.id 
-         WHERE b.id = ? 
-         AND b.village_id = (SELECT id FROM villages WHERE user_id = ?)
-         AND bt.type = 'mine'", 
-        [$mineId, $userId]
-    );
-}
-
-public function getMinesByUser($userId) {
-    return $this->queryAll(
-        "SELECT b.*, bt.type, bt.income, bt.income_interval 
-         FROM buildings AS b 
-         JOIN building_types AS bt ON b.type_id = bt.id 
-         WHERE b.village_id = (SELECT id FROM villages WHERE user_id = ?)
-         AND bt.type = 'mine'", 
-        [$userId]
-    );
-}
-
-public function updateMineIncomeTime($mineId, $userId, $incomeTime) {
-    return $this->execute(
-        "UPDATE buildings SET last_income_time = ? 
-         WHERE id = ? 
-         AND village_id = (SELECT id FROM villages WHERE user_id = ?)",
-        [$incomeTime, $mineId, $userId]
-    );
-}
-
-public function addUserIncome($userId, $amount) {
-    return $this->execute(
-        "UPDATE users SET money = money + ? WHERE id = ?",
-        [$amount, $userId]
-    );
-}
-
-public function getUserGold($userId) {
-    return $this->query("SELECT money FROM users WHERE id = ?", [$userId]);
-}
-
-public function updateUserGold($userId, $gold) {
-    return $this->execute("UPDATE users SET money = ? WHERE id = ?", [$gold, $userId]);
-}
+    public function updateLastIncome($villageId) {
+        $now = date('Y-m-d H:i:s');
+        return $this->execute(
+            "UPDATE villages SET last_income_datetime = ? WHERE id = ?",
+            [$now, $villageId]
+        );
+    }
 }

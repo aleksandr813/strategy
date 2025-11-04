@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Окт 14 2025 г., 00:06
+-- Время создания: Окт 20 2025 г., 22:26
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -42,14 +42,12 @@ CREATE TABLE `buildings` (
 --
 
 INSERT INTO `buildings` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `current_hp`) VALUES
-(1, 1, 5, 15, 15, 1, 100),
+(1, 1, 5, 15, 15, 3, 100),
 (2, 2, 5, 5, 5, 1, 100),
 (3, 1, 6, 15, 15, 1, 100),
 (4, 2, 6, 5, 5, 1, 100),
-(5, 1, 7, 15, 15, 1, 100),
-(6, 2, 7, 5, 5, 1, 100),
-(7, 1, 8, 15, 15, 1, 100),
-(8, 2, 8, 5, 5, 1, 100);
+(5, 1, 3, 1, 4, 5, 700),
+(6, 1, 5, 1, 4, 1, 700);
 
 -- --------------------------------------------------------
 
@@ -61,7 +59,6 @@ CREATE TABLE `building_types` (
   `id` int NOT NULL,
   `type` varchar(100) NOT NULL,
   `name` varchar(100) NOT NULL,
-  `sprite_id` int NOT NULL DEFAULT '1',
   `hp` int NOT NULL DEFAULT '1',
   `price` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -71,9 +68,8 @@ CREATE TABLE `building_types` (
 --
 
 INSERT INTO `building_types` (`id`, `type`, `name`, `hp`, `price`) VALUES
-(1, 'Ratusha', 'Ратуша', 700, 0),
-(2, 'Mine', 'Шахта ', 100, 0),
-(3, 'Shooting tower', 'Стрелковая башня', 300, 200);
+(1, 'main_building', 'Ратуша', 700, 1),
+(2, 'mine', 'Шахта ', 100, 1);
 
 -- --------------------------------------------------------
 
@@ -126,6 +122,16 @@ CREATE TABLE `units` (
   `current_hp` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Дамп данных таблицы `units`
+--
+
+INSERT INTO `units` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `current_hp`) VALUES
+(1, 1, 5, 1, 4, 1, 100),
+(2, 1, 5, 1, 4, 1, 100),
+(3, 1, 5, 2, 2, 1, 100),
+(4, 1, 5, 15, 4, 1, 100);
+
 -- --------------------------------------------------------
 
 --
@@ -137,8 +143,32 @@ CREATE TABLE `unit_types` (
   `type` varchar(100) NOT NULL,
   `name` varchar(100) NOT NULL,
   `hp` int NOT NULL DEFAULT '1',
-  `price` int NOT NULL
+  `price` int NOT NULL,
+  `damage` int DEFAULT NULL,
+  `speed` decimal(3,1) DEFAULT NULL,
+  `range` int DEFAULT NULL,
+  `unit_type` varchar(20) DEFAULT NULL,
+  `unlock_level` int DEFAULT NULL,
+  `features` json DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `unit_types`
+--
+
+INSERT INTO `unit_types` (`id`, `type`, `name`, `hp`, `price`, `damage`, `speed`, `range`, `unit_type`, `unlock_level`, `features`) VALUES
+(1, 'knight', 'Мечник', 100, 50, 15, '1.0', NULL, 'infantry', 1, '{\"type\": \"balanced\"}'),
+(2, 'spearman', 'Копейщик', 60, 30, 10, '1.0', NULL, 'infantry', 1, '{\"type\": \"anti_cavalry\", \"bonus_damage\": {\"cavalry\": 0.5}, \"reach_attack\": true}'),
+(3, 'berserk', 'Берсерк', 90, 120, 35, '1.3', NULL, 'infantry', 1, '{\"type\": \"anti_infantry\", \"bonus_damage\": {\"infantry\": 0.5}, \"vulnerability\": {\"archers\": 0.5}}'),
+(4, 'paladin', 'Паладин', 300, 300, 25, '0.7', NULL, 'infantry', 3, '{\"type\": \"heavy_infantry\"}'),
+(5, 'guardian', 'Страж', 400, 250, 12, '0.5', NULL, 'infantry', 3, '{\"type\": \"tank\", \"taunt\": true}'),
+(6, 'archer', 'Лучник', 70, 60, 18, '1.0', 6, 'archer', 1, '{\"type\": \"basic_archer\"}'),
+(7, 'crossbowman', 'Арбалетчик', 110, 150, 28, '0.8', 5, 'archer', 2, '{\"type\": \"armor_piercing\", \"armor_penetration\": 0.5}'),
+(8, 'cavalry', 'Всадник', 130, 140, 20, '2.0', NULL, 'cavalry', 2, '{\"type\": \"scout\", \"bonus_damage\": {\"archers\": 0.5}}'),
+(9, 'knight', 'Рыцарь', 180, 200, 30, '1.0', NULL, 'cavalry', 2, '{\"type\": \"armored\", \"armor_bonus\": {\"archers\": 0.2}}'),
+(10, 'mage', 'Маг', 90, 220, 40, '1.0', 6, 'mage', 3, '{\"type\": \"magic_damage\", \"armor_penetration\": 0.7}'),
+(11, 'summoner', 'Призыватель', 70, 180, 8, '0.9', 3, 'mage', 2, '{\"type\": \"summoner\", \"summon\": {\"type\": \"skeleton\", \"damage\": 5, \"health\": 30, \"interval\": 10}}'),
+(12, 'golem', 'Голем', 500, 400, 35, '0.4', NULL, 'mage', 3, '{\"type\": \"magic_tank\", \"magic_resistance\": 0.8}');
 
 -- --------------------------------------------------------
 
@@ -160,13 +190,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `login`, `password`, `name`, `token`, `money`) VALUES
-(1, 'DenisTest123', 'f9334e67eb51ca74f15146d2ebd61d08', 'Denissss', '91fb8a4f85dbbae776cdc71f3cbbc603', 100),
+(1, 'DenisTest123', 'f9334e67eb51ca74f15146d2ebd61d08', 'Denissss', '8b43d607e8fe983f7783074bf076240b', 100),
 (5, 'A2345688', '6866a536740d1ac4af4c89eb3d046631', '123', '7b56cc22b1324f74fc105ab2f12f4cce', 100),
 (6, 'A23456888', '28754f9dc3f50b7b4be0cdd5bf2c6940', '123', NULL, 100),
-(7, 'A2345678', 'd5174b43cb0ddd0ff65e49d6689684cb', '123', '8dc52f3a822ca8f0a0bdcb8c82a12937', 100),
-(8, 'A23456788', 'a0af848759b6a5928cbaad779d65898f', '123', 'b5a8070af061be665aef1b59bb04b825', 100),
-(9, 'DenisTest1234', 'b94ea1cdc0c9d69d15347de4f0b6009b', 'Den', '10218d8eed97cb8766b62e104afe5632', 100),
-(10, 'DenisTest12341', '9d3bb7d535d7c16a0e35b46c7271c7cd', 'Den', '81402df3b7e98df32d638126590d71d0', 100);
+(7, 'A2345678', 'd5174b43cb0ddd0ff65e49d6689684cb', '123', '8dc52f3a822ca8f0a0bdcb8c82a12937', 57),
+(8, 'A23456788', 'a0af848759b6a5928cbaad779d65898f', '123', 'b5a8070af061be665aef1b59bb04b825', 100);
 
 -- --------------------------------------------------------
 
@@ -190,9 +218,7 @@ INSERT INTO `villages` (`id`, `user_id`, `x`, `y`, `last_income_datetime`) VALUE
 (3, 5, 836, 654, '2025-10-10 17:31:45'),
 (4, 6, 388, 245, '2025-10-10 17:34:00'),
 (5, 7, 2, 814, '2025-10-10 17:46:22'),
-(6, 8, 617, 700, '2025-10-10 17:47:06'),
-(7, 9, 475, 315, '2025-10-13 23:13:11'),
-(8, 10, 490, 397, '2025-10-13 23:13:25');
+(6, 8, 617, 700, '2025-10-10 17:47:06');
 
 --
 -- Индексы сохранённых таблиц
@@ -261,13 +287,13 @@ ALTER TABLE `villages`
 -- AUTO_INCREMENT для таблицы `buildings`
 --
 ALTER TABLE `buildings`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT для таблицы `building_types`
 --
 ALTER TABLE `building_types`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT для таблицы `messages`
@@ -279,25 +305,25 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT для таблицы `units`
 --
 ALTER TABLE `units`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT для таблицы `unit_types`
 --
 ALTER TABLE `unit_types`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT для таблицы `villages`
 --
 ALTER TABLE `villages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц

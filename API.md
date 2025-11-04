@@ -19,23 +19,19 @@
     * 4.3. registration
     * 4.4. sendMessage
     * 4.5. getMessages
-
     * 4.6. getBuildingTypes
     * 4.7. getBuildings
     * 4.8. deleteBuilding
     * 4.9. buyBuilding
-
-    * 4.10. getMineIncome
-    * 4.11. getAllMinesIncome
-    * 4.12. updateMineIncomeTime
-
-    * 4.13. getUnitTypes
-
-    * 4.14. upgradeBuilding
+    * 4.10. upgradeBuilding
+    * 4.11. getUnitTypes
+    * 4.12. buyUnit
+    * 4.13. getUnits
+    * 4.14. getIncome
 
 ## 1. Общее
 ### 1.1. Адрес сервера
-`http://nopainnogame.local/api`
+`http://strategy/api`
 
 ### 1.2. Используемый протокол
 API полностью реализовано на http(s). 
@@ -103,20 +99,30 @@ Buildings: {
 }
 ```
 
-### 2.6. Доход шахты
 ```
-MineIncome: {
-    success: boolean;
-    needs_update: boolean;
-    income_amount?: number;
-    intervals_passed?: number;
-    last_income_time: number;
-    current_time: number;
-    mine_id: number;
-    time_remaining?: number;
+
+### 2.7. Юниты
+```
+Units: {
+    id: number;
+    type_id: number;
+    village_id: number;
+    x: number;
+    y: number;
+    level: number;
+    current_hp: number;
 }
+```
 
-
+### 2.8. Типы юнитов
+```
+Buildings: {
+    id: number;
+    type: string;
+    name: string;
+    hp: number;
+    price: number;
+}
 ```
 
 ## 3. Список запросов
@@ -131,26 +137,17 @@ MineIncome: {
 | getBuildings | Получить все здания в деревне |
 | deleteBuilding | Удалить здание из деревни |
 | buyBuilding | Купить здание в деревню |
-| getMineIncome | Получить доход конкретной шахты |
-| getAllMinesIncome | Получить доход всех шахт пользователя |
-| updateMineIncomeTime | Обновить время начисления дохода шахты |
 | getUnitTypes | Получить типы юнитов |
-
 | upgradeBuilding | Улучшить здание |
-
-
-| buyBuilding | Купить здание в деревню |
+| buyUnit | Купить юнита в деревню |
+| getUnits | Получить всех юнитов в деревне |
+| getIncome | Получить и обновить доход с шахты |
 
 ### 3.1. Общие ошибки
 * `101` - если не передан параметр `method`
 * `102` - если переданное значение в параметре `method` не обрабатывается
 * `242` - не переданы все необходимые параметры
-### 3.2. Ошибки дохода шахт
-* `410` - шахта не найдена
-* `411` - ошибка обновления времени дохода шахты
-* `412` - ошибка начисления дохода пользователю
-* `413` - ошибка обновления данных дохода шахты
-
+* `9000` - неизвестная ошибка
 
 ## 4. Подробно
 ### 4.1. login
@@ -171,6 +168,10 @@ MineIncome: {
 **Ошибки**
 * `1002` - неверный пароль
 * `1005` - неверный логин
+* `1007` - неправильная длина логина
+* `1008` - логин начинается с цифры или подчеркивания
+* `1009` - недопустимые символы в логине
+* `1010` - логин содержит пробелы или специальные символы
 
 
 ### 4.2. logout
@@ -208,6 +209,11 @@ MineIncome: {
 **Ошибки**
 * `1001` - такой логин уже существует
 * `1004` - ошибка при регистрации пользователя
+* `1007` - неправильная длина логина
+* `1008` - логин начинается с цифры или подчеркивания
+* `1009` - недопустимые символы в логине
+* `1010` - логин содержит пробелы или специальные символы
+* `1090` - ошибка создания деревни
 
 
 ### 4.4. sendMessage
@@ -330,88 +336,43 @@ MineIncome: {
     Answer<{
         money: money;
     }>
+    Answer<true>
 ```
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
 * `301` - неудалось купить здание (Failed to buy building)
-* `305` - недостаточно монеток для покупки здания (Not enough funds to buy)
+* `305` - недостаточно монет для покупки здания (Not enough funds to buy)
 * `310` - деревня не найдена (Village not found)
-* `311` - координаты заняты (Coordinates are busy)
 * `311` - не верные координаты (Coordinates not defined)
 
 
-```markdown
-### 4.10. getMineIncome
-Получить доход конкретной шахты. Если с момента последнего начисления прошел достаточный интервал, доход будет начислен автоматически.
-**Параметры**
-{
-token: string; - токен
-mine_id: number; - идентификатор шахты
-}
-**Успешный ответ (доход начислен)**
-Answer<{
-success: true;
-needs_update: true;
-income_amount: number;
-intervals_passed: number;
-last_income_time: number;
-current_time: number;
-mine_id: number;
-}>
-**Успешный ответ (доход еще не готов)**
-Answer<{
-success: true;
-needs_update: false;
-time_remaining: number;
-last_income_time: number;
-current_time: number;
-mine_id: number;
-}>
-**Ошибки**
-* `410` - шахта не найдена
-* `411` - ошибка обновления времени дохода шахты
-* `412` - ошибка начисления дохода пользователю
-* `705` - невалидный токен. Пользователь не авторизован
-
-### 4.11. getAllMinesIncome
-Получить доход всех шахт пользователя. Для каждой шахты автоматически проверяется и начисляется доход.
+### 4.10. upgradeBuilding
+Улучшить здание
 
 **Параметры**
+```
 {
-token: string; - токен
+    token: string; - токен
+    buildingId: number; - id здания
+    typeId: number; - id типа здания
 }
+```
 **Успешный ответ**
-Answer<{
-mines_income: [{
-mine_id: number;
-mine_type: string;
-income_result: MineIncome;
-}]>
-}>
+```
+    Answer<{
+        money: money;
+    }>
+    Answer<true>
+```
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
-
-### 4.12. updateMineIncomeTime
-Обновить время последнего начисления дохода для шахты (ручное обновление)
-
-**Параметры**
-{
-token: string; - токен
-mine_id: number; - идентификатор шахты
-income_time: number; - новое время начисления (timestamp)
-}
-**Успешный ответ**
-Answer<{
-id: number;
-user_id: number;
-last_income_time: number;
-}>
-**Ошибки**
-* `413` - ошибка обновления данных дохода шахты
-* `705` - невалидный токен. Пользователь не авторизован
+* `302` - неудалось улучшить здание (Failed to upgrade building)
+* `305` - недостаточно монет для покупки здания (Not enough funds to buy)
+* `310` - деревня не найдена (Village not found)
+* `312` - максимальный уровень (Maximum level)
 
 
-### 4.13. getUnitTypes
+### 4.11. getUnitTypes
 Получить все типы юнитов
 
 **Параметры**
@@ -429,27 +390,71 @@ last_income_time: number;
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
 
-### 4.14. upgradeBuilding
-Улучшить здание
+
+### 4.12. buyUnit
+Купить юнита в деревню
+
+**Параметры**
+
+```
+{ token: string; - токен
+    typeId: number; - id типа юнита
+    x: number; - координаты размещения юнита по x
+    y: number; - координаты размещения юнита по y 
+}
+```
+**Успешный ответ**
+```
+
+    Answer<{
+        money: money;
+    }>
+```
+
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
+* `501` - неудалось купить юнита (Failed to buy unit)
+* `305` - недостаточно монеток для покупки юнита (Not enough funds to buy)
+* `310` - деревня не найдена (Village not found)
+* `311` - не верные координаты (Coordinates are busy)
+
+
+### 4.13. getUnits
+Получить всех юнитов в деревне
 
 **Параметры**
 ```
-{
-    token: string; - токен
-    id: number; - id здания
-    typeId: number; - id типа здания 
+{ 
+    token: string; - токен 
 }
 ```
 **Успешный ответ**
 ```
     Answer<{
-        money: money
+        units: units[];
     }>
-    
+```
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
-* `302` - не удалось улучшить здание (Failed to upgrade building)
-* `305` - недостаточно монеток для покупки здания (Not enough funds to buy)
+
+
+### 4.14. getIncome
+Получить и обновить доход с шахты
+
+**Параметры**
+```
+{
+    token: string; - токен
+}
+```
+**Успешный ответ**
+```
+    Answer<{
+        money: money;
+    }>
+```
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
 * `310` - деревня не найдена (Village not found)
-* `311` - координаты заняты (Coordinates are busy)
-* `312` - максимальный уровень (Maximum level)
+* `410` - шахта не найдена (Mine is not found)
+>>>>>>> a9a866647dc53face3212184f5646f118a5233aa
