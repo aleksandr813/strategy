@@ -43,7 +43,7 @@ class Village {
             return ['error' => 705];
         }
         $buildings = $this->db->getBuildings($userId);
-        return ['buildings' => $buildings];
+        return $buildings;
     }
 
     public function getBuildingTypes() {
