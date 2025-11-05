@@ -318,6 +318,12 @@ const VillageCanvas: React.FC = () => {
         }
     };
 
+
+    const INITIAL_WINDOW_WIDTH = CONFIG.WINDOW.WIDTH;
+    const INITIAL_WINDOW_HEIGHT = CONFIG.WINDOW.HEIGHT;
+    const INITIAL_WINDOW_LEFT = CONFIG.WINDOW.LEFT;
+    const INITIAL_WINDOW_TOP = CONFIG.WINDOW.TOP;
+
     useEffect(() => {
         canvas = Canvas({
             parentId: GAME_FIELD,
@@ -339,6 +345,13 @@ const VillageCanvas: React.FC = () => {
         village.setUnits(village.getScene().units);
 
         return () => {
+            if (WINDOW.WIDTH !== INITIAL_WINDOW_WIDTH) {
+            WINDOW.WIDTH = INITIAL_WINDOW_WIDTH;
+            WINDOW.HEIGHT = INITIAL_WINDOW_HEIGHT;
+            WINDOW.LEFT = INITIAL_WINDOW_LEFT;
+            WINDOW.TOP = INITIAL_WINDOW_TOP;
+        }
+
             village?.destructor();
             canvas?.destructor();
             canvas = null;
