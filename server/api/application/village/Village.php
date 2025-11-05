@@ -48,7 +48,7 @@ class Village {
 
     public function getBuildingTypes() {
         $types = $this->db->getBuildingTypes();
-        return ["building_types" => $types];
+        return ['buildingTypes' => $types];
     }
 
     public function buyBuilding($user, $typeId, $x, $y) {
@@ -173,8 +173,8 @@ class Village {
         if ($result) {
             return [
                 'id' => $unitId,
-                'user_id' => $userId,
-                'unit_type' => $unitType,
+                'userId' => $userId,
+                'unitType' => $unitType,
                 'x' => $x,
                 'y' => $y
             ];
@@ -194,7 +194,7 @@ class Village {
     public function getUnitTypes()
     {
         $types = $this->db->getUnitTypes();
-        return ["unit_types" => $types];
+        return ["unitTypes" => $types];
     }
 
     public function moveUnit($unit) {
