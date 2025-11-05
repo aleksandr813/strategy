@@ -164,13 +164,6 @@ class DB
         );
     }
 
-    public function createBuilding($villageId, $buildingType, $x, $y)
-    { 
-        return $this->execute(
-            "INSERT INTO buildings (village_id, type_id, x, y, level, current_hp) VALUES (?, ?, ?, ?, 1, 100)",
-            [$villageId, $buildingType, $x, $y]
-        );
-    }
     public function buyBuilding($villageId, $buildingId, $x, $y, $hp) {
         $this->execute("INSERT INTO buildings
             (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 

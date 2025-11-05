@@ -23,10 +23,11 @@
     * 4.7. getBuildings
     * 4.8. deleteBuilding
     * 4.9. buyBuilding
-    * 4.13. getUnitTypes
-    * 4.14. buyUnit
-    * 4.15. getUnits
-    * 4.16. getIncome
+    * 4.10. upgradeBuilding
+    * 4.11. getUnitTypes
+    * 4.12. buyUnit
+    * 4.13. getUnits
+    * 4.14. getIncome
 
 ## 1. Общее
 ### 1.1. Адрес сервера
@@ -137,8 +138,9 @@ Buildings: {
 | deleteBuilding | Удалить здание из деревни |
 | buyBuilding | Купить здание в деревню |
 | getUnitTypes | Получить типы юнитов |
-| buyUint | Купить юнита в деревню |
-| getUints | Получить всех юнитов в деревне |
+| upgradeBuilding | Улучшить здание |
+| buyUnit | Купить юнита в деревню |
+| getUnits | Получить всех юнитов в деревне |
 | getIncome | Получить и обновить доход с шахты |
 
 ### 3.1. Общие ошибки
@@ -324,7 +326,6 @@ Buildings: {
 {
     token: string; - токен
     typeId: number; - id типа здания 
-
     typeId: number; - id типа здания
     x: number; координаты размещения здания по x
     y: number; координаты размещения здания по y
@@ -340,12 +341,38 @@ Buildings: {
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
 * `301` - неудалось купить здание (Failed to buy building)
-* `305` - недостаточно монеток для покупки здания (Not enough funds to buy)
+* `305` - недостаточно монет для покупки здания (Not enough funds to buy)
 * `310` - деревня не найдена (Village not found)
 * `311` - не верные координаты (Coordinates not defined)
 
 
-### 4.13. getUnitTypes
+### 4.10. upgradeBuilding
+Улучшить здание
+
+**Параметры**
+```
+{
+    token: string; - токен
+    buildingId: number; - id здания
+    typeId: number; - id типа здания
+}
+```
+**Успешный ответ**
+```
+    Answer<{
+        money: money;
+    }>
+    Answer<true>
+```
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
+* `302` - неудалось улучшить здание (Failed to upgrade building)
+* `305` - недостаточно монет для покупки здания (Not enough funds to buy)
+* `310` - деревня не найдена (Village not found)
+* `312` - максимальный уровень (Maximum level)
+
+
+### 4.11. getUnitTypes
 Получить все типы юнитов
 
 **Параметры**
@@ -364,25 +391,26 @@ Buildings: {
 * `705` - невалидный токен. Пользователь не авторизован
 
 
-### 4.14. buyUnit
+### 4.12. buyUnit
 Купить юнита в деревню
 
 **Параметры**
+
 ```
-{
-    token: string; - токен
+{ token: string; - токен
     typeId: number; - id типа юнита
-    x: number; координаты размещения юнита по x
-    y: number; координаты размещения юнита по y
+    x: number; - координаты размещения юнита по x
+    y: number; - координаты размещения юнита по y 
 }
 ```
 **Успешный ответ**
 ```
+
     Answer<{
         money: money;
     }>
-    Answer<true>
 ```
+
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
 * `501` - неудалось купить юнита (Failed to buy unit)
@@ -391,13 +419,13 @@ Buildings: {
 * `311` - не верные координаты (Coordinates are busy)
 
 
-### 4.15. getUnits
+### 4.13. getUnits
 Получить всех юнитов в деревне
 
 **Параметры**
 ```
-{
-    token: string; - токен
+{ 
+    token: string; - токен 
 }
 ```
 **Успешный ответ**
@@ -410,7 +438,7 @@ Buildings: {
 * `705` - невалидный токен. Пользователь не авторизован
 
 
-### 4.16. getIncome
+### 4.14. getIncome
 Получить и обновить доход с шахты
 
 **Параметры**
@@ -429,3 +457,4 @@ Buildings: {
 * `705` - невалидный токен. Пользователь не авторизован
 * `310` - деревня не найдена (Village not found)
 * `410` - шахта не найдена (Mine is not found)
+>>>>>>> a9a866647dc53face3212184f5646f118a5233aa
