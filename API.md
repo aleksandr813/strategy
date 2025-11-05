@@ -292,7 +292,14 @@ Buildings: {
 **Успешный ответ**
 ```
     Answer<{
-        buildings: building[];
+        id: number; - id здания, 
+        type_id: number; - id типа здания, 
+        village_id: number; - id деревни, 
+        x: number; - координата по x, 
+        y: number; - координата по y,
+        level: number; - уровень здания,
+        current_hp: number; - текущее здоровье здания,
+        type: string; - тип здания
     }>
 ```
 **Ошибки**
