@@ -80,11 +80,11 @@ export default class UnitPreview {
 
         const unitData = {
             id: 0,
-            type_id: this.unitTypeId,
-            village_id: 0,
+            typeId: this.unitTypeId,
+            villageId: 0,
             x: this.gridPosition.x,
             y: this.gridPosition.y,
-            current_hp: this.unitHp,
+            currentHp: this.unitHp,
             level: 1,
         };
 

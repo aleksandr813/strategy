@@ -21,7 +21,7 @@ export default class Building {
     constructor(data: BuildingData, type: BuildingType) {
         this.id = Number(data.id);
         this.type = type;
-        this.hp = Number(data.current_hp);
+        this.hp = Number(data.currentHp);
         this.maxHp = Number(type.hp);
         this.level = Number(data.level);
         this.size = 2; 

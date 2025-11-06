@@ -90,11 +90,11 @@ export default class BuildingPreview {
 
     const buildingData = {
         id: 0, 
-        type_id: this.buildingTypeId,
-        village_id: 0,
+        typeId: this.buildingTypeId,
+        villageId: 0,
         x: this.gridPosition.x,
         y: this.gridPosition.y,
-        current_hp: this.buildingHp,
+        currentHp: this.buildingHp,
         level: 1,
     };
 
