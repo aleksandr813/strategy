@@ -111,6 +111,16 @@ class DB
         );
     }
 
+    public function moveUnits($unitId, $userId, $newX, $newY)
+{
+    return $this->execute(
+        "UPDATE units SET x = ?, y = ? 
+         WHERE id = ? 
+         AND village_id IN (SELECT id FROM villages WHERE user_id = ?)",
+        [$newX, $newY, $unitId, $userId]
+    );
+}
+
     public function buyUnit($villageId, $unitId, $x, $y, $hp) {
     $this->execute("INSERT INTO units
         (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
