@@ -12,7 +12,7 @@ class Answer
         '242' => 'Params not set fully',
         '300' => 'Building is not found',
         '301' => 'Failed to buy building',
-        '302' => 'Failed to update building',
+        '302' => 'Failed to upgrade building',
         '303' => 'Failed to delete building',
         '305' => 'Not enough funds to buy',
         '306' => 'Transaction error',

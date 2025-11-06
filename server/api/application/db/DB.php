@@ -121,11 +121,10 @@ class DB
         );
     }
 
-    public function createUnit($userId, $unitType, $x, $y)
-    {
-        return $this->execute(
-            "INSERT INTO units (user_id, unit_type, x, y) VALUES (?, ?, ?, ?)",
-            [$userId, $unitType, $x, $y]
+    public function buyUnit($villageId, $unitId, $x, $y, $hp) {
+        $this->execute("INSERT INTO units
+            (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
+            [$unitId, $villageId, $x, $y, $hp]
         );
     }
 
@@ -156,36 +155,29 @@ class DB
     public function getBuildings($userId)
     {
         return $this->queryAll(
-            "SELECT id, type_id, village_id, x, y, level, current_hp FROM buildings
-            WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)
-            ORDER BY type_id
-        ",
+            "SELECT 
+                b.id AS id, 
+                b.type_id AS type_id, 
+                b.village_id AS village_id, 
+                b.x AS x, 
+                b.y AS y,
+                b.level AS level,
+                b.current_hp AS current_hp,
+                bt.type AS type
+            FROM buildings AS b
+            INNER JOIN building_types AS bt
+            ON b.type_id = bt.id
+            WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)",
             [$userId]
         );
     }
 
-    public function createBuilding($villageId, $buildingType, $x, $y)
-    { 
-        return $this->execute(
-            "INSERT INTO buildings (village_id, type_id, x, y, level, current_hp) VALUES (?, ?, ?, ?, 1, 100)",
-            [$villageId, $buildingType, $x, $y]
-        );
-    }
     public function buyBuilding($villageId, $buildingId, $x, $y, $hp) {
         $this->execute("INSERT INTO buildings
             (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
             [$buildingId, $villageId, $x, $y, $hp]
         );
     }
-
-    public function buyUnit($villageId, $unitId, $x, $y, $hp) {
-    $this->execute("INSERT INTO units
-        (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
-        [$unitId $villageId, $x, $y, $hp]
-    );
-}
-
-   
 
     public function getBuildingType($buildingType) {
         return $this->query("SELECT hp, price FROM building_types WHERE id = ?", [$buildingType]);
@@ -231,14 +223,13 @@ class DB
 
     public function getBuildingTypes()
     {
-        return $this->queryAll("SELECT id, type, name, sprite_id, hp, price FROM building_types");
+        return $this->queryAll("SELECT id, type, name, hp, price FROM building_types");
     }
 
     public function getUnitTypes()
     {
         return $this->queryAll("SELECT id, type, name, hp, price FROM unit_types");
     }
-
 
     public function createVillage($userId, $x, $y)
     {
@@ -247,8 +238,6 @@ class DB
             [$userId, $x, $y]
         );
     }
-
- 
 
     public function getMine($villageId) {
         return $this->query(
@@ -268,5 +257,4 @@ class DB
             [$now, $villageId]
         );
     }
-
 }
