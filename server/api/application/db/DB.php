@@ -110,7 +110,7 @@ class DB
             [$userId]
         );
     }
-
+//временно так , так как саму функции moveUnits никто не сделал до сих пор
     public function moveUnits($unitId, $userId, $newX, $newY)
 {
     return $this->execute(
