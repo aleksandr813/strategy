@@ -161,11 +161,11 @@ class Application
         return ['error' => 242];
     }
 
-    public function moveUnit($params) {
-        if ($params['token'] && $params['unitId'] && isset($params['x']) && isset($params['y']))  {
+    public function moveUnits($params) {
+        if ($params['token']  && $params['units'])  {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->village->moveUnit($params['unitId'], $user->id, $params['x'], $params['y']);
+                return $this->village->moveUnits($user->id, $params['units']);
             }
             return ['error' => 705];
         }

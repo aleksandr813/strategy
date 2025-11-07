@@ -144,10 +144,31 @@ class DB
         );
     }
 
-    public function updatePositionUnit($x, $y, $unitId, $villageId) {
+    public function updateUnitsPosition($units, $villageId) {
+        $coordinatesX = [];
+        $coordinatesY = [];
+        $validUnits = [];
+
+        foreach ($units as $unit) {
+            $unitId = (int) $unit['unitId'];
+            $x = (int) $unit['x'];
+            $y = (int) $unit['y'];
+
+            $coordinatesX[] = "WHEN $unitId THEN $x";
+            $coordinatesY[] = "WHEN $unitId THEN $y";
+            $validUnits[] = $unitId;
+        }
+
+        $unitsStr = implode(',', $validUnits);
+        $xStr = implode(' ', $coordinatesX);
+        $yStr = implode(' ', $coordinatesY);
+
         return $this->execute(
-            "UPDATE units SET x = ?, y = ? WHERE id = ? AND village_id = ?",
-            [$x, $y, $unitId, $villageId]
+            "UPDATE units SET
+            x = CASE id $xStr END,
+            y = CASE id $yStr END
+            WHERE id IN ($unitsStr) AND village_id = ?",
+            [$villageId]
         );
     }
 
