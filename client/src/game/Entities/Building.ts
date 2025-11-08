@@ -10,6 +10,7 @@ export default class Building {
     level: number;
     size: number; 
     sprites: number[];
+    isselected: boolean = false;  
 
     private static SPRITE_MAP: Record<BuildingTypeID, number[]> = {
         [BuildingTypeID.TownHall]: [7, 8, 9, 10], // TownHall (Ратуша)
@@ -20,7 +21,7 @@ export default class Building {
     constructor(data: BuildingData, type: BuildingType) {
         this.id = Number(data.id);
         this.type = type;
-        this.hp = Number(data.current_hp);
+        this.hp = Number(data.currentHp);
         this.maxHp = Number(type.hp);
         this.level = Number(data.level);
         this.size = 2; 
@@ -39,6 +40,23 @@ export default class Building {
             // Нижний Правый
             { x: Number(data.x) + 1, y: Number(data.y) + 1 },
         ];
+    }
+
+    selected():void{
+        this.isselected =true;
+    }
+
+    deselected():void{
+        this.isselected =false;
+    }
+
+    getInfo(){
+        return{
+            level: this.level,
+            hp: this.hp,
+            maxHp: this.maxHp,
+            name: this.type.name
+        }
     }
 
     public takeDamage(amount: number): void {

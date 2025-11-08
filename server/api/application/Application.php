@@ -103,10 +103,10 @@ class Application
 
     public function updateUnit($params)
     {
-        if ($params['token'] && $params['id'] && $params['unit_type'] && isset($params['x']) && isset($params['y'])) {
+        if ($params['token'] && $params['id'] && $params['unitType'] && isset($params['x']) && isset($params['y'])) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->village->updateUnit($params['id'], $user->id, $params['unit_type'], $params['x'], $params['y']);
+                return $this->village->updateUnit($params['id'], $user->id, $params['unitType'], $params['x'], $params['y']);
             }
             return ['error' => 705];
         }

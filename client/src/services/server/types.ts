@@ -38,7 +38,7 @@ export interface BuildingTypeResponse {
     name: string;
     hp: string;
     price: string;
-    sprite_id:string;
+    spriteId:string;
 }
 
 // Тип для использования в приложении (числовые поля)
@@ -53,27 +53,27 @@ export interface BuildingType {
 
 // Тип для ответа метода getBuildingTypes
 export type TBuildingTypesResponse = {
-    building_types: BuildingTypeResponse[];
+    buildingTypes: BuildingTypeResponse[];
 }
 
 export interface BuildingResponse { 
     id: string;
-    type_id: string;
-    village_id: string;
+    typeId: string;
+    villageId: string;
     x: string;
     y: string;  
-    current_hp: string;
+    currentHp: string;
     level: string;
 }
 
 // Тип для использования в приложении (числовые поля)
 export interface Building {
     id: number;
-    type_id: number;
-    village_id: number;
+    typeId: number;
+    villageId: number;
     x: number;
     y: number;
-    current_hp: number;
+    currentHp: number;
     level: number;
 }
 
@@ -106,28 +106,28 @@ export interface UnitType {
 }
 
 export type TUnitTypesResponse = {
-    unit_types: UnitTypeResponse[];
+    unitTypes: UnitTypeResponse[];
 }
 
 export interface UnitResponse { 
     id: string;
-    type_id: string;
-    village_id: string;
+    typeId: string;
+    villageId: string;
     x: string;
     y: string;
     level: string;  
-    current_hp: string;
+    currentHp: string;
 }
 
 // Тип для использования в приложении (числовые поля)
 export interface Unit {
     id: number;
-    type_id: number;
-    village_id: number;
+    typeId: number;
+    villageId: number;
     x: number;
     y: number;
     level: number;
-    current_hp: number;
+    currentHp: number;
 }
 
 export enum UnitTypeID {

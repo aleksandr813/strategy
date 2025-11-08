@@ -143,7 +143,7 @@ class Server {
     async getBuildingTypes(): Promise<TBuildingTypesResponse> {
         const response = await this.request<TBuildingTypesResponse>('getBuildingTypes');
         if (!response) {
-            return { building_types: [] };
+            return { buildingTypes: [] };
         }
         return response;
     }
@@ -159,7 +159,7 @@ class Server {
     async getUnitsTypes(): Promise<TUnitTypesResponse> {
         const response = await this.request<TUnitTypesResponse>('getUnitTypes');
         if (!response) {
-            return { unit_types: [] };
+            return { unitTypes: [] };
         }
         return response;
     }
@@ -172,6 +172,17 @@ class Server {
             y: y.toString() 
         });
         console.log('buyBuilding result:', result);
+        return result;
+    }
+
+    async buyUnit(typeId: number, x: number, y: number): Promise<any> {
+        console.log('buyUnit called with', { typeId, x, y});
+        const result = await this.request<any>('buyUnit', {
+            typeId: typeId.toString(),
+            x: x.toString(),
+            y: y.toString()
+        });
+        console.log('buyUnit result:', result);
         return result;
     }
 }

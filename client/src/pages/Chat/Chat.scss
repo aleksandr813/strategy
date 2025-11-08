@@ -1,6 +1,28 @@
 .chat {
+    @font-face {
+        font-family: 'PixelifySans-Medium';
+        src: url('../../assets/fonts/PixelifySans-Medium.ttf');
+    }
+
+    @font-face {
+        font-family: 'PixelifySans-Bold';
+        src: url('../../assets/fonts/PixelifySans-Bold.ttf');
+    }
+
     display: flex;
     flex-direction: column;
+    position: relative;
+    min-height: 400px;
+
+    border: solid black 7px;
+    background-color: rgb(158, 66, 0);
+
+    font-family: 'PixelifySans-Medium', sans-serif;
+
+    &-messages {
+        text-align: left;
+        padding-left: 5px;
+    }
 
     &-inputs {
         display: flex;
@@ -17,6 +39,30 @@
     &-buttons {
         display: flex;
         justify-content: space-between;
-        max-width: 500px;
+        width: 100%; 
+        margin-top: auto;
+        position: relative; 
+        min-height: 50px; 
+    }
+
+    .chatIconeDiv {
+        background-color: rgb(63, 26, 0);
+        border: solid black 0px;
+        border-radius: 0%;
+        height: max-content;
+        width: max-content;
+        right: 0; 
+        bottom: 0; 
+        margin: 5px; 
+    }
+    .chatIcone {
+        height: 50px;
+        width: 50px;
+    }
+
+    .chat-buttons {
+        background-color: rgb(63, 26, 0);
+        border-top: solid black 7px;
+        width: 100%;
     }
 }
