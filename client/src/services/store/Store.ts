@@ -34,7 +34,7 @@ class Store {
     addMessages(messages: TMessages): void {
         // TODO сделать, чтобы работало вот так
         //this.messages.concat(messages);
-        // а вот это - плохой код!
+        // а вот это - плохой код! 
         if (messages?.length) {
             this.messages = messages;
         }
