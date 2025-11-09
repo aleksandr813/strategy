@@ -6,7 +6,7 @@ import UnitPreview from "../services/canvas/UnitPreview";
 import Server from "../services/server/Server";
 import VillageManager from "../pages/Village/villageDataManager";
 import Store from "../services/store/Store";
-import Manager, { GameDataInterface } from "./Manager";
+import Manager, { GameData } from "./Manager";
 
 const { WIDTH, HEIGHT } = CONFIG;
 
@@ -18,7 +18,7 @@ class Village extends Manager {
     private villageManager: VillageManager;
     public selectedBuilding: Building | null = null;
 
-    constructor(store: Store, server: Server, gameData: GameDataInterface) {
+    constructor(store: Store, server: Server, gameData: GameData) {
         super(gameData);
         this.store = store;
         this.server = server;
@@ -92,8 +92,30 @@ class Village extends Manager {
 
     async loadBuildings(): Promise<void> {
         console.log("Загружаем здания из сервера...");
-        const buildingObjects = await this.villageManager.loadBuildings();
-        this.gameData.setBuildings(buildingObjects);
+
+        const buildingsData = await this.server.getBuildings();
+        if (!buildingsData) {
+            console.log('Нету зданий для загрузки');
+            return;
+        }
+
+        const buildings = buildingsData.map(buildingData => {
+            //console.log(buildingData)
+            return new Building(
+                buildingData.id,
+                buildingData.type,
+                buildingData.currentHp, 
+                buildingData.currentHp,
+                buildingData.level,
+                2,
+                buildingData.typeId,
+                buildingData.x,
+                buildingData.y
+            );
+        });
+
+        this.gameData.setBuildings(buildings);
+
         console.log("Загружено зданий:", this.gameData.getBuildings().length);
     }
 

@@ -37,7 +37,7 @@ const BuildingMenu: React.FC = () => {
                 >
                     <div className="menu-header">
                         <div className="name-lvl">
-                            {selectedBuilding.type.name} (lvl {selectedBuilding.level})
+                            {selectedBuilding.type} (lvl {selectedBuilding.level})
                         </div>
                         <div className="hp-status">
                             HP: {selectedBuilding.hp}/{selectedBuilding.maxHp}

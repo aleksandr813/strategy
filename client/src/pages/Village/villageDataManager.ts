@@ -1,7 +1,7 @@
 import Building from "../../game/Entities/Building";
 import Unit from "../../game/Entities/Unit";
 import Server from "../../services/server/Server";
-import { Building as BuildingData, BuildingType, BuildingResponse, BuildingTypeResponse, UnitResponse, UnitTypeResponse,UnitType } from "../../services/server/types";
+import { TBuilding, BuildingType, BuildingTypeResponse, UnitResponse, UnitTypeResponse,UnitType } from "../../services/server/types";
 import { ServerContext } from "../../App";    
 
 export default class VillageManager {
@@ -12,47 +12,14 @@ export default class VillageManager {
         this.server = server
     }
 
-    async loadBuildings(): Promise<Building[]> {
-        const [buildingsResponse, typesResponse] = await Promise.all([
-            this.server.getBuildings(),
-            this.server.getBuildingTypes(),
-        ]);
+    async loadBuildings(): Promise<TBuilding[] | null> {
+        const buildingsResponse = await this.server.getBuildings();
 
-        console.log("Buildings response:", buildingsResponse);
-        console.log("Building types response:", typesResponse);
-
-        const buildings: BuildingResponse[] = buildingsResponse.buildings;
-        const types: BuildingTypeResponse[] = typesResponse.buildingTypes;
-
-        return buildings
-        .map((b) => {
-        const typeData = types.find((t) => Number(t.id) === Number(b.typeId));
-        if (!typeData) return null;
-
-        const type: BuildingType = {
-            id: Number(typeData.id),
-            type: typeData.type,
-            name: typeData.name,
-            hp: Number(typeData.hp),
-            price: Number(typeData.price),
-            sprite: Number(typeData.spriteId)
-        };
-
-        const buildingData = {
-            ...b,
-            id: Number(b.id),
-            typeId: Number(b.typeId),
-            villageId: Number(b.villageId),
-            x: Number(b.x),
-            y: Number(b.y),
-            currentHp: Number(b.currentHp),
-            level: Number(b.level),
-        };
-
-        const building = new Building(buildingData, type);
-        return building;
+        if (buildingsResponse){
+            return buildingsResponse;
         }
-        ).filter(Boolean) as Building[];
+        return null
+
     }
 
     async loadBuildingTypes() {

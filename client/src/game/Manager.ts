@@ -9,7 +9,7 @@ const GRID_WIDTH = 87;
 const GRID_HEIGHT = 29;
 const MOVE_INTERVAL = 100;
 
-export interface GameDataInterface {
+export interface GameData {
     getUnits: () => Unit[];
     getBuildings: () => Building[];
     setUnits: (units: Unit[]) => void;
@@ -21,11 +21,11 @@ export interface GameDataInterface {
 }
 
 class Manager {
-    protected gameData: GameDataInterface;
+    protected gameData: GameData;
     protected allocation: Allocation;
     protected easystar = new EasyStar.js();
 
-    constructor(gameData: GameDataInterface) {
+    constructor(gameData: GameData) {
         this.gameData = gameData;
         this.allocation = new Allocation();
     }
