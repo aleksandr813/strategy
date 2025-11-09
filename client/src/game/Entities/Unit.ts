@@ -21,7 +21,7 @@ export default class Unit {
     constructor(data: UnitData, type: UnitType) {
         this.id = Number(data.id);
         this.type = type;
-        this.hp = Number(data.current_hp);
+        this.hp = Number(data.currentHp);
         this.maxHp = Number(type.hp);
         this.level = Number(data.level);
         const typeId = Number(type.id);
