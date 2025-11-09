@@ -33,27 +33,21 @@ class Village extends Manager {
         this.selectedBuilding = building;
     }
 
-    async handleBuildingPlacement(x: number, y: number, server: Server) {
+    async handleBuildingPlacement(server: Server) {
         const { buildingPreview } = this.getScene();
         
         if (!buildingPreview.isActiveStatus() || !buildingPreview.getCanPlace()) {
-            console.log('Невозможно разместить здание');
             return;
         }
 
         const typeId = buildingPreview.getBuildingTypeId();
         const position = buildingPreview.getPlacementPosition();
         
-        console.log('Отправка на сервер:', { typeId, x: position.x, y: position.y });
-        
         const result = await server.buyBuilding(typeId, position.x, position.y);
         
         if (result) {
             buildingPreview.deactivate();
             await this.loadBuildings();
-            console.log('Здание успешно куплено');
-        } else {
-            console.error('Ошибка при покупке здания');
         }
     }
 

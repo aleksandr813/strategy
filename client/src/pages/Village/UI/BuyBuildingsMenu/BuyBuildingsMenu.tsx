@@ -19,7 +19,7 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
 
     const buyBuilding = async (building: BuildingType) => {
         console.log(`Покупка здания: ${building.name}`);
-        village.getScene().buildingPreview.activate(building.name, building.id, building.hp);
+        village.getScene().buildingPreview.activate(building.id, building.hp);
         setUIElement(UIELEMENT.NULL);
     };
 

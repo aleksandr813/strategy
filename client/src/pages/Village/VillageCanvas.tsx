@@ -184,7 +184,8 @@ const VillageCanvas: React.FC = () => {
         const { buildingPreview, unitPreview, units } = village.getScene();
 
         if (buildingPreview.isActiveStatus()) {
-            village.handleBuildingPlacement(x, y, game['server']);
+            // Передаём только server
+            village.handleBuildingPlacement(game['server']);
         } else if (unitPreview.isActiveStatus()) {
             village.handleUnitPlacement(x, y, game['server']);
         } else {
@@ -192,7 +193,6 @@ const VillageCanvas: React.FC = () => {
             
             if (!allocation.isSelectingStatus) {
                 village.moveUnits({ x, y });
-                console.log('move units to', { x, y });
             }
         }
     };
@@ -254,20 +254,12 @@ const VillageCanvas: React.FC = () => {
     };
 
     const keyDown = (event: KeyboardEvent) => {
-        const { buildingPreview, unitPreview } = village.getScene();
-        if (event.key === 'Escape') {
-            if (buildingPreview.isActiveStatus()) {
-                buildingPreview.deactivate();
-                console.log('Размещение здания отменено (ESC)');
-            }
-    
-            if (unitPreview.isActiveStatus()) {
-                unitPreview.deactivate();
-                console.log('Размещение юнита отменено (ESC)');
-            }
-        }
+        if (event.key !== 'Escape') return;
+        
+        const scene = village.getScene();
+        scene.buildingPreview.deactivate();
+        scene.unitPreview.deactivate();
     };
-
 
     const INITIAL_WINDOW_WIDTH = CONFIG.WINDOW.WIDTH;
     const INITIAL_WINDOW_HEIGHT = CONFIG.WINDOW.HEIGHT;
