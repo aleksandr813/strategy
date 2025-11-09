@@ -33,25 +33,27 @@ class Village extends Manager {
         this.selectedBuilding = building;
     }
 
-    public async handleBuildingPlacement(x: number, y: number, server: Server): Promise<void> {
-        const newBuilding = this.buildingPreview.tryPlace();
-        if (!newBuilding) return;
+    async handleBuildingPlacement(x: number, y: number, server: Server) {
+        const { buildingPreview } = this.getScene();
+        
+        if (!buildingPreview.isActiveStatus() || !buildingPreview.getCanPlace()) {
+            console.log('Невозможно разместить здание');
+            return;
+        }
 
-        const typeId = this.buildingPreview.getBuildingTypeId();
-        const pos = this.buildingPreview.getPlacementPosition();
-
-        try {
-            const result = await server.buyBuilding(typeId, pos.x, pos.y);
-            if (result && !result.error) {
-                this.gameData.addBuilding(newBuilding);
-            }
-            else {
-                console.error('Ошибка при покупке здания:', result?.error || result);
-                this.buildingPreview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp); 
-            }
-        } catch (error) {
-            console.error('Ошибка запроса:', error);
-            this.buildingPreview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp);
+        const typeId = buildingPreview.getBuildingTypeId();
+        const position = buildingPreview.getPlacementPosition();
+        
+        console.log('Отправка на сервер:', { typeId, x: position.x, y: position.y });
+        
+        const result = await server.buyBuilding(typeId, position.x, position.y);
+        
+        if (result) {
+            buildingPreview.deactivate();
+            await this.loadBuildings();
+            console.log('Здание успешно куплено');
+        } else {
+            console.error('Ошибка при покупке здания');
         }
     }
 

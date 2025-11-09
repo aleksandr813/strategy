@@ -4,15 +4,6 @@ import Building from '../../game/Entities/Building';
 
 const { SPRITE_SIZE } = CONFIG;
 
-interface BuildingTypeData {
-    id: number;
-    type: string;
-    name: string;
-    hp: number;
-    price: number;
-    sprite: number;
-}
-
 interface RenderData {
     gridPosition: TPoint;
     canPlace: boolean;
