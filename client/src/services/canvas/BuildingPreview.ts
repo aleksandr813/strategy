@@ -30,9 +30,8 @@ export default class BuildingPreview {
     // Константа для размера здания (можно вынести в конфиг)
     private static readonly BUILDING_SIZE = 2;
 
-    public activate(buildingType: string, buildingTypeId: number, hp: number): void {
+    public activate(buildingTypeId: number, hp: number): void {
         this.isActive = true;
-        this.buildingType = buildingType;
         this.buildingTypeId = buildingTypeId;
         this.buildingHp = hp;
         this.canPlace = false;
@@ -90,8 +89,7 @@ export default class BuildingPreview {
 
         return {
             gridPosition: this.gridPosition,
-            canPlace: this.canPlace,
-            buildingType: this.buildingType
+            canPlace: this.canPlace
         };
     }
 
