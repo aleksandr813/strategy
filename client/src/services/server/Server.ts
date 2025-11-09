@@ -1,7 +1,7 @@
 import md5 from 'md5';
 import CONFIG from "../../config";
 import Store from "../store/Store";
-import { BuildingTypeResponse, TBuildingTypesResponse, TBuildingResponse } from './types';
+import { BuildingTypeResponse, TBuildingTypesResponse, TBuilding } from './types';
 import { UnitTypeResponse, TUnitTypesResponse, TUnitResponse } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 
@@ -134,12 +134,24 @@ class Server {
         return await this.request<any>('getRoots', params);
     }
 
-    async getBuildings(): Promise<TBuildingResponse> {
-        const response = await this.request<TBuildingResponse>('getBuildings');
+    async getBuildings(): Promise<TBuilding[] | null> {
+        const response = await this.request<TBuilding[]>('getBuildings');
         if (!response) {
-            return { buildings: [] };
+            return null
         }
-        return response;
+
+        const buildings: TBuilding[] = response.map(building => ({
+            id: building.id,
+            typeId: building.typeId,
+            villageId: building.villageId,
+            x: building.x,
+            y: building.y,
+            level: building.level,
+            currentHp: building.currentHp,
+            type: building.type
+        }));
+        console.log(buildings)
+        return buildings;
     }
 
     async getBuildingTypes(): Promise<TBuildingTypesResponse> {
