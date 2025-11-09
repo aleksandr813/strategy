@@ -163,7 +163,7 @@ class Application
 
     public function buyBuilding($params)
     {
-        if ($params['token'] && $params['typeId'] && isset($params['x']) && isset($params['y'])) {
+        if ($params['token'] && $params['typeId'] && $params['x'] && $params['y']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
                 return $this->village->buyBuilding($user, $params['typeId'], $params['x'], $params['y']);

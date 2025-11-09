@@ -6,7 +6,7 @@ import UnitPreview from "../services/canvas/UnitPreview";
 import Server from "../services/server/Server";
 import VillageManager from "../pages/Village/villageDataManager";
 import Store from "../services/store/Store";
-import Manager, { GameDataInterface } from "./Manager";
+import Manager, { GameData } from "./Manager";
 
 const { WIDTH, HEIGHT } = CONFIG;
 
@@ -18,7 +18,7 @@ class Village extends Manager {
     private villageManager: VillageManager;
     public selectedBuilding: Building | null = null;
 
-    constructor(store: Store, server: Server, gameData: GameDataInterface) {
+    constructor(store: Store, server: Server, gameData: GameData) {
         super(gameData);
         this.store = store;
         this.server = server;
@@ -33,25 +33,21 @@ class Village extends Manager {
         this.selectedBuilding = building;
     }
 
-    public async handleBuildingPlacement(x: number, y: number, server: Server): Promise<void> {
-        const newBuilding = this.buildingPreview.tryPlace();
-        if (!newBuilding) return;
+    async handleBuildingPlacement(server: Server) {
+        const { buildingPreview } = this.getScene();
+        
+        if (!buildingPreview.isActiveStatus() || !buildingPreview.getCanPlace()) {
+            return;
+        }
 
-        const typeId = this.buildingPreview.getBuildingTypeId();
-        const pos = this.buildingPreview.getPlacementPosition();
-
-        try {
-            const result = await server.buyBuilding(typeId, pos.x, pos.y);
-            if (result && !result.error) {
-                this.gameData.addBuilding(newBuilding);
-            }
-            else {
-                console.error('Ошибка при покупке здания:', result?.error || result);
-                this.buildingPreview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp); 
-            }
-        } catch (error) {
-            console.error('Ошибка запроса:', error);
-            this.buildingPreview.activate(newBuilding.sprites[0].toString(), typeId, newBuilding.hp);
+        const typeId = buildingPreview.getBuildingTypeId();
+        const position = buildingPreview.getPlacementPosition();
+        
+        const result = await server.buyBuilding(typeId, position.x, position.y);
+        
+        if (result) {
+            buildingPreview.deactivate();
+            await this.loadBuildings();
         }
     }
 
@@ -92,8 +88,30 @@ class Village extends Manager {
 
     async loadBuildings(): Promise<void> {
         console.log("Загружаем здания из сервера...");
-        const buildingObjects = await this.villageManager.loadBuildings();
-        this.gameData.setBuildings(buildingObjects);
+
+        const buildingsData = await this.server.getBuildings();
+        if (!buildingsData) {
+            console.log('Нету зданий для загрузки');
+            return;
+        }
+
+        const buildings = buildingsData.map(buildingData => {
+            //console.log(buildingData)
+            return new Building(
+                buildingData.id,
+                buildingData.type,
+                buildingData.currentHp, 
+                buildingData.currentHp,
+                buildingData.level,
+                2,
+                buildingData.typeId,
+                buildingData.x,
+                buildingData.y
+            );
+        });
+
+        this.gameData.setBuildings(buildings);
+
         console.log("Загружено зданий:", this.gameData.getBuildings().length);
     }
 

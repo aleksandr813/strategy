@@ -149,12 +149,12 @@ class DB
         return $this->queryAll(
             "SELECT 
                 b.id AS id, 
-                b.type_id AS type_id, 
-                b.village_id AS village_id, 
+                b.type_id AS typeId, 
+                b.village_id AS villageId, 
                 b.x AS x, 
                 b.y AS y,
                 b.level AS level,
-                b.current_hp AS current_hp,
+                b.current_hp AS currentHp,
                 bt.type AS type
             FROM buildings AS b
             INNER JOIN building_types AS bt
@@ -230,6 +230,14 @@ class DB
         return $this->execute(
             "INSERT INTO villages (user_id, x, y) VALUES (?, ?, ?)",
             [$userId, $x, $y]
+        );
+    }
+
+    public function createBuilding($villageId, $buildingType, $x, $y)
+    { 
+        return $this->execute(
+            "INSERT INTO buildings (village_id, type_id, x, y, level, current_hp) VALUES (?, ?, ?, ?, 1, 100)",
+            [$villageId, $buildingType, $x, $y]
         );
     }
 
