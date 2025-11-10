@@ -110,16 +110,17 @@ class DB
             [$userId]
         );
     }
-//временно так , так как саму функции moveUnits никто не сделал до сих пор
-    public function moveUnits($unitId, $userId, $newX, $newY)
+public function moveUnit($unitId, $userId, $newX, $newY)
 {
     return $this->execute(
-        "UPDATE units SET x = ?, y = ? 
+        "UPDATE units 
+         SET x = ?, y = ? 
          WHERE id = ? 
          AND village_id IN (SELECT id FROM villages WHERE user_id = ?)",
         [$newX, $newY, $unitId, $userId]
     );
 }
+
 
     public function buyUnit($villageId, $unitId, $x, $y, $hp) {
     $this->execute("INSERT INTO units
