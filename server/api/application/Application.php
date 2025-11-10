@@ -28,7 +28,7 @@ class Application
         if (empty($params['login']) || empty($params['hash']) || empty($params['rnd'])) {
             return ['error' => 1016];
         }
-        
+
         return $this->user->login($params['login'], $params['hash'], $params['rnd']);
     }
 
@@ -44,12 +44,13 @@ class Application
         return ['error' => 242];
     }
 
-    public function registration($params) {
+    public function registration($params)
+    {
         // Проверка на пустые поля
         if (empty($params['login']) || empty($params['hash']) || empty($params['name'])) {
             return ['error' => 1016];
         }
-        
+
         return $this->user->registration($params['login'], $params['hash'], $params['name']);
     }
 
@@ -161,6 +162,17 @@ class Application
         return ['error' => 242];
     }
 
+    public function takeDamage($params)
+    {
+        if ($params['token'] && $params['idUnitsAndDamage']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->village->updateUnitsHP($user, $params['typeId'], $params['idUnitsAndDamage']);
+            }
+        }
+        return ['error' => 242];
+    }
+
     public function buyBuilding($params)
     {
         if ($params['token'] && $params['typeId'] && $params['x'] && $params['y']) {
@@ -173,7 +185,8 @@ class Application
         return ['error' => 242];
     }
 
-    public function upgradeBuilding($params) {
+    public function upgradeBuilding($params)
+    {
         if ($params['token'] && $params['id'] && $params['typeId']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -205,7 +218,8 @@ class Application
         return ['error' => 242];
     }
 
-    public function getIncome($params) {
+    public function getIncome($params)
+    {
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -215,5 +229,4 @@ class Application
         }
         return ['error' => 242];
     }
-
 }

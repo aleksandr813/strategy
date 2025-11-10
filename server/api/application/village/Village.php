@@ -1,6 +1,7 @@
 <?php
 
-class Village {
+class Village
+{
     private $db;
 
     public function __construct($db)
@@ -8,7 +9,8 @@ class Village {
         $this->db = $db;
     }
 
-    public function getIncome($userId) {
+    public function getIncome($userId)
+    {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 310];
@@ -34,11 +36,12 @@ class Village {
 
         $this->db->updateMoney($userId, $newMoney);
         $this->db->updateLastIncome($village->id);
-        
+
         return ['money' => $this->db->getMoney($userId)->money];
     }
 
-    public function getBuildings($userId) {
+    public function getBuildings($userId)
+    {
         if (!$userId) {
             return ['error' => 705];
         }
@@ -46,12 +49,14 @@ class Village {
         return $buildings;
     }
 
-    public function getBuildingTypes() {
+    public function getBuildingTypes()
+    {
         $types = $this->db->getBuildingTypes();
         return ['buildingTypes' => $types];
     }
 
-    public function buyBuilding($user, $typeId, $x, $y) {
+    public function buyBuilding($user, $typeId, $x, $y)
+    {
         $village = $this->db->getVillage($user->id);
         if (!$village) {
             return ['error' => 310];
@@ -84,7 +89,8 @@ class Village {
         ];
     }
 
-    public function upgradeBuilding($buildingId, $user, $typeId) {
+    public function upgradeBuilding($buildingId, $user, $typeId)
+    {
         $village = $this->db->getVillage($user->id);
         if (!$village) {
             return ['error' => 310];
@@ -114,7 +120,8 @@ class Village {
         return ['money' => $newMoney];
     }
 
-    public function deleteBuilding($buildingId, $userId) {
+    public function deleteBuilding($buildingId, $userId)
+    {
         $result = $this->db->deleteBuilding($buildingId, $userId);
         if (!$result) {
             return ['error' => 303];
@@ -188,7 +195,6 @@ class Village {
         if (!$result) {
             return ['error' => 503];
         }
-
     }
 
     public function getUnitTypes()
@@ -197,7 +203,44 @@ class Village {
         return ["unitTypes" => $types];
     }
 
-    public function moveUnit($unit) {
-        
+    public function updateUnitsHP($userId, $typeId, $idUnitsAndDamage) {
+    $units = $this->db->getUnits($userId);
+    
+    // Создаем карту юнитов для быстрого поиска по ID
+    $unitMap = [];
+    foreach ($units as $unit) {
+        $unitMap[$unit['id']] = $unit;
     }
+    
+    foreach ($idUnitsAndDamage as $item) {
+        $unitId = $item['unitId'];
+        $damage = $item['damage'];
+        
+        // Проверяем существование юнита
+        if (!isset($unitMap[$unitId])) {
+            return ['error' => 556]; // Юнит не найден
+        }
+        
+        // Вычисляем новое HP
+        $currentHP = $unitMap[$unitId]['hp'];
+        $newHP = $currentHP - $damage;
+        
+        // Проверяем на отрицательное значение
+        if ($newHP < 0) {
+            return ['error' => 555];
+        }
+        
+        // Обновляем HP в базе данных
+        $result = $this->db->updateUnitHP($unitId, $userId, $typeId, $newHP);
+        
+        // Опционально: проверяем результат обновления
+        if (!$result) {
+            return ['error' => 557]; // Ошибка базы данных
+        }
+    }
+    
+    return ['success' => true];
+}
+
+    public function moveUnit($unit) {}
 }

@@ -30,6 +30,7 @@ function result($params) {
             case 'buyUnit': return $app->buyUnit($params);
             case 'updateUnit': return $app->updateUnit($params);
             case 'deleteUnit': return $app->deleteUnit($params);
+            case 'takeDamage': return $app->takeDamage($params);
             case 'getBuildingTypes': return $app->getBuildingTypes($params);
             case 'getBuildings': return $app->getBuildings($params);
             case 'buyBuilding': return $app->buyBuilding($params);
