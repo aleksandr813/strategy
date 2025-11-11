@@ -30,6 +30,7 @@ export default class Building {
         this.level = level;
         this.size = 2; 
         this.typeId = typeId;
+
         
         const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
         this.sprites = spriteSet;
