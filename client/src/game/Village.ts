@@ -33,6 +33,13 @@ class Village extends Manager {
         this.selectedBuilding = building;
     }
 
+    public removeBuilding(building: Building): void {
+        this.gameData.removeBuilding(building);
+        if (this.selectedBuilding === building) {
+            this.selectedBuilding = null;
+        }
+    }
+
     async handleBuildingPlacement(server: Server) {
         const { buildingPreview } = this.getScene();
         
@@ -106,7 +113,8 @@ class Village extends Manager {
                 2,
                 buildingData.typeId,
                 buildingData.x,
-                buildingData.y
+                buildingData.y,
+                buildingData.villageId
             );
         });
 

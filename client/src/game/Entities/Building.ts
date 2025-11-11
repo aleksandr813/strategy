@@ -4,6 +4,7 @@ import { TPoint } from "../../config";
 export default class Building {
     id: number;
     typeId: number;
+    villageId: number;
     type: string;
     cords:TPoint[] = [];
     hp: number;
@@ -22,7 +23,7 @@ export default class Building {
     };
 
 
-    constructor(id:number, type: string, hp:number, maxHp:number, level:number, size:number, typeId:number, x:number, y:number) {
+    constructor(id:number, type: string, hp:number, maxHp:number, level:number, size:number, typeId:number, x:number, y:number, villageId:number) {
         this.id = id;
         this.type = type;
         this.hp = hp;
@@ -30,6 +31,7 @@ export default class Building {
         this.level = level;
         this.size = 2; 
         this.typeId = typeId;
+        this.villageId = villageId;
         
         const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
         this.sprites = spriteSet;
