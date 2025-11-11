@@ -130,7 +130,7 @@ class Village {
         }
         $units = $this->db->getUnits($userId);
 
-        return ["units" => $units];
+        return $units;
     }
 
     public function buyUnit($user, $typeId, $x, $y)

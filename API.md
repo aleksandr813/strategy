@@ -438,7 +438,14 @@ Buildings: {
 **Успешный ответ**
 ```
     Answer<{
-        units: units[];
+        id: number; - id юнита, 
+        typeId: number; - id типа юнита, 
+        villageId: number; - id деревни, 
+        x: number; - координата по x, 
+        y: number; - координата по y,
+        level: number; - уровень юнита,
+        currentHp: number; - текущее здоровье юнита,
+        type: string; - тип юнита
     }>
 ```
 **Ошибки**
