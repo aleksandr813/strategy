@@ -98,6 +98,11 @@ class DB
         );
     }
 
+    public function getUnit($unitId, $villageId) {
+        return $this->query("SELECT x, y FROM units WHERE id = ? AND village_id = ?",
+        [$unitId, $villageId]);
+    }
+
     public function getUnits($userId)
     {
         return $this->queryAll(
@@ -136,6 +141,34 @@ class DB
         return $this->execute(
             "UPDATE units SET unit_type = ?, x = ?, y = ? WHERE id = ? AND user_id = ?",
             [$unitType, $x, $y, $unitId, $userId]
+        );
+    }
+
+    public function updateUnitsPosition($units, $villageId) {
+        $coordinatesX = [];
+        $coordinatesY = [];
+        $validUnits = [];
+
+        foreach ($units as $unit) {
+            $unitId = (int) $unit['unitId'];
+            $x = (int) $unit['x'];
+            $y = (int) $unit['y'];
+
+            $coordinatesX[] = "WHEN $unitId THEN $x";
+            $coordinatesY[] = "WHEN $unitId THEN $y";
+            $validUnits[] = $unitId;
+        }
+
+        $unitsStr = implode(',', $validUnits);
+        $xStr = implode(' ', $coordinatesX);
+        $yStr = implode(' ', $coordinatesY);
+
+        return $this->execute(
+            "UPDATE units SET
+            x = CASE id $xStr END,
+            y = CASE id $yStr END
+            WHERE id IN ($unitsStr) AND village_id = ?",
+            [$villageId]
         );
     }
 
