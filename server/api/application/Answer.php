@@ -22,6 +22,7 @@ class Answer
         '500' => 'Unit is not found',
         '501' => 'Failed to buy unit',
         '503' => 'Failed to delete unit',
+        '504' => 'Units movement error',
         '705' => 'User is not found',
         '1001' => 'Is it unique login?',
         '1002' => 'Wrong login or password',

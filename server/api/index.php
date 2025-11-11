@@ -28,6 +28,7 @@ function result($params) {
             case 'getUnitTypes': return $app->getUnitTypes($params);
             case 'getUnits': return $app->getUnits($params);
             case 'buyUnit': return $app->buyUnit($params);
+            case 'moveUnits': return $app->moveUnits($params);
             case 'deleteUnit': return $app->deleteUnit($params);
             case 'getBuildingTypes': return $app->getBuildingTypes($params);
             case 'getBuildings': return $app->getBuildings($params);

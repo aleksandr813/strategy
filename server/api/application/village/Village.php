@@ -182,8 +182,19 @@ class Village {
         return ["unitTypes" => $types];
     }
 
-    public function moveUnit($unit) {
-        
+    public function moveUnits($userId, $units) {
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
+        }
+
+        $result = $this->db->updateUnitsPosition($units, $village->id);
+
+        if (!$result) {
+            return ['error' => 504];
+        }
+
+        return true;
     }
 
     public function moveUnit($unit) {

@@ -199,6 +199,13 @@ class Server {
         console.log('buyUnit result:', result);
         return result;
     }
+
+    async deleteBuilding(buildingId: number): Promise<boolean> {
+        const response = await this.request<any>('deleteBuilding',{
+            id: buildingId.toString(),
+        });
+        return response === true;
+    }
 }
 
 
