@@ -3,28 +3,28 @@ import Store from './services/store/Store';
 import Server from './services/server/Server';
 import Popup from './components/Popup/Popup';
 import PageManager from './pages/PageManager';
-import Village from './game/Village';
+import Game from './game/Game';
 
 import './App.scss';
 
 export const StoreContext = React.createContext<Store>(null!);
 export const ServerContext = React.createContext<Server>(null!);
-export const VillageContext = React.createContext<Village>(null!);
+export const GameContext = React.createContext<Game>(null!);
 
 const App: React.FC = () => {
     const store = new Store();
     const server = new Server(store);
-    const village = new Village(store, server);
+    const game = new Game(store, server);
 
     return (
         <StoreContext.Provider value={store}>
             <ServerContext.Provider value={server}>
-                <VillageContext.Provider value={village}>
+                <GameContext.Provider value={game}>
                     <div className='app'>
                         <Popup />
                         <PageManager />
                     </div>
-                </VillageContext.Provider>
+                </GameContext.Provider>
             </ServerContext.Provider>
         </StoreContext.Provider>
     );

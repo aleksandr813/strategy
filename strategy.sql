@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Окт 20 2025 г., 22:26
+-- Время создания: Ноя 07 2025 г., 23:07
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -69,7 +69,10 @@ CREATE TABLE `building_types` (
 
 INSERT INTO `building_types` (`id`, `type`, `name`, `hp`, `price`) VALUES
 (1, 'main_building', 'Ратуша', 700, 1),
-(2, 'mine', 'Шахта ', 100, 1);
+(2, 'mine', 'Шахта ', 100, 1),
+(3, 'barrack', 'Казарма', 500, 400),
+(4, 'wall', 'Стена', 200, 100),
+(5, 'shooting_tower', 'Стрелковая башня', 300, 200);
 
 -- --------------------------------------------------------
 
@@ -143,15 +146,32 @@ CREATE TABLE `unit_types` (
   `type` varchar(100) NOT NULL,
   `name` varchar(100) NOT NULL,
   `hp` int NOT NULL DEFAULT '1',
-  `price` int NOT NULL
+  `price` int NOT NULL,
+  `damage` int DEFAULT NULL,
+  `speed` decimal(3,1) DEFAULT NULL,
+  `range` int DEFAULT NULL,
+  `unit_type` varchar(20) DEFAULT NULL,
+  `unlock_level` int DEFAULT NULL,
+  `features` json DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `unit_types`
 --
 
-INSERT INTO `unit_types` (`id`, `type`, `name`, `hp`, `price`) VALUES
-(1, 'knight', 'knight', 100, 1);
+INSERT INTO `unit_types` (`id`, `type`, `name`, `hp`, `price`, `damage`, `speed`, `range`, `unit_type`, `unlock_level`, `features`) VALUES
+(1, 'knight', 'Мечник', 100, 50, 15, '1.0', NULL, 'infantry', 1, '{\"type\": \"balanced\"}'),
+(2, 'spearman', 'Копейщик', 60, 30, 10, '1.0', NULL, 'infantry', 1, '{\"type\": \"anti_cavalry\", \"bonus_damage\": {\"cavalry\": 0.5}, \"reach_attack\": true}'),
+(3, 'berserk', 'Берсерк', 90, 120, 35, '1.3', NULL, 'infantry', 1, '{\"type\": \"anti_infantry\", \"bonus_damage\": {\"infantry\": 0.5}, \"vulnerability\": {\"archers\": 0.5}}'),
+(4, 'paladin', 'Паладин', 300, 300, 25, '0.7', NULL, 'infantry', 3, '{\"type\": \"heavy_infantry\"}'),
+(5, 'guardian', 'Страж', 400, 250, 12, '0.5', NULL, 'infantry', 3, '{\"type\": \"tank\", \"taunt\": true}'),
+(6, 'archer', 'Лучник', 70, 60, 18, '1.0', 6, 'archer', 1, '{\"type\": \"basic_archer\"}'),
+(7, 'crossbowman', 'Арбалетчик', 110, 150, 28, '0.8', 5, 'archer', 2, '{\"type\": \"armor_piercing\", \"armor_penetration\": 0.5}'),
+(8, 'cavalry', 'Всадник', 130, 140, 20, '2.0', NULL, 'cavalry', 2, '{\"type\": \"scout\", \"bonus_damage\": {\"archers\": 0.5}}'),
+(9, 'knight', 'Рыцарь', 180, 200, 30, '1.0', NULL, 'cavalry', 2, '{\"type\": \"armored\", \"armor_bonus\": {\"archers\": 0.2}}'),
+(10, 'mage', 'Маг', 90, 220, 40, '1.0', 6, 'mage', 3, '{\"type\": \"magic_damage\", \"armor_penetration\": 0.7}'),
+(11, 'summoner', 'Призыватель', 70, 180, 8, '0.9', 3, 'mage', 2, '{\"type\": \"summoner\", \"summon\": {\"type\": \"skeleton\", \"damage\": 5, \"health\": 30, \"interval\": 10}}'),
+(12, 'golem', 'Голем', 500, 400, 35, '0.4', NULL, 'mage', 3, '{\"type\": \"magic_tank\", \"magic_resistance\": 0.8}');
 
 -- --------------------------------------------------------
 
@@ -276,7 +296,7 @@ ALTER TABLE `buildings`
 -- AUTO_INCREMENT для таблицы `building_types`
 --
 ALTER TABLE `building_types`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `messages`
@@ -294,7 +314,7 @@ ALTER TABLE `units`
 -- AUTO_INCREMENT для таблицы `unit_types`
 --
 ALTER TABLE `unit_types`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT для таблицы `users`

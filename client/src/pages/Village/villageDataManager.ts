@@ -1,7 +1,7 @@
-import Building from "../../game/Buildings/Building";
-import Unit from "../../game/Units/Unit";
+import Building from "../../game/Entities/Building";
+import Unit from "../../game/Entities/Unit";
 import Server from "../../services/server/Server";
-import { Building as BuildingData, BuildingType, BuildingResponse, BuildingTypeResponse, UnitResponse, UnitTypeResponse,UnitType } from "../../services/server/types";
+import { TBuilding, BuildingType, BuildingTypeResponse, UnitResponse, UnitTypeResponse,UnitType } from "../../services/server/types";
 import { ServerContext } from "../../App";    
 
 export default class VillageManager {
@@ -12,61 +12,28 @@ export default class VillageManager {
         this.server = server
     }
 
-    async loadBuildings(): Promise<Building[]> {
-        const [buildingsResponse, typesResponse] = await Promise.all([
-            this.server.getBuildings(),
-            this.server.getBuildingTypes(),
-        ]);
+    async loadBuildings(): Promise<TBuilding[] | null> {
+        const buildingsResponse = await this.server.getBuildings();
 
-        console.log("Buildings response:", buildingsResponse);
-        console.log("Building types response:", typesResponse);
-
-        const buildings: BuildingResponse[] = buildingsResponse.buildings;
-        const types: BuildingTypeResponse[] = typesResponse.building_types;
-
-        return buildings
-        .map((b) => {
-        const typeData = types.find((t) => Number(t.id) === Number(b.type_id));
-        if (!typeData) return null;
-
-        const type: BuildingType = {
-            id: Number(typeData.id),
-            type: typeData.type,
-            name: typeData.name,
-            hp: Number(typeData.hp),
-            price: Number(typeData.price),
-            sprite: Number(typeData.sprite_id)
-        };
-
-        const buildingData = {
-            ...b,
-            id: Number(b.id),
-            type_id: Number(b.type_id),
-            village_id: Number(b.village_id),
-            x: Number(b.x),
-            y: Number(b.y),
-            current_hp: Number(b.current_hp),
-            level: Number(b.level),
-        };
-
-        const building = new Building(buildingData, type);
-        return building;
+        if (buildingsResponse){
+            return buildingsResponse;
         }
-        ).filter(Boolean) as Building[];
+        return null
+
     }
 
     async loadBuildingTypes() {
         try {
             const response = await this.server.getBuildingTypes();
             
-            if (response && response.building_types && response.building_types.length > 0) {
-                const convertedTypes: BuildingType[] = response.building_types.map((type: BuildingTypeResponse) => ({
+            if (response && response.buildingTypes && response.buildingTypes.length > 0) {
+                const convertedTypes: BuildingType[] = response.buildingTypes.map((type: BuildingTypeResponse) => ({
                     id: Number(type.id),
                     type: type.type,
                     name: type.name,
                     hp: Number(type.hp),
                     price: Number(type.price),
-                    sprite: Number(type.sprite_id)
+                    sprite: Number(type.spriteId)
                 }));
                 console.log('Типы зданий успешно загруженны')
                 return (convertedTypes);
@@ -90,11 +57,11 @@ export default class VillageManager {
         console.log("Unit types response:", typesResponse);
 
         const units: UnitResponse[] = unitsResponse.units;
-        const types: UnitTypeResponse[] = typesResponse.unit_types;
+        const types: UnitTypeResponse[] = typesResponse.unitTypes;
 
         return units
         .map((u) => {
-        const typeData = types.find((t) => Number(t.id) === Number(u.type_id));
+        const typeData = types.find((t) => Number(t.id) === Number(u.typeId));
         if (!typeData) return null;
 
         const type: UnitType = {
@@ -108,11 +75,11 @@ export default class VillageManager {
         const unitData = {
             ...u,
             id: Number(u.id),
-            type_id: Number(u.type_id),
-            village_id: Number(u.village_id),
+            typeId: Number(u.typeId),
+            villageId: Number(u.villageId),
             x: Number(u.x),
             y: Number(u.y),
-            current_hp: Number(u.current_hp),
+            currentHp: Number(u.currentHp),
             level: Number(u.level),
         };
 
@@ -126,8 +93,8 @@ export default class VillageManager {
         try {
             const response = await this.server.getUnitsTypes();
             
-            if (response && response.unit_types && response.unit_types.length > 0) {
-                const convertedTypes: UnitType[] = response.unit_types.map((type: UnitTypeResponse) => ({
+            if (response && response.unitTypes && response.unitTypes.length > 0) {
+                const convertedTypes: UnitType[] = response.unitTypes.map((type: UnitTypeResponse) => ({
                     id: Number(type.id),
                     type: type.type,
                     name: type.name,

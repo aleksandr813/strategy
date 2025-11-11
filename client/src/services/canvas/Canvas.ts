@@ -214,6 +214,12 @@ class Canvas {
         this.contextV.font = font;
         this.contextV.fillText(text, this.xs(x), this.ys(y));
     }
+    
+    drawFPS(FPS: string, color = '#fff', font = 'bold 1rem Arial'): void {
+        this.contextV.fillStyle = color;
+        this.contextV.font = font;
+        this.contextV.fillText(FPS, 12, 36);
+    }
 
     rect(x: number, y: number, size = 64, color = 'rgba(255, 0, 0, 1)'): void {
         this.contextV.fillStyle = color;

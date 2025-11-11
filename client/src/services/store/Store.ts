@@ -1,5 +1,5 @@
 import { TMessages, TUser } from "../server/types";
-import Building from "../../game/Buildings/Building";
+import Building from "../../game/Entities/Building";
 
 const TOKEN = 'token';
 
@@ -34,7 +34,7 @@ class Store {
     addMessages(messages: TMessages): void {
         // TODO сделать, чтобы работало вот так
         //this.messages.concat(messages);
-        // а вот это - плохой код!
+        // а вот это - плохой код! 
         if (messages?.length) {
             this.messages = messages;
         }
