@@ -101,18 +101,6 @@ class Application
         return ['error' => 242];
     }
 
-    public function updateUnit($params)
-    {
-        if ($params['token'] && $params['id'] && $params['unitType'] && isset($params['x']) && isset($params['y'])) {
-            $user = $this->user->getUser($params['token']);
-            if ($user) {
-                return $this->village->updateUnit($params['id'], $user->id, $params['unitType'], $params['x'], $params['y']);
-            }
-            return ['error' => 705];
-        }
-        return ['error' => 242];
-    }
-
     public function deleteUnit($params)
     {
         if ($params['token'] && $params['id']) {

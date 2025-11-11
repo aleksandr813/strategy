@@ -21,7 +21,6 @@ class Answer
         '312' => 'Maximum level',
         '500' => 'Unit is not found',
         '501' => 'Failed to buy unit',
-        '502' => 'Failed to update unit',
         '503' => 'Failed to delete unit',
         '705' => 'User is not found',
         '1001' => 'Is it unique login?',

@@ -138,14 +138,6 @@ class DB
         return !empty($result) && $result->occupied == 1;
     }
 
-    public function updateUnit($unitId, $userId, $unitType, $x, $y)
-    {
-        return $this->execute(
-            "UPDATE units SET unit_type = ?, x = ?, y = ? WHERE id = ? AND user_id = ?",
-            [$unitType, $x, $y, $unitId, $userId]
-        );
-    }
-
     public function deleteUnit($unitId, $userId)
     {
         return $this->execute("DELETE FROM units WHERE id = ? AND user_id = ?", [$unitId, $userId]);

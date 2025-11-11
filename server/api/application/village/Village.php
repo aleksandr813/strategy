@@ -167,21 +167,6 @@ class Village {
         ];
     }
 
-    public function updateUnit($unitId, $userId, $unitType, $x, $y)
-    {
-        $result = $this->db->updateUnit($unitId, $userId, $unitType, $x, $y);
-        if ($result) {
-            return [
-                'id' => $unitId,
-                'userId' => $userId,
-                'unitType' => $unitType,
-                'x' => $x,
-                'y' => $y
-            ];
-        }
-        return ['error' => 502];
-    }
-
     public function deleteUnit($unitId, $userId)
     {
         $result = $this->db->deleteUnit($unitId, $userId);
