@@ -113,8 +113,7 @@ class Village extends Manager {
                 2,
                 buildingData.typeId,
                 buildingData.x,
-                buildingData.y,
-                buildingData.villageId
+                buildingData.y,   
             );
         });
 
