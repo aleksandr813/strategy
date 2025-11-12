@@ -56,18 +56,7 @@ export type TBuildingTypesResponse = {
     buildingTypes: BuildingTypeResponse[];
 }
 
-export interface BuildingResponse { 
-    id: string;
-    typeId: string;
-    villageId: string;
-    x: string;
-    y: string;  
-    currentHp: string;
-    level: string;
-}
-
-// Тип для использования в приложении (числовые поля)
-export interface Building {
+export type TBuilding = {
     id: number;
     typeId: number;
     villageId: number;
@@ -75,16 +64,15 @@ export interface Building {
     y: number;
     currentHp: number;
     level: number;
+    type: string;
 }
 
 export enum BuildingTypeID {
     TownHall = 1, // Ратуша
     Mine = 2,     // Шахта
-}
-
-// Тип для ответа метода getBuildingTypes
-export type TBuildingResponse = {
-    buildings: BuildingResponse[];
+    Kazarma = 3,
+    Wall = 4,
+    Tower = 5,
 }
 
 
@@ -131,7 +119,18 @@ export interface Unit {
 }
 
 export enum UnitTypeID {
-    Knight = 1, // Рыцарь
+    Knight = 9, // Рыцарь
+    Spearman = 2,
+    Berserk = 3,
+    Paladin = 4,
+    Guardian = 5,
+    Archer = 6,
+    Crossbowman = 7,
+    Sorcerer = 10,
+    Summoner = 11,
+    Golem = 12,
+    Swordman = 1
+
 }
 
 // Тип для ответа метода getBuildingTypes

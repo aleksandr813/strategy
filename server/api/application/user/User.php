@@ -104,14 +104,14 @@ class User
     {
         // Создание основных стартовых построек
         $starterBuildings = [
-            ['typeId' => 1, 'x' => 15, 'y' => 15], // Ратуша
-            ['typeId' => 2, 'x' => 5, 'y' => 5], // Шахта
+            ['type_id' => 1, 'x' => 15, 'y' => 15], // Ратуша
+            ['type_id' => 2, 'x' => 5, 'y' => 5], // Шахта
         ];
 
         foreach ($starterBuildings as $building) {
             $this->db->createBuilding(
                 $villageId,
-                $building['typeId'],
+                $building['type_id'],
                 $building['x'],
                 $building['y']
             );

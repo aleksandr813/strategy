@@ -1,9 +1,10 @@
-import { Building as BuildingData, BuildingType, BuildingTypeID } from "../../services/server/types";
+import { TBuilding as BuildingData, BuildingType, BuildingTypeID } from "../../services/server/types";
 import { TPoint } from "../../config";
 
 export default class Building {
     id: number;
-    type: BuildingType;
+    typeId: number;
+    type: string;
     cords:TPoint[] = [];
     hp: number;
     maxHp: number;
@@ -13,32 +14,36 @@ export default class Building {
     isselected: boolean = false;  
 
     private static SPRITE_MAP: Record<BuildingTypeID, number[]> = {
-        [BuildingTypeID.TownHall]: [7, 8, 9, 10], // TownHall (Ратуша)
-        [BuildingTypeID.Mine]:     [11, 12, 13, 14], // Mine (Шахта)
+        [BuildingTypeID.TownHall]: [1, 2, 3, 4], // TownHall (Ратуша)
+        [BuildingTypeID.Mine]:     [5, 6, 7, 8], // Mine (Шахта)
+        [BuildingTypeID.Tower]:     [9, 10, 11, 12],
+        [BuildingTypeID.Wall]:     [13],
+        [BuildingTypeID.Kazarma]:  [14, 15, 16 ,17],
     };
 
 
-    constructor(data: BuildingData, type: BuildingType) {
-        this.id = Number(data.id);
+    constructor(id:number, type: string, hp:number, maxHp:number, level:number, size:number, typeId:number, x:number, y:number) {
+        this.id = id;
         this.type = type;
-        this.hp = Number(data.currentHp);
-        this.maxHp = Number(type.hp);
-        this.level = Number(data.level);
+        this.hp = hp;
+        this.maxHp = maxHp;
+        this.level = level;
         this.size = 2; 
-        const typeId = Number(type.id);
+        this.typeId = typeId;
+
         
         const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
         this.sprites = spriteSet;
 
         this.cords = [
             // Верхний Левый тайл здания на карте
-            { x: Number(data.x), y: Number(data.y) },
+            { x: Number(x), y: Number(y) },
             // Верхний Правый
-            { x: Number(data.x) + 1, y: Number(data.y) },
+            { x: Number(x) + 1, y: Number(y) },
             // Нижний Левый
-            { x: Number(data.x), y: Number(data.y) + 1 },
+            { x: Number(x), y: Number(y) + 1 },
             // Нижний Правый
-            { x: Number(data.x) + 1, y: Number(data.y) + 1 },
+            { x: Number(x) + 1, y: Number(y) + 1 },
         ];
     }
 
@@ -55,7 +60,7 @@ export default class Building {
             level: this.level,
             hp: this.hp,
             maxHp: this.maxHp,
-            name: this.type.name
+            name: this.type
         }
     }
 

@@ -73,7 +73,6 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
     }
 
     const regClickHandler = () => setPage(PAGES.REGISTRATION);
-    const goToVillageHandler = () => setPage(PAGES.VILLAGE);
 
     return (
         <div className='login'>

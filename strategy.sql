@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Окт 20 2025 г., 22:26
+-- Время создания: Ноя 07 2025 г., 23:07
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -69,7 +69,10 @@ CREATE TABLE `building_types` (
 
 INSERT INTO `building_types` (`id`, `type`, `name`, `hp`, `price`) VALUES
 (1, 'main_building', 'Ратуша', 700, 1),
-(2, 'mine', 'Шахта ', 100, 1);
+(2, 'mine', 'Шахта ', 100, 1),
+(3, 'barrack', 'Казарма', 500, 400),
+(4, 'wall', 'Стена', 200, 100),
+(5, 'shooting_tower', 'Стрелковая башня', 300, 200);
 
 -- --------------------------------------------------------
 
@@ -293,7 +296,7 @@ ALTER TABLE `buildings`
 -- AUTO_INCREMENT для таблицы `building_types`
 --
 ALTER TABLE `building_types`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `messages`
@@ -311,7 +314,7 @@ ALTER TABLE `units`
 -- AUTO_INCREMENT для таблицы `unit_types`
 --
 ALTER TABLE `unit_types`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT для таблицы `users`

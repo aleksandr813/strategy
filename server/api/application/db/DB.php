@@ -98,6 +98,11 @@ class DB
         );
     }
 
+    public function getUnit($unitId, $villageId) {
+        return $this->query("SELECT x, y FROM units WHERE id = ? AND village_id = ?",
+        [$unitId, $villageId]);
+    }
+
     public function getUnits($userId)
     {
         return $this->queryAll(
@@ -139,6 +144,34 @@ class DB
         );
     }
 
+    public function updateUnitsPosition($units, $villageId) {
+        $coordinatesX = [];
+        $coordinatesY = [];
+        $validUnits = [];
+
+        foreach ($units as $unit) {
+            $unitId = (int) $unit['unitId'];
+            $x = (int) $unit['x'];
+            $y = (int) $unit['y'];
+
+            $coordinatesX[] = "WHEN $unitId THEN $x";
+            $coordinatesY[] = "WHEN $unitId THEN $y";
+            $validUnits[] = $unitId;
+        }
+
+        $unitsStr = implode(',', $validUnits);
+        $xStr = implode(' ', $coordinatesX);
+        $yStr = implode(' ', $coordinatesY);
+
+        return $this->execute(
+            "UPDATE units SET
+            x = CASE id $xStr END,
+            y = CASE id $yStr END
+            WHERE id IN ($unitsStr) AND village_id = ?",
+            [$villageId]
+        );
+    }
+
     public function deleteUnit($unitId, $userId)
     {
         return $this->execute("DELETE FROM units WHERE id = ? AND user_id = ?", [$unitId, $userId]);
@@ -149,12 +182,12 @@ class DB
         return $this->queryAll(
             "SELECT 
                 b.id AS id, 
-                b.type_id AS type_id, 
-                b.village_id AS village_id, 
+                b.type_id AS typeId, 
+                b.village_id AS villageId, 
                 b.x AS x, 
                 b.y AS y,
                 b.level AS level,
-                b.current_hp AS current_hp,
+                b.current_hp AS currentHp,
                 bt.type AS type
             FROM buildings AS b
             INNER JOIN building_types AS bt
@@ -230,6 +263,14 @@ class DB
         return $this->execute(
             "INSERT INTO villages (user_id, x, y) VALUES (?, ?, ?)",
             [$userId, $x, $y]
+        );
+    }
+
+    public function createBuilding($villageId, $buildingType, $x, $y)
+    { 
+        return $this->execute(
+            "INSERT INTO buildings (village_id, type_id, x, y, level, current_hp) VALUES (?, ?, ?, ?, 1, 100)",
+            [$villageId, $buildingType, $x, $y]
         );
     }
 
