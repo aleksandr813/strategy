@@ -119,7 +119,18 @@ export interface Unit {
 }
 
 export enum UnitTypeID {
-    Knight = 1, // Рыцарь
+    Knight = 9, // Рыцарь
+    Spearman = 2,
+    Berserk = 3,
+    Paladin = 4,
+    Guardian = 5,
+    Archer = 6,
+    Crossbowman = 7,
+    Sorcerer = 10,
+    Summoner = 11,
+    Golem = 12,
+    Swordman = 1
+
 }
 
 // Тип для ответа метода getBuildingTypes
