@@ -28,6 +28,7 @@
     * 4.12. buyUnit
     * 4.13. getUnits
     * 4.14. getIncome
+    * 4.15. moveUnits
 
 ## 1. Общее
 ### 1.1. Адрес сервера
@@ -142,6 +143,7 @@ Buildings: {
 | buyUnit | Купить юнита в деревню |
 | getUnits | Получить всех юнитов в деревне |
 | getIncome | Получить и обновить доход с шахты |
+| moveUnits | Обновить положение юнитов |
 
 ### 3.1. Общие ошибки
 * `101` - если не передан параметр `method`
@@ -273,7 +275,7 @@ Buildings: {
 **Успешный ответ**
 ```
     Answer<{
-        building_types: BuildingTypes[]
+        buildingTypes: BuildingTypes[]
     }>
 ```
 **Ошибки**
@@ -293,12 +295,12 @@ Buildings: {
 ```
     Answer<{
         id: number; - id здания, 
-        type_id: number; - id типа здания, 
-        village_id: number; - id деревни, 
+        typeId: number; - id типа здания, 
+        villageId: number; - id деревни, 
         x: number; - координата по x, 
         y: number; - координата по y,
         level: number; - уровень здания,
-        current_hp: number; - текущее здоровье здания,
+        currentHp: number; - текущее здоровье здания,
         type: string; - тип здания
     }>
 ```
@@ -391,7 +393,7 @@ Buildings: {
 **Успешный ответ**
 ```
     Answer<{
-        unit_types: UnitTypes[]
+        unitTypes: UnitTypes[]
     }>
 ```
 **Ошибки**
@@ -438,7 +440,14 @@ Buildings: {
 **Успешный ответ**
 ```
     Answer<{
-        units: units[];
+        id: number; - id юнита, 
+        typeId: number; - id типа юнита, 
+        villageId: number; - id деревни, 
+        x: number; - координата по x, 
+        y: number; - координата по y,
+        level: number; - уровень юнита,
+        currentHp: number; - текущее здоровье юнита,
+        type: string; - тип юнита
     }>
 ```
 **Ошибки**
@@ -464,4 +473,25 @@ Buildings: {
 * `705` - невалидный токен. Пользователь не авторизован
 * `310` - деревня не найдена (Village not found)
 * `410` - шахта не найдена (Mine is not found)
->>>>>>> a9a866647dc53face3212184f5646f118a5233aa
+
+
+### 4.15. moveUnits
+Обновить положение юнитов
+
+**Параметры**
+```
+{
+    token: string; - токен
+    units: array; - массив юнитов с их id, x, y
+}
+```
+**Успешный ответ**
+```
+    Answer<{
+        true
+    }>
+```
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
+* `310` - деревня не найдена (Village not found)
+* `504` - Ошибка перемещения юнитов (Units movement error)

@@ -48,7 +48,7 @@ class Village {
 
     public function getBuildingTypes() {
         $types = $this->db->getBuildingTypes();
-        return ["building_types" => $types];
+        return ['buildingTypes' => $types];
     }
 
     public function buyBuilding($user, $typeId, $x, $y) {
@@ -130,7 +130,7 @@ class Village {
         }
         $units = $this->db->getUnits($userId);
 
-        return ["units" => $units];
+        return $units;
     }
 
     public function buyUnit($user, $typeId, $x, $y)
@@ -154,7 +154,7 @@ class Village {
 
         $newMoney = $user->money - $unit->price;
         $this->db->updateMoney($user->id, $newMoney);
-        $this->db->buyunit(
+        $this->db->buyUnit(
             $village->id,
             $typeId,
             $x,
@@ -167,21 +167,6 @@ class Village {
         ];
     }
 
-    public function updateUnit($unitId, $userId, $unitType, $x, $y)
-    {
-        $result = $this->db->updateUnit($unitId, $userId, $unitType, $x, $y);
-        if ($result) {
-            return [
-                'id' => $unitId,
-                'user_id' => $userId,
-                'unit_type' => $unitType,
-                'x' => $x,
-                'y' => $y
-            ];
-        }
-        return ['error' => 502];
-    }
-
     public function deleteUnit($unitId, $userId)
     {
         $result = $this->db->deleteUnit($unitId, $userId);
@@ -189,12 +174,28 @@ class Village {
             return ['error' => 503];
         }
 
+        return true;
     }
 
     public function getUnitTypes()
     {
         $types = $this->db->getUnitTypes();
-        return ["unit_types" => $types];
+        return ["unitTypes" => $types];
+    }
+
+    public function moveUnits($userId, $units) {
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
+        }
+
+        $result = $this->db->updateUnitsPosition($units, $village->id);
+
+        if (!$result) {
+            return ['error' => 504];
+        }
+
+        return true;
     }
 
     public function moveUnit($unit) {

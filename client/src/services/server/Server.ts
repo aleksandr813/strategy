@@ -1,7 +1,7 @@
 import md5 from 'md5';
 import CONFIG from "../../config";
 import Store from "../store/Store";
-import { BuildingTypeResponse, TBuildingTypesResponse, TBuildingResponse } from './types';
+import { BuildingTypeResponse, TBuildingTypesResponse, TBuilding } from './types';
 import { UnitTypeResponse, TUnitTypesResponse, TUnitResponse } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 
@@ -11,7 +11,7 @@ class Server {
     HOST = HOST;
     store: Store;
     chatInterval: NodeJS.Timer | null = null;
-    showErrorCb: (error: TError) => void = () => {};
+    showErrorCb: (error: TError) => void = () => { };
 
     constructor(store: Store) {
         this.store = store;
@@ -26,22 +26,22 @@ class Server {
                 params.token = token;
             }
             const url = `${this.HOST}/?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`;
-            
-            
+
+
             const response = await fetch(url);
             const answer: TAnswer<T> = await response.json();
-            
+
             console.log('Server response:', answer);
-            
+
             if (answer.result === 'ok' && answer.data) {
                 return answer.data;
             }
             answer.error && this.setError(answer.error);
-            
+
             if (answer.error) {
                 console.error('Server error:', answer.error);
             }
-            
+
             return null;
         } catch (e) {
             console.log('Request exception:', e);
@@ -72,11 +72,13 @@ class Server {
         return false;
     }
 
-    async logout() {
-        const result = await this.request<boolean>('logout');
+    async logout(token: string) {
+        const result = await this.request<boolean>('logout', { token });
         if (result) {
             this.store.clearUser();
+            return true;
         }
+        return false;
     }
 
     registration(login: string, password: string, name: string): Promise<boolean | null> {
@@ -120,7 +122,7 @@ class Server {
 
     async getRoots(coeffs: number[]): Promise<any> {
         const params: { [key: string]: string } = { method: 'getRoots' };
-        
+
         // Создаем параметры a, b, c, d, e
         const paramNames = ['a', 'b', 'c', 'd', 'e'];
         coeffs.forEach((coeff, index) => {
@@ -128,22 +130,34 @@ class Server {
                 params[paramNames[index]] = coeff.toString();
             }
         });
-        
+
         return await this.request<any>('getRoots', params);
     }
 
-    async getBuildings(): Promise<TBuildingResponse> {
-        const response = await this.request<TBuildingResponse>('getBuildings');
+    async getBuildings(): Promise<TBuilding[] | null> {
+        const response = await this.request<TBuilding[]>('getBuildings');
         if (!response) {
-            return { buildings: [] };
+            return null
         }
-        return response;
+
+        const buildings: TBuilding[] = response.map(building => ({
+            id: building.id,
+            typeId: building.typeId,
+            villageId: building.villageId,
+            x: building.x,
+            y: building.y,
+            level: building.level,
+            currentHp: building.currentHp,
+            type: building.type
+        }));
+        console.log(buildings)
+        return buildings;
     }
 
     async getBuildingTypes(): Promise<TBuildingTypesResponse> {
         const response = await this.request<TBuildingTypesResponse>('getBuildingTypes');
         if (!response) {
-            return { building_types: [] };
+            return { buildingTypes: [] };
         }
         return response;
     }
@@ -159,24 +173,24 @@ class Server {
     async getUnitsTypes(): Promise<TUnitTypesResponse> {
         const response = await this.request<TUnitTypesResponse>('getUnitTypes');
         if (!response) {
-            return { unit_types: [] };
+            return { unitTypes: [] };
         }
         return response;
     }
 
     async buyBuilding(typeId: number, x: number, y: number): Promise<any> {
         console.log('buyBuilding called with:', { typeId, x, y });
-        const result = await this.request<any>('buyBuilding', { 
-            typeId: typeId.toString(), 
-            x: x.toString(), 
-            y: y.toString() 
+        const result = await this.request<any>('buyBuilding', {
+            typeId: typeId.toString(),
+            x: x.toString(),
+            y: y.toString()
         });
         console.log('buyBuilding result:', result);
         return result;
     }
 
     async buyUnit(typeId: number, x: number, y: number): Promise<any> {
-        console.log('buyUnit called with', { typeId, x, y});
+        console.log('buyUnit called with', { typeId, x, y });
         const result = await this.request<any>('buyUnit', {
             typeId: typeId.toString(),
             x: x.toString(),
@@ -184,6 +198,21 @@ class Server {
         });
         console.log('buyUnit result:', result);
         return result;
+    }
+
+    async deleteBuilding(buildingId: number): Promise<boolean> {
+        const response = await this.request<any>('deleteBuilding',{
+            id: buildingId.toString(),
+        });
+        return response === true;
+    }
+
+    async upgradeBuilding(buildingId: number, typeId: number): Promise<boolean> {
+        const response = await this.request<any>('upgradeBuilding',{
+            id: buildingId.toString(),
+            typeId: typeId.toString()
+        });
+        return response || null;
     }
 }
 

@@ -97,29 +97,42 @@ class DB
                                 ORDER BY m.created DESC"
         );
     }
+public function getUnitById($unitId)
+{
+    return $this->query(
+        "SELECT u.*
+        FROM units AS u
+        JOIN users ON u.user_id = users.id
+        WHERE u.id = ?
+    ",
+        [$unitId]
+    );
+}
 
-    public function getUnitById($unitId)
-    {
-        return $this->query(
-            "SELECT u.*
-            FROM units AS u
-            JOIN users ON u.user_id = users.id
-            WHERE u.id = ?
-        ",
-            [$unitId]
-        );
-    }
+public function getUnit($unitId, $villageId) {
+    return $this->query("SELECT x, y FROM units WHERE id = ? AND village_id = ?",
+    [$unitId, $villageId]);
+}
 
-    public function getUnitsByUser($userId)
-    {
-        return $this->queryAll(
-            "SELECT * FROM units
-            WHERE user_id = ?
-            ORDER BY unit_type
-        ",
-            [$userId]
-        );
-    }
+public function getUnitsByUser($userId)
+{
+    return $this->queryAll(
+        "SELECT 
+            u.id AS id,
+            u.type_id AS typeId,
+            u.village_id AS villageId,
+            u.x AS x,
+            u.y AS y,
+            u.level AS level,
+            u.current_hp AS currentHp,
+            ut.type AS type
+        FROM units AS u
+        INNER JOIN unit_types AS ut
+        ON u.type_id = ut.id
+        WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)",
+        [$userId]
+    );
+}
 
     public function buyUnit($villageId, $unitId, $x, $y, $hp) {
         $this->execute("INSERT INTO units
@@ -128,11 +141,31 @@ class DB
         );
     }
 
-    public function updateUnit($unitId, $userId, $unitType, $x, $y)
-    {
+    public function updateUnitsPosition($units, $villageId) {
+        $coordinatesX = [];
+        $coordinatesY = [];
+        $validUnits = [];
+
+        foreach ($units as $unit) {
+            $unitId = (int) $unit['unitId'];
+            $x = (int) $unit['x'];
+            $y = (int) $unit['y'];
+
+            $coordinatesX[] = "WHEN $unitId THEN $x";
+            $coordinatesY[] = "WHEN $unitId THEN $y";
+            $validUnits[] = $unitId;
+        }
+
+        $unitsStr = implode(',', $validUnits);
+        $xStr = implode(' ', $coordinatesX);
+        $yStr = implode(' ', $coordinatesY);
+
         return $this->execute(
-            "UPDATE units SET unit_type = ?, x = ?, y = ? WHERE id = ? AND user_id = ?",
-            [$unitType, $x, $y, $unitId, $userId]
+            "UPDATE units SET
+            x = CASE id $xStr END,
+            y = CASE id $yStr END
+            WHERE id IN ($unitsStr) AND village_id = ?",
+            [$villageId]
         );
     }
 
@@ -157,12 +190,12 @@ class DB
         return $this->queryAll(
             "SELECT 
                 b.id AS id, 
-                b.type_id AS type_id, 
-                b.village_id AS village_id, 
+                b.type_id AS typeId, 
+                b.village_id AS villageId, 
                 b.x AS x, 
                 b.y AS y,
                 b.level AS level,
-                b.current_hp AS current_hp,
+                b.current_hp AS currentHp,
                 bt.type AS type
             FROM buildings AS b
             INNER JOIN building_types AS bt
@@ -236,6 +269,14 @@ class DB
         return $this->execute(
             "INSERT INTO villages (user_id, x, y) VALUES (?, ?, ?)",
             [$userId, $x, $y]
+        );
+    }
+
+    public function createBuilding($villageId, $buildingType, $x, $y)
+    { 
+        return $this->execute(
+            "INSERT INTO buildings (village_id, type_id, x, y, level, current_hp) VALUES (?, ?, ?, ?, 1, 100)",
+            [$villageId, $buildingType, $x, $y]
         );
     }
 

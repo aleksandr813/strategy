@@ -4,29 +4,52 @@ import Building from '../../game/Entities/Building';
 
 const { SPRITE_SIZE } = CONFIG;
 
+interface BuildingTypeData {
+    id: number;
+    type: string;
+    name: string;
+    hp: number;
+    price: number;
+    sprite: number;
+}
+
+interface RenderData {
+    gridPosition: TPoint;
+    canPlace: boolean;
+}
+
 export default class BuildingPreview {
-    private isActive: boolean = false;
-    private buildingType: string = '';
-    private buildingTypeId: number = 0;
-    private buildingHp: number = 100;
-    private mousePosition: TPoint = { x: 0, y: 0 };
+    private isActive = false;
+    private buildingTypeId = 0;
+    private buildingHp = 0;
     private gridPosition: TPoint = { x: 0, y: 0 };
-    private canPlace: boolean = false;
+    private canPlace = false;
 
-    constructor() {
-        this.isActive = false;
-    }
+    private static readonly BUILDING_SIZE = 2;
 
-    public activate(buildingType: string, buildingTypeId: number, hp: number): void {
+    public activate(buildingTypeId: number, hp: number): void {
         this.isActive = true;
-        this.buildingType = buildingType;
         this.buildingTypeId = buildingTypeId;
         this.buildingHp = hp;
+        this.canPlace = false;
+    }
+    
+    public getBuildingTypeId(): number {
+        return this.buildingTypeId;
+    }
+
+    public getPlacementPosition(): TPoint {
+        return { ...this.gridPosition };
+    }
+
+    public getCanPlace(): boolean {
+        return this.canPlace;
     }
 
     public deactivate(): void {
         this.isActive = false;
-        this.buildingType = '';
+        this.buildingTypeId = 0;
+        this.buildingHp = 0;
         this.canPlace = false;
     }
 
@@ -37,89 +60,53 @@ export default class BuildingPreview {
     public update(x: number, y: number, occupiedMatrix: number[][]): void {
         if (!this.isActive) return;
 
-        this.mousePosition = { x, y };
         this.gridPosition = {
             x: Math.floor(x),
             y: Math.floor(y)
         };
 
-        // Проверяем, можно ли разместить здание (2x2)
         this.canPlace = this.checkCanPlace(occupiedMatrix);
     }
 
     private checkCanPlace(occupiedMatrix: number[][]): boolean {
         const { x, y } = this.gridPosition;
+        const size = BuildingPreview.BUILDING_SIZE;
 
-        // Проверка границ карты
-        if (x < 0 || y < 0 || x + 1 >= occupiedMatrix.length || y + 1 >= occupiedMatrix[0].length) {
+        // Проверка границ
+        if (x < 0 || y < 0 || 
+            x + size > occupiedMatrix[0].length || 
+            y + size > occupiedMatrix.length) {
             return false;
         }
 
-        // Проверка всех 4 клеток здания (2x2)
-        const cells = [
-            { x: x, y: y },
-            { x: x + 1, y: y },
-            { x: x, y: y + 1 },
-            { x: x + 1, y: y + 1 }
-        ];
-
-        for (const cell of cells) {
-            if (occupiedMatrix[cell.y][cell.x] !== 0) {
-                return false;
+        // Проверка занятости клеток
+        for (let dy = 0; dy < size; dy++) {
+            for (let dx = 0; dx < size; dx++) {
+                if (occupiedMatrix[y + dy][x + dx] !== 0) {
+                    return false;
+                }
             }
         }
 
         return true;
     }
 
-
-    public getRenderData() {
+    public getRenderData(): RenderData | null {
         if (!this.isActive) return null;
 
         return {
             gridPosition: this.gridPosition,
-            canPlace: this.canPlace,
-            buildingType: this.buildingType
+            canPlace: this.canPlace
         };
     }
 
-    public tryPlace(): Building | null {
-    if (!this.isActive || !this.canPlace) {
-        return null;
-    }
+    public getPlacementData(): { typeId: number; position: TPoint; canPlace: boolean } | null {
+        if (!this.isActive) return null;
 
-    const buildingData = {
-        id: 0, 
-        type_id: this.buildingTypeId,
-        village_id: 0,
-        x: this.gridPosition.x,
-        y: this.gridPosition.y,
-        current_hp: this.buildingHp,
-        level: 1,
-    };
-
-    const buildingType = {
-        id: this.buildingTypeId,
-        type: this.buildingType,
-        name: "Preview Building",
-        hp: this.buildingHp,
-        price: 0,
-        sprite: 1,
-    };
-
-    const building = new Building(buildingData, buildingType);
-
-    this.deactivate();
-    return building;
-}
-
-
-
-    public getBuildingTypeId(): number {
-        return this.buildingTypeId;
-    }
-
-    public getPlacementPosition(): TPoint {
-        return this.gridPosition;
+        return {
+            typeId: this.buildingTypeId,
+            position: { ...this.gridPosition },
+            canPlace: this.canPlace
+        };
     }
 }
