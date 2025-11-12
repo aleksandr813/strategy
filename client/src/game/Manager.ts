@@ -3,11 +3,13 @@ import Unit from './Entities/Unit';
 import Building from './Entities/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../services/canvas/Allocation";
+import Server from "../services/server/Server";
 
 const { WIDTH, HEIGHT } = CONFIG;
 const GRID_WIDTH = 87;
 const GRID_HEIGHT = 29;
 const MOVE_INTERVAL = 100;
+const MONEY_UPDATE_INTERVAL = 10000;
 
 export interface GameData {
     getUnits: () => Unit[];
@@ -18,25 +20,61 @@ export interface GameData {
     addBuilding: (building: Building) => void;
     removeUnit: (unit: Unit) => void;
     removeBuilding: (building: Building) => void;
+    getMoney: () => number;
+    setMoney: (money: number) => void;
 }
 
 class Manager {
     protected gameData: GameData;
     protected allocation: Allocation;
     protected easystar = new EasyStar.js();
+    protected server: Server;
+    private moneyUpdateInterval: NodeJS.Timeout | null = null;
 
-    constructor(gameData: GameData) {
+    constructor(gameData: GameData, server: Server) {
         this.gameData = gameData;
         this.allocation = new Allocation();
+        this.server = server;
+
+        this.startMoneyUpdates();
     }
 
-    destructor() {}
+    destructor() {
+        this.stopMoneyUpdates();
+    }
+
+    private startMoneyUpdates(): void {
+        this.updateMoney();
+        
+        this.moneyUpdateInterval = setInterval(() => {
+            this.updateMoney();
+        }, MONEY_UPDATE_INTERVAL);
+    }
+
+    private stopMoneyUpdates(): void {
+        if (this.moneyUpdateInterval) {
+            clearInterval(this.moneyUpdateInterval);
+            this.moneyUpdateInterval = null;
+        }
+    }
 
     getScene() {
         return {
             units: this.gameData.getUnits(),
             buildings: this.gameData.getBuildings(),
+            money: this.gameData.getMoney()
         };
+    }
+
+    async updateMoney(): Promise<void> {
+        try {
+            const income = await this.server.getIncome();
+            if (income !== null) {
+                this.gameData.setMoney(income);
+            }
+        } catch (error) {
+            console.error('Failed to update money:', error);
+        }
     }
 
     getMatrixForEasyStar(excludedUnit?: Unit): number[][] {

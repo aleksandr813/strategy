@@ -201,6 +201,18 @@ class Server {
         return result;
     }
 
+    async getIncome(): Promise<number | null> {
+        console.log('getIncome called');
+        const result = await this.request<{ money: number }>('getIncome');
+        console.log('getIncome result:', result);
+        
+        if (result && typeof result === 'object' && 'money' in result) {
+            return result.money;
+        }
+            return null;
+    }
+}
+
     async deleteBuilding(buildingId: number): Promise<boolean> {
         const response = await this.request<any>('deleteBuilding', {
             id: buildingId.toString(),
