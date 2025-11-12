@@ -199,6 +199,17 @@ class Server {
         console.log('buyUnit result:', result);
         return result;
     }
+
+    async getIncome(): Promise<number | null> {
+        console.log('getIncome called');
+        const result = await this.request<{ money: number }>('getIncome');
+        console.log('getIncome result:', result);
+        
+        if (result && typeof result === 'object' && 'money' in result) {
+            return result.money;
+        }
+            return null;
+    }
 }
 
 
