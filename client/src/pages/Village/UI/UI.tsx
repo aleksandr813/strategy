@@ -15,24 +15,20 @@ export enum UIELEMENT {
 }
 
 export interface IBaseUIElement {
-    setUIElement: (name: UIELEMENT) => void;
-    money?: number;
+    setUIElement: (name: UIELEMENT) => void
 }
 
-interface UIProps {
-    money?: number;
-}
-
-const UI: React.FC<UIProps> = ({money = 0}) => {
+const UI: React.FC = () => {
 
     const [uiElement, setUIElement] = useState<UIELEMENT>(UIELEMENT.NULL);
+
     
     return (
         <div className='UI'>
             <BuildingMenu></BuildingMenu>
             {uiElement === UIELEMENT.BUYBUILDINGSMENU && <BuyBuildingsMenu setUIElement={setUIElement} />}
             {uiElement === UIELEMENT.BUYUNITSMENU && <BuyUnitsMenu setUIElement={setUIElement} />}
-            <Panel setUIElement={setUIElement} money={money}/>
+            <Panel setUIElement={setUIElement}/>
         </div>
     );
 };

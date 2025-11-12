@@ -12,10 +12,6 @@ class Game {
     
     private units: Unit[] = [];
     private buildings: Building[] = [];
-
-    private money: number = 0;
-
-    private moneyUpdateCallbacks: ((money: number) => void)[] = [];
     
     public village: Village;
     public globalMap: GlobalMap;
@@ -53,9 +49,7 @@ class Game {
             addUnit: (unit: Unit) => { this.units.push(unit); },
             addBuilding: (building: Building) => { this.buildings.push(building); },
             removeUnit: (unit: Unit) => this.removeUnit(unit),
-            removeBuilding: (building: Building) => this.removeBuilding(building),
-            getMoney: () => this.money,
-            setMoney: (money: number) => {this.money = money;},
+            removeBuilding: (building: Building) => this.removeBuilding(building)
         };
     }
 
@@ -79,34 +73,10 @@ class Game {
         return this.buildings;
     }
 
-    getMoney(): number {
-        console.log('Game: getMoney called, returning:', this.money);
-        return this.money;
-    }
-
-    setMoney(money: number): void {
-        console.log('Game: setting money to', money);
-        this.money = money;
-        this.moneyUpdateCallbacks.forEach(callback => callback(money));
-    }
-
-    onMoneyUpdate(callback: (money: number) => void): void {
-        this.moneyUpdateCallbacks.push(callback);
-    }
-
-    removeMoneyListener(callback: (money: number) => void): void {
-        const index = this.moneyUpdateCallbacks.indexOf(callback);
-        if (index > -1) {
-            this.moneyUpdateCallbacks.splice(index, 1);
-        }
-    }
-
     destructor(): void {
         this.village.destructor();
         this.globalMap.destructor();
         this.battle.destructor();
-
-        this.moneyUpdateCallbacks = [];
     }
 }
 
