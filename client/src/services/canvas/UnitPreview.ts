@@ -1,15 +1,17 @@
 import CONFIG from "../../config";
 import { TPoint } from "../../config";
 import Unit from "../../game/Entities/Unit";
-const {SPRITE_SIZE} = CONFIG;
+import { TUnit } from "../../services/server/types";
+
+const { SPRITE_SIZE } = CONFIG;
 
 export default class UnitPreview {
     private isActive: boolean = false;
     private unitType: string = '';
     private unitTypeId: number = 0;
     private unitHp: number = 50;
-    private mousePosition: TPoint = {x: 0, y: 0};
-    private gridPosition: TPoint = {x: 0, y: 0};
+    private mousePosition: TPoint = { x: 0, y: 0 };
+    private gridPosition: TPoint = { x: 0, y: 0 };
     private canPlace: boolean = false;
 
     constructor() {
@@ -25,7 +27,7 @@ export default class UnitPreview {
 
     public deactivate(): void {
         this.isActive = false;
-        this. unitType = '';
+        this.unitType = '';
         this.canPlace = false;
     }
 
@@ -42,25 +44,24 @@ export default class UnitPreview {
             y: Math.floor(y)
         };
 
-        // Проверяем, можно ли разместить юнита
         this.canPlace = this.checkCanPlace(occupiedMatrix);
     }
 
     private checkCanPlace(occupiedMatrix: number[][]): boolean {
-        const {x, y} = this.gridPosition;
+        const { x, y } = this.gridPosition;
 
-        //проверка границ карты
-        if (x < 0 || y < 0 || x + 1 >= occupiedMatrix.length || y + 1 >= occupiedMatrix[0].length) {
+        // проверка границ карты
+        if (x < 0 || y < 0 || x >= occupiedMatrix[0].length || y >= occupiedMatrix.length) {
             return false;
         }
 
-        const cell = {x: x, y: y};
+        const cell = { x: x, y: y };
 
         if (occupiedMatrix[cell.y][cell.x] !== 0) {
             return false;
         }
 
-        return true
+        return true;
     }
 
     public getRenderData() {
@@ -78,7 +79,7 @@ export default class UnitPreview {
             return null;
         }
 
-        const unitData = {
+        const unitData: TUnit = {
             id: 0,
             typeId: this.unitTypeId,
             villageId: 0,
@@ -86,22 +87,13 @@ export default class UnitPreview {
             y: this.gridPosition.y,
             currentHp: this.unitHp,
             level: 1,
+            type: this.unitType
         };
 
-        const unitType = {
-            id: this.unitTypeId,
-            type: this.unitType,
-            name: "Preview Unit",
-            hp: this.unitHp,
-            price: 0,
-            sprite: 1
-        };
-
-        const unit = new Unit(unitData, unitType);
+        const unit = new Unit(unitData);
 
         this.deactivate();
         return unit;
-
     }
 
     public getUnitTypeId(): number {
@@ -112,4 +104,7 @@ export default class UnitPreview {
         return this.gridPosition;
     }
 
+    public getCanPlace(): boolean {
+        return this.canPlace;
+    }
 }

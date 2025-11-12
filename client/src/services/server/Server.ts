@@ -1,8 +1,8 @@
 import md5 from 'md5';
 import CONFIG from "../../config";
 import Store from "../store/Store";
-import { BuildingTypeResponse, TBuildingTypesResponse, TBuilding } from './types';
-import { UnitTypeResponse, TUnitTypesResponse, TUnitResponse } from './types';
+import { TBuildingTypesResponse, TBuilding } from './types';
+import { TUnitTypesResponse, TUnitsResponse, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 
 const { CHAT_TIMESTAMP, HOST } = CONFIG;
@@ -26,7 +26,6 @@ class Server {
                 params.token = token;
             }
             const url = `${this.HOST}/?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`;
-
 
             const response = await fetch(url);
             const answer: TAnswer<T> = await response.json();
@@ -109,7 +108,6 @@ class Server {
                 cb(hash);
             }
         }, CHAT_TIMESTAMP);
-
     }
 
     stopChatMessages(): void {
@@ -137,21 +135,11 @@ class Server {
     async getBuildings(): Promise<TBuilding[] | null> {
         const response = await this.request<TBuilding[]>('getBuildings');
         if (!response) {
-            return null
+            return null;
         }
 
-        const buildings: TBuilding[] = response.map(building => ({
-            id: building.id,
-            typeId: building.typeId,
-            villageId: building.villageId,
-            x: building.x,
-            y: building.y,
-            level: building.level,
-            currentHp: building.currentHp,
-            type: building.type
-        }));
-        console.log(buildings)
-        return buildings;
+        console.log('Buildings from server:', response);
+        return response;
     }
 
     async getBuildingTypes(): Promise<TBuildingTypesResponse> {
@@ -162,12 +150,25 @@ class Server {
         return response;
     }
 
-    async getUnits(): Promise<TUnitResponse> {
-        const response = await this.request<TUnitResponse>('getUnits');
+    async getUnits(): Promise<TUnit[] | null> {
+        const response = await this.request<any[]>('getUnits');
         if (!response) {
-            return { units: [] };
+            return null;
         }
-        return response;
+
+        const units: TUnit[] = response.map(unit => ({
+            id: Number(unit.id),
+            typeId: Number(unit.typeId),
+            villageId: Number(unit.villageId),
+            x: Number(unit.x),
+            y: Number(unit.y),
+            level: Number(unit.level),
+            currentHp: Number(unit.currentHp),
+            type: unit.type
+        }));
+
+        console.log('Units from server:', units);
+        return units;
     }
 
     async getUnitsTypes(): Promise<TUnitTypesResponse> {
@@ -212,5 +213,20 @@ class Server {
     }
 }
 
+    async deleteBuilding(buildingId: number): Promise<boolean> {
+        const response = await this.request<any>('deleteBuilding', {
+            id: buildingId.toString(),
+        });
+        return response === true;
+    }
+
+    async upgradeBuilding(buildingId: number, typeId: number): Promise<boolean> {
+        const response = await this.request<any>('upgradeBuilding', {
+            id: buildingId.toString(),
+            typeId: typeId.toString()
+        });
+        return response || null;
+    }
+}
 
 export default Server;
