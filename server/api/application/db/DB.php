@@ -107,13 +107,13 @@ class DB
     {
         return $this->queryAll(
             "SELECT 
-                u.id AS id
-                u.type_id AS typeId
-                u.village_id AS villageId
-                u.x AS x
-                u.y AS y
-                u.level AS level
-                u.current_hp AS currentHp
+                u.id AS id,
+                u.type_id AS typeId,
+                u.village_id AS villageId,
+                u.x AS x,
+                u.y AS y,
+                u.level AS level,
+                u.current_hp AS currentHp,
                 ut.type AS type
             FROM units AS u
             INNER JOIN unit_types AS ut
