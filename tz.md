@@ -1007,70 +1007,125 @@
 - Хронологический список всех атак
 - Фильтры по дате и результату
 
-# 7. Архитектура системы и база данных
+## 7. Архитектура системы и база данных
 
-## 7.1 Общая архитектура
+### 7.1 Общая архитектура
 
 **Клиент-серверная архитектура** с четким разделением ответственности:
 
-### Компоненты системы:
+**Компоненты системы:**
 - **Frontend**: Браузерное приложение (HTML5, CSS3, JavaScript)
 - **Backend**: Серверная логика и API (PHP/Python/Node.js)
 - **Database**: Реляционная база данных (PostgreSQL/MySQL)
 - **Real-time**: WebSocket соединения для чата и уведомлений
 
-## 7.2 Структура базы данных
+### 7.2 Структура базы данных
 
-### 7.2.1 Основные таблицы
+#### 7.2.1 Классификация таблиц по типу нагрузки
 
-#### Таблица `users`
+**Статические/Справочные таблицы (Static Tables)**
+- `building_types` - типы зданий
+- `unit_types` - типы юнитов
+
+
+**Основные сущности (Core Entities)**
+- `users` - пользователи
+- `villages` - деревни
+
+**Быстрорастущие таблицы (Fast-Growing Tables)**
+- `messages` - сообщения чата
+- `battles` - записи сражений
+- `attacks` - активные атаки
+
+**Операционные таблицы (Operational Tables)**
+- `buildings` - здания игроков
+- `units` - юниты игроков
+
+#### 7.2.2 Основные таблицы
+
+**Таблица `users`**
+
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
 | id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
-| login | TEXT | UNIQUE, NOT NULL | Логин пользователя |
-| password | TEXT | NOT NULL | Хеш пароля |
-| name | TEXT | NOT NULL | Отображаемое имя |
-| token | TEXT | UNIQUE | Токен авторизации |
+| login | VARCHAR(50) | UNIQUE, NOT NULL | Логин пользователя |
+| password | VARCHAR(255) | NOT NULL | Хеш пароля |
+| name | VARCHAR(100) | NOT NULL | Отображаемое имя |
+| token | VARCHAR(255) | UNIQUE | Токен авторизации |
+| money | INT | DEFAULT 100 | Баланс монет |
 | rating | INT | DEFAULT 0 | Рейтинг игрока |
 | created_at | TIMESTAMP | DEFAULT NOW() | Дата регистрации |
 | last_login | TIMESTAMP | NULL | Последний вход |
 
-#### Таблица `villages`
+**Таблица `villages`**
+
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
 | id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
 | user_id | INT | FOREIGN KEY (users.id) | Владелец деревни |
-| name | TEXT | NULL | Название деревни |
-| coordinates | JSON | NOT NULL | Координаты на карте {x, y} |
-| resources | JSON | DEFAULT '{"gold": 1000, "wood": 500}' | Ресурсы деревни |
+| x | INT | NOT NULL | Координата X на карте |
+| y | INT | NOT NULL | Координата Y на карте |
+| last_income_datetime | DATETIME | DEFAULT NOW() | Время последнего сбора дохода |
 | protection_end | TIMESTAMP | NULL | Окончание защиты новичка |
 | created_at | TIMESTAMP | DEFAULT NOW() | Дата создания |
 
-#### Таблица `buildings`
+**Таблица `building_types`**
+
+| Поле | Тип | Ограничения | Описание |
+|------|-----|-------------|----------|
+| id | INT | PRIMARY KEY | Уникальный идентификатор |
+| type | VARCHAR(100) | NOT NULL | Тип здания: 'mine', 'ratusha', 'tower', 'wall' |
+| name | VARCHAR(100) | NOT NULL | Название здания |
+| hp | INT | DEFAULT 1 | Здоровье здания |
+| price | INT | NOT NULL | Стоимость строительства |
+| income | INT | DEFAULT 100 | Доход (для шахты) |
+| income_interval | INT | DEFAULT 1800 | Интервал дохода в секундах |
+
+**Таблица `buildings`**
+
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
 | id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
-| village_id | INT | FOREIGN KEY (villages.id) | Деревня владельца |
 | type_id | INT | FOREIGN KEY (building_types.id) | Тип здания |
-| level | INT | DEFAULT 1 | Уровень здания |
-| health | INT | NOT NULL | Текущее здоровье |
+| village_id | INT | FOREIGN KEY (villages.id) | Деревня владельца |
 | x | INT | NOT NULL | Координата X |
 | y | INT | NOT NULL | Координата Y |
+| level | INT | DEFAULT 1 | Уровень здания |
+| current_hp | INT | NOT NULL | Текущее здоровье |
+| last_income_time | INT | DEFAULT 0 | Время последнего сбора дохода |
 | upgrade_end | TIMESTAMP | NULL | Окончание улучшения |
 | created_at | TIMESTAMP | DEFAULT NOW() | Дата постройки |
 
-#### Таблица `units`
+**Таблица `unit_types`**
+
+| Поле | Тип | Ограничения | Описание |
+|------|-----|-------------|----------|
+| id | INT | PRIMARY KEY | Уникальный идентификатор |
+| type | VARCHAR(100) | NOT NULL | Тип юнита |
+| name | VARCHAR(100) | NOT NULL | Название юнита |
+| hp | INT | DEFAULT 1 | Здоровье юнита |
+| price | INT | NOT NULL | Стоимость найма |
+| damage | INT | NOT NULL | Урон |
+| speed | FLOAT | NOT NULL | Скорость перемещения |
+| range | INT | DEFAULT 1 | Дальность атаки |
+| unlock_level | INT | DEFAULT 1 | Уровень разблокировки |
+
+**Таблица `units`**
+
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
 | id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
-| village_id | INT | FOREIGN KEY (villages.id) | Деревня владельца |
 | type_id | INT | FOREIGN KEY (unit_types.id) | Тип юнита |
-| count | INT | DEFAULT 0 | Количество юнитов |
+| village_id | INT | FOREIGN KEY (villages.id) | Деревня владельца |
 | x | INT | NULL | Координата X (если размещены) |
 | y | INT | NULL | Координата Y (если размещены) |
+| count | INT | DEFAULT 0 | Количество юнитов |
+| level | INT | DEFAULT 1 | Уровень юнита |
+| current_hp | INT | NOT NULL | Текущее здоровье |
 | created_at | TIMESTAMP | DEFAULT NOW() | Дата создания |
 
-#### Таблица `messages`
+**Таблица `messages`**
+
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
 | id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
@@ -1081,7 +1136,8 @@
 | created | TIMESTAMP | DEFAULT NOW() | Дата отправки |
 | hash | TEXT | NULL | Хеш для отслеживания прочитанных |
 
-#### Таблица `battles`
+**Таблица `battles`**
+
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
 | id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
@@ -1094,34 +1150,8 @@
 | started_at | TIMESTAMP | NOT NULL | Начало битвы |
 | ended_at | TIMESTAMP | NULL | Окончание битвы |
 
-### 7.2.2 Справочные таблицы
+**Таблица `attacks`**
 
-#### Таблица `building_types`
-| Поле | Тип | Ограничения | Описание |
-|------|-----|-------------|----------|
-| id | INT | PRIMARY KEY | Уникальный идентификатор |
-| name | TEXT | NOT NULL | Название здания |
-| description | TEXT | NULL | Описание |
-| cost | JSON | NOT NULL | Стоимость строительства |
-| health_per_level | JSON | NOT NULL | Здоровье по уровням |
-| production_per_level | JSON | NULL | Производство по уровням |
-| unlock_level | INT | DEFAULT 1 | Уровень разблокировки |
-
-#### Таблица `unit_types`
-| Поле | Тип | Ограничения | Описание |
-|------|-----|-------------|----------|
-| id | INT | PRIMARY KEY | Уникальный идентификатор |
-| name | TEXT | NOT NULL | Название юнита |
-| description | TEXT | NULL | Описание |
-| cost | JSON | NOT NULL | Стоимость найма |
-| health | INT | NOT NULL | Здоровье |
-| damage | INT | NOT NULL | Урон |
-| speed | FLOAT | NOT NULL | Скорость перемещения |
-| range | INT | DEFAULT 1 | Дальность атаки |
-| unlock_level | INT | DEFAULT 1 | Уровень разблокировки |
-| special_abilities | JSON | NULL | Особые способности |
-
-#### Таблица `attacks`
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
 | id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
@@ -1132,63 +1162,121 @@
 | arrival_time | TIMESTAMP | NOT NULL | Время прибытия |
 | status | ENUM | 'moving', 'cancelled', 'arrived' | Статус атаки |
 
-### 7.2.3 Примеры данных
+**Таблица `hashes`**
 
-#### building_types
-| id | name | cost | health_per_level | production_per_level | unlock_level |
-|----|------|------|------------------|---------------------|-------------|
-| 1 | Ратуша | `{"gold": 500}` | `{"1": 700, "2": 850, "3": 1000}` | `null` | 1 |
-| 2 | Шахта | `{"gold": 300}` | `{"1": 100, "2": 200, "3": 300}` | `{"1": 10, "2": 15, "3": 21}` | 1 |
-| 3 | Казармы | `{"gold": 400}` | `{"1": 500, "2": 650, "3": 820}` | `null` | 1 |
-| 4 | Стены | `{"gold": 100}` | `{"1": 200, "2": 280, "3": 370}` | `null` | 1 |
-| 5 | Стрелковая башня | `{"gold": 200}` | `{"1": 300, "2": 400, "3": 510}` | `null` | 1 |
+| Поле | Тип | Ограничения | Описание |
+|------|-----|-------------|----------|
+| id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
+| chat_hash | TEXT | NOT NULL | Хеш состояния чата |
 
-#### unit_types
-| id | name | cost | health | damage | speed | range | unlock_level |
-|----|------|------|--------|--------|-------|-------|-------------|
-| 1 | Мечник | `{"gold": 50}` | 100 | 15 | 1.0 | 1 | 1 |
-| 2 | Копейщик | `{"gold": 30}` | 60 | 10 | 1.0 | 1 | 1 |
-| 3 | Берсерк | `{"gold": 120}` | 90 | 35 | 1.3 | 1 | 1 |
-| 4 | Лучник | `{"gold": 60}` | 70 | 18 | 1.0 | 6 | 1 |
-| 5 | Всадник | `{"gold": 140}` | 130 | 20 | 2.0 | 1 | 2 |
+#### 7.2.3 Оптимизация и индексация
 
-## 7.3 API Endpoints
+**Критические индексы для производительности:**
 
-### Аутентификация
-| Метод | Endpoint | Описание | Параметры |
-|-------|----------|----------|-----------|
-| POST | `/api/login` | Вход в систему | `login`, `hash`, `rnd` |
-| POST | `/api/registration` | Регистрация | `login`, `hash`, `name` |
-| POST | `/api/logout` | Выход | `token` |
+- Пользователи и авторизация:
+  - CREATE INDEX idx_users_login ON users(login);
+  - CREATE INDEX idx_users_token ON users(token);
+  - CREATE INDEX idx_users_rating ON users(rating DESC);
 
-### Деревня
-| Метод | Endpoint | Описание | Параметры |
-|-------|----------|----------|-----------|
-| GET | `/api/village` | Информация о деревне | `token` |
-| GET | `/api/village/buildings` | Список зданий | `token` |
-| POST | `/api/village/buildings` | Построить здание | `token`, `type_id`, `x`, `y` |
-| PUT | `/api/village/buildings/{id}` | Улучшить здание | `token`, `type_id` |
+- Деревни и геопозиция:
+  - CREATE INDEX idx_villages_user_id ON villages(user_id);
+  - CREATE INDEX idx_villages_coordinates ON villages(x, y);
+  - CREATE INDEX idx_villages_protection ON villages(protection_end) WHERE protection_end IS NOT NULL;
 
-### Юниты
-| Метод | Endpoint | Описание | Параметры |
-|-------|----------|----------|-----------|
-| GET | `/api/village/units` | Список юнитов | `token` |
-| POST | `/api/village/units` | Нанять юнитов | `token`, `type_id`, `count` |
-| PUT | `/api/village/units/{id}` | Переместить юнитов | `token`, `x`, `y` |
+- Здания и юниты:
+  - CREATE INDEX idx_buildings_village_id ON buildings(village_id);
+  - CREATE INDEX idx_buildings_type_level ON buildings(type_id, level);
+  - CREATE UNIQUE INDEX idx_buildings_position ON buildings(village_id, x, y);
+  - CREATE INDEX idx_units_village_id ON units(village_id);
+  - CREATE INDEX idx_units_type_count ON units(type_id, count) WHERE count > 0;
 
-### Карта и атаки
-| Метод | Endpoint | Описание | Параметры |
-|-------|----------|----------|-----------|
-| GET | `/api/map` | Глобальная карта | `token` |
-| POST | `/api/attack` | Запуск атаки | `token`, `target_village_id`, `army` |
-| DELETE | `/api/attack/{id}` | Отмена атаки | `token` |
+- Сообщения и чат:
+  - CREATE INDEX idx_messages_created ON messages(created DESC);
+  - CREATE INDEX idx_messages_user_type ON messages(user_id, message_type);
+  - CREATE INDEX idx_messages_target_hash ON messages(target_user_id, hash) WHERE target_user_id IS NOT NULL;
 
-### Чат
-| Метод | Endpoint | Описание | Параметры |
-|-------|----------|----------|-----------|
-| GET | `/api/chat/messages` | Получить сообщения | `token`, `hash` |
-| POST | `/api/chat/messages` | Отправить сообщение | `token`, `message`, `type` |
+- Боевая система:
+  - CREATE INDEX idx_battles_attacker_defender ON battles(attacker_id, defender_id);
+  - CREATE INDEX idx_battles_started_ended ON battles(started_at, ended_at) WHERE ended_at IS NOT NULL;
+  - CREATE INDEX idx_attacks_status_time ON attacks(status, arrival_time);
+  - CREATE INDEX idx_attacks_attacker_target ON attacks(attacker_id, target_village_id);
 
+**Стратегии оптимизации:**
+
+1. **Партиционирование для быстрорастущих таблиц:**
+   - `messages` - по месяцам (`created`)
+   - `battles` - по неделям (`started_at`)
+   - `attacks` - по дням (`start_time`)
+
+2. **Архивация исторических данных:**
+   - Перемещение сражений старше 3 месяцев в архивную таблицу
+   - Очистка завершенных атак старше 1 месяца
+
+3. **Кэширование горячих данных:**
+   - Рейтинговая таблица (топ-100) - Redis
+   - Статистика игроков - Memcached
+   - Глобальная карта (активные игроки) - In-memory DB
+
+#### 7.2.4 ER-модель базы данных
+
+text
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│     users       │    │    villages     │    │ building_types  │
+├─────────────────┤    ├─────────────────┤    ├─────────────────┤
+│ id (PK)         │◄───│ id (PK)         │    │ id (PK)         │
+│ login           │    │ user_id (FK)    │    │ type            │
+│ password        │    │ x, y            │    │ name            │
+│ name            │    │ last_income     │    │ hp, price       │
+│ token           │    │ protection_end  │    │ income          │
+│ money           │    │ created_at      │    │ unlock_level    │
+│ rating          │    └─────────────────┘    └─────────────────┘
+│ created_at      │              │                     │
+│ last_login      │              │                     │
+└─────────────────┘              │                     │
+           │                     │                     │
+           │                     ▼                     ▼
+           │            ┌─────────────────┐    ┌─────────────────┐
+           │            │    buildings    │    │   unit_types    │
+           │            ├─────────────────┤    ├─────────────────┤
+           │            │ id (PK)         │    │ id (PK)         │
+           ▼            │ village_id (FK) │    │ type            │
+ ┌─────────────────┐    │ type_id (FK)    │    │ name            │
+ │    messages     │    │ x, y            │    │ hp, price       │
+ ├─────────────────┤    │ level           │    │ damage          │
+ │ id (PK)         │    │ current_hp      │    │ speed           │
+ │ user_id (FK)    │    │ last_income     │    │ range           │
+ │ message         │    │ upgrade_end     │    │ unlock_level    │
+ │ message_type    │    └─────────────────┘    └─────────────────┘
+ │ target_user_id  │              │                     │
+ │ created         │              │                     │
+ │ hash            │              ▼                     ▼
+ └─────────────────┘    ┌─────────────────┐    ┌─────────────────┐
+           │            │      units      │    │    attacks      │
+           │            ├─────────────────┤    ├─────────────────┤
+           │            │ id (PK)         │    │ id (PK)         │
+           │            │ village_id (FK) │    │ attacker_id (FK)│
+           ▼            │ type_id (FK)    │    │ target_village  │
+ ┌─────────────────┐    │ count           │    │ army_composition│
+ │     battles     │    │ x, y            │    │ start_time      │
+ ├─────────────────┤    │ level           │    │ arrival_time    │
+ │ id (PK)         │    │ current_hp      │    │ status          │
+ │ attacker_id (FK)│    └─────────────────┘    └─────────────────┘
+ │ defender_id (FK)│
+ │ result          │
+ │ loot            │
+ │ attacker_losses │
+ │ defender_losses │
+ │ started_at      │
+ │ ended_at        │
+ └─────────────────┘
+
+**Ключевые связи:**
+- `users(1) → villages(1)` - Один пользователь = одна деревня
+- `villages(1) → buildings(N)` - В деревне много зданий
+- `villages(1) → units(N)` - В деревне много юнитов
+- `users(1) → messages(N)` - Пользователь отправляет много сообщений
+- `building_types(1) → buildings(N)` - Тип здания у многих экземпляров
+- `unit_types(1) → units(N)` - Тип юнита у многих экземпляров
 
 
 
