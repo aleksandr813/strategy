@@ -103,7 +103,6 @@ class Village extends Manager {
         }
 
         const buildings = buildingsData.map(buildingData => {
-            //console.log(buildingData)
             return new Building(
                 buildingData.id,
                 buildingData.type,
@@ -118,15 +117,22 @@ class Village extends Manager {
         });
 
         this.gameData.setBuildings(buildings);
-
         console.log("Загружено зданий:", this.gameData.getBuildings().length);
     }
 
     async loadUnits(): Promise<void> {
         console.log("Загружаем юнитов из сервера...");
-        const unitObjects = await this.villageManager.loadUnits();
-        this.gameData.setUnits(unitObjects);
-        console.log("Загружено юниов:", this.gameData.getUnits().length);
+        
+        const unitsData = await this.server.getUnits();
+        if (!unitsData) {
+            console.log('Нету юнитов для загрузки');
+            return;
+        }
+
+        const units = unitsData.map(unitData => new Unit(unitData));
+        
+        this.gameData.setUnits(units);
+        console.log("Загружено юнитов:", this.gameData.getUnits().length);
     }
 
     getScene() {
