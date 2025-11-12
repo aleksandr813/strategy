@@ -206,6 +206,14 @@ class Server {
         });
         return response === true;
     }
+
+    async upgradeBuilding(buildingId: number, typeId: number): Promise<boolean> {
+        const response = await this.request<any>('upgradeBuilding',{
+            id: buildingId.toString(),
+            typeId: typeId.toString()
+        });
+        return response || null;
+    }
 }
 
 
