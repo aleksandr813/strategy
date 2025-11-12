@@ -39,6 +39,29 @@ const BuildingMenu: React.FC = () => {
         }
     };
 
+    const upgrade = async () => {
+        if (!selectedBuilding)return;
+        const success = await server.upgradeBuilding(
+        selectedBuilding.id,
+        selectedBuilding.typeId
+        );
+
+        if (success) {
+            await game.village.loadBuildings();
+            const updated = game.village
+                .getScene()
+                .buildings.find(b => b.id === selectedBuilding.id);
+
+            if (updated) {
+                game.village.selectBuilding(updated);
+                setSelectedBuilding(updated);
+            }
+            console.log("Здание успешно улучшено");
+        } else {
+            console.log("Не удалось улучшить здание");
+        }
+    };
+
     return (
         <div className="BuildingMenu">
             <div 
@@ -58,7 +81,7 @@ const BuildingMenu: React.FC = () => {
                         </div>
                     </div>
                     <div className="menu-footer">
-                        <button className="levelup-button">Level Up</button>
+                        <button className="levelup-button" onClick={upgrade}>Level Up</button>
                         <button className="delete-button"
                         onClick={openConfirm}
                         >Delete</button>
