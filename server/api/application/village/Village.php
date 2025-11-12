@@ -154,7 +154,7 @@ class Village {
 
         $newMoney = $user->money - $unit->price;
         $this->db->updateMoney($user->id, $newMoney);
-        $this->db->buyunit(
+        $this->db->buyUnit(
             $village->id,
             $typeId,
             $x,
@@ -174,6 +174,7 @@ class Village {
             return ['error' => 503];
         }
 
+        return true;
     }
 
     public function getUnitTypes()
