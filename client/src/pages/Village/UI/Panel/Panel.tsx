@@ -21,11 +21,7 @@ import icon from "../../../../assets/img/panel/icon.png";
 
 const Panel: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
 
-    const { setUIElement, money = 0 } = props;
-
-    React.useEffect(() => {
-        console.log('Panel: received money:', money);
-    }, [money]);
+    const { setUIElement } = props;
 
     const buildingsHandler = () => setUIElement(UIELEMENT.BUYBUILDINGSMENU);
     const unitsHandler = () => setUIElement(UIELEMENT.BUYUNITSMENU);    
@@ -75,7 +71,6 @@ const Panel: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
                     </div>
                     <div className='param'>
                         <img src={moneyIcon} className='money' />
-                        <span className="money-text">{money}</span>
                         <img src={rectangle} className='rectangle' />
                         <img src={chat} className='chat-panel' />
                     </div>

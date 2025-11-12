@@ -4,10 +4,12 @@ import Server from "../services/server/Server";
 
 class Battle extends Manager {
     private store: Store;
+    private server: Server;
 
     constructor(store: Store, server: Server, gameData: GameData) {
-        super(gameData, server);
+        super(gameData);
         this.store = store;
+        this.server = server;
     }
 }
 
