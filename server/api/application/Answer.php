@@ -52,7 +52,9 @@ class Answer
         '709' => ' session did not start or you need use previous method',
         '800' => 'not found object',
         '801' => 'unknown state',
-        '9000' => 'unknown error'
+        '9000' => 'unknown error',
+        '315' => 'Деревня не найдена',
+        '510' => 'Ошибка операции получения дамага'
     );
 
     static function response($data)

@@ -171,6 +171,31 @@ class DB
         );
     }
 
+    public function updateUnitsHP($units, $villageId) {
+        $hpArr = [];
+        $validUnits = [];
+
+        foreach ($units as $unit) {
+            $unitId = (int) $unit['unitId'];
+            $hp = (int) $unit['hp'];
+
+            $hpArr[] = "WHEN $unitId THEN $hp";
+            $validUnits[] = $unitId;
+        }
+
+        $unitsStr = implode(',', $validUnits);
+        $hpStr = implode(' ', $hpArr);
+
+        return $this->execute(
+            "UPDATE units SET
+            current_hp = CASE id $hpStr END
+            WHERE id IN ($unitsStr) AND village_id = ?",
+            [$villageId]
+        );
+    }
+
+    
+
     public function deleteUnit($unitId, $userId)
     {
         return $this->execute("DELETE FROM units WHERE id = ? AND user_id = ?", [$unitId, $userId]);
