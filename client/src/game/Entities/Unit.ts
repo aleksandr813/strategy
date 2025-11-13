@@ -1,41 +1,48 @@
 import { TPoint } from "../../config";
-import { Unit as UnitData, UnitType, UnitTypeID } from "../../services/server/types";
-
+import { TUnit, UnitTypeID } from "../../services/server/types";
 
 export default class Unit {
     id: number;
-    type: UnitType;
-    cords:TPoint;
+    typeId: number;
+    type: string;
+    cords: TPoint;
     hp: number;
     maxHp: number;
     level: number;
     sprites: number[];
 
     private static SPRITE_MAP: Record<UnitTypeID, number[]> = {
-        [UnitTypeID.Knight]: [2]
+        [UnitTypeID.Knight]: [21],
+        [UnitTypeID.Spearman]: [22],
+        [UnitTypeID.Berserk]: [30],
+        [UnitTypeID.Paladin]: [31],
+        [UnitTypeID.Guardian]: [29],
+        [UnitTypeID.Archer]: [24],
+        [UnitTypeID.Crossbowman]: [23],
+        [UnitTypeID.Sorcerer]: [25],
+        [UnitTypeID.Summoner]: [27],
+        [UnitTypeID.Golem]: [26],
+        [UnitTypeID.Swordman]: [28]
     };
     
     isSelected: boolean = false;
     moveIntervalId: NodeJS.Timeout | null = null;
     
-    constructor(data: UnitData, type: UnitType) {
-        this.id = Number(data.id);
-        this.type = type;
-        this.hp = Number(data.currentHp);
-        this.maxHp = Number(type.hp);
-        this.level = Number(data.level);
-        const typeId = Number(type.id);
+    constructor(data: TUnit) {
+        this.id = data.id;
+        this.typeId = data.typeId;
+        this.type = data.type;
+        this.hp = data.currentHp;
+        this.maxHp = data.currentHp; 
+        this.level = data.level;
 
-        const spriteSet = Unit.SPRITE_MAP[typeId as UnitTypeID];
-        this.sprites = spriteSet;
+        const spriteSet = Unit.SPRITE_MAP[data.typeId as UnitTypeID];
+        this.sprites = spriteSet || [28];
 
-        this.cords = { x: Number(data.x), y: Number(data.y) }
-
-        
+        this.cords = { x: data.x, y: data.y };
     }
 
     updateSelection(isSelected: boolean): void {
         this.isSelected = isSelected;
     }
-    
 }

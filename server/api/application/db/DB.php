@@ -106,12 +106,19 @@ class DB
     public function getUnits($userId)
     {
         return $this->queryAll(
-            "SELECT u.id, u.type_id, u.village_id, u.x, u.y, u.level, u.current_hp 
+            "SELECT 
+                u.id AS id,
+                u.type_id AS typeId,
+                u.village_id AS villageId,
+                u.x AS x,
+                u.y AS y,
+                u.level AS level,
+                u.current_hp AS currentHp,
+                ut.type AS type
             FROM units AS u
-            INNER JOIN villages AS v
-            ON u.village_id = v.id
-            WHERE v.user_id = ?
-        ",
+            INNER JOIN unit_types AS ut
+            ON u.type_id = ut.id
+            WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)",
             [$userId]
         );
     }
@@ -134,14 +141,6 @@ class DB
         );
 
         return !empty($result) && $result->occupied == 1;
-    }
-
-    public function updateUnit($unitId, $userId, $unitType, $x, $y)
-    {
-        return $this->execute(
-            "UPDATE units SET unit_type = ?, x = ?, y = ? WHERE id = ? AND user_id = ?",
-            [$unitType, $x, $y, $unitId, $userId]
-        );
     }
 
     public function updateUnitsPosition($units, $villageId) {

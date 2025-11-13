@@ -14,11 +14,11 @@ export default class Building {
     isselected: boolean = false;  
 
     private static SPRITE_MAP: Record<BuildingTypeID, number[]> = {
-        [BuildingTypeID.TownHall]: [7, 8, 9, 10], // TownHall (Ратуша)
-        [BuildingTypeID.Mine]:     [11, 12, 13, 14], // Mine (Шахта)
-        [BuildingTypeID.Kazarma]:     [11, 12, 13, 14],
-        [BuildingTypeID.Wall]:     [11, 12, 13, 14],
-        [BuildingTypeID.Tower]:     [11, 12, 13, 14],
+        [BuildingTypeID.TownHall]: [1, 2, 3, 4], // TownHall (Ратуша)
+        [BuildingTypeID.Mine]:     [5, 6, 7, 8], // Mine (Шахта)
+        [BuildingTypeID.Tower]:     [9, 10, 11, 12],
+        [BuildingTypeID.Wall]:     [13],
+        [BuildingTypeID.Kazarma]:  [14, 15, 16 ,17],
     };
 
 
@@ -30,6 +30,7 @@ export default class Building {
         this.level = level;
         this.size = 2; 
         this.typeId = typeId;
+
         
         const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
         this.sprites = spriteSet;
