@@ -215,7 +215,6 @@ class Server {
         });
         return response || null;
     }
-}
 
     async getIncome(): Promise<number | null> {
         console.log('getIncome called');
