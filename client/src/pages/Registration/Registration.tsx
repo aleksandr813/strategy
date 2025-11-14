@@ -79,7 +79,7 @@ const Registration: React.FC<IBasePage> = (props: IBasePage) => {
 
             // Отправка данных на сервер
             if (login && password && name && await server.registration(login, password, name)) {
-                setPage(PAGES.CHAT);
+                setPage(PAGES.VILLAGE);
             }
         }
     };
