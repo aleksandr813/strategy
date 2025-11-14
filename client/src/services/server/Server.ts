@@ -71,6 +71,16 @@ class Server {
         return false;
     }
 
+    async registration(login: string, password: string, name: string): Promise<boolean> {
+        const hash = md5(`${login}${password}`);
+        const user = await this.request<TUser>('registration', { login, hash, name });
+        if (user) {
+            this.store.setUser(user);
+            return true;
+        }
+        return false;
+    }
+
     async logout(token: string) {
         const result = await this.request<boolean>('logout', { token });
         if (result) {
@@ -78,11 +88,6 @@ class Server {
             return true;
         }
         return false;
-    }
-
-    registration(login: string, password: string, name: string): Promise<boolean | null> {
-        const hash = md5(`${login}${password}`);
-        return this.request<boolean>('registration', { login, hash, name });
     }
 
     sendMessage(message: string): void {
