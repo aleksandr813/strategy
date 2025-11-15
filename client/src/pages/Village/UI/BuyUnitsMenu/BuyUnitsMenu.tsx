@@ -19,6 +19,7 @@ const BuyUnitsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
 
     const buyUnit = async (unit: UnitType) => {
         console.log(`Покупка юнита: ${unit.name}`);
+        village.getScene().buildingPreview.deactivate();
         village.getScene().unitPreview.activate(unit.name, unit.id, unit.hp);
         setUIElement(UIELEMENT.NULL);
     };
