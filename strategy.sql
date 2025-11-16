@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 07 2025 г., 23:07
+-- Время создания: Ноя 16 2025 г., 21:20
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -73,6 +73,86 @@ INSERT INTO `building_types` (`id`, `type`, `name`, `hp`, `price`) VALUES
 (3, 'barrack', 'Казарма', 500, 400),
 (4, 'wall', 'Стена', 200, 100),
 (5, 'shooting_tower', 'Стрелковая башня', 300, 200);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `game`
+--
+
+CREATE TABLE `game` (
+  `id` int NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `value` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `game`
+--
+
+INSERT INTO `game` (`id`, `name`, `value`) VALUES
+(1, 'main_building_price', '100'),
+(2, 'main_builind_hp', '700'),
+(3, 'mine_price', '100'),
+(4, 'mine_hp', '100'),
+(5, 'swordsman_price', '50'),
+(6, 'swordsman_hp', '100'),
+(7, 'swordsman_damage', '15'),
+(8, 'swordsman_speed', '1.0'),
+(9, 'spearman_hp', '60'),
+(10, 'spearman_price', '30'),
+(11, 'spearman_damage', '10'),
+(12, 'spearman_speed', '1.0'),
+(13, 'berserk_hp', '90'),
+(14, 'berserk_price', '120'),
+(15, 'berserk_damage', '35'),
+(16, 'berserk_speed', '1.3'),
+(17, 'paladin_hp', '300'),
+(18, 'paladin_price', '300'),
+(19, 'paladin_damage', '25'),
+(20, 'paladin_speed', '0.7'),
+(21, 'guardian_hp', '400'),
+(22, 'guardian_price', '250'),
+(23, 'guardian_damage', '12'),
+(24, 'guardian_speed', '0.5'),
+(25, 'archer_hp', '70'),
+(26, 'archer_price', '60'),
+(27, 'archer_damage', '18'),
+(28, 'archer_speed', '1.0'),
+(29, 'archer_range', '6'),
+(30, 'crossbowman_hp', '110'),
+(31, 'crossbowman_price', '150'),
+(32, 'crossbowman_damage', '28'),
+(33, 'crossbowman_speed', '0.8'),
+(34, 'crossbowman_range', '5'),
+(35, 'cavalry_hp', '130'),
+(36, 'cavalry_price', '140'),
+(37, 'cavalry_damage', '20'),
+(38, 'cavalry_speed', '2.0'),
+(39, 'knight_hp', '180'),
+(40, 'knight_price', '200'),
+(41, 'knight_damage', '30'),
+(42, 'knight_speed', '1.0'),
+(43, 'mage_hp', '90'),
+(44, 'mage_price', '220'),
+(45, 'mage_damage', '40'),
+(46, 'mage_speed', '1.0'),
+(47, 'mage_range', '6'),
+(48, 'summoner_hp', '70'),
+(49, 'summoner_price', '180'),
+(50, 'summoner_damage', '8'),
+(51, 'summoner_speed', '0.9'),
+(52, 'summoner_range', '3'),
+(53, 'golem_hp', '500'),
+(54, 'golem_price', '400'),
+(55, 'golem_damage', '35'),
+(56, 'golem_speed', '0.4'),
+(57, 'barrak_hp', '500'),
+(58, 'barrak_price', '400'),
+(59, 'wall_hp', '200'),
+(60, 'wall_price', '100'),
+(61, 'shooting_tower_hp', '300'),
+(62, 'shooting_tower_price', '200');
 
 -- --------------------------------------------------------
 
@@ -242,6 +322,12 @@ ALTER TABLE `building_types`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Индексы таблицы `game`
+--
+ALTER TABLE `game`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `hashes`
 --
 ALTER TABLE `hashes`
@@ -297,6 +383,12 @@ ALTER TABLE `buildings`
 --
 ALTER TABLE `building_types`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT для таблицы `game`
+--
+ALTER TABLE `game`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT для таблицы `messages`
