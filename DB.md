@@ -83,3 +83,9 @@
 | chat_hash | text | not null |
 
 
+**game**
+| name | type | comment |
+|-|-|-|
+| id | integer | primary key |
+| name | varchar(100) | not null |
+| value | text | not null
