@@ -1,8 +1,8 @@
 import md5 from 'md5';
 import CONFIG from "../../config";
 import Store from "../store/Store";
-import { TBuildingTypesResponse, TBuilding } from './types';
-import { TUnitTypesResponse, TUnitsResponse, TUnit } from './types';
+import { TBuildingType, TBuilding } from './types';
+import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 
 const { CHAT_TIMESTAMP, HOST } = CONFIG;
@@ -147,10 +147,10 @@ class Server {
         return response;
     }
 
-    async getBuildingTypes(): Promise<TBuildingTypesResponse> {
-        const response = await this.request<TBuildingTypesResponse>('getBuildingTypes');
+    async getBuildingTypes(): Promise<TBuildingType[]> {
+        const response = await this.request<TBuildingType[]>('getBuildingTypes');
         if (!response) {
-            return { buildingTypes: [] };
+            return [];
         }
         return response;
     }
@@ -176,10 +176,10 @@ class Server {
         return units;
     }
 
-    async getUnitsTypes(): Promise<TUnitTypesResponse> {
-        const response = await this.request<TUnitTypesResponse>('getUnitTypes');
+    async getUnitsTypes(): Promise<TUnitType[]> {
+        const response = await this.request<TUnitType[]>('getUnitTypes');
         if (!response) {
-            return { unitTypes: [] };
+            return [];
         }
         return response;
     }

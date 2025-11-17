@@ -32,18 +32,8 @@ export interface TMessagesResponse {
     hash: string;
 }
 
-// Тип для ответа с сервера (строковые поля)
-export interface BuildingTypeResponse {
-    id: string;
-    type: string;
-    name: string;
-    hp: string;
-    price: string;
-    spriteId: string;
-}
 
-// Тип для использования в приложении (числовые поля)
-export interface BuildingType {
+export interface TBuildingType {
     id: number;
     type: string;
     name: string;
@@ -52,12 +42,7 @@ export interface BuildingType {
     sprite: number;
 }
 
-// Тип для ответа метода getBuildingTypes
-export interface TBuildingTypesResponse {
-    buildingTypes: BuildingTypeResponse[];
-}
 
-// Основной тип для здания (приходит с сервера)
 export interface TBuilding {
     id: number;
     typeId: number;
@@ -77,23 +62,12 @@ export enum BuildingTypeID {
     Tower = 5,
 }
 
-export interface UnitTypeResponse {
-    id: string;
-    type: string;
-    name: string;
-    hp: string;
-    price: string;
-}
-export type UnitType = {
+export type TUnitType = {
     id: number;
     type: string;
     name: string;
     hp: number;
     price: number;
-}
-
-export type TUnitTypesResponse = {
-    unitTypes: UnitTypeResponse[];
 }
 
 export type TUnit = {
@@ -119,16 +93,4 @@ export enum UnitTypeID {
     Sorcerer = 10,
     Summoner = 11,
     Golem = 12,
-}
-
-export interface TUnitsResponse {
-    units: TUnit[];
-}
-
-export interface BuyBuildingResponse {
-    id: string;
-    type: string;
-    name: string;
-    hp: string;
-    price: string;
 }
