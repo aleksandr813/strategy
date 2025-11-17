@@ -1,8 +1,6 @@
-import CONFIG from '../../config';
 import { TPoint } from '../../config';
-import Building from '../../game/entities/Building';
 
-const { SPRITE_SIZE } = CONFIG;
+const BUILDING_SIZE = 2;
 
 export default class BuildingPreview {
     private isActive = false;
@@ -11,25 +9,11 @@ export default class BuildingPreview {
     private gridPosition: TPoint = { x: 0, y: 0 };
     private canPlace = false;
 
-    private static readonly BUILDING_SIZE = 2;
-
     public activate(buildingTypeId: number, hp: number): void {
         this.isActive = true;
         this.buildingTypeId = buildingTypeId;
         this.buildingHp = hp;
         this.canPlace = false;
-    }
-    
-    public getBuildingTypeId(): number {
-        return this.buildingTypeId;
-    }
-
-    public getPlacementPosition(): TPoint {
-        return { ...this.gridPosition };
-    }
-
-    public getCanPlace(): boolean {
-        return this.canPlace;
     }
 
     public deactivate(): void {
@@ -41,6 +25,18 @@ export default class BuildingPreview {
 
     public isActiveStatus(): boolean {
         return this.isActive;
+    }
+
+    public getBuildingTypeId(): number {
+        return this.buildingTypeId;
+    }
+
+    public getPlacementPosition(): TPoint {
+        return { ...this.gridPosition };
+    }
+
+    public getCanPlace(): boolean {
+        return this.canPlace;
     }
 
     public update(x: number, y: number, occupiedMatrix: number[][]): void {
@@ -55,25 +51,27 @@ export default class BuildingPreview {
     }
 
     private checkCanPlace(occupiedMatrix: number[][]): boolean {
+        return this.isWithinBounds(occupiedMatrix) && this.isCellsEmpty(occupiedMatrix);
+    }
+
+    private isWithinBounds(occupiedMatrix: number[][]): boolean {
         const { x, y } = this.gridPosition;
-        const size = BuildingPreview.BUILDING_SIZE;
+        return x >= 0 && y >= 0 && 
+               x + BUILDING_SIZE <= occupiedMatrix[0].length && 
+               y + BUILDING_SIZE <= occupiedMatrix.length;
+    }
 
-        // Проверка границ
-        if (x < 0 || y < 0 || 
-            x + size > occupiedMatrix[0].length || 
-            y + size > occupiedMatrix.length) {
-            return false;
-        }
-
-        // Проверка занятости клеток
-        for (let dy = 0; dy < size; dy++) {
-            for (let dx = 0; dx < size; dx++) {
+    private isCellsEmpty(occupiedMatrix: number[][]): boolean {
+        const { x, y } = this.gridPosition;
+        
+        for (let dy = 0; dy < BUILDING_SIZE; dy++) {
+            for (let dx = 0; dx < BUILDING_SIZE; dx++) {
                 if (occupiedMatrix[y + dy][x + dx] !== 0) {
                     return false;
                 }
             }
         }
-
+        
         return true;
     }
 
@@ -86,7 +84,7 @@ export default class BuildingPreview {
         };
     }
 
-    public getPlacementData(): { typeId: number; position: TPoint; canPlace: boolean } | null {
+    public getPlacementData() {
         if (!this.isActive) return null;
 
         return {

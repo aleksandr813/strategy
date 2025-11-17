@@ -184,7 +184,6 @@ const VillageCanvas: React.FC = () => {
         const { buildingPreview, unitPreview, units } = village.getScene();
 
         if (buildingPreview.isActiveStatus()) {
-            // Передаём только server
             village.handleBuildingPlacement(game['server']);
         } else if (unitPreview.isActiveStatus()) {
             village.handleUnitPlacement(x, y, game['server']);
