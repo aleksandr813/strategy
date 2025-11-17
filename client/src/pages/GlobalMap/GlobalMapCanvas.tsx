@@ -8,7 +8,7 @@ import { GameContext } from '../../App';
 import { TPoint } from '../../config';
 import villageBackground from '../../assets/img/background/villageBackground.png';
 
-import "./Village.scss";
+import "./GlobalMap.scss";
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
