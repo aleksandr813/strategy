@@ -1,8 +1,8 @@
-import Manager, { GameData } from "./Manager";
-import Store from "../services/store/Store";
-import Server from "../services/server/Server";
+import Manager, { GameData } from "../manager/Manager";
+import Store from "../../services/store/Store";
+import Server from "../../services/server/Server";
 
-class Battle extends Manager {
+class GlobalMap extends Manager {
     private store: Store;
     private server: Server;
 
@@ -13,4 +13,4 @@ class Battle extends Manager {
     }
 }
 
-export default Battle;
+export default GlobalMap;

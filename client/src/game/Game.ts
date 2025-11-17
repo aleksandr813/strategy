@@ -1,10 +1,10 @@
-import GlobalMap from "./GlobalMap";
-import Village from "./Village";
-import Battle from "./Battle";
+import GlobalMap from "./manager/GlobalMap";
+import Village from "./manager/Village";
+import Battle from "./manager/Battle";
 import Store from "../services/store/Store";
 import Server from "../services/server/Server";
-import Unit from './Entities/Unit';
-import Building from './Entities/Building';
+import Unit from './entities/Unit';
+import Building from './entities/Building';
 
 class Game {
     private store: Store;

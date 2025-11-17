@@ -48,7 +48,7 @@ class Village {
 
     public function getBuildingTypes() {
         $types = $this->db->getBuildingTypes();
-        return ['buildingTypes' => $types];
+        return $types;
     }
 
     public function buyBuilding($user, $typeId, $x, $y) {
@@ -180,7 +180,7 @@ class Village {
     public function getUnitTypes()
     {
         $types = $this->db->getUnitTypes();
-        return ["unitTypes" => $types];
+        return $types;
     }
 
     public function moveUnits($userId, $units) {

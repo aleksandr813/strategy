@@ -1,11 +1,10 @@
-import CONFIG, { TPoint } from "../config";
-import Unit from './Entities/Unit';
-import Building from './Entities/Building';
-import BuildingPreview from "../services/canvas/BuildingPreview";
-import UnitPreview from "../services/canvas/UnitPreview";
-import Server from "../services/server/Server";
-import VillageManager from "../pages/Village/villageDataManager";
-import Store from "../services/store/Store";
+import CONFIG, { TPoint } from "../../config";
+import Unit from '../entities/Unit';
+import Building from '../entities/Building';
+import BuildingPreview from "../../services/canvas/BuildingPreview";
+import UnitPreview from "../../services/canvas/UnitPreview";
+import Server from "../../services/server/Server";
+import Store from "../../services/store/Store";
 import Manager, { GameData } from "./Manager";
 
 const { WIDTH, HEIGHT } = CONFIG;
@@ -15,7 +14,6 @@ class Village extends Manager {
     private unitPreview: UnitPreview;
     private store: Store;
     private server: Server;
-    private villageManager: VillageManager;
     public selectedBuilding: Building | null = null;
 
     constructor(store: Store, server: Server, gameData: GameData) {
@@ -24,7 +22,6 @@ class Village extends Manager {
         this.server = server;
         this.buildingPreview = new BuildingPreview();
         this.unitPreview = new UnitPreview();
-        this.villageManager = new VillageManager(server);
     }
 
     public selectBuilding(building: Building | null): void {

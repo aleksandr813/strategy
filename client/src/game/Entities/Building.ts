@@ -1,4 +1,4 @@
-import { TBuilding as BuildingData, BuildingType, BuildingTypeID } from "../../services/server/types";
+import { TBuilding as TBuildingType, BuildingTypeID } from "../../services/server/types";
 import { TPoint } from "../../config";
 
 export default class Building {
