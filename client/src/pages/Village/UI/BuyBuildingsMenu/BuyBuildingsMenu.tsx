@@ -19,7 +19,13 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
     const loadBuildingTypes = async (): Promise<TBuildingType[]> => {
         const server = new Server(game['store']);
         const types = await server.getBuildingTypes();
-        return types || [];
+
+        const excludedTypes = ['mine', 'main_building'];
+    
+        const filteredTypes = types.filter(type => 
+            !excludedTypes.includes(type.type)
+        );
+        return filteredTypes || [];
     }
 
     const buyBuilding = async (building: TBuildingType) => {

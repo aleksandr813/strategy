@@ -1,25 +1,25 @@
-export interface TError {
+export type TError = {
     code: number;
     text: string;
 }
 
-export interface TRootsResponse {
+export type TRootsResponse = {
     roots?: number[];
     error?: TError;
 }
 
-export interface TAnswer<T> {
+export type TAnswer<T> = {
     result: 'ok' | 'error';
     data?: T;
     error?: TError;
 }
 
-export interface TUser {
+export type TUser = {
     token: string;
     name: string;
 }
 
-export interface TMessage {
+export type TMessage = {
     message: string;
     author: string;
     created: string;
@@ -33,7 +33,7 @@ export interface TMessagesResponse {
 }
 
 
-export interface TBuildingType {
+export type TBuildingType = {
     id: number;
     type: string;
     name: string;
@@ -43,7 +43,7 @@ export interface TBuildingType {
 }
 
 
-export interface TBuilding {
+export type TBuilding = {
     id: number;
     typeId: number;
     villageId: number;
