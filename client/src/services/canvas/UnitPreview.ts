@@ -1,6 +1,6 @@
 import CONFIG from "../../config";
 import { TPoint } from "../../config";
-import Unit from "../../game/Entities/Unit";
+import Unit from "../../game/entities/Unit";
 import { TUnit } from "../../services/server/types";
 
 const { SPRITE_SIZE } = CONFIG;

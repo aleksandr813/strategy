@@ -1,5 +1,5 @@
-import Building from "../../game/Entities/Building";
-import Unit from "../../game/Entities/Unit";
+import Building from "../../game/entities/Building";
+import Unit from "../../game/entities/Unit";
 import Server from "../../services/server/Server";
 import { TBuilding, BuildingType, BuildingTypeResponse, TUnit, UnitTypeResponse, UnitType } from "../../services/server/types";
 

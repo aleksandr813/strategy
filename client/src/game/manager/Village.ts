@@ -1,11 +1,11 @@
-import CONFIG, { TPoint } from "../config";
-import Unit from './Entities/Unit';
-import Building from './Entities/Building';
-import BuildingPreview from "../services/canvas/BuildingPreview";
-import UnitPreview from "../services/canvas/UnitPreview";
-import Server from "../services/server/Server";
-import VillageManager from "../pages/Village/villageDataManager";
-import Store from "../services/store/Store";
+import CONFIG, { TPoint } from "../../config";
+import Unit from '../entities/Unit';
+import Building from '../entities/Building';
+import BuildingPreview from "../../services/canvas/BuildingPreview";
+import UnitPreview from "../../services/canvas/UnitPreview";
+import Server from "../../services/server/Server";
+import VillageManager from "../../pages/Village/villageDataManager";
+import Store from "../../services/store/Store";
 import Manager, { GameData } from "./Manager";
 
 const { WIDTH, HEIGHT } = CONFIG;

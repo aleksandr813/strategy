@@ -1,22 +1,8 @@
 import CONFIG from '../../config';
 import { TPoint } from '../../config';
-import Building from '../../game/Entities/Building';
+import Building from '../../game/entities/Building';
 
 const { SPRITE_SIZE } = CONFIG;
-
-interface BuildingTypeData {
-    id: number;
-    type: string;
-    name: string;
-    hp: number;
-    price: number;
-    sprite: number;
-}
-
-interface RenderData {
-    gridPosition: TPoint;
-    canPlace: boolean;
-}
 
 export default class BuildingPreview {
     private isActive = false;
@@ -91,7 +77,7 @@ export default class BuildingPreview {
         return true;
     }
 
-    public getRenderData(): RenderData | null {
+    public getRenderData() {
         if (!this.isActive) return null;
 
         return {

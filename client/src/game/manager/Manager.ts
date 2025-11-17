@@ -1,8 +1,8 @@
-import CONFIG, { TPoint } from "../config";
-import Unit from './Entities/Unit';
-import Building from './Entities/Building';
+import CONFIG, { TPoint } from "../../config";
+import Unit from '../entities/Unit';
+import Building from '../entities/Building';
 import EasyStar from 'easystarjs';
-import Allocation from "../services/canvas/Allocation";
+import Allocation from "../../services/canvas/Allocation";
 
 const { WIDTH, HEIGHT } = CONFIG;
 const GRID_WIDTH = 87;
