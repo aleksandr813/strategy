@@ -477,16 +477,23 @@
       "id": "0a943328-b1cf-47ab-8008-8508a3cbffc5",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "b60318cf-650a-46f5-8a13-ae9bd95eab40",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1007"
     }, {
       "id": "caa23214-394e-4dc7-af86-c1b68c5ed37d",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Логин должен быть от 5 до 20 символов"
+      "value": "НЕПРАВИЛЬНАЯ ДЛИНА ЛОГИНА"
     }, {
       "id": "889c55a1-c757-4568-ba62-deda85d026b6",
       "comment": "",
@@ -641,16 +648,23 @@
       "id": "0da0436d-c0eb-462d-a6a5-b03ce9a82bcd",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "4c7aa00c-a6f9-44dc-ac0f-7d5ed0701f6f",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1007"
     }, {
       "id": "4e602b53-47bb-4f37-b562-591ba9b10772",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Логин должен быть от 5 до 20 символов"
+      "value": "НЕПРАВИЛЬНАЯ ДЛИНА ЛОГИНА"
     }, {
       "id": "5e536320-a9f8-4986-b1fa-205b0a565020",
       "comment": "",
@@ -805,18 +819,25 @@
       "id": "c99d690f-016e-4fd2-aef0-5af4185dee1a",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "cdc5be81-f2bd-46e7-9bb1-1965cca24f31",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1008"
     }, {
       "id": "9c57a7a5-5bb3-47dc-ad12-d448fd667bb9",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Логин не должен начинаться с цифры или символа подчеркивания"
+      "value": "ЛОГИН НАЧИНАЕТСЯ С ЦИФРЫ ИЛИ ПОДЧЕРКИВАНИЯ"
     }, {
-      "id": "37fcc653-8091-4c39-9c16-89b399ec4df8",
+      "id": "ff1c23e8-f792-454d-9ea6-c0a22fe45795",
       "comment": "",
       "command": "close",
       "target": "",
@@ -969,16 +990,23 @@
       "id": "6ddbf730-672b-4621-b011-40fa676145c4",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "55cb00f3-5e5f-4c0b-ae91-69d2011c3c85",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1008"
     }, {
       "id": "48204b3d-7bca-4ae5-b859-de78e2a4dc3c",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Логин не должен начинаться с цифры или символа подчеркивания"
+      "value": "ЛОГИН НАЧИНАЕТСЯ С ЦИФРЫ ИЛИ ПОДЧЕРКИВАНИЯ"
     }, {
       "id": "26b37cea-6d22-409f-9c28-ad41b89da75b",
       "comment": "",
@@ -1036,7 +1064,7 @@
         ["xpath=//div[@id='root']/div/div/div[3]/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": "Test@User"
+      "value": "Hash#Tag"
     }, {
       "id": "9ca5c421-e503-4bb3-bfc5-c3c4ebc34054",
       "comment": "",
@@ -1133,16 +1161,23 @@
       "id": "48906a7f-7dac-4dba-819a-5130a9b9644b",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "8cc9dffe-b94c-4a7e-8a6f-21fac1cb516c",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1009"
     }, {
       "id": "8132f997-7d67-46b6-a1fa-f435bb7ecdb1",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Логин может содержать только латинские буквы, цифры и символы подчеркивания"
+      "value": "НЕДОПУСТИМЫЕ СИМВОЛЫ В ЛОГИНЕ"
     }, {
       "id": "a5462dc7-42a6-4c41-a9e4-c8676730db4c",
       "comment": "",
@@ -1200,7 +1235,7 @@
         ["xpath=//div[@id='root']/div/div/div[3]/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": "Hash#Tag"
+      "value": "Test@User"
     }, {
       "id": "231f3834-4d73-41ae-9fbe-626dfe9b546a",
       "comment": "",
@@ -1297,18 +1332,25 @@
       "id": "1bc0a4da-6ee2-4118-a14b-2636d05104c9",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "201af0b3-4208-4170-88ca-b734a5e7f072",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1009"
     }, {
       "id": "72161ec6-1813-44b8-bb83-e8173fdcf7d1",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Логин может содержать только латинские буквы, цифры и символы подчеркивания"
+      "value": "НЕДОПУСТИМЫЕ СИМВОЛЫ В ЛОГИНЕ"
     }, {
-      "id": "4f4ff3ea-ba98-4fcf-a091-35cfc8de10be",
+      "id": "064e92c3-f5c6-4b6c-8d9a-11c03886d04a",
       "comment": "",
       "command": "close",
       "target": "",
@@ -1461,16 +1503,23 @@
       "id": "3de91705-b6b7-4af0-ab28-e69bc36f7c90",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "9d544767-de04-411e-839b-ec6e792c6d2f",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1009"
     }, {
       "id": "cd1a23e0-7fda-43d8-b6fa-0a2dd8765212",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Логин может содержать только латинские буквы, цифры и символы подчеркивания"
+      "value": "НЕДОПУСТИМЫЕ СИМВОЛЫ В ЛОГИНЕ"
     }, {
       "id": "c855bb71-1d23-4e93-8ce2-4094cc42d2ee",
       "comment": "",
@@ -1486,7 +1535,7 @@
       "id": "bfb83366-6d99-45f5-8111-598e47221edd",
       "comment": "",
       "command": "open",
-      "target": "",
+      "target": "/",
       "targets": [],
       "value": ""
     }, {
@@ -1625,18 +1674,25 @@
       "id": "13a54c07-a6c2-4a88-8a29-c91cc60674dc",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "051921d8-be55-4ce8-a7a5-b5153b93c175",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1010"
     }, {
       "id": "43325db2-1b38-436d-9900-a878d6fb5bf0",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Логин может содержать только латинские буквы, цифры и символы подчеркивания"
+      "value": "ЛОГИН СОДЕРЖИТ ПРОБЕЛЫ ИЛИ СПЕЦИАЛЬНЫЕ СИМВОЛЫ"
     }, {
-      "id": "eeb77739-f871-4f54-a1ff-a8cf4bf50f8b",
+      "id": "d236e7a0-90c7-4d8e-8bf2-58fb35533a0a",
       "comment": "",
       "command": "close",
       "target": "",
@@ -1650,7 +1706,7 @@
       "id": "617ab3f2-9f20-465c-8733-3e607f1b3319",
       "comment": "",
       "command": "open",
-      "target": "",
+      "target": "/",
       "targets": [],
       "value": ""
     }, {
@@ -1692,7 +1748,7 @@
         ["xpath=//div[@id='root']/div/div/div[3]/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": " StartSpace123"
+      "value": " StartSpace"
     }, {
       "id": "c3df5e70-5e96-45cb-8305-11eead3f8da8",
       "comment": "",
@@ -1789,16 +1845,23 @@
       "id": "1ce05992-9d20-4b39-93ab-c440bf6340fc",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "5d70b700-8c1a-4476-b9b0-f3a0c43c5955",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1010"
     }, {
       "id": "e1d57fc0-963e-472a-9267-126e3ed73697",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Логин может содержать только латинские буквы, цифры и символы подчеркивания"
+      "value": "ЛОГИН СОДЕРЖИТ ПРОБЕЛЫ ИЛИ СПЕЦИАЛЬНЫЕ СИМВОЛЫ"
     }, {
       "id": "fe169028-5ed3-4a6a-81c9-eabeff22a402",
       "comment": "",
@@ -1953,23 +2016,25 @@
       "id": "6274364e-3138-420f-a4fa-1f864f4d4401",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
-      "targets": [
-        ["css=.error-message", "css:finder"],
-        ["xpath=//div[@id='root']/div/div/div[3]/div/p", "xpath:idRelative"],
-        ["xpath=//p", "xpath:position"],
-        ["xpath=//p[contains(.,'Пароль должен быть не менее 8 символов')]", "xpath:innerText"]
-      ],
+      "target": "css=.popup-title",
+      "targets": [],
       "value": "3000"
+    }, {
+      "id": "bab10b46-c5a9-4dfa-b4c1-b6786a181bc8",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1011"
     }, {
       "id": "63075a55-eb83-4c75-8cfe-e1d2c5e0f3f9",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Пароль должен быть не менее 8 символов"
+      "value": "СЛИШКОМ КОРОТКИЙ ПАРОЛЬ"
     }, {
-      "id": "7a9d19bf-aa60-4acd-abaa-daba507437a8",
+      "id": "aee79d6c-7fb6-4b7a-8158-092c0682bf31",
       "comment": "",
       "command": "close",
       "target": "",
@@ -2122,18 +2187,25 @@
       "id": "55f4ae39-3125-40b7-8104-2902cd21fc94",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "75e3a798-78ea-4991-8919-efefb72bab67",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1012"
     }, {
       "id": "8884e5db-b744-47e5-9895-c259aa9e2d7f",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Пароль должен содержать хотя бы одну заглавную букву"
+      "value": "ПАРОЛЬ БЕЗ РАЗНЫХ РЕГИСТРОВ"
     }, {
-      "id": "46d6b6c0-c32a-4071-9c79-79919d691490",
+      "id": "81f2c993-d77a-4789-8f5e-ae33b9eef833",
       "comment": "",
       "command": "close",
       "target": "",
@@ -2286,16 +2358,23 @@
       "id": "3341270b-c064-4656-b54b-5c482c443012",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "d3617a52-638e-4280-8a58-abf1a713488f",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1012"
     }, {
       "id": "c184d4a6-4390-4b99-afbd-8f2decc5208a",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Пароль должен содержать хотя бы одну строчную букву"
+      "value": "ПАРОЛЬ БЕЗ РАЗНЫХ РЕГИСТРОВ"
     }, {
       "id": "6ea55534-b5b7-4bf1-b6ad-56435989eb05",
       "comment": "",
@@ -2450,16 +2529,23 @@
       "id": "97212205-903f-4bbe-ae5d-b81ae1c30a88",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "2cc31cbf-f562-47f2-93c2-62ac7c50fc5f",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1013"
     }, {
       "id": "0b88002f-2667-4d63-b646-50e3cd6749d1",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Пароль должен содержать хотя бы одну цифру"
+      "value": "ПАРОЛЬ БЕЗ ЦИФР"
     }, {
       "id": "7fd36ea1-8ef3-4982-860e-9de60a2195b9",
       "comment": "",
@@ -2614,16 +2700,23 @@
       "id": "dd240124-a278-4ef5-9f05-05a632ea5a26",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "25b511e2-35e3-495b-a537-54810ed63aa1",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1014"
     }, {
       "id": "7bf9845b-a3d8-4165-8fb9-e3c426d8c793",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Пароль не должен содержать логин или имя"
+      "value": "ПАРОЛЬ СОДЕРЖИТ ПЕРСОНАЛЬНУЮ ИНФОРМАЦИЮ"
     }, {
       "id": "dd664560-f6d0-4755-a536-70326ea3b0b2",
       "comment": "",
@@ -2778,16 +2871,23 @@
       "id": "478bb656-1588-444b-a373-8e4f47891d30",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "c8692dd2-9e83-4e1e-acf9-ed1cdea6b292",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1015"
     }, {
       "id": "6cea7391-5c31-47c4-ab5b-a5ed759a8d67",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Пароли не совпадают"
+      "value": "ПАРОЛИ НЕ СОВПАДАЮТ"
     }, {
       "id": "20903db9-6553-4cae-812f-8f7ee0da676b",
       "comment": "",
@@ -2942,16 +3042,23 @@
       "id": "c94b68e6-7c0d-4aa9-b85e-8a73008d0ce7",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "0ee0c273-6d1f-4e9b-a619-bf04a01d826b",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1016"
     }, {
       "id": "d001e699-c299-4e7c-a5c1-9f754c7324a4",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Логин должен быть от 5 до 20 символов"
+      "value": "PARAMS LOGIN OR PASSWORD NOT SET"
     }, {
       "id": "d6bca5eb-5943-4f45-ad51-3f70c846b0f9",
       "comment": "",
@@ -3106,16 +3213,23 @@
       "id": "8d13336d-9037-44f2-8a07-6e3c5c1c34bf",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
+    }, {
+      "id": "542087ef-8b7b-4edd-80e9-5deeaef38693",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup-title",
+      "targets": [],
+      "value": "ОШИБКА №1016"
     }, {
       "id": "ba852f05-2135-48b0-b044-3efd7515f529",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup--info-text",
       "targets": [],
-      "value": "Пароль должен быть не менее 8 символов"
+      "value": "PARAMS LOGIN OR PASSWORD NOT SET"
     }, {
       "id": "1a7ee0bd-2945-464e-98c2-c341b28fdeb2",
       "comment": "",
@@ -3270,16 +3384,23 @@
       "id": "ba09d5ef-df7d-4ee4-84a9-4c81469b4461",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
       "value": "3000"
     }, {
       "id": "b4cde6a9-4615-4468-a505-1e481ca6f5f9",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.error-message",
+      "target": "css=.popup-title",
       "targets": [],
-      "value": "Логин должен быть от 5 до 20 символов"
+      "value": "ОШИБКА №1016"
+    }, {
+      "id": "7c8cdbb3-a376-4b17-b842-f488bdcf5cbc",
+      "comment": "",
+      "command": "verifyText",
+      "target": "css=.popup--info-text",
+      "targets": [],
+      "value": "PARAMS LOGIN OR PASSWORD NOT SET"
     }, {
       "id": "637140af-6aec-42b6-99f9-f08492fe0807",
       "comment": "",
@@ -3650,7 +3771,7 @@
         ["xpath=//div[@id='root']/div/div/div[3]/div/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
       ],
-      "value": "TestPasss1234"
+      "value": "TestPass1234"
     }, {
       "id": "8e185dd1-439b-4ef0-bbed-d686bd748950",
       "comment": "",
