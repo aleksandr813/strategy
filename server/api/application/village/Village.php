@@ -115,7 +115,17 @@ class Village {
     }
 
     public function deleteBuilding($buildingId, $userId) {
-        $result = $this->db->deleteBuilding($buildingId, $userId);
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
+        }
+
+        $building = $this->db->getBuilding($buildingId, $village->id);
+        if (!$building) {
+            return ['error' => 300];
+        }
+
+        $result = $this->db->deleteBuilding($buildingId, $village->id);
         if (!$result) {
             return ['error' => 303];
         }
@@ -169,7 +179,17 @@ class Village {
 
     public function deleteUnit($unitId, $userId)
     {
-        $result = $this->db->deleteUnit($unitId, $userId);
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
+        }
+
+        $unit = $this->db->getUnit($unitId, $village->id);
+        if (!$unit) {
+            return ['error' => 500];
+        }
+
+        $result = $this->db->deleteUnit($unitId, $village->id);
         if (!$result) {
             return ['error' => 503];
         }
@@ -212,9 +232,5 @@ class Village {
         }
 
         return true;
-    }
-
-    public function moveUnit($unit) {
-        
     }
 }
