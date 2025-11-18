@@ -121,6 +121,12 @@ export enum UnitTypeID {
     Golem = 12,
 }
 
+export type TMoveUnitRequest = {
+    unitId: number;
+    x: number;
+    y: number;
+};
+
 export interface TUnitsResponse {
     units: TUnit[];
 }

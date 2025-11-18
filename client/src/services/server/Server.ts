@@ -2,7 +2,7 @@ import md5 from 'md5';
 import CONFIG from "../../config";
 import Store from "../store/Store";
 import { TBuildingTypesResponse, TBuilding } from './types';
-import { TUnitTypesResponse, TUnitsResponse, TUnit } from './types';
+import { TUnitTypesResponse, TUnitsResponse, TUnit, TMoveUnitRequest } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 
 const { CHAT_TIMESTAMP, HOST } = CONFIG;
@@ -204,6 +204,20 @@ class Server {
         });
         console.log('buyUnit result:', result);
         return result;
+    }
+
+    async moveUnits(units: TMoveUnitRequest[]): Promise<boolean> {
+        // Логируем отправляемые данные для отладки
+        console.log('Moving units:', units);
+
+        // Отправляем запрос. Обратите внимание: мы превращаем массив units в строку JSON,
+        // так как сигнатура метода request требует значения типа string.
+        const result = await this.request<boolean>('moveUnits', {
+            units: JSON.stringify(units)
+        });
+
+        // Если результат true — успех, иначе возвращаем false
+        return result === true;
     }
 
     async deleteBuilding(buildingId: number): Promise<boolean> {

@@ -3,6 +3,7 @@ import Unit from './Entities/Unit';
 import Building from './Entities/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../services/canvas/Allocation";
+import Server from "../services/server/Server";
 
 const { WIDTH, HEIGHT } = CONFIG;
 const GRID_WIDTH = 87;
@@ -24,10 +25,12 @@ class Manager {
     protected gameData: GameData;
     protected allocation: Allocation;
     protected easystar = new EasyStar.js();
+    protected server : Server;
 
-    constructor(gameData: GameData) {
+    constructor(gameData: GameData, server: Server) {
         this.gameData = gameData;
         this.allocation = new Allocation();
+        this.server = server;
     }
 
     destructor() {}
@@ -110,12 +113,18 @@ class Manager {
                         return;
                     }
 
-                    path.shift();
+                    path.shift(); 
                     let stepIndex = 0;
 
                     unit.moveIntervalId = setInterval(() => {
                         if (stepIndex >= path.length) {
                             this.clearUnitMovement(unit);
+                            
+                            const oldKey = `${unit.cords.x},${unit.cords.y}`;
+                            if (cellReservations.get(oldKey) === unit) {
+                                cellReservations.delete(oldKey);
+                            }
+
                             return;
                         }
 
@@ -135,7 +144,17 @@ class Manager {
                                 cellReservations.set(key, unit);
                                 unit.cords = nextStep;
                                 stepIndex++;
+
+                                this.server.moveUnits([{
+                                    unitId: unit.id,
+                                    x: unit.cords.x,
+                                    y: unit.cords.y
+                                }]);
+                            } else {
                             }
+                        } else {
+                            console.error(`Unit ${unit.id} STUCK: Path leads to static block at ${nextStep.x}, ${nextStep.y}.`);
+                            this.clearUnitMovement(unit);
                         }
                     }, MOVE_INTERVAL);
                 }
