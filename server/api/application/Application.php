@@ -88,7 +88,7 @@ class Application
             if ($user) {
                 $units = $this->village->getUnits($user->id);
                 if (count($units) === 0) {
-                    return [ false ];
+                    return [false];
                 }
                 return $units;
             }
@@ -128,9 +128,25 @@ class Application
             if ($user) {
                 $buildings = $this->village->getBuildings($user->id);
                 if (count($buildings) === 0) {
-                    return [ false ];
+                    return [false];
                 }
                 return $buildings;
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function getVillages($params)
+    {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                $villages = $this->village->getVillages($user->id);
+                if (count($villages) === 0) {
+                    return [false];
+                }
+                return $villages;
             }
             return ['error' => 705];
         }
@@ -173,8 +189,9 @@ class Application
         return ['error' => 242];
     }
 
-    public function takeDamage($params) {
-        if ($params['token']  && $params['units'])  {
+    public function takeDamage($params)
+    {
+        if ($params['token']  && $params['units']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
                 return $this->village->takeDamage($user->id, $params['units']);
@@ -184,7 +201,7 @@ class Application
         return ['error' => 242];
     }
 
-    
+
     public function buyBuilding($params)
     {
         if ($params['token'] && $params['typeId'] && $params['x'] && $params['y']) {
