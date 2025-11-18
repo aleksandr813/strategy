@@ -163,10 +163,16 @@ class Application
 
     public function moveUnits($params)
     {
-        if ($params['token']  && $params['units']) {
+        if ($params['token'] && $params['units']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->village->moveUnits($user->id, $params['units']);
+                $units = json_decode($params['units'], true);
+                
+                if (json_last_error() !== JSON_ERROR_NONE || !is_array($units)) {
+                    return ['error' => 504]; 
+                }
+
+                return $this->village->moveUnits($user->id, $units);
             }
             return ['error' => 705];
         }
@@ -174,10 +180,16 @@ class Application
     }
 
     public function takeDamage($params) {
-        if ($params['token']  && $params['units'])  {
+        if ($params['token'] && $params['units'])  {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->village->takeDamage($user->id, $params['units']);
+                $units = json_decode($params['units'], true);
+
+                if (json_last_error() !== JSON_ERROR_NONE || !is_array($units)) {
+                    return ['error' => 510];
+                }
+
+                return $this->village->takeDamage($user->id, $units);
             }
             return ['error' => 705];
         }

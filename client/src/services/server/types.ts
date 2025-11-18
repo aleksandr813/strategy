@@ -94,3 +94,21 @@ export enum UnitTypeID {
     Summoner = 11,
     Golem = 12,
 }
+
+export type TMoveUnitRequest = {
+    unitId: number;
+    x: number;
+    y: number;
+};
+
+export interface TUnitsResponse {
+    units: TUnit[];
+}
+
+export interface BuyBuildingResponse {
+    id: string;
+    type: string;
+    name: string;
+    hp: string;
+    price: string;
+}
