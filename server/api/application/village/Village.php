@@ -43,6 +43,21 @@ class Village {
             return ['error' => 705];
         }
         $buildings = $this->db->getBuildings($userId);
+
+        foreach($buildings as &$building) {
+            $building['id'] = (int)$building['id'];
+            $building['typeId'] = (int)$building['typeId'];
+            $building['villageId'] = (int)$building['villageId'];
+            $building['x'] = (int)$building['x'];
+            $building['y'] = (int)$building['y'];
+            $building['level'] = (int)$building['level'];
+            $building['currentHp'] = (int)$building['currentHp'];
+        }
+
+        if (count($buildings) === 0) {
+            return ['error' => 300];
+        }
+
         return $buildings;
     }
 
@@ -139,6 +154,20 @@ class Village {
             return ['error' => 705];
         }
         $units = $this->db->getUnits($userId);
+
+        foreach($units as &$unit) {
+            $unit['id'] = (int)$unit['id'];
+            $unit['typeId'] = (int)$unit['typeId'];
+            $unit['villageId'] = (int)$unit['villageId'];
+            $unit['x'] = (int)$unit['x'];
+            $unit['y'] = (int)$unit['y'];
+            $unit['level'] = (int)$unit['level'];
+            $unit['currentHp'] = (int)$unit['currentHp'];
+        }
+
+        if (count($units) === 0) {
+            return ['error' => 500];
+        }
 
         return $units;
     }
