@@ -1,5 +1,5 @@
 import { TPoint } from "../../config";
-import Unit from "../../game/entities/Unit";
+import Unit from "../../game/Entities/Unit";
 import { TUnit } from "../../services/server/types";
 
 export default class UnitPreview {

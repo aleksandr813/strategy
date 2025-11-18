@@ -20,8 +20,8 @@ export type TWINDOW = {
 const CONFIG = {
     //udsu 
     //HOST: 'http://strategy/api',
-    //HOST: 'http://server/api',
-    HOST: 'http://strategy/server/api',
+    HOST: 'http://strategy1/api',
+    // HOST: 'http://server/api',
 
     CHAT_TIMESTAMP: 200, //ms
 
@@ -36,7 +36,6 @@ const CONFIG = {
         HEIGHT: 10,
         WIDTH: 20,
     },
-
     EXCLUDED_BUILDINGS: ['main_building', 'mine'],
 };
 

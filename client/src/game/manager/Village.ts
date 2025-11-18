@@ -1,6 +1,6 @@
 import CONFIG, { TPoint } from "../../config";
-import Unit from '../entities/Unit';
-import Building from '../entities/Building';
+import Unit from '../Entities/Unit';
+import Building from "../Entities/Building";
 import BuildingPreview from "../../services/canvas/BuildingPreview";
 import UnitPreview from "../../services/canvas/UnitPreview";
 import Server from "../../services/server/Server";
@@ -13,7 +13,6 @@ class Village extends Manager {
     private buildingPreview: BuildingPreview;
     private unitPreview: UnitPreview;
     private store: Store;
-    private villageManager: VillageManager;
     public selectedBuilding: Building | null = null;
 
     constructor(store: Store, server: Server, gameData: GameData) {

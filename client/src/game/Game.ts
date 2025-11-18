@@ -3,8 +3,8 @@ import Village from "./manager/Village";
 import Battle from "./manager/Battle";
 import Store from "../services/store/Store";
 import Server from "../services/server/Server";
-import Unit from './entities/Unit';
-import Building from './entities/Building';
+import Unit from './Entities/Unit';
+import Building from './Entities/Building';
 
 class Game {
     private store: Store;

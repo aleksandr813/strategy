@@ -1,8 +1,8 @@
 import md5 from 'md5';
 import CONFIG from "../../config";
 import Store from "../store/Store";
-import { TBuildingTypesResponse, TBuilding } from './types';
-import { TUnitTypesResponse, TUnitsResponse, TUnit, TMoveUnitRequest } from './types';
+import { TBuilding, TBuildingType } from './types';
+import {  TUnitsResponse, TUnit, TUnitType, TMoveUnitRequest } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 
 const { CHAT_TIMESTAMP, HOST } = CONFIG;
