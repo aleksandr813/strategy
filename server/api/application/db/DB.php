@@ -196,9 +196,13 @@ class DB
 
     
 
-    public function deleteUnit($unitId, $userId)
+    public function deleteUnit($unitId, $villageId)
     {
-        return $this->execute("DELETE FROM units WHERE id = ? AND user_id = ?", [$unitId, $userId]);
+        return $this->execute("
+            DELETE FROM units 
+            WHERE id = ? AND village_id = ?", 
+            [$unitId, $villageId]
+        );
     }
 
     public function getBuildings($userId)
@@ -225,6 +229,15 @@ class DB
         $this->execute("INSERT INTO buildings
             (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
             [$buildingId, $villageId, $x, $y, $hp]
+        );
+    }
+
+    public function getBuilding($buildingId, $villageId) {
+        return $this->query(
+            "SELECT id 
+            FROM buildings
+            WHERE id = ? AND village_id = ?",
+            [$buildingId, $villageId]
         );
     }
 
@@ -260,14 +273,12 @@ class DB
         );
     }
 
-    public function deleteBuilding($buildingId, $userId)
+    public function deleteBuilding($buildingId, $villageId)
     {
         return $this->execute(
-            "
-            DELETE FROM buildings 
-            WHERE id = ? 
-            AND village_id = (SELECT id FROM villages WHERE user_id = ?)",
-            [$buildingId, $userId]
+            "DELETE FROM buildings
+            WHERE id = ? AND village_id = ?",
+            [$buildingId, $villageId]
         );
     }
 

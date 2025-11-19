@@ -43,6 +43,21 @@ class Village {
             return ['error' => 705];
         }
         $buildings = $this->db->getBuildings($userId);
+
+        foreach($buildings as &$building) {
+            $building['id'] = (int)$building['id'];
+            $building['typeId'] = (int)$building['typeId'];
+            $building['villageId'] = (int)$building['villageId'];
+            $building['x'] = (int)$building['x'];
+            $building['y'] = (int)$building['y'];
+            $building['level'] = (int)$building['level'];
+            $building['currentHp'] = (int)$building['currentHp'];
+        }
+
+        if (count($buildings) === 0) {
+            return ['error' => 300];
+        }
+
         return $buildings;
     }
 
@@ -115,7 +130,17 @@ class Village {
     }
 
     public function deleteBuilding($buildingId, $userId) {
-        $result = $this->db->deleteBuilding($buildingId, $userId);
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
+        }
+
+        $building = $this->db->getBuilding($buildingId, $village->id);
+        if (!$building) {
+            return ['error' => 300];
+        }
+
+        $result = $this->db->deleteBuilding($buildingId, $village->id);
         if (!$result) {
             return ['error' => 303];
         }
@@ -129,6 +154,20 @@ class Village {
             return ['error' => 705];
         }
         $units = $this->db->getUnits($userId);
+
+        foreach($units as &$unit) {
+            $unit['id'] = (int)$unit['id'];
+            $unit['typeId'] = (int)$unit['typeId'];
+            $unit['villageId'] = (int)$unit['villageId'];
+            $unit['x'] = (int)$unit['x'];
+            $unit['y'] = (int)$unit['y'];
+            $unit['level'] = (int)$unit['level'];
+            $unit['currentHp'] = (int)$unit['currentHp'];
+        }
+
+        if (count($units) === 0) {
+            return ['error' => 500];
+        }
 
         return $units;
     }
@@ -169,7 +208,17 @@ class Village {
 
     public function deleteUnit($unitId, $userId)
     {
-        $result = $this->db->deleteUnit($unitId, $userId);
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
+        }
+
+        $unit = $this->db->getUnit($unitId, $village->id);
+        if (!$unit) {
+            return ['error' => 500];
+        }
+
+        $result = $this->db->deleteUnit($unitId, $village->id);
         if (!$result) {
             return ['error' => 503];
         }
@@ -212,9 +261,5 @@ class Village {
         }
 
         return true;
-    }
-
-    public function moveUnit($unit) {
-        
     }
 }

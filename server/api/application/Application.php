@@ -86,11 +86,7 @@ class Application
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                $units = $this->village->getUnits($user->id);
-                if (count($units) === 0) {
-                    return [ false ];
-                }
-                return $units;
+                return $this->village->getUnits($user->id);
             }
             return ['error' => 705];
         }
@@ -126,11 +122,7 @@ class Application
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                $buildings = $this->village->getBuildings($user->id);
-                if (count($buildings) === 0) {
-                    return [ false ];
-                }
-                return $buildings;
+                return $this->village->getBuildings($user->id);
             }
             return ['error' => 705];
         }
