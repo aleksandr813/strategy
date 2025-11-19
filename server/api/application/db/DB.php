@@ -234,7 +234,7 @@ class DB
 
     public function getBuilding($buildingId, $villageId) {
         return $this->query(
-            "SELECT id 
+            "SELECT id, type_id  AS typeId
             FROM buildings
             WHERE id = ? AND village_id = ?",
             [$buildingId, $villageId]
@@ -246,7 +246,7 @@ class DB
     }
 
     public function getBuildingType($buildingType) {
-        return $this->query("SELECT hp, price FROM building_types WHERE id = ?", [$buildingType]);
+        return $this->query("SELECT id, hp, price FROM building_types WHERE id = ?", [$buildingType]);
     }
 
     public function getUnitType($unitType) {
