@@ -1,6 +1,7 @@
 <?php
 
-class Village {
+class Village
+{
     private $db;
 
     public function __construct($db)
@@ -8,7 +9,8 @@ class Village {
         $this->db = $db;
     }
 
-    public function getIncome($userId) {
+    public function getIncome($userId)
+    {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 310];
@@ -34,11 +36,12 @@ class Village {
 
         $this->db->updateMoney($userId, $newMoney);
         $this->db->updateLastIncome($village->id);
-        
+
         return ['money' => $this->db->getMoney($userId)->money];
     }
 
-    public function getBuildings($userId) {
+    public function getBuildings($userId)
+    {
         if (!$userId) {
             return ['error' => 705];
         }
@@ -46,12 +49,23 @@ class Village {
         return $buildings;
     }
 
-    public function getBuildingTypes() {
+    public function getVillages($userId)
+    {
+        if (!$userId) {
+            return ['error' => 705];
+        }
+        $buildings = $this->db->getVillages();
+        return $buildings;
+    }
+
+    public function getBuildingTypes()
+    {
         $types = $this->db->getBuildingTypes();
         return $types;
     }
 
-    public function buyBuilding($user, $typeId, $x, $y) {
+    public function buyBuilding($user, $typeId, $x, $y)
+    {
         $village = $this->db->getVillage($user->id);
         if (!$village) {
             return ['error' => 310];
@@ -84,7 +98,8 @@ class Village {
         ];
     }
 
-    public function upgradeBuilding($buildingId, $user, $typeId) {
+    public function upgradeBuilding($buildingId, $user, $typeId)
+    {
         $village = $this->db->getVillage($user->id);
         if (!$village) {
             return ['error' => 310];
@@ -114,7 +129,8 @@ class Village {
         return ['money' => $newMoney];
     }
 
-    public function deleteBuilding($buildingId, $userId) {
+    public function deleteBuilding($buildingId, $userId)
+    {
         $result = $this->db->deleteBuilding($buildingId, $userId);
         if (!$result) {
             return ['error' => 303];
@@ -183,7 +199,8 @@ class Village {
         return $types;
     }
 
-    public function moveUnits($userId, $units) {
+    public function moveUnits($userId, $units)
+    {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 310];
@@ -199,7 +216,8 @@ class Village {
     }
 
 
-    public function takeDamage($userId, $units) {
+    public function takeDamage($userId, $units)
+    {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 315];
@@ -214,7 +232,5 @@ class Village {
         return true;
     }
 
-    public function moveUnit($unit) {
-        
-    }
+    public function moveUnit($unit) {}
 }

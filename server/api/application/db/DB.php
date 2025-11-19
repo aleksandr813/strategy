@@ -98,9 +98,12 @@ class DB
         );
     }
 
-    public function getUnit($unitId, $villageId) {
-        return $this->query("SELECT x, y FROM units WHERE id = ? AND village_id = ?",
-        [$unitId, $villageId]);
+    public function getUnit($unitId, $villageId)
+    {
+        return $this->query(
+            "SELECT x, y FROM units WHERE id = ? AND village_id = ?",
+            [$unitId, $villageId]
+        );
     }
 
     public function getUnits($userId)
@@ -123,14 +126,17 @@ class DB
         );
     }
 
-    public function buyUnit($villageId, $unitId, $x, $y, $hp) {
-    $this->execute("INSERT INTO units
-        (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
-        [$unitId, $villageId, $x, $y, $hp]
-    );
-}
+    public function buyUnit($villageId, $unitId, $x, $y, $hp)
+    {
+        $this->execute(
+            "INSERT INTO units
+        (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)",
+            [$unitId, $villageId, $x, $y, $hp]
+        );
+    }
 
-    public function isOccupied($villageId, $x, $y) {
+    public function isOccupied($villageId, $x, $y)
+    {
         $result = $this->query(
             "SELECT EXISTS (
                 SELECT 1 FROM units WHERE village_id = ? AND x = ? AND y = ?
@@ -143,7 +149,8 @@ class DB
         return !empty($result) && $result->occupied == 1;
     }
 
-    public function updateUnitsPosition($units, $villageId) {
+    public function updateUnitsPosition($units, $villageId)
+    {
         $coordinatesX = [];
         $coordinatesY = [];
         $validUnits = [];
@@ -171,7 +178,8 @@ class DB
         );
     }
 
-    public function updateUnitsHP($units, $villageId) {
+    public function updateUnitsHP($units, $villageId)
+    {
         $hpArr = [];
         $validUnits = [];
 
@@ -194,7 +202,7 @@ class DB
         );
     }
 
-    
+
 
     public function deleteUnit($unitId, $userId)
     {
@@ -202,6 +210,23 @@ class DB
     }
 
     public function getBuildings($userId)
+    {
+        return $this->queryAll(
+            "SELECT 
+                b.id AS villageId, 
+                b.x AS x, 
+                b.y AS y,
+                bt.is_attacked AS isAttacked
+            FROM buildings AS b
+            INNER JOIN building_types AS bt
+            ON b.type_id = bt.id
+            WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)",
+            [$userId]
+        );
+    }
+
+
+    public function getVillages()
     {
         return $this->queryAll(
             "SELECT 
@@ -216,46 +241,56 @@ class DB
             FROM buildings AS b
             INNER JOIN building_types AS bt
             ON b.type_id = bt.id
-            WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)",
-            [$userId]
+            WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)"
         );
     }
 
-    public function buyBuilding($villageId, $buildingId, $x, $y, $hp) {
-        $this->execute("INSERT INTO buildings
-            (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)", 
+    public function buyBuilding($villageId, $buildingId, $x, $y, $hp)
+    {
+        $this->execute(
+            "INSERT INTO buildings
+            (type_id, village_id, x, y, current_hp) VALUES (?, ?, ?, ?, ?)",
             [$buildingId, $villageId, $x, $y, $hp]
         );
     }
 
-    public function getVillage($userId) {
+    public function getVillage($userId)
+    {
         return $this->query("SELECT id, last_income_datetime FROM villages WHERE user_id = ?", [$userId]);
     }
 
-    public function getBuildingType($buildingType) {
+    public function getBuildingType($buildingType)
+    {
         return $this->query("SELECT hp, price FROM building_types WHERE id = ?", [$buildingType]);
     }
 
-    public function getUnitType($unitType) {
+    public function getUnitType($unitType)
+    {
         return $this->query("SELECT hp, price FROM unit_types WHERE id = ?", [$unitType]);
     }
 
-    public function getMoney($userId) {
+    public function getMoney($userId)
+    {
         return $this->query("SELECT money FROM users WHERE id = ?", [$userId]);
     }
 
-    public function updateMoney($userId, $money) {
+    public function updateMoney($userId, $money)
+    {
         return $this->execute("UPDATE users SET money = ? WHERE id = ?", [$money, $userId]);
     }
 
-    public function upgradeBuilding($buildingId, $villageId) {
-        return $this->execute("UPDATE buildings SET level = level + 1 WHERE id = ? AND village_id = ?",
+    public function upgradeBuilding($buildingId, $villageId)
+    {
+        return $this->execute(
+            "UPDATE buildings SET level = level + 1 WHERE id = ? AND village_id = ?",
             [$buildingId, $villageId]
         );
     }
 
-    public function getLevel($buildingId, $villageId) {
-        return $this->query("SELECT level FROM buildings WHERE id = ? AND village_id = ?",
+    public function getLevel($buildingId, $villageId)
+    {
+        return $this->query(
+            "SELECT level FROM buildings WHERE id = ? AND village_id = ?",
             [$buildingId, $villageId]
         );
     }
@@ -291,14 +326,15 @@ class DB
     }
 
     public function createBuilding($villageId, $buildingType, $x, $y)
-    { 
+    {
         return $this->execute(
             "INSERT INTO buildings (village_id, type_id, x, y, level, current_hp) VALUES (?, ?, ?, ?, 1, 100)",
             [$villageId, $buildingType, $x, $y]
         );
     }
 
-    public function getMine($villageId) {
+    public function getMine($villageId)
+    {
         return $this->query(
             "SELECT b.level AS level
             FROM buildings AS b
@@ -309,7 +345,8 @@ class DB
         );
     }
 
-    public function updateLastIncome($villageId) {
+    public function updateLastIncome($villageId)
+    {
         $now = date('Y-m-d H:i:s');
         return $this->execute(
             "UPDATE villages SET last_income_datetime = ? WHERE id = ?",
