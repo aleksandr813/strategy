@@ -1,8 +1,8 @@
 import CONFIG, { TPoint } from "../../config";
-import Unit from '../Entities/Unit';
-import Building from "../Entities/Building";
+import Unit from '../entities/Unit';
+import Building from "../entities/Building";
 import BuildingPreview from "../../services/canvas/BuildingPreview";
-import UnitPreview from "../../services/canvas/UnitPreview";
+import UnitPreview from "../../services/canvas/UnitPreview";    
 import Server from "../../services/server/Server";
 import Store from "../../services/store/Store";
 import Manager, { GameData } from "./Manager";

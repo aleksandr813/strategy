@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { GameContext, ServerContext} from '../../../../App';
-import Building from '../../../../game/Entities/Building';
+import Building from '../../../../game/entities/Building';
 import CONFIG from '../../../../config';
 
 import "./BuildingMenu.css";
