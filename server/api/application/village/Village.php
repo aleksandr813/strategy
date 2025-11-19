@@ -55,7 +55,7 @@ class Village {
         }
 
         if (count($buildings) === 0) {
-            return ['error' => 300];
+            return ['error' => false];
         }
 
         return $buildings;
@@ -176,7 +176,7 @@ class Village {
         }
 
         if (count($units) === 0) {
-            return ['error' => 500];
+            return ['error' => false];
         }
 
         return $units;
