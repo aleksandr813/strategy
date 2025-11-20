@@ -326,6 +326,7 @@ Buildings: {
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
 * `303` - ошибка удаления здания (Failed to delete building)
+* `307` - здание запрещенное к покупке и удалению (Building that is prohibited for buy and delete)
 
 
 ### 4.9. buyBuilding
@@ -352,6 +353,7 @@ Buildings: {
 * `705` - невалидный токен. Пользователь не авторизован
 * `301` - неудалось купить здание (Failed to buy building)
 * `305` - недостаточно монет для покупки здания (Not enough funds to buy)
+* `307` - здание запрещенное к покупке и удалению (Building that is prohibited for buy and delete)
 * `310` - деревня не найдена (Village not found)
 * `311` - не верные координаты (Coordinates not defined)
 
