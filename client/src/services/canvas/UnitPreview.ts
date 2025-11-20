@@ -1,22 +1,14 @@
-import CONFIG from "../../config";
 import { TPoint } from "../../config";
-import Unit from "../../game/Entities/Unit";
+import Unit from "../../game/entities/Unit";
 import { TUnit } from "../../services/server/types";
 
-const { SPRITE_SIZE } = CONFIG;
-
 export default class UnitPreview {
-    private isActive: boolean = false;
-    private unitType: string = '';
-    private unitTypeId: number = 0;
-    private unitHp: number = 50;
-    private mousePosition: TPoint = { x: 0, y: 0 };
+    private isActive = false;
+    private unitType = '';
+    private unitTypeId = 0;
+    private unitHp = 50;
     private gridPosition: TPoint = { x: 0, y: 0 };
-    private canPlace: boolean = false;
-
-    constructor() {
-        this.isActive = false;
-    }
+    private canPlace = false;
 
     public activate(unitType: string, unitTypeId: number, hp: number): void {
         this.isActive = true;
@@ -35,10 +27,21 @@ export default class UnitPreview {
         return this.isActive;
     }
 
+    public getUnitTypeId(): number {
+        return this.unitTypeId;
+    }
+
+    public getPlacementPosition(): TPoint {
+        return this.gridPosition;
+    }
+
+    public getCanPlace(): boolean {
+        return this.canPlace;
+    }
+
     public update(x: number, y: number, occupiedMatrix: number[][]): void {
         if (!this.isActive) return;
 
-        this.mousePosition = { x, y };
         this.gridPosition = {
             x: Math.floor(x),
             y: Math.floor(y)
@@ -48,20 +51,19 @@ export default class UnitPreview {
     }
 
     private checkCanPlace(occupiedMatrix: number[][]): boolean {
+        return this.isWithinBounds(occupiedMatrix) && this.isCellEmpty(occupiedMatrix);
+    }
+
+    private isWithinBounds(occupiedMatrix: number[][]): boolean {
         const { x, y } = this.gridPosition;
+        return x >= 0 && y >= 0 && 
+               x < occupiedMatrix[0].length && 
+               y < occupiedMatrix.length;
+    }
 
-        // проверка границ карты
-        if (x < 0 || y < 0 || x >= occupiedMatrix[0].length || y >= occupiedMatrix.length) {
-            return false;
-        }
-
-        const cell = { x: x, y: y };
-
-        if (occupiedMatrix[cell.y][cell.x] !== 0) {
-            return false;
-        }
-
-        return true;
+    private isCellEmpty(occupiedMatrix: number[][]): boolean {
+        const { x, y } = this.gridPosition;
+        return occupiedMatrix[y][x] === 0;
     }
 
     public getRenderData() {
@@ -75,9 +77,7 @@ export default class UnitPreview {
     }
 
     public tryPlace(): Unit | null {
-        if (!this.isActive || !this.canPlace) {
-            return null;
-        }
+        if (!this.isActive || !this.canPlace) return null;
 
         const unitData: TUnit = {
             id: 0,
@@ -91,20 +91,8 @@ export default class UnitPreview {
         };
 
         const unit = new Unit(unitData);
-
         this.deactivate();
+        
         return unit;
-    }
-
-    public getUnitTypeId(): number {
-        return this.unitTypeId;
-    }
-
-    public getPlacementPosition(): TPoint {
-        return this.gridPosition;
-    }
-
-    public getCanPlace(): boolean {
-        return this.canPlace;
     }
 }

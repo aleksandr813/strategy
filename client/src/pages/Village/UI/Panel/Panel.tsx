@@ -42,25 +42,25 @@ const Panel: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
             <div className='buttons1'>
 
                 <div className='button-group'>
-                    <Button onClick={globalmapHandler} className='panel-button max' id='testpanelmap'>
+                    <Button onClick={globalmapHandler} className='panel-button max' title='Глобальная карта' id='testpanelmap'>
                         <img src={map} className='max' />
                     </Button>
                 </div>
 
                 <div className='button-group'>
-                    <Button onClick={lidersHandler} className='panel-button mini' id='testpanelleaderboard'>
+                    <Button onClick={lidersHandler} className='panel-button mini' title='Таблица лидеров' id='testpanelleaderboard'>
                         <img src={leaderboard} className='max' />
                     </Button>
-                    <Button onClick={settingsHandler} className='panel-button mini' id='testpanelsettings'>
+                    <Button onClick={settingsHandler} className='panel-button mini' title='Настройки' id='testpanelsettings'>
                         <img src={settings} className='max' />
                     </Button>
                 </div>
 
                 <div className='button-group'>
-                    <Button onClick={buildingsHandler} className='panel-button mini' id='testpanelhouses'>
+                    <Button onClick={buildingsHandler} className='panel-button mini' title='Купить здание' id='testpanelhouses'>
                         <img src={build} className='max' />
                     </Button>
-                    <Button onClick={unitsHandler} className='panel-button mini' id='testpanelunits'>
+                    <Button onClick={unitsHandler} className='panel-button mini' title='Купить юнитов' id='testpanelunits'>
                         <img src={unit} className='max' />
                     </Button>
                 </div>

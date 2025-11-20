@@ -28,8 +28,19 @@ class Application
         if (empty($params['login']) || empty($params['hash']) || empty($params['rnd'])) {
             return ['error' => 1016];
         }
-        
+
         return $this->user->login($params['login'], $params['hash'], $params['rnd']);
+    }
+
+
+    public function registration($params)
+    {
+        // Проверка на пустые поля
+        if (empty($params['login']) || empty($params['hash']) || empty($params['name'])) {
+            return ['error' => 1016];
+        }
+
+        return $this->user->registration($params['login'], $params['hash'], $params['name']);
     }
 
     public function logout($params)
@@ -44,14 +55,7 @@ class Application
         return ['error' => 242];
     }
 
-    public function registration($params) {
-        // Проверка на пустые поля
-        if (empty($params['login']) || empty($params['hash']) || empty($params['name'])) {
-            return ['error' => 1016];
-        }
-        
-        return $this->user->registration($params['login'], $params['hash'], $params['name']);
-    }
+
 
     public function sendMessage($params)
     {
@@ -82,7 +86,11 @@ class Application
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->village->getUnits($user->id);
+                $units = $this->village->getUnits($user->id);
+                if (count($units) === 0) {
+                    return [ false ];
+                }
+                return $units;
             }
             return ['error' => 705];
         }
@@ -118,7 +126,11 @@ class Application
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->village->getBuildings($user->id);
+                $buildings = $this->village->getBuildings($user->id);
+                if (count($buildings) === 0) {
+                    return [ false ];
+                }
+                return $buildings;
             }
             return ['error' => 705];
         }
@@ -149,8 +161,9 @@ class Application
         return ['error' => 242];
     }
 
-    public function moveUnits($params) {
-        if ($params['token']  && $params['units'])  {
+    public function moveUnits($params)
+    {
+        if ($params['token']  && $params['units']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
                 return $this->village->moveUnits($user->id, $params['units']);
@@ -160,6 +173,18 @@ class Application
         return ['error' => 242];
     }
 
+    public function takeDamage($params) {
+        if ($params['token']  && $params['units'])  {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->village->takeDamage($user->id, $params['units']);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    
     public function buyBuilding($params)
     {
         if ($params['token'] && $params['typeId'] && $params['x'] && $params['y']) {
@@ -172,7 +197,8 @@ class Application
         return ['error' => 242];
     }
 
-    public function upgradeBuilding($params) {
+    public function upgradeBuilding($params)
+    {
         if ($params['token'] && $params['id'] && $params['typeId']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -204,7 +230,8 @@ class Application
         return ['error' => 242];
     }
 
-    public function getIncome($params) {
+    public function getIncome($params)
+    {
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -214,5 +241,4 @@ class Application
         }
         return ['error' => 242];
     }
-
 }

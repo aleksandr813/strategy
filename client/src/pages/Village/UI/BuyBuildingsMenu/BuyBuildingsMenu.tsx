@@ -2,8 +2,9 @@ import React, { useEffect, useContext, useState } from 'react';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
 import { GameContext } from '../../../../App';
-import { BuildingType } from '../../../../services/server/types';
-import VillageManager from '../../villageDataManager';
+import { TBuildingType } from '../../../../services/server/types';
+import Server from '../../../../services/server/Server';
+import CONFIG from '../../../../config'
 
 import './BuyBuildingsMenu.scss'
 
@@ -12,20 +13,32 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
 
     const game = useContext(GameContext);
     const village = game.getVillage();
-    const [buildingTypes, setBuildingTypes] = useState<BuildingType[]>([]);
-    const villageManager = new VillageManager(game['server']);
+    const [buildingTypes, setBuildingTypes] = useState<TBuildingType[]>([]);
 
     const closeBuyMenu = () => setUIElement(UIELEMENT.NULL);
 
-    const buyBuilding = async (building: BuildingType) => {
+    const loadBuildingTypes = async (): Promise<TBuildingType[]> => {
+        const server = new Server(game['store']);
+        const types = await server.getBuildingTypes();
+
+        const excludedTypes = CONFIG.EXCLUDED_BUILDINGS;
+    
+        const filteredTypes = types.filter(type => 
+            !excludedTypes.includes(type.type)
+        );
+        return filteredTypes || [];
+    }
+
+    const buyBuilding = async (building: TBuildingType) => {
         console.log(`Покупка здания: ${building.name}`);
+        village.getScene().unitPreview.deactivate();
         village.getScene().buildingPreview.activate(building.id, building.hp);
         setUIElement(UIELEMENT.NULL);
     };
 
     useEffect(() => {
         (async () => {
-            setBuildingTypes(await villageManager.loadBuildingTypes());
+            setBuildingTypes(await loadBuildingTypes());
         })();
     }, []);
 

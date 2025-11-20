@@ -12,6 +12,7 @@ export type TButton = {
     isDisabled?: boolean;
     id?: string;
     children?: React.ReactNode;
+    title?: string;
 }
 
 const Button: React.FC<TButton> = (props: TButton) => {
@@ -23,7 +24,8 @@ const Button: React.FC<TButton> = (props: TButton) => {
         onClick = () => { },
         isDisabled = false,
         id,
-        children
+        children,
+        title
     } = props;
 
     return (
@@ -31,6 +33,7 @@ const Button: React.FC<TButton> = (props: TButton) => {
             className={cn('button', `button-${variant}`, className, { 'hover': isHover, 'disabled': isDisabled })}
             onClick={onClick}
             id={id}
+            title={title}
         >
             {text}
             {children}
