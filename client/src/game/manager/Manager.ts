@@ -3,6 +3,7 @@ import Unit from '../entities/Unit';
 import Building from '../entities/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../../services/canvas/Allocation";
+import Server from "../../services/server/Server";
 
 const { WIDTH, HEIGHT } = CONFIG;
 const GRID_WIDTH = 87;
@@ -24,10 +25,12 @@ class Manager {
     protected gameData: GameData;
     protected allocation: Allocation;
     protected easystar = new EasyStar.js();
+    protected server : Server
 
-    constructor(gameData: GameData) {
+    constructor(gameData: GameData, server: Server) {
         this.gameData = gameData;
         this.allocation = new Allocation();
+        this.server = server;
     }
 
     destructor() {}
@@ -143,6 +146,10 @@ class Manager {
         });
 
         this.easystar.calculate();
+        console.log('GETUNITS',this.gameData.getUnits());
+        const unitsData = this.gameData.getUnits().filter(u => u.isSelected).map(u => ({unitId: u.id, x: u.cords.x, y: u.cords.y}));
+        this.server.moveUnits(unitsData);
+        console.log('UNITSDATA',unitsData)
     }
 }
 

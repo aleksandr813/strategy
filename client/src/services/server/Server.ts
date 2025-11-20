@@ -183,6 +183,19 @@ class Server {
         }
         return response;
     }
+    
+    async moveUnits(units : {unitId: number, x : number, y: number}[]): Promise<any>{
+        const params : { [key: string]: string } = { method : 'moveUnits'};
+        units.forEach((unit, index) => {
+            params[`units[${index}][unitId]`] = unit.unitId.toString();
+            params[`units[${index}][x]`] = unit.x.toString();
+            params[`units[${index}][y]`] = unit.y.toString();
+        })
+        const result = await this.request<any>('moveUnits', params);
+        console.log('PARAMS',params)
+        console.log('РЕЗУЛЬТАТ ДВИЖЕНИЯ ЮНИТОВ:', result);
+        return result;
+    }
 
     async buyBuilding(typeId: number, x: number, y: number): Promise<any> {
         console.log('buyBuilding called with:', { typeId, x, y });

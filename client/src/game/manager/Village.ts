@@ -13,11 +13,10 @@ class Village extends Manager {
     private buildingPreview: BuildingPreview;
     private unitPreview: UnitPreview;
     private store: Store;
-    private server: Server;
     public selectedBuilding: Building | null = null;
 
     constructor(store: Store, server: Server, gameData: GameData) {
-        super(gameData);
+        super(gameData, server);
         this.store = store;
         this.server = server;
         this.buildingPreview = new BuildingPreview();
