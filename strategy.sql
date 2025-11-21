@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 16 2025 г., 21:31
+-- Время создания: Ноя 21 2025 г., 20:40
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -20,6 +20,21 @@ SET time_zone = "+00:00";
 --
 -- База данных: `strategy`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `army`
+--
+
+CREATE TABLE `army` (
+  `army` int NOT NULL,
+  `userId` int NOT NULL,
+  `x` int NOT NULL,
+  `y` int NOT NULL,
+  `attackId` int NOT NULL,
+  `units` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -47,7 +62,9 @@ INSERT INTO `buildings` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `curr
 (3, 1, 6, 15, 15, 1, 100),
 (4, 2, 6, 5, 5, 1, 100),
 (5, 1, 3, 1, 4, 5, 700),
-(6, 1, 5, 1, 4, 1, 700);
+(6, 1, 5, 1, 4, 1, 700),
+(7, 1, 7, 15, 15, 1, 100),
+(8, 2, 7, 5, 5, 1, 100);
 
 -- --------------------------------------------------------
 
@@ -59,19 +76,20 @@ CREATE TABLE `building_types` (
   `id` int NOT NULL,
   `type` varchar(100) NOT NULL,
   `hp` int NOT NULL DEFAULT '1',
-  `price` int NOT NULL
+  `price` int NOT NULL,
+  `name` varchar(255) NOT NULL DEFAULT 'noname'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `building_types`
 --
 
-INSERT INTO `building_types` (`id`, `type`, `hp`, `price`) VALUES
-(1, 'main_building', 700, 1),
-(2, 'mine', 100, 1),
-(3, 'barrack', 500, 400),
-(4, 'wall', 200, 100),
-(5, 'shooting_tower', 300, 200);
+INSERT INTO `building_types` (`id`, `type`, `hp`, `price`, `name`) VALUES
+(1, 'main_building', 700, 1, 'noname'),
+(2, 'mine', 100, 1, 'noname'),
+(3, 'barrack', 500, 400, 'noname'),
+(4, 'wall', 200, 100, 'noname'),
+(5, 'shooting_tower', 300, 200, 'noname');
 
 -- --------------------------------------------------------
 
@@ -201,18 +219,22 @@ CREATE TABLE `units` (
   `x` int NOT NULL,
   `y` int NOT NULL,
   `level` int NOT NULL DEFAULT '1',
-  `current_hp` int NOT NULL
+  `current_hp` int NOT NULL,
+  `on_a_hike` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `units`
 --
 
-INSERT INTO `units` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `current_hp`) VALUES
-(1, 1, 5, 1, 4, 1, 100),
-(2, 1, 5, 1, 4, 1, 100),
-(3, 1, 5, 2, 2, 1, 100),
-(4, 1, 5, 15, 4, 1, 100);
+INSERT INTO `units` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `current_hp`, `on_a_hike`) VALUES
+(1, 1, 5, 1, 4, 1, 100, 0),
+(2, 1, 5, 1, 4, 1, 100, 0),
+(3, 1, 5, 2, 2, 1, 100, 0),
+(4, 1, 5, 15, 4, 1, 100, 0),
+(5, 1, 7, 8, 2, 1, 100, 0),
+(6, 2, 7, 9, 3, 1, 60, 1),
+(7, 3, 7, 6, 4, 1, 90, 1);
 
 -- --------------------------------------------------------
 
@@ -230,26 +252,27 @@ CREATE TABLE `unit_types` (
   `range` int DEFAULT NULL,
   `unit_type` varchar(20) DEFAULT NULL,
   `unlock_level` int DEFAULT NULL,
-  `features` json DEFAULT NULL
+  `features` json DEFAULT NULL,
+  `name` varchar(255) DEFAULT 'noname'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `unit_types`
 --
 
-INSERT INTO `unit_types` (`id`, `type`, `hp`, `price`, `damage`, `speed`, `range`, `unit_type`, `unlock_level`, `features`) VALUES
-(1, 'knight', 100, 50, 15, '1.0', NULL, 'infantry', 1, '{\"type\": \"balanced\"}'),
-(2, 'spearman', 60, 30, 10, '1.0', NULL, 'infantry', 1, '{\"type\": \"anti_cavalry\", \"bonus_damage\": {\"cavalry\": 0.5}, \"reach_attack\": true}'),
-(3, 'berserk', 90, 120, 35, '1.3', NULL, 'infantry', 1, '{\"type\": \"anti_infantry\", \"bonus_damage\": {\"infantry\": 0.5}, \"vulnerability\": {\"archers\": 0.5}}'),
-(4, 'paladin', 300, 300, 25, '0.7', NULL, 'infantry', 3, '{\"type\": \"heavy_infantry\"}'),
-(5, 'guardian', 400, 250, 12, '0.5', NULL, 'infantry', 3, '{\"type\": \"tank\", \"taunt\": true}'),
-(6, 'archer', 70, 60, 18, '1.0', 6, 'archer', 1, '{\"type\": \"basic_archer\"}'),
-(7, 'crossbowman', 110, 150, 28, '0.8', 5, 'archer', 2, '{\"type\": \"armor_piercing\", \"armor_penetration\": 0.5}'),
-(8, 'cavalry', 130, 140, 20, '2.0', NULL, 'cavalry', 2, '{\"type\": \"scout\", \"bonus_damage\": {\"archers\": 0.5}}'),
-(9, 'knight', 180, 200, 30, '1.0', NULL, 'cavalry', 2, '{\"type\": \"armored\", \"armor_bonus\": {\"archers\": 0.2}}'),
-(10, 'mage', 90, 220, 40, '1.0', 6, 'mage', 3, '{\"type\": \"magic_damage\", \"armor_penetration\": 0.7}'),
-(11, 'summoner', 70, 180, 8, '0.9', 3, 'mage', 2, '{\"type\": \"summoner\", \"summon\": {\"type\": \"skeleton\", \"damage\": 5, \"health\": 30, \"interval\": 10}}'),
-(12, 'golem', 500, 400, 35, '0.4', NULL, 'mage', 3, '{\"type\": \"magic_tank\", \"magic_resistance\": 0.8}');
+INSERT INTO `unit_types` (`id`, `type`, `hp`, `price`, `damage`, `speed`, `range`, `unit_type`, `unlock_level`, `features`, `name`) VALUES
+(1, 'knight', 100, 50, 15, '1.0', NULL, 'infantry', 1, '{\"type\": \"balanced\"}', 'noname'),
+(2, 'spearman', 60, 30, 10, '1.0', NULL, 'infantry', 1, '{\"type\": \"anti_cavalry\", \"bonus_damage\": {\"cavalry\": 0.5}, \"reach_attack\": true}', 'noname'),
+(3, 'berserk', 90, 120, 35, '1.3', NULL, 'infantry', 1, '{\"type\": \"anti_infantry\", \"bonus_damage\": {\"infantry\": 0.5}, \"vulnerability\": {\"archers\": 0.5}}', 'noname'),
+(4, 'paladin', 300, 300, 25, '0.7', NULL, 'infantry', 3, '{\"type\": \"heavy_infantry\"}', 'noname'),
+(5, 'guardian', 400, 250, 12, '0.5', NULL, 'infantry', 3, '{\"type\": \"tank\", \"taunt\": true}', 'noname'),
+(6, 'archer', 70, 60, 18, '1.0', 6, 'archer', 1, '{\"type\": \"basic_archer\"}', 'noname'),
+(7, 'crossbowman', 110, 150, 28, '0.8', 5, 'archer', 2, '{\"type\": \"armor_piercing\", \"armor_penetration\": 0.5}', 'noname'),
+(8, 'cavalry', 130, 140, 20, '2.0', NULL, 'cavalry', 2, '{\"type\": \"scout\", \"bonus_damage\": {\"archers\": 0.5}}', 'noname'),
+(9, 'knight', 180, 200, 30, '1.0', NULL, 'cavalry', 2, '{\"type\": \"armored\", \"armor_bonus\": {\"archers\": 0.2}}', 'noname'),
+(10, 'mage', 90, 220, 40, '1.0', 6, 'mage', 3, '{\"type\": \"magic_damage\", \"armor_penetration\": 0.7}', 'noname'),
+(11, 'summoner', 70, 180, 8, '0.9', 3, 'mage', 2, '{\"type\": \"summoner\", \"summon\": {\"type\": \"skeleton\", \"damage\": 5, \"health\": 30, \"interval\": 10}}', 'noname'),
+(12, 'golem', 500, 400, 35, '0.4', NULL, 'mage', 3, '{\"type\": \"magic_tank\", \"magic_resistance\": 0.8}', 'noname');
 
 -- --------------------------------------------------------
 
@@ -275,7 +298,8 @@ INSERT INTO `users` (`id`, `login`, `password`, `name`, `token`, `money`) VALUES
 (5, 'A2345688', '6866a536740d1ac4af4c89eb3d046631', '123', '7b56cc22b1324f74fc105ab2f12f4cce', 100),
 (6, 'A23456888', '28754f9dc3f50b7b4be0cdd5bf2c6940', '123', NULL, 100),
 (7, 'A2345678', 'd5174b43cb0ddd0ff65e49d6689684cb', '123', '8dc52f3a822ca8f0a0bdcb8c82a12937', 57),
-(8, 'A23456788', 'a0af848759b6a5928cbaad779d65898f', '123', 'b5a8070af061be665aef1b59bb04b825', 100);
+(8, 'A23456788', 'a0af848759b6a5928cbaad779d65898f', '123', 'b5a8070af061be665aef1b59bb04b825', 100),
+(9, 'Asdf123', 'e5d5642c83d4300490fc59cc9938621e', 'frgetrhytjuyki', '0ca88237e343dd90c932788e88f6af3e', 999879);
 
 -- --------------------------------------------------------
 
@@ -299,11 +323,19 @@ INSERT INTO `villages` (`id`, `user_id`, `x`, `y`, `last_income_datetime`) VALUE
 (3, 5, 836, 654, '2025-10-10 17:31:45'),
 (4, 6, 388, 245, '2025-10-10 17:34:00'),
 (5, 7, 2, 814, '2025-10-10 17:46:22'),
-(6, 8, 617, 700, '2025-10-10 17:47:06');
+(6, 8, 617, 700, '2025-10-10 17:47:06'),
+(7, 9, 496, 410, '2025-11-21 21:31:02');
 
 --
 -- Индексы сохранённых таблиц
 --
+
+--
+-- Индексы таблицы `army`
+--
+ALTER TABLE `army`
+  ADD PRIMARY KEY (`army`),
+  ADD KEY `userId` (`userId`);
 
 --
 -- Индексы таблицы `buildings`
@@ -371,10 +403,16 @@ ALTER TABLE `villages`
 --
 
 --
+-- AUTO_INCREMENT для таблицы `army`
+--
+ALTER TABLE `army`
+  MODIFY `army` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT для таблицы `buildings`
 --
 ALTER TABLE `buildings`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT для таблицы `building_types`
@@ -398,7 +436,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT для таблицы `units`
 --
 ALTER TABLE `units`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT для таблицы `unit_types`
@@ -410,17 +448,23 @@ ALTER TABLE `unit_types`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT для таблицы `villages`
 --
 ALTER TABLE `villages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
 --
+
+--
+-- Ограничения внешнего ключа таблицы `army`
+--
+ALTER TABLE `army`
+  ADD CONSTRAINT `army_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`);
 
 --
 -- Ограничения внешнего ключа таблицы `buildings`
