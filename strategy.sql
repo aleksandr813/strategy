@@ -66,6 +66,7 @@ CREATE TABLE `building_types` (
 -- Дамп данных таблицы `building_types`
 --
 
+
 INSERT INTO `building_types` (`id`, `type`, `hp`, `price`) VALUES
 (1, 'main_building', 700, 1),
 (2, 'mine', 100, 1),
