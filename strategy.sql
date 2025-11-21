@@ -72,8 +72,9 @@ INSERT INTO `building_types` (`id`, `type`, `hp`, `price`) VALUES
 (2, 'mine', 100, 1),
 (3, 'barrack', 500, 400),
 (4, 'wall', 200, 100),
-(5, 'shooting_tower', 300, 200);
+(5, 'shooting_tower', 300, 200),
 (6, 'gate', 200, 200);
+
 
 -- --------------------------------------------------------
 
