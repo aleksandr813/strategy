@@ -262,4 +262,23 @@ class Village {
 
         return true;
     }
+
+    public function sendArmy($userId, $units, $target) {
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 315];
+        }
+
+        $targetVillage = $this->db->getVillage($target);
+        if (!$targetVillage) {
+            return ['error' => 315];
+        }
+
+        $result = $this->db->sendArmy($village->id, $units, $target);
+        if (!$result) {
+            return ['error'];
+        }
+
+        return true;
+    }
 }

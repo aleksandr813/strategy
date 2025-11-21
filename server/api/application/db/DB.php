@@ -327,4 +327,46 @@ class DB
             [$now, $villageId]
         );
     }
+
+    // public function sendArmy($villageId, $units, $target) {
+    //     $army = [];
+    //     $unitIdArr = [];
+    //     $unitCases = [];
+
+    //     foreach ($units as $unit) {
+    //         $unitId = (int) $unit['id'];
+    //         $unitIdArr[] = $unitId;
+    //         $unitCases[] = "WHEN ? THEN 1";
+    //     }
+
+    //     $unitIdArrStr = implode(',', $unitIdArr);
+    //     $unitCasesStr = implode(' ', $unitCases);
+
+    //     return $this->execute(
+    //         "UPDATE units SET
+    //         in_army = CASE id $unitCasesStr END
+    //         WHERE id IN ($unitIdArrStr) AND village_id = ?",
+    //         [$villageId]
+    //     );
+    // }
+
+    public function sendArmy($villageId, $units, $target) {
+        $params = [];
+        $placeholder = [];
+
+        foreach ($units as $unit) {
+            $unitId = (int) $unit['id'];
+            $placeholder[] = '(?, ?, ?)';
+            $params[] = $villageId;
+            $params[] = $unitId;
+            $params[] = $target;
+        }
+
+        $placeholderStr = implode(',', $placeholder);
+
+        return $this->execute(
+            "INSERT INTO army (attacked_village_id, unit_id, target_village_id) VALUES ($placeholderStr)", 
+            $params
+        );
+    }
 }

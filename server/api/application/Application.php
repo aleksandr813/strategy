@@ -233,4 +233,15 @@ class Application
         }
         return ['error' => 242];
     }
+
+    public function sendArmy($params) {
+        if ($params['token'] && $params['target'] && $params['units']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->village->sendArmy($user->id, $params['units'], $params['target']);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
 }
