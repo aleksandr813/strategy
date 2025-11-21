@@ -79,8 +79,10 @@ class Village {
             return ["error" => 301];
         }
 
-        if ($building->id === '1' || $building->id === '2') {
-            return ['error' => 307];
+        for ($i = 0; $i < count($this->config['game']['prohibitedBuildings']); $i++) {
+            if ($this->config['game']['prohibitedBuildings'][$i] === $typeId) {
+                return ['error' => 307];
+            }
         }
         
         if ($user->money < $building->price) {
@@ -148,8 +150,10 @@ class Village {
             return ['error' => 300];
         }
 
-        if ($building->typeId === '1' || $building->typeId === '2') {
-            return ['error' => 307];
+        for ($i = 0; $i < count($this->config['game']['prohibitedBuildings']); $i++) {
+            if ($this->config['game']['prohibitedBuildings'][$i] === $building->typeId) {
+                return ['error' => 307];
+            }
         }
 
         $result = $this->db->deleteBuilding($buildingId, $village->id);
