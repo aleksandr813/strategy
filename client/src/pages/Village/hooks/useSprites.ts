@@ -1,4 +1,4 @@
-import CONFIG from '../../../config';
+import GAMECONFIG from '../../../game/gameConfig';
 
 import sprites from '../../../assets/img/sprites64x64.png';
 
@@ -25,7 +25,7 @@ const getSpritesFromFrame = (frame: number[]) => {
 }
 
 const useSprites = (): [HTMLImageElement[], (spriteNo: number) => number[], Array<() => number>] => {
-    const { SPRITE_SIZE, LINE_OF_SPRITES } = CONFIG;
+    const { SPRITE_SIZE, LINE_OF_SPRITES } = GAMECONFIG;
     const spritesImage = new Image();
     spritesImage.src = sprites;
 

@@ -4,7 +4,7 @@ import { UIELEMENT, IBaseUIElement } from '../UI';
 import { GameContext } from '../../../../App';
 import { TBuildingType } from '../../../../services/server/types';
 import Server from '../../../../services/server/Server';
-import CONFIG from '../../../../config'
+import GAMECONFIG from '../../../../game/gameConfig';
 
 import './BuyBuildingsMenu.scss'
 
@@ -21,7 +21,7 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
         const server = new Server(game['store']);
         const types = await server.getBuildingTypes();
 
-        const excludedTypes = CONFIG.EXCLUDED_BUILDINGS;
+        const excludedTypes = GAMECONFIG.EXCLUDED_BUILDINGS;
     
         const filteredTypes = types.filter(type => 
             !excludedTypes.includes(type.type)

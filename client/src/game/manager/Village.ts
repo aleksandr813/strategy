@@ -1,4 +1,4 @@
-import CONFIG, { TPoint } from "../../config";
+import GAMECONFIG,{TPoint} from "../gameConfig";
 import Unit from '../entities/Unit';
 import Building from '../entities/Building';
 import BuildingPreview from "../../services/canvas/BuildingPreview";
@@ -7,7 +7,7 @@ import Server from "../../services/server/Server";
 import Store from "../../services/store/Store";
 import Manager, { GameData } from "./Manager";
 
-const { WIDTH, HEIGHT } = CONFIG;
+const { WIDTH, HEIGHT } = GAMECONFIG;
 
 class Village extends Manager {
     private buildingPreview: BuildingPreview;

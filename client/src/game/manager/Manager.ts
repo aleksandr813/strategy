@@ -1,10 +1,10 @@
-import CONFIG, { TPoint } from "../../config";
+import GAMECONFIG, {TPoint} from "../gameConfig";
 import Unit from '../entities/Unit';
 import Building from '../entities/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../../services/canvas/Allocation";
 
-const { WIDTH, HEIGHT } = CONFIG;
+const { WIDTH, HEIGHT } = GAMECONFIG;
 const GRID_WIDTH = 87;
 const GRID_HEIGHT = 29;
 const MOVE_INTERVAL = 100;

@@ -1,4 +1,4 @@
-import { TPoint } from "../../config";
+import { TPoint } from "../../game/gameConfig";
 import Unit from "../../game/entities/Unit";
 import { TUnit } from "../../services/server/types";
 

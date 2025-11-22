@@ -1,4 +1,4 @@
-import { TWINDOW } from "../../config";
+import { TWINDOW } from "../../game/gameConfig";
 
 enum EDIRECTION {
     UP,
