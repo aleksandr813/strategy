@@ -6,7 +6,8 @@ import Unit from '../../game/entities/Unit';
 import Building from '../../game/entities/Building';
 import Allocation from '../../services/canvas/Allocation';
 import { GameContext } from '../../App';
-import { TPoint } from '../../game/gameConfig';
+import { TPoint } from '../../config';
+import CONFIG from '../../config';
 import villageBackground from '../../assets/img/background/villageBackground.png';
 
 import "./Village.scss";
@@ -19,7 +20,7 @@ const TIME_THRESHOLD = 200;
 let zoomFactor = 1;
 
 const VillageCanvas: React.FC = () => {
-    const { WINDOW, SPRITE_SIZE } = GAMECONFIG;
+    const { WINDOW, SPRITE_SIZE } = CONFIG;
     const game = useContext(GameContext);
     const village = game.getVillage(); 
     
@@ -260,10 +261,10 @@ const VillageCanvas: React.FC = () => {
         scene.unitPreview.deactivate();
     };
 
-    const INITIAL_WINDOW_WIDTH = GAMECONFIG.WINDOW.WIDTH;
-    const INITIAL_WINDOW_HEIGHT = GAMECONFIG.WINDOW.HEIGHT;
-    const INITIAL_WINDOW_LEFT = GAMECONFIG.WINDOW.LEFT;
-    const INITIAL_WINDOW_TOP = GAMECONFIG.WINDOW.TOP;
+    const INITIAL_WINDOW_WIDTH = CONFIG.WINDOW.WIDTH;
+    const INITIAL_WINDOW_HEIGHT = CONFIG.WINDOW.HEIGHT;
+    const INITIAL_WINDOW_LEFT = CONFIG.WINDOW.LEFT;
+    const INITIAL_WINDOW_TOP = CONFIG.WINDOW.TOP;
 
     useEffect(() => {
         canvas = Canvas({

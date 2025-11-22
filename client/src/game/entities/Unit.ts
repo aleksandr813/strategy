@@ -1,4 +1,5 @@
-import { TPoint, SPRITE_MAP, UnitTypeID, getUnitSprites } from "../gameConfig";
+import { SPRITE_MAP, UnitTypeID, getUnitSprites } from "../gameConfig";
+import { TPoint } from "../../config";
 import { TUnit } from "../../services/server/types";
 
 export default class Unit {

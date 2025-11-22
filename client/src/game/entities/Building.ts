@@ -1,5 +1,5 @@
 import { TBuilding as TBuildingType, BuildingTypeID } from "../../services/server/types";
-import { TPoint } from "../gameConfig";
+import { TPoint } from "../../config";
 
 export default class Building {
     id: number;

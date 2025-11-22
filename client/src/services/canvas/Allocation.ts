@@ -1,5 +1,5 @@
 import GAMECONFIG from '../../game/gameConfig';
-import { TPoint } from '../../game/gameConfig';
+import { TPoint } from '../../config';
 import Unit from '../../game/entities/Unit';
 
 

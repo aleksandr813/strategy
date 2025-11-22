@@ -1,4 +1,4 @@
-import { TPoint } from "../../game/gameConfig";
+import { TPoint } from "../../config";
 
 const BUILDING_SIZE = 2;
 
