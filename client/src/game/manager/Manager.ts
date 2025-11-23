@@ -8,7 +8,7 @@ import Allocation from "../../services/canvas/Allocation";
 import Server from '../../services/server/Server';
 
 const { WIDTH, HEIGHT } = CONFIG;
-const { GRID_HEIGHT, GRID_WIDTH } = GAMECONFIG
+const { GRID_HEIGHT, GRID_WIDTH, MOVE_INTERVAL } = GAMECONFIG
 
 export interface GameData {
     getUnits: () => Unit[];
@@ -24,13 +24,20 @@ export interface GameData {
 class Manager {
     protected gameData: GameData;
     protected allocation: Allocation;
+    private movementIntervalId: NodeJS.Timeout | null = null;
+    private currentServer: Server | null = null;
     
     constructor(gameData: GameData) {
         this.gameData = gameData;
         this.allocation = new Allocation();
     }
 
-    destructor() {}
+    destructor() {
+        if (this.movementIntervalId) {
+            clearInterval(this.movementIntervalId);
+            this.movementIntervalId = null;
+        }
+    }
 
     getScene() {
         return {
@@ -80,16 +87,49 @@ class Manager {
             return;
         }
 
-        let unitsArray:Unit[] = [];
+        this.currentServer = server;
 
-        this.gameData.getUnits().forEach((unit) => {
-            if (!unit.isSelected) {return}
-            unit.moveUnit(destination);
-            unitsArray.push(unit);
-        })
-        if (unitsArray[0]) {
-            server.moveUnits(unitsArray);
+        if (this.movementIntervalId) {
+            clearInterval(this.movementIntervalId);
+            this.movementIntervalId = null;
         }
+
+        const selectedUnits: Unit[] = [];
+        this.gameData.getUnits().forEach((unit) => {
+            if (unit.isSelected) {
+                unit.moveUnit(destination);
+                selectedUnits.push(unit);
+            }
+        });
+
+        if (selectedUnits.length > 0) {
+            this.startMovementCycle();
+        }
+    }
+
+    private startMovementCycle() {
+        this.movementIntervalId = setInterval(() => {
+            const movingUnits: Unit[] = [];
+            let anyUnitMoving = false;
+
+            this.gameData.getUnits().forEach((unit) => {
+                if (unit.isMoving()) {
+                    const stillMoving = unit.makeStep();
+                    anyUnitMoving = true;
+                    movingUnits.push(unit);
+                }
+            });
+
+            if (movingUnits.length > 0 && this.currentServer) {
+                this.currentServer.moveUnits(movingUnits);
+            }
+
+            if (!anyUnitMoving && this.movementIntervalId) {
+                clearInterval(this.movementIntervalId);
+                this.movementIntervalId = null;
+                this.currentServer = null;
+            }
+        }, MOVE_INTERVAL);
     }
 }
 

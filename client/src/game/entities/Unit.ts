@@ -22,6 +22,9 @@ export default class Unit {
     isSelected: boolean = false;
     moveIntervalId: NodeJS.Timeout | null = null;
     
+    private currentPath: TPoint[] | null = null;
+    private currentPathIndex: number = 0;
+    
     constructor(data: TUnit, game: Game) {
         this.id = data.id;
         this.typeId = data.typeId as UnitTypeID;
@@ -42,15 +45,13 @@ export default class Unit {
         this.isSelected = isSelected;
     }
 
-    private clearUnitMovement(unit: Unit): void {
-        if (unit.moveIntervalId) {
-            clearInterval(unit.moveIntervalId);
-            unit.moveIntervalId = null;
-        }
+    private clearUnitMovement(): void {
+        this.currentPath = null;
+        this.currentPathIndex = 0;
     }
 
     moveUnit(destination: TPoint) {
-        this.clearUnitMovement(this);
+        this.clearUnitMovement();
         
         const matrix = this.game.village.getMatrixForEasyStar(this);
         
@@ -64,40 +65,44 @@ export default class Unit {
             destination.y, 
             (path) => {
                 if (path === null || path.length <= 1) {
-                    console.warn('No path found or already at destination');
                     return;
                 }
 
-                let currentStepIndex = 1;
-
-                this.moveIntervalId = setInterval(() => {
-                    if (currentStepIndex >= path.length) {
-                        this.clearUnitMovement(this);
-                        return;
-                    }
-
-                    const nextStep = path[currentStepIndex];
-                    
-                    const isOccupied = this.game.getUnits().some(unit => 
-                        unit !== this && 
-                        unit.coords.x === nextStep.x && 
-                        unit.coords.y === nextStep.y
-                    );
-
-                    if (isOccupied) {
-                        this.clearUnitMovement(this);
-                        this.moveUnit(destination);
-                        return;
-                    }
-
-                    this.coords.x = nextStep.x;
-                    this.coords.y = nextStep.y;
-
-                    currentStepIndex++;
-                }, MOVE_INTERVAL);
+                this.currentPath = path;
+                this.currentPathIndex = 1;
             }
         );
 
         this.easystar.calculate();
+    }
+
+    makeStep(): boolean {
+        if (!this.currentPath || this.currentPathIndex >= this.currentPath.length) {
+            return false;
+        }
+
+        const nextStep = this.currentPath[this.currentPathIndex];
+        
+        const isOccupied = this.game.getUnits().some(unit => 
+            unit !== this && 
+            unit.coords.x === nextStep.x && 
+            unit.coords.y === nextStep.y
+        );
+
+        if (isOccupied) {
+            const destination = this.currentPath[this.currentPath.length - 1];
+            this.moveUnit(destination);
+            return false;
+        }
+
+        this.coords.x = nextStep.x;
+        this.coords.y = nextStep.y;
+        this.currentPathIndex++;
+
+        return this.currentPathIndex < this.currentPath.length;
+    }
+
+    isMoving(): boolean {
+        return this.currentPath !== null && this.currentPathIndex < this.currentPath.length;
     }
 }

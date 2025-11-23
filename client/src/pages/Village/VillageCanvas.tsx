@@ -130,17 +130,18 @@ const VillageCanvas: React.FC = () => {
         drawSelectionRect(canvas);
         drawBuildingPreview(canvas);
         drawUnitPreview(canvas);
-        canvas.drawFPS(String(FPS), GREEN);
+        //canvas.drawFPS(String(FPS), GREEN);
         canvas.render();
     }
 
 
     const mouseDown = (x: number, y: number) => {
-        if (village.getScene().buildingPreview.isActiveStatus() || village.getScene().unitPreview.isActiveStatus()) return;
-        
         mouseDownPosition = { x, y };
         mouseDownTime = Date.now();
         wasDragging = false;
+        
+        if (village.getScene().buildingPreview.isActiveStatus() || village.getScene().unitPreview.isActiveStatus()) return;
+        
         allocation.start(x, y);
     };
 
@@ -164,25 +165,10 @@ const VillageCanvas: React.FC = () => {
         }
     };
 
-    const mouseUp = (x: number, y: number) => {
-        if (!village || !mouseDownPosition) return;
-        const distance = Math.hypot(x - mouseDownPosition.x, y - mouseDownPosition.y);
-        const timeElapsed = Date.now() - mouseDownTime;
-
-        if (distance > DRAG_THRESHOLD || timeElapsed > TIME_THRESHOLD) {
-            wasDragging = true;
-            allocation.end(village.getScene().units);
-        } else {
-            allocation.cancel();
-        }
-        mouseDownPosition = null;
-        mouseDownTime = 0;
-    };
-
-    const mouseClick = async (x: number, y: number) => {
-        if (!village || wasDragging) return;
+    const handleClick = async (x: number, y: number) => {
+        if (!village) return;
         
-        const { buildingPreview, unitPreview, units } = village.getScene();
+        const { buildingPreview, unitPreview } = village.getScene();
 
         if (buildingPreview.isActiveStatus()) {
             village.handleBuildingPlacement(game['server']);
@@ -195,6 +181,28 @@ const VillageCanvas: React.FC = () => {
                 village.moveUnits({ x, y }, game['server']);
             }
         }
+    };
+
+    const mouseUp = (x: number, y: number) => {
+        if (!village || !mouseDownPosition) return;
+        const distance = Math.hypot(x - mouseDownPosition.x, y - mouseDownPosition.y);
+        const timeElapsed = Date.now() - mouseDownTime;
+
+        if (distance > DRAG_THRESHOLD || timeElapsed > TIME_THRESHOLD) {
+            wasDragging = true;
+            allocation.end(village.getScene().units);
+        } else {
+            wasDragging = false;
+            allocation.cancel();
+            handleClick(x, y);
+        }
+        
+        mouseDownPosition = null;
+        mouseDownTime = 0;
+    };
+
+    const mouseClick = async (x: number, y: number) => {
+        // Вы думали тут что-то будет? Вы ошибались
     };
 
     const mouseRightClickDown = (x: number, y: number) => {
@@ -286,11 +294,11 @@ const VillageCanvas: React.FC = () => {
 
         return () => {
             if (WINDOW.WIDTH !== INITIAL_WINDOW_WIDTH) {
-            WINDOW.WIDTH = INITIAL_WINDOW_WIDTH;
-            WINDOW.HEIGHT = INITIAL_WINDOW_HEIGHT;
-            WINDOW.LEFT = INITIAL_WINDOW_LEFT;
-            WINDOW.TOP = INITIAL_WINDOW_TOP;
-        }
+                WINDOW.WIDTH = INITIAL_WINDOW_WIDTH;
+                WINDOW.HEIGHT = INITIAL_WINDOW_HEIGHT;
+                WINDOW.LEFT = INITIAL_WINDOW_LEFT;
+                WINDOW.TOP = INITIAL_WINDOW_TOP;
+            }
 
             village?.destructor();
             canvas?.destructor();
