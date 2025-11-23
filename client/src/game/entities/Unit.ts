@@ -4,7 +4,6 @@ import { SPRITE_MAP, UnitTypeID, getUnitSprites } from "../gameConfig";
 import { TPoint } from "../../config";
 import { TUnit } from "../../services/server/types";
 import Game from '../Game';
-import { useContext } from 'react';
 
 const { GRID_HEIGHT, GRID_WIDTH, MOVE_INTERVAL } = GAMECONFIG
 
@@ -17,12 +16,13 @@ export default class Unit {
     maxHp: number;
     level: number;
     sprites: number[];
-    easyStar: EasyStar.js;
+    easystar: EasyStar.js;
+    game: Game;
     
     isSelected: boolean = false;
     moveIntervalId: NodeJS.Timeout | null = null;
     
-    constructor(data: TUnit, easyStar: EasyStar.js) {
+    constructor(data: TUnit, game: Game) {
         this.id = data.id;
         this.typeId = data.typeId as UnitTypeID;
         this.type = data.type;
@@ -33,18 +33,13 @@ export default class Unit {
         this.sprites = getUnitSprites(this.typeId);
 
         this.coords = { x: data.x, y: data.y };
-        this.easyStar = easyStar;
+
+        this.game = game;
+        this.easystar = game.getEasyStar();
     }
 
     updateSelection(isSelected: boolean): void {
         this.isSelected = isSelected;
-    }
-
-    private isValidDestination(destination: TPoint): boolean {
-        return destination.x >= 0 && 
-               destination.x < GRID_WIDTH && 
-               destination.y >= 0 && 
-               destination.y < GRID_HEIGHT;
     }
 
     private clearUnitMovement(unit: Unit): void {
@@ -55,14 +50,14 @@ export default class Unit {
     }
 
     moveUnit(destination: TPoint) {
-        if (!this.isValidDestination(destination)) {
-            console.warn('Invalid destination:', destination);
-            return;
-        }
-
         this.clearUnitMovement(this);
+        
+        const matrix = this.game.village.getMatrixForEasyStar(this);
+        
+        this.easystar.setGrid(matrix);
+        this.easystar.setAcceptableTiles([0]);
 
-        this.easyStar.findPath(
+        this.easystar.findPath(
             this.coords.x, 
             this.coords.y, 
             destination.x, 
@@ -82,6 +77,19 @@ export default class Unit {
                     }
 
                     const nextStep = path[currentStepIndex];
+                    
+                    const isOccupied = this.game.getUnits().some(unit => 
+                        unit !== this && 
+                        unit.coords.x === nextStep.x && 
+                        unit.coords.y === nextStep.y
+                    );
+
+                    if (isOccupied) {
+                        this.clearUnitMovement(this);
+                        this.moveUnit(destination);
+                        return;
+                    }
+
                     this.coords.x = nextStep.x;
                     this.coords.y = nextStep.y;
 
@@ -90,6 +98,6 @@ export default class Unit {
             }
         );
 
-        this.easyStar.calculate();
+        this.easystar.calculate();
     }
 }

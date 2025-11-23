@@ -71,13 +71,6 @@ class Manager {
                destination.y < GRID_HEIGHT;
     }
 
-    private clearUnitMovement(unit: Unit): void {
-        if (unit.moveIntervalId) {
-            clearInterval(unit.moveIntervalId);
-            unit.moveIntervalId = null;
-        }
-    }
-
     moveUnits(destination: TPoint) {
         destination.x = Math.round(destination.x);
         destination.y = Math.round(destination.y);
@@ -89,6 +82,7 @@ class Manager {
         const cellReservations = new Map<string, Unit>();
 
         this.gameData.getUnits().forEach((unit) => {
+            if (!unit.isSelected) {return}
             unit.moveUnit(destination);
         })
     }

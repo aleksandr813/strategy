@@ -25,7 +25,7 @@ class Game {
         this.server = server;
         this.easyStar = new EasyStar.js();
         
-        this.village = new Village(store, server, this.getGameData(), this.easyStar);
+        this.village = new Village(store, server, this.getGameData(), this.easyStar, this);
         this.globalMap = new GlobalMap(store, server, this.getGameData());
         this.battle = new Battle(store, server, this.getGameData());
     }
@@ -55,6 +55,10 @@ class Game {
             removeUnit: (unit: Unit) => this.removeUnit(unit),
             removeBuilding: (building: Building) => this.removeBuilding(building)
         };
+    }
+
+    public getEasyStar(): EasyStar.js {
+        return this.easyStar;
     }
 
     getVillage(): Village {

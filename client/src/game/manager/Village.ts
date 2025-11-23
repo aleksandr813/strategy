@@ -7,6 +7,7 @@ import UnitPreview from "../../services/canvas/UnitPreview";
 import Server from "../../services/server/Server";
 import Store from "../../services/store/Store";
 import Manager, { GameData } from "./Manager";
+import Game from '../Game';
 
 
 const { WIDTH, HEIGHT } = CONFIG;
@@ -16,16 +17,18 @@ class Village extends Manager {
     private unitPreview: UnitPreview;
     private store: Store;
     private server: Server;
+    private game: Game;
     public selectedBuilding: Building | null = null;
     public easyStar: EasyStar.js;
 
-    constructor(store: Store, server: Server, gameData: GameData, easyStar: EasyStar.js) {
+    constructor(store: Store, server: Server, gameData: GameData, easyStar: EasyStar.js, game: Game) {
         super(gameData);
         this.store = store;
         this.server = server;
         this.easyStar = easyStar;
+        this.game = game;
         this.buildingPreview = new BuildingPreview();
-        this.unitPreview = new UnitPreview();
+        this.unitPreview = new UnitPreview(game);
     }
 
     public selectBuilding(building: Building | null): void {
@@ -130,7 +133,7 @@ class Village extends Manager {
             return;
         }
 
-        const units = unitsData.map(unitData => new Unit(unitData, this.easyStar));
+        const units = unitsData.map(unitData => new Unit(unitData, this.game));
         
         this.gameData.setUnits(units);
         console.log("Загружено юнитов:", this.gameData.getUnits().length);
