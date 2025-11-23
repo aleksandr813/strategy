@@ -5,6 +5,7 @@ import Store from "../store/Store";
 import { TBuildingType, TBuilding } from './types';
 import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
+import Unit from '../../game/entities/Unit';
 
 const { HOST, CHAT_TIMESTAMP } = CONFIG;
 
@@ -196,9 +197,9 @@ class Server {
         return result;
     }
 
-    async buyUnit(typeId: number, x: number, y: number): Promise<any> {
+    async buyUnit(typeId: number, x: number, y: number): Promise<number | null> {
         console.log('buyUnit called with', { typeId, x, y });
-        const result = await this.request<any>('buyUnit', {
+        const result = await this.request<number>('buyUnit', {
             typeId: typeId.toString(),
             x: x.toString(),
             y: y.toString()
@@ -207,19 +208,37 @@ class Server {
         return result;
     }
 
-    async deleteBuilding(buildingId: number): Promise<boolean> {
-        const response = await this.request<any>('deleteBuilding', {
+    async deleteBuilding(buildingId: number): Promise<boolean | null> {
+        const response = await this.request<boolean>('deleteBuilding', {
             id: buildingId.toString(),
         });
-        return response === true;
+        return response;
     }
 
-    async upgradeBuilding(buildingId: number, typeId: number): Promise<boolean> {
-        const response = await this.request<any>('upgradeBuilding', {
+    async upgradeBuilding(buildingId: number, typeId: number): Promise<boolean | null> {
+        const response = await this.request<boolean>('upgradeBuilding', {
             id: buildingId.toString(),
             typeId: typeId.toString()
         });
         return response || null;
+    }
+
+    async moveUnits(units:Unit[]): Promise<boolean> {
+        console.log('Moving units:', units);
+
+        const unitsForMove = units.map(unit => ({
+            id: unit.id,
+            x: unit.coords.x,
+            y: unit.coords.y,
+        } as const));
+
+        console.log(unitsForMove);
+
+        //const response = await this.request<boolean>('moveUnits', {
+//
+        //})
+
+        return true;
     }
 }
 

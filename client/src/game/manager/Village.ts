@@ -71,10 +71,10 @@ class Village extends Manager {
 
         try {
             const result = await server.buyUnit(typeId, pos.x, pos.y);
-            if (result && !result.error) {
+            if (result) {
                 this.gameData.addUnit(newUnit);
             } else {
-                console.error('Ошибка размещения юнита:', result?.error || result);
+                console.error('Ошибка размещения юнита:', result);
                 this.unitPreview.activate(newUnit.sprites[0].toString(), typeId, newUnit.hp);
             }
         } catch (error) {
