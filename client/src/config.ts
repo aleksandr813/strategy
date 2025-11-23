@@ -36,8 +36,6 @@ const CONFIG = {
         HEIGHT: 10,
         WIDTH: 20,
     },
-
-    EXCLUDED_BUILDINGS: ['main_building', 'mine'],
 };
 
 export default CONFIG;

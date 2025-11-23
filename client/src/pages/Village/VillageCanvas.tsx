@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import CONFIG from '../../config';
+import GAMECONFIG from '../../game/gameConfig';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from './hooks/useSprites';
 import Unit from '../../game/entities/Unit';
@@ -7,6 +7,7 @@ import Building from '../../game/entities/Building';
 import Allocation from '../../services/canvas/Allocation';
 import { GameContext } from '../../App';
 import { TPoint } from '../../config';
+import CONFIG from '../../config';
 import villageBackground from '../../assets/img/background/villageBackground.png';
 
 import "./Village.scss";

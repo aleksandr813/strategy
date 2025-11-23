@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { GameContext, ServerContext} from '../../../../App';
 import Building from '../../../../game/entities/Building';
-import CONFIG from '../../../../config';
+import GAMECONFIG from '../../../../game/gameConfig';
 
 import "./BuildingMenu.css";
 
@@ -64,7 +64,7 @@ const BuildingMenu: React.FC = () => {
         }
     };
 
-    const canDeleteBuilding = !CONFIG.EXCLUDED_BUILDINGS.includes(selectedBuilding.type);
+    const canDeleteBuilding = !GAMECONFIG.EXCLUDED_BUILDINGS.includes(selectedBuilding.type);
 
     return (
         <div className="BuildingMenu">
