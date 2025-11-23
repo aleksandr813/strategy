@@ -1,3 +1,4 @@
+import EasyStar from 'easystarjs';
 import { TPoint } from "../../config";
 import { TUnit, UnitTypeID } from "../../services/server/types";
 
@@ -28,7 +29,7 @@ export default class Unit {
     isSelected: boolean = false;
     moveIntervalId: NodeJS.Timeout | null = null;
     
-    constructor(data: TUnit) {
+    constructor(data: TUnit, easyStar: EasyStar.js) {
         this.id = data.id;
         this.typeId = data.typeId;
         this.type = data.type;

@@ -1,3 +1,4 @@
+import EasyStar from 'easystarjs';
 import CONFIG, { TPoint } from "../../config";
 import Unit from '../entities/Unit';
 import Building from '../entities/Building';
@@ -7,6 +8,7 @@ import Server from "../../services/server/Server";
 import Store from "../../services/store/Store";
 import Manager, { GameData } from "./Manager";
 
+
 const { WIDTH, HEIGHT } = CONFIG;
 
 class Village extends Manager {
@@ -15,11 +17,13 @@ class Village extends Manager {
     private store: Store;
     private server: Server;
     public selectedBuilding: Building | null = null;
+    public easyStar: EasyStar.js;
 
-    constructor(store: Store, server: Server, gameData: GameData) {
+    constructor(store: Store, server: Server, gameData: GameData, easyStar: EasyStar.js) {
         super(gameData);
         this.store = store;
         this.server = server;
+        this.easyStar = easyStar;
         this.buildingPreview = new BuildingPreview();
         this.unitPreview = new UnitPreview();
     }
@@ -126,7 +130,7 @@ class Village extends Manager {
             return;
         }
 
-        const units = unitsData.map(unitData => new Unit(unitData));
+        const units = unitsData.map(unitData => new Unit(unitData, this.easyStar));
         
         this.gameData.setUnits(units);
         console.log("Загружено юнитов:", this.gameData.getUnits().length);

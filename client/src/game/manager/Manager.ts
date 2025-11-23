@@ -23,8 +23,7 @@ export interface GameData {
 class Manager {
     protected gameData: GameData;
     protected allocation: Allocation;
-    protected easystar = new EasyStar.js();
-
+    
     constructor(gameData: GameData) {
         this.gameData = gameData;
         this.allocation = new Allocation();
@@ -90,59 +89,8 @@ class Manager {
         const cellReservations = new Map<string, Unit>();
 
         this.gameData.getUnits().forEach((unit) => {
-            if (!unit.isSelected) return;
-
-            this.clearUnitMovement(unit);
-
-            const matrix = this.getMatrixForEasyStar(unit);
-            
-            this.easystar.setGrid(matrix);
-            this.easystar.setAcceptableTiles([0]);
-
-            this.easystar.findPath(
-                unit.cords.x, 
-                unit.cords.y, 
-                destination.x, 
-                destination.y, 
-                (path) => {
-                    if (!path) {
-                        console.log("Path was not found");
-                        return;
-                    }
-
-                    path.shift();
-                    let stepIndex = 0;
-
-                    unit.moveIntervalId = setInterval(() => {
-                        if (stepIndex >= path.length) {
-                            this.clearUnitMovement(unit);
-                            return;
-                        }
-
-                        const nextStep = path[stepIndex];
-                        const currentMatrix = this.getMatrixForEasyStar(unit);
-
-                        if (currentMatrix[nextStep.y][nextStep.x] === 0) {
-                            const key = `${nextStep.x},${nextStep.y}`;
-                            const reservingUnit = cellReservations.get(key);
-                            
-                            const oldKey = `${unit.cords.x},${unit.cords.y}`;
-                            if (cellReservations.get(oldKey) === unit) {
-                                cellReservations.delete(oldKey);
-                            }
-
-                            if (!reservingUnit || reservingUnit === unit) {
-                                cellReservations.set(key, unit);
-                                unit.cords = nextStep;
-                                stepIndex++;
-                            }
-                        }
-                    }, MOVE_INTERVAL);
-                }
-            );
-        });
-
-        this.easystar.calculate();
+            unit.
+        })
     }
 }
 

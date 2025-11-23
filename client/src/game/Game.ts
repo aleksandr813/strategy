@@ -1,3 +1,4 @@
+import EasyStar from 'easystarjs';
 import GlobalMap from "./manager/GlobalMap";
 import Village from "./manager/Village";
 import Battle from "./manager/Battle";
@@ -9,6 +10,7 @@ import Building from './entities/Building';
 class Game {
     private store: Store;
     private server: Server;
+    private easyStar: EasyStar.js
     
     private units: Unit[] = [];
     private buildings: Building[] = [];
@@ -18,10 +20,12 @@ class Game {
     public battle: Battle;
 
     constructor(store: Store, server: Server) {
+        
         this.store = store;
         this.server = server;
+        this.easyStar = new EasyStar.js();
         
-        this.village = new Village(store, server, this.getGameData());
+        this.village = new Village(store, server, this.getGameData(), this.easyStar);
         this.globalMap = new GlobalMap(store, server, this.getGameData());
         this.battle = new Battle(store, server, this.getGameData());
     }
