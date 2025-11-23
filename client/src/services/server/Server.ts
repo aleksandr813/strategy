@@ -223,22 +223,24 @@ class Server {
         return response || null;
     }
 
-    async moveUnits(units:Unit[]): Promise<boolean> {
-        console.log('Moving units:', units);
-
+    async moveUnits(units: Unit[]): Promise<boolean> {
         const unitsForMove = units.map(unit => ({
             id: unit.id,
             x: unit.coords.x,
             y: unit.coords.y,
-        } as const));
+        }));
 
-        console.log(unitsForMove);
+        const params: { [key: string]: string } = {};
+        
+        unitsForMove.forEach((unit, index) => {
+            params[`units[${index}][unitId]`] = unit.id.toString();
+            params[`units[${index}][x]`] = unit.x.toString();
+            params[`units[${index}][y]`] = unit.y.toString();
+        });
 
-        //const response = await this.request<boolean>('moveUnits', {
-//
-        //})
+        const response = await this.request<boolean>('moveUnits', params);
 
-        return true;
+        return response !== null ? response : false;
     }
 }
 

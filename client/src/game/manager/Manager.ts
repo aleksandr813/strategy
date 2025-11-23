@@ -5,6 +5,7 @@ import Unit from '../entities/Unit';
 import Building from '../entities/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../../services/canvas/Allocation";
+import Server from '../../services/server/Server';
 
 const { WIDTH, HEIGHT } = CONFIG;
 const { GRID_HEIGHT, GRID_WIDTH } = GAMECONFIG
@@ -71,7 +72,7 @@ class Manager {
                destination.y < GRID_HEIGHT;
     }
 
-    moveUnits(destination: TPoint) {
+    moveUnits(destination: TPoint, server: Server) {
         destination.x = Math.round(destination.x);
         destination.y = Math.round(destination.y);
 
@@ -79,12 +80,16 @@ class Manager {
             return;
         }
 
-        const cellReservations = new Map<string, Unit>();
+        let unitsArray:Unit[] = [];
 
         this.gameData.getUnits().forEach((unit) => {
             if (!unit.isSelected) {return}
             unit.moveUnit(destination);
+            unitsArray.push(unit);
         })
+        if (unitsArray[0]) {
+            server.moveUnits(unitsArray);
+        }
     }
 }
 

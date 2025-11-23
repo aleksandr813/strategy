@@ -192,7 +192,7 @@ const VillageCanvas: React.FC = () => {
             village.handleBuildingClick(x, y);
             
             if (!allocation.isSelectingStatus) {
-                village.moveUnits({ x, y });
+                village.moveUnits({ x, y }, game['server']);
             }
         }
     };
