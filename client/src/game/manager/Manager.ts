@@ -1,4 +1,5 @@
-import CONFIG, { TPoint } from "../../config";
+import { TPoint } from '../../config';
+import CONFIG from '../../config';
 import Unit from '../entities/Unit';
 import Building from '../entities/Building';
 import EasyStar from 'easystarjs';
