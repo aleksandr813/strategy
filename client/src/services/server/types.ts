@@ -36,7 +36,6 @@ export interface TMessagesResponse {
 export type TBuildingType = {
     id: number;
     type: string;
-    name: string;
     hp: number;
     price: number;
     sprite: number;
@@ -65,7 +64,6 @@ export enum BuildingTypeID {
 export type TUnitType = {
     id: number;
     type: string;
-    name: string;
     hp: number;
     price: number;
 }

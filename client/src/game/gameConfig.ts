@@ -36,7 +36,12 @@ export function getUnitSprites(typeId: UnitTypeID): number[] {
 
 
 const GAMECONFIG = {
-    EXCLUDED_BUILDINGS: ['main_building', 'mine'],
+    EXCLUDED_BUILDINGS: ['Ратуша', 'Шахта'],
+
+    GRID_WIDTH: 87,
+    GRID_HEIGHT: 29,
+    MOVE_INTERVAL: 100,
 };
+
 
 export default GAMECONFIG;
