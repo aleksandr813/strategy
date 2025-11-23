@@ -1,11 +1,12 @@
 import md5 from 'md5';
-import CONFIG from "../../config";
+import GAMECONFIG from '../../game/gameConfig';
+import CONFIG from '../../config';
 import Store from "../store/Store";
 import { TBuildingType, TBuilding } from './types';
 import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 
-const { CHAT_TIMESTAMP, HOST } = CONFIG;
+const { HOST, CHAT_TIMESTAMP } = CONFIG;
 
 class Server {
     HOST = HOST;

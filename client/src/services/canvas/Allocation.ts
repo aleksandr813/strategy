@@ -1,4 +1,4 @@
-import CONFIG from '../../config';
+import GAMECONFIG from '../../game/gameConfig';
 import { TPoint } from '../../config';
 import Unit from '../../game/entities/Unit';
 
