@@ -83,7 +83,7 @@ class Village extends Manager {
     public handleBuildingClick(x: number, y: number): void {
         const gridX = Math.floor(x), gridY = Math.floor(y);
         const clickedBuilding = this.gameData.getBuildings().find(b => {
-            const [bx, by] = [b.cords[0].x, b.cords[0].y];
+            const [bx, by] = [b.coords[0].x, b.coords[0].y];
             return gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2; 
         }) || null;
 
@@ -151,12 +151,12 @@ class Village extends Manager {
             booleanMatrix[i] = new Array(87).fill(0);
         }
         units.forEach((element) => {
-            if (element.cords.y < 29 && element.cords.x < 87) { 
-                booleanMatrix[element.cords.y][element.cords.x] = 1;
+            if (element.coords.y < 29 && element.coords.x < 87) { 
+                booleanMatrix[element.coords.y][element.coords.x] = 1;
             }
         });
         buildings.forEach((element) => {
-            const [bx, by] = [element.cords[0].x, element.cords[0].y];
+            const [bx, by] = [element.coords[0].x, element.coords[0].y];
             if (by < 29 && bx < 87) booleanMatrix[by][bx] = 1;
             if (by + 1 < 29 && bx < 87) booleanMatrix[by + 1][bx] = 1;
             if (by < 29 && bx + 1 < 87) booleanMatrix[by][bx + 1] = 1;

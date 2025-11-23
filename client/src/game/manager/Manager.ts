@@ -1,14 +1,13 @@
 import { TPoint } from '../../config';
 import CONFIG from '../../config';
+import GAMECONFIG from '../gameConfig';
 import Unit from '../entities/Unit';
 import Building from '../entities/Building';
 import EasyStar from 'easystarjs';
 import Allocation from "../../services/canvas/Allocation";
 
 const { WIDTH, HEIGHT } = CONFIG;
-const GRID_WIDTH = 87;
-const GRID_HEIGHT = 29;
-const MOVE_INTERVAL = 100;
+const { GRID_HEIGHT, GRID_WIDTH } = GAMECONFIG
 
 export interface GameData {
     getUnits: () => Unit[];
@@ -46,13 +45,13 @@ class Manager {
         );
 
         this.gameData.getUnits().forEach((unit) => {
-            if (unit !== excludedUnit && unit.cords.y < GRID_HEIGHT && unit.cords.x < GRID_WIDTH) {
-                matrix[unit.cords.y][unit.cords.x] = 1;
+            if (unit !== excludedUnit && unit.coords.y < GRID_HEIGHT && unit.coords.x < GRID_WIDTH) {
+                matrix[unit.coords.y][unit.coords.x] = 1;
             }
         });
 
         this.gameData.getBuildings().forEach((building) => {
-            const { x, y } = building.cords[0];
+            const { x, y } = building.coords[0];
             for (let dy = 0; dy <= 1; dy++) {
                 for (let dx = 0; dx <= 1; dx++) {
                     if (y + dy < GRID_HEIGHT && x + dx < GRID_WIDTH) {
@@ -90,7 +89,7 @@ class Manager {
         const cellReservations = new Map<string, Unit>();
 
         this.gameData.getUnits().forEach((unit) => {
-            unit.
+            unit.moveUnit(destination);
         })
     }
 }
