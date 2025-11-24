@@ -1,19 +1,19 @@
-import CONFIG from "../../config";
 import { TPoint } from "../../config";
-import Unit from "../../game/Entities/Unit";
-const {SPRITE_SIZE} = CONFIG;
+import Unit from "../../game/entities/Unit";
+import Game from "../../game/Game";
+import { TUnit } from "../../services/server/types";
 
 export default class UnitPreview {
-    private isActive: boolean = false;
-    private unitType: string = '';
-    private unitTypeId: number = 0;
-    private unitHp: number = 50;
-    private mousePosition: TPoint = {x: 0, y: 0};
-    private gridPosition: TPoint = {x: 0, y: 0};
-    private canPlace: boolean = false;
+    private isActive = false;
+    private unitType = '';
+    private unitTypeId = 0;
+    private unitHp = 50;
+    private gridPosition: TPoint = { x: 0, y: 0 };
+    private canPlace = false;
+    private game: Game;
 
-    constructor() {
-        this.isActive = false;
+    constructor(game: Game) {
+        this.game = game;
     }
 
     public activate(unitType: string, unitTypeId: number, hp: number): void {
@@ -25,7 +25,7 @@ export default class UnitPreview {
 
     public deactivate(): void {
         this.isActive = false;
-        this. unitType = '';
+        this.unitType = '';
         this.canPlace = false;
     }
 
@@ -33,34 +33,43 @@ export default class UnitPreview {
         return this.isActive;
     }
 
+    public getUnitTypeId(): number {
+        return this.unitTypeId;
+    }
+
+    public getPlacementPosition(): TPoint {
+        return this.gridPosition;
+    }
+
+    public getCanPlace(): boolean {
+        return this.canPlace;
+    }
+
     public update(x: number, y: number, occupiedMatrix: number[][]): void {
         if (!this.isActive) return;
 
-        this.mousePosition = { x, y };
         this.gridPosition = {
             x: Math.floor(x),
             y: Math.floor(y)
         };
 
-        // Проверяем, можно ли разместить юнита
         this.canPlace = this.checkCanPlace(occupiedMatrix);
     }
 
     private checkCanPlace(occupiedMatrix: number[][]): boolean {
-        const {x, y} = this.gridPosition;
+        return this.isWithinBounds(occupiedMatrix) && this.isCellEmpty(occupiedMatrix);
+    }
 
-        //проверка границ карты
-        if (x < 0 || y < 0 || x + 1 >= occupiedMatrix.length || y + 1 >= occupiedMatrix[0].length) {
-            return false;
-        }
+    private isWithinBounds(occupiedMatrix: number[][]): boolean {
+        const { x, y } = this.gridPosition;
+        return x >= 0 && y >= 0 && 
+               x < occupiedMatrix[0].length && 
+               y < occupiedMatrix.length;
+    }
 
-        const cell = {x: x, y: y};
-
-        if (occupiedMatrix[cell.y][cell.x] !== 0) {
-            return false;
-        }
-
-        return true
+    private isCellEmpty(occupiedMatrix: number[][]): boolean {
+        const { x, y } = this.gridPosition;
+        return occupiedMatrix[y][x] === 0;
     }
 
     public getRenderData() {
@@ -74,11 +83,9 @@ export default class UnitPreview {
     }
 
     public tryPlace(): Unit | null {
-        if (!this.isActive || !this.canPlace) {
-            return null;
-        }
+        if (!this.isActive || !this.canPlace) return null;
 
-        const unitData = {
+        const unitData: TUnit = {
             id: 0,
             typeId: this.unitTypeId,
             villageId: 0,
@@ -86,30 +93,12 @@ export default class UnitPreview {
             y: this.gridPosition.y,
             currentHp: this.unitHp,
             level: 1,
+            type: this.unitType
         };
 
-        const unitType = {
-            id: this.unitTypeId,
-            type: this.unitType,
-            name: "Preview Unit",
-            hp: this.unitHp,
-            price: 0,
-            sprite: 1
-        };
-
-        const unit = new Unit(unitData, unitType);
-
+        const unit = new Unit(unitData, this.game);
         this.deactivate();
+        
         return unit;
-
     }
-
-    public getUnitTypeId(): number {
-        return this.unitTypeId;
-    }
-
-    public getPlacementPosition(): TPoint {
-        return this.gridPosition;
-    }
-
 }

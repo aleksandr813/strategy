@@ -2,8 +2,8 @@ import React, { useEffect, useContext, useState } from 'react';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
 import { GameContext } from '../../../../App';
-import { UnitType } from '../../../../services/server/types';
-import VillageManager from '../../villageDataManager';
+import { TUnitType } from '../../../../services/server/types';
+import Server from '../../../../services/server/Server';
 
 import './BuyUnitsMenu.scss'
 
@@ -12,20 +12,27 @@ const BuyUnitsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
 
     const game = useContext(GameContext);
     const village = game.getVillage();
-    const [unitsTypes, setUnitTypes] = useState<UnitType[]>([]);
-    const villageManager = new VillageManager(game['server']);
+    const [unitsTypes, setUnitTypes] = useState<TUnitType[]>([]);
 
     const closeBuyMenu = () => setUIElement(UIELEMENT.NULL);
 
-    const buyUnit = async (unit: UnitType) => {
-        console.log(`Покупка юнита: ${unit.name}`);
-        village.getScene().unitPreview.activate(unit.name, unit.id, unit.hp);
+    const loadUnitTypes = async (): Promise<TUnitType[]> => {
+        const server = new Server(game['store']);
+        const types = await server.getUnitsTypes();
+        console.log(types);
+        return types || [];
+    }
+
+    const buyUnit = async (unit: TUnitType) => {
+        console.log(`Покупка юнита: ${unit.type}`);
+        village.getScene().buildingPreview.deactivate();
+        village.getScene().unitPreview.activate(unit.type, unit.id, unit.hp);
         setUIElement(UIELEMENT.NULL);
     };
 
     useEffect(() => {
         (async () => {
-            setUnitTypes(await villageManager.loadUnitTypes());
+            setUnitTypes(await loadUnitTypes());
         })();
     }, []);
 
@@ -40,7 +47,7 @@ const BuyUnitsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
                     {unitsTypes.map((unit) => (
                         <div key={unit.id} className='buy-menu-item'>
                             <div className='unit-info'>
-                                <span className='unit-name'>{unit.name}</span>
+                                <span className='unit-name'>{unit.type}</span>
                                 <span className='unit-details'>
                                     HP: {unit.hp} | Цена: {unit.price}
                                 </span>

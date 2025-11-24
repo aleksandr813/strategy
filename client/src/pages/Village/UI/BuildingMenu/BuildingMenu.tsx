@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { GameContext, ServerContext} from '../../../../App';
-import Building from '../../../../game/Entities/Building';
+import Building from '../../../../game/entities/Building';
+import GAMECONFIG from '../../../../game/gameConfig';
+
 import "./BuildingMenu.css";
 
 const BuildingMenu: React.FC = () => {
@@ -62,6 +64,8 @@ const BuildingMenu: React.FC = () => {
         }
     };
 
+    const canDeleteBuilding = !GAMECONFIG.EXCLUDED_BUILDINGS.includes(selectedBuilding.type);
+
     return (
         <div className="BuildingMenu">
             <div 
@@ -81,10 +85,12 @@ const BuildingMenu: React.FC = () => {
                         </div>
                     </div>
                     <div className="menu-footer">
-                        <button className="levelup-button" onClick={upgrade}>Level Up</button>
-                        <button className="delete-button"
-                        onClick={openConfirm}
-                        >Delete</button>
+                        <button className="levelup-button" onClick={upgrade}>Улучшить</button>
+                        {canDeleteBuilding && (
+                            <button className="delete-button"
+                            onClick={openConfirm}
+                            >Удалить</button>
+                        )}
                     </div>
                 </div>
             </div>

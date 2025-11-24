@@ -2,8 +2,9 @@ import React, { useEffect, useContext, useState } from 'react';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
 import { GameContext } from '../../../../App';
-import { BuildingType } from '../../../../services/server/types';
-import VillageManager from '../../villageDataManager';
+import { TBuildingType } from '../../../../services/server/types';
+import Server from '../../../../services/server/Server';
+import GAMECONFIG from '../../../../game/gameConfig';
 
 import './BuyBuildingsMenu.scss'
 
@@ -12,20 +13,32 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
 
     const game = useContext(GameContext);
     const village = game.getVillage();
-    const [buildingTypes, setBuildingTypes] = useState<BuildingType[]>([]);
-    const villageManager = new VillageManager(game['server']);
+    const [buildingTypes, setBuildingTypes] = useState<TBuildingType[]>([]);
 
     const closeBuyMenu = () => setUIElement(UIELEMENT.NULL);
 
-    const buyBuilding = async (building: BuildingType) => {
-        console.log(`Покупка здания: ${building.name}`);
+    const loadBuildingTypes = async (): Promise<TBuildingType[]> => {
+        const server = new Server(game['store']);
+        const types = await server.getBuildingTypes();
+
+        const excludedTypes = GAMECONFIG.EXCLUDED_BUILDINGS;
+    
+        const filteredTypes = types.filter(type => 
+            !excludedTypes.includes(type.type)
+        );
+        return filteredTypes || [];
+    }
+
+    const buyBuilding = async (building: TBuildingType) => {
+        console.log(`Покупка здания: ${building.type}`);
+        village.getScene().unitPreview.deactivate();
         village.getScene().buildingPreview.activate(building.id, building.hp);
         setUIElement(UIELEMENT.NULL);
     };
 
     useEffect(() => {
         (async () => {
-            setBuildingTypes(await villageManager.loadBuildingTypes());
+            setBuildingTypes(await loadBuildingTypes());
         })();
     }, []);
 
@@ -41,7 +54,7 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
                         buildingTypes.map((building) => (
                             <div key={building.id} className="buy-menu-item">
                                 <div className="building-info">
-                                    <span className="building-name">{building.name}</span>
+                                    <span className="building-name">{building.type}</span>
                                     <span className="building-details">
                                         HP: {building.hp} | Цена: {building.price}
                                     </span>

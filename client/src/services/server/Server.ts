@@ -1,11 +1,13 @@
 import md5 from 'md5';
-import CONFIG from "../../config";
+import GAMECONFIG from '../../game/gameConfig';
+import CONFIG from '../../config';
 import Store from "../store/Store";
-import { BuildingTypeResponse, TBuildingTypesResponse, TBuilding } from './types';
-import { UnitTypeResponse, TUnitTypesResponse, TUnitResponse } from './types';
+import { TBuildingType, TBuilding } from './types';
+import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
+import Unit from '../../game/entities/Unit';
 
-const { CHAT_TIMESTAMP, HOST } = CONFIG;
+const { HOST, CHAT_TIMESTAMP } = CONFIG;
 
 class Server {
     HOST = HOST;
@@ -26,7 +28,6 @@ class Server {
                 params.token = token;
             }
             const url = `${this.HOST}/?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`;
-
 
             const response = await fetch(url);
             const answer: TAnswer<T> = await response.json();
@@ -72,6 +73,16 @@ class Server {
         return false;
     }
 
+    async registration(login: string, password: string, name: string): Promise<boolean> {
+        const hash = md5(`${login}${password}`);
+        const user = await this.request<TUser>('registration', { login, hash, name });
+        if (user) {
+            this.store.setUser(user);
+            return true;
+        }
+        return false;
+    }
+
     async logout(token: string) {
         const result = await this.request<boolean>('logout', { token });
         if (result) {
@@ -79,11 +90,6 @@ class Server {
             return true;
         }
         return false;
-    }
-
-    registration(login: string, password: string, name: string): Promise<boolean | null> {
-        const hash = md5(`${login}${password}`);
-        return this.request<boolean>('registration', { login, hash, name });
     }
 
     sendMessage(message: string): void {
@@ -109,7 +115,6 @@ class Server {
                 cb(hash);
             }
         }, CHAT_TIMESTAMP);
-
     }
 
     stopChatMessages(): void {
@@ -137,43 +142,46 @@ class Server {
     async getBuildings(): Promise<TBuilding[] | null> {
         const response = await this.request<TBuilding[]>('getBuildings');
         if (!response) {
-            return null
+            return null;
         }
 
-        const buildings: TBuilding[] = response.map(building => ({
-            id: building.id,
-            typeId: building.typeId,
-            villageId: building.villageId,
-            x: building.x,
-            y: building.y,
-            level: building.level,
-            currentHp: building.currentHp,
-            type: building.type
+        console.log('Buildings from server:', response);
+        return response;
+    }
+
+    async getBuildingTypes(): Promise<TBuildingType[]> {
+        const response = await this.request<TBuildingType[]>('getBuildingTypes');
+        if (!response) {
+            return [];
+        }
+        return response;
+    }
+
+    async getUnits(): Promise<TUnit[] | null> {
+        const response = await this.request<any[]>('getUnits');
+        if (!response) {
+            return null;
+        }
+
+        const units: TUnit[] = response.map(unit => ({
+            id: Number(unit.id),
+            typeId: Number(unit.typeId),
+            villageId: Number(unit.villageId),
+            x: Number(unit.x),
+            y: Number(unit.y),
+            level: Number(unit.level),
+            currentHp: Number(unit.currentHp),
+            type: unit.type
         }));
-        console.log(buildings)
-        return buildings;
+
+        console.log('Units from server:', units);
+        return units;
     }
 
-    async getBuildingTypes(): Promise<TBuildingTypesResponse> {
-        const response = await this.request<TBuildingTypesResponse>('getBuildingTypes');
+    async getUnitsTypes(): Promise<TUnitType[]> {
+        const response = await this.request<TUnitType[]>('getUnitTypes');
         if (!response) {
-            return { buildingTypes: [] };
-        }
-        return response;
-    }
-
-    async getUnits(): Promise<TUnitResponse> {
-        const response = await this.request<TUnitResponse>('getUnits');
-        if (!response) {
-            return { units: [] };
-        }
-        return response;
-    }
-
-    async getUnitsTypes(): Promise<TUnitTypesResponse> {
-        const response = await this.request<TUnitTypesResponse>('getUnitTypes');
-        if (!response) {
-            return { unitTypes: [] };
+            return [];
         }
         return response;
     }
@@ -189,9 +197,9 @@ class Server {
         return result;
     }
 
-    async buyUnit(typeId: number, x: number, y: number): Promise<any> {
+    async buyUnit(typeId: number, x: number, y: number): Promise<number | null> {
         console.log('buyUnit called with', { typeId, x, y });
-        const result = await this.request<any>('buyUnit', {
+        const result = await this.request<number>('buyUnit', {
             typeId: typeId.toString(),
             x: x.toString(),
             y: y.toString()
@@ -200,21 +208,40 @@ class Server {
         return result;
     }
 
-    async deleteBuilding(buildingId: number): Promise<boolean> {
-        const response = await this.request<any>('deleteBuilding',{
+    async deleteBuilding(buildingId: number): Promise<boolean | null> {
+        const response = await this.request<boolean>('deleteBuilding', {
             id: buildingId.toString(),
         });
-        return response === true;
+        return response;
     }
 
-    async upgradeBuilding(buildingId: number, typeId: number): Promise<boolean> {
-        const response = await this.request<any>('upgradeBuilding',{
+    async upgradeBuilding(buildingId: number, typeId: number): Promise<boolean | null> {
+        const response = await this.request<boolean>('upgradeBuilding', {
             id: buildingId.toString(),
             typeId: typeId.toString()
         });
         return response || null;
     }
-}
 
+    async moveUnits(units: Unit[]): Promise<boolean> {
+        const unitsForMove = units.map(unit => ({
+            id: unit.id,
+            x: unit.coords.x,
+            y: unit.coords.y,
+        }));
+
+        const params: { [key: string]: string } = {};
+        
+        unitsForMove.forEach((unit, index) => {
+            params[`units[${index}][unitId]`] = unit.id.toString();
+            params[`units[${index}][x]`] = unit.x.toString();
+            params[`units[${index}][y]`] = unit.y.toString();
+        });
+
+        const response = await this.request<boolean>('moveUnits', params);
+
+        return response !== null ? response : false;
+    }
+}
 
 export default Server;

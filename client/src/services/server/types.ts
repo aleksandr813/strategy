@@ -6,7 +6,7 @@ export type TError = {
 export type TRootsResponse = {
     roots?: number[];
     error?: TError;
-};
+}
 
 export type TAnswer<T> = {
     result: 'ok' | 'error';
@@ -26,35 +26,21 @@ export type TMessage = {
 }
 
 export type TMessages = TMessage[];
-export type TMessagesResponse = {
+
+export interface TMessagesResponse {
     messages: TMessages;
     hash: string;
 }
 
-// Тип для ответа с сервера (строковые поля)
-export interface BuildingTypeResponse {
-    id: string;
-    type: string;
-    name: string;
-    hp: string;
-    price: string;
-    spriteId:string;
-}
 
-// Тип для использования в приложении (числовые поля)
-export interface BuildingType {
+export type TBuildingType = {
     id: number;
     type: string;
-    name: string;
     hp: number;
     price: number;
     sprite: number;
 }
 
-// Тип для ответа метода getBuildingTypes
-export type TBuildingTypesResponse = {
-    buildingTypes: BuildingTypeResponse[];
-}
 
 export type TBuilding = {
     id: number;
@@ -75,40 +61,14 @@ export enum BuildingTypeID {
     Tower = 5,
 }
 
-
-export interface UnitTypeResponse {
-    id: string;
-    type: string;
-    name: string;
-    hp: string;
-    price: string;
-}
-
-// Тип для использования в приложении (числовые поля)
-export interface UnitType {
+export type TUnitType = {
     id: number;
     type: string;
-    name: string;
     hp: number;
     price: number;
 }
 
-export type TUnitTypesResponse = {
-    unitTypes: UnitTypeResponse[];
-}
-
-export interface UnitResponse { 
-    id: string;
-    typeId: string;
-    villageId: string;
-    x: string;
-    y: string;
-    level: string;  
-    currentHp: string;
-}
-
-// Тип для использования в приложении (числовые поля)
-export interface Unit {
+export type TUnit = {
     id: number;
     typeId: number;
     villageId: number;
@@ -116,33 +76,5 @@ export interface Unit {
     y: number;
     level: number;
     currentHp: number;
-}
-
-export enum UnitTypeID {
-    Knight = 9, // Рыцарь
-    Spearman = 2,
-    Berserk = 3,
-    Paladin = 4,
-    Guardian = 5,
-    Archer = 6,
-    Crossbowman = 7,
-    Sorcerer = 10,
-    Summoner = 11,
-    Golem = 12,
-    Swordman = 1
-
-}
-
-// Тип для ответа метода getBuildingTypes
-export type TUnitResponse = {
-    units: UnitResponse[];
-}
-
-export interface buyBuildingResponse {
-    id: string;
     type: string;
-    name: string;
-    hp: string;
-    price: string;
 }
-

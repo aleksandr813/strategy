@@ -33,16 +33,6 @@ class User
         return ['error' => 1002]; // Wrong login or password
     }
 
-    public function logout($token)
-    {
-        $user = $this->db->getUserByToken($token);
-        if ($user) {
-            $this->db->updateToken($user->id, null);
-            return true;
-        }
-        return ['error' => 1003];
-    }
-
     public function registration($login, $hash, $name)
     {
         // Валидация логина
@@ -78,6 +68,16 @@ class User
         }
         
         return ['error' => 9000]; // unknown error
+    }
+
+    public function logout($token)
+    {
+        $user = $this->db->getUserByToken($token);
+        if ($user) {
+            $this->db->updateToken($user->id, null);
+            return true;
+        }
+        return ['error' => 1003];
     }
 
     private function createStarterVillage($userId){
