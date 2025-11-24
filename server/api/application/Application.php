@@ -4,12 +4,14 @@ require_once('user/User.php');
 require_once('chat/Chat.php');
 require_once('calculator/Calculator.php');
 require_once('village/Village.php');
+require_once('battle/Battle.php');
 
 class Application
 {
     private $user;
     private $chat;
     private $village;
+    private $battle;
 
     private $calculator;
 
@@ -20,6 +22,7 @@ class Application
         $this->chat = new Chat($db);
         $this->calculator = new Calculator();
         $this->village = new Village($db);
+        $this->battle = new Battle($db);
     }
 
     public function login($params)
@@ -169,7 +172,7 @@ class Application
         if ($params['token']  && $params['units'])  {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->village->takeDamage($user->id, $params['units']);
+                return $this->battle->takeDamage($user->id, $params['units']);
             }
             return ['error' => 705];
         }
