@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 21 2025 г., 20:40
+-- Время создания: Ноя 25 2025 г., 00:32
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -220,14 +220,14 @@ CREATE TABLE `units` (
   `y` int NOT NULL,
   `level` int NOT NULL DEFAULT '1',
   `current_hp` int NOT NULL,
-  `on_a_hike` tinyint(1) NOT NULL DEFAULT '0'
+  `on_a_crusade` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `units`
 --
 
-INSERT INTO `units` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `current_hp`, `on_a_hike`) VALUES
+INSERT INTO `units` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `current_hp`, `on_a_crusade`) VALUES
 (1, 1, 5, 1, 4, 1, 100, 0),
 (2, 1, 5, 1, 4, 1, 100, 0),
 (3, 1, 5, 2, 2, 1, 100, 0),

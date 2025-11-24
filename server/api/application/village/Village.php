@@ -174,8 +174,8 @@ class Village
 
         $filteredUnits = [];
         foreach ($units as &$unit) {
-            $unit['onAHike'] = (int)$unit['onAHike'];
-            if ($unit['onAHike']) {
+            $unit['onAСrusade'] = (int)$unit['onAСrusade'];
+            if ($unit['onAСrusade']) {
                 continue;
             }
             $unit['id'] = (int)$unit['id'];

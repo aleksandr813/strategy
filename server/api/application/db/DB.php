@@ -114,7 +114,7 @@ class DB
                 u.y AS y,
                 u.level AS level,
                 u.current_hp AS currentHp,
-                u.on_a_hike AS onAHike,
+                u.on_a_crusade AS onAСrusade,
                 ut.type AS type
             FROM units AS u
             INNER JOIN unit_types AS ut
