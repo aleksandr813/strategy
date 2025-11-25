@@ -1,13 +1,13 @@
 import EasyStar from 'easystarjs';
 import CONFIG, { TPoint } from "../../config";
-import Unit from '../entities/Unit';
-import Building from '../entities/Building';
 import BuildingPreview from "../../services/canvas/BuildingPreview";
 import UnitPreview from "../../services/canvas/UnitPreview";
 import Server from "../../services/server/Server";
 import Store from "../../services/store/Store";
-import Manager, { GameData } from "./Manager";
+import Unit from '../entities/Unit';
+import Building from '../entities/Building';
 import Game from '../Game';
+import Manager, { GameData } from "./Manager";
 
 
 const { WIDTH, HEIGHT } = CONFIG;

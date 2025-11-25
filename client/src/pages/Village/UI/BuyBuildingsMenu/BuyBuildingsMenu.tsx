@@ -1,10 +1,10 @@
 import React, { useEffect, useContext, useState } from 'react';
-import Button from '../../../../components/Button/Button';
-import { UIELEMENT, IBaseUIElement } from '../UI';
+import GAMECONFIG from '../../../../game/gameConfig';
 import { GameContext } from '../../../../App';
 import { TBuildingType } from '../../../../services/server/types';
 import Server from '../../../../services/server/Server';
-import GAMECONFIG from '../../../../game/gameConfig';
+import Button from '../../../../components/Button/Button';
+import { UIELEMENT, IBaseUIElement } from '../UI';
 
 import './BuyBuildingsMenu.scss'
 
