@@ -1,6 +1,7 @@
 <?php
 
-class Village {
+class Village
+{
     private $db;
     private $config;
 
@@ -10,7 +11,8 @@ class Village {
         $this->config = require('config.php');
     }
 
-    public function getIncome($userId) {
+    public function getIncome($userId)
+    {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 310];
@@ -36,17 +38,18 @@ class Village {
 
         $this->db->updateMoney($userId, $newMoney);
         $this->db->updateLastIncome($village->id);
-        
+
         return ['money' => $this->db->getMoney($userId)->money];
     }
 
-    public function getBuildings($userId) {
+    public function getBuildings($userId)
+    {
         if (!$userId) {
             return ['error' => 705];
         }
         $buildings = $this->db->getBuildings($userId);
 
-        foreach($buildings as &$building) {
+        foreach ($buildings as &$building) {
             $building['id'] = (int)$building['id'];
             $building['typeId'] = (int)$building['typeId'];
             $building['villageId'] = (int)$building['villageId'];
@@ -57,18 +60,20 @@ class Village {
         }
 
         if (count($buildings) === 0) {
-            return [ false ];
+            return [false];
         }
 
         return $buildings;
     }
 
-    public function getBuildingTypes() {
+    public function getBuildingTypes()
+    {
         $types = $this->db->getBuildingTypes();
         return $types;
     }
 
-    public function buyBuilding($user, $typeId, $x, $y) {
+    public function buyBuilding($user, $typeId, $x, $y)
+    {
         $village = $this->db->getVillage($user->id);
         if (!$village) {
             return ['error' => 310];
@@ -84,7 +89,7 @@ class Village {
                 return ['error' => 307];
             }
         }
-        
+
         if ($user->money < $building->price) {
             return ['error' => 305];
         }
@@ -109,7 +114,8 @@ class Village {
         ];
     }
 
-    public function upgradeBuilding($buildingId, $user, $typeId) {
+    public function upgradeBuilding($buildingId, $user, $typeId)
+    {
         $village = $this->db->getVillage($user->id);
         if (!$village) {
             return ['error' => 310];
@@ -139,7 +145,8 @@ class Village {
         return ['money' => $newMoney];
     }
 
-    public function deleteBuilding($buildingId, $userId) {
+    public function deleteBuilding($buildingId, $userId)
+    {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 310];
@@ -171,7 +178,12 @@ class Village {
         }
         $units = $this->db->getUnits($userId);
 
-        foreach($units as &$unit) {
+        $filteredUnits = [];
+        foreach ($units as &$unit) {
+            $unit['onAСrusade'] = (int)$unit['onAСrusade'];
+            if ($unit['onAСrusade']) {
+                continue;
+            }
             $unit['id'] = (int)$unit['id'];
             $unit['typeId'] = (int)$unit['typeId'];
             $unit['villageId'] = (int)$unit['villageId'];
@@ -179,10 +191,13 @@ class Village {
             $unit['y'] = (int)$unit['y'];
             $unit['level'] = (int)$unit['level'];
             $unit['currentHp'] = (int)$unit['currentHp'];
+
+            $filteredUnits[] = $unit;
         }
+        $units = $filteredUnits;
 
         if (count($units) === 0) {
-            return [ false ];
+            return [false];
         }
 
         return $units;
@@ -248,7 +263,8 @@ class Village {
         return $types;
     }
 
-    public function moveUnits($userId, $units) {
+    public function moveUnits($userId, $units)
+    {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 310];
@@ -264,7 +280,8 @@ class Village {
     }
 
 
-    public function takeDamage($userId, $units) {
+    public function takeDamage($userId, $units)
+    {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 315];
