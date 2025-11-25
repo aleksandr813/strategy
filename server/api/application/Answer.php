@@ -16,6 +16,7 @@ class Answer
         '303' => 'Failed to delete building',
         '305' => 'Not enough funds to buy',
         '306' => 'Transaction error',
+        '307' => 'Building that is prohibited for buy and delete',
         '310' => 'Village not found',
         '311' => 'Coordinates are busy',
         '312' => 'Maximum level',

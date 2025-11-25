@@ -114,6 +114,7 @@ class DB
                 u.y AS y,
                 u.level AS level,
                 u.current_hp AS currentHp,
+                u.on_a_crusade AS onAСrusade,
                 ut.type AS type
             FROM units AS u
             INNER JOIN unit_types AS ut
@@ -234,7 +235,7 @@ class DB
 
     public function getBuilding($buildingId, $villageId) {
         return $this->query(
-            "SELECT id 
+            "SELECT id, type_id  AS typeId
             FROM buildings
             WHERE id = ? AND village_id = ?",
             [$buildingId, $villageId]
@@ -246,7 +247,7 @@ class DB
     }
 
     public function getBuildingType($buildingType) {
-        return $this->query("SELECT hp, price FROM building_types WHERE id = ?", [$buildingType]);
+        return $this->query("SELECT id, hp, price FROM building_types WHERE id = ?", [$buildingType]);
     }
 
     public function getUnitType($unitType) {
@@ -284,12 +285,12 @@ class DB
 
     public function getBuildingTypes()
     {
-        return $this->queryAll("SELECT id, type, name, hp, price FROM building_types");
+        return $this->queryAll("SELECT id, type, hp, price FROM building_types");
     }
 
     public function getUnitTypes()
     {
-        return $this->queryAll("SELECT id, type, name, hp, price FROM unit_types");
+        return $this->queryAll("SELECT id, type, hp, price FROM unit_types");
     }
 
 

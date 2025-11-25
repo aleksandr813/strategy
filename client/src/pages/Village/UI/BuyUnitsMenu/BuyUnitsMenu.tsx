@@ -1,9 +1,9 @@
 import React, { useEffect, useContext, useState } from 'react';
-import Button from '../../../../components/Button/Button';
-import { UIELEMENT, IBaseUIElement } from '../UI';
 import { GameContext } from '../../../../App';
 import { TUnitType } from '../../../../services/server/types';
 import Server from '../../../../services/server/Server';
+import Button from '../../../../components/Button/Button';
+import { UIELEMENT, IBaseUIElement } from '../UI';
 
 import './BuyUnitsMenu.scss'
 
@@ -24,9 +24,9 @@ const BuyUnitsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
     }
 
     const buyUnit = async (unit: TUnitType) => {
-        console.log(`Покупка юнита: ${unit.name}`);
+        console.log(`Покупка юнита: ${unit.type}`);
         village.getScene().buildingPreview.deactivate();
-        village.getScene().unitPreview.activate(unit.name, unit.id, unit.hp);
+        village.getScene().unitPreview.activate(unit.type, unit.id, unit.hp);
         setUIElement(UIELEMENT.NULL);
     };
 
@@ -47,7 +47,7 @@ const BuyUnitsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
                     {unitsTypes.map((unit) => (
                         <div key={unit.id} className='buy-menu-item'>
                             <div className='unit-info'>
-                                <span className='unit-name'>{unit.name}</span>
+                                <span className='unit-name'>{unit.type}</span>
                                 <span className='unit-details'>
                                     HP: {unit.hp} | Цена: {unit.price}
                                 </span>

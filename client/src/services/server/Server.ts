@@ -1,11 +1,13 @@
 import md5 from 'md5';
-import CONFIG from "../../config";
+import GAMECONFIG from '../../game/gameConfig';
+import CONFIG from '../../config';
 import Store from "../store/Store";
 import { TBuildingType, TBuilding } from './types';
 import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
+import Unit from '../../game/entities/Unit';
 
-const { CHAT_TIMESTAMP, HOST } = CONFIG;
+const { HOST, CHAT_TIMESTAMP } = CONFIG;
 
 class Server {
     HOST = HOST;
@@ -195,9 +197,9 @@ class Server {
         return result;
     }
 
-    async buyUnit(typeId: number, x: number, y: number): Promise<any> {
+    async buyUnit(typeId: number, x: number, y: number): Promise<number | null> {
         console.log('buyUnit called with', { typeId, x, y });
-        const result = await this.request<any>('buyUnit', {
+        const result = await this.request<number>('buyUnit', {
             typeId: typeId.toString(),
             x: x.toString(),
             y: y.toString()
@@ -206,19 +208,39 @@ class Server {
         return result;
     }
 
-    async deleteBuilding(buildingId: number): Promise<boolean> {
-        const response = await this.request<any>('deleteBuilding', {
+    async deleteBuilding(buildingId: number): Promise<boolean | null> {
+        const response = await this.request<boolean>('deleteBuilding', {
             id: buildingId.toString(),
         });
-        return response === true;
+        return response;
     }
 
-    async upgradeBuilding(buildingId: number, typeId: number): Promise<boolean> {
-        const response = await this.request<any>('upgradeBuilding', {
+    async upgradeBuilding(buildingId: number, typeId: number): Promise<boolean | null> {
+        const response = await this.request<boolean>('upgradeBuilding', {
             id: buildingId.toString(),
             typeId: typeId.toString()
         });
         return response || null;
+    }
+
+    async moveUnits(units: Unit[]): Promise<boolean> {
+        const unitsForMove = units.map(unit => ({
+            id: unit.id,
+            x: unit.coords.x,
+            y: unit.coords.y,
+        }));
+
+        const params: { [key: string]: string } = {};
+        
+        unitsForMove.forEach((unit, index) => {
+            params[`units[${index}][unitId]`] = unit.id.toString();
+            params[`units[${index}][x]`] = unit.x.toString();
+            params[`units[${index}][y]`] = unit.y.toString();
+        });
+
+        const response = await this.request<boolean>('moveUnits', params);
+
+        return response !== null ? response : false;
     }
 }
 
