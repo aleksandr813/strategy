@@ -1,6 +1,7 @@
 import { TPoint } from "../../config";
-import Unit from "../../game/entities/Unit";
 import { TUnit } from "../../services/server/types";
+import Unit from "../../game/entities/Unit";
+import Game from "../../game/Game";
 
 export default class UnitPreview {
     private isActive = false;
@@ -9,6 +10,11 @@ export default class UnitPreview {
     private unitHp = 50;
     private gridPosition: TPoint = { x: 0, y: 0 };
     private canPlace = false;
+    private game: Game;
+
+    constructor(game: Game) {
+        this.game = game;
+    }
 
     public activate(unitType: string, unitTypeId: number, hp: number): void {
         this.isActive = true;
@@ -90,7 +96,7 @@ export default class UnitPreview {
             type: this.unitType
         };
 
-        const unit = new Unit(unitData);
+        const unit = new Unit(unitData, this.game);
         this.deactivate();
         
         return unit;

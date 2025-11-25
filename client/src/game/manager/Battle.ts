@@ -1,6 +1,6 @@
-import Manager, { GameData } from "./Manager";
 import Store from "../../services/store/Store";
 import Server from "../../services/server/Server";
+import Manager, { GameData } from "./Manager";
 
 class Battle extends Manager {
     private store: Store;

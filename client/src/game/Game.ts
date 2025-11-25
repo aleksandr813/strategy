@@ -1,14 +1,16 @@
+import EasyStar from 'easystarjs';
+import Store from "../services/store/Store";
+import Server from "../services/server/Server";
 import GlobalMap from "./manager/GlobalMap";
 import Village from "./manager/Village";
 import Battle from "./manager/Battle";
-import Store from "../services/store/Store";
-import Server from "../services/server/Server";
 import Unit from './entities/Unit';
 import Building from './entities/Building';
 
 class Game {
     private store: Store;
     private server: Server;
+    private easyStar: EasyStar.js
     
     private units: Unit[] = [];
     private buildings: Building[] = [];
@@ -18,10 +20,12 @@ class Game {
     public battle: Battle;
 
     constructor(store: Store, server: Server) {
+        
         this.store = store;
         this.server = server;
+        this.easyStar = new EasyStar.js();
         
-        this.village = new Village(store, server, this.getGameData());
+        this.village = new Village(store, server, this.getGameData(), this.easyStar, this);
         this.globalMap = new GlobalMap(store, server, this.getGameData());
         this.battle = new Battle(store, server, this.getGameData());
     }
@@ -51,6 +55,10 @@ class Game {
             removeUnit: (unit: Unit) => this.removeUnit(unit),
             removeBuilding: (building: Building) => this.removeBuilding(building)
         };
+    }
+
+    public getEasyStar(): EasyStar.js {
+        return this.easyStar;
     }
 
     getVillage(): Village {
