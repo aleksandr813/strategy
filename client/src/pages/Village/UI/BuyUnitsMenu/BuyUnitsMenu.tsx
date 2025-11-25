@@ -1,9 +1,9 @@
 import React, { useEffect, useContext, useState } from 'react';
-import Button from '../../../../components/Button/Button';
-import { UIELEMENT, IBaseUIElement } from '../UI';
 import { GameContext } from '../../../../App';
 import { TUnitType } from '../../../../services/server/types';
 import Server from '../../../../services/server/Server';
+import Button from '../../../../components/Button/Button';
+import { UIELEMENT, IBaseUIElement } from '../UI';
 
 import './BuyUnitsMenu.scss'
 
