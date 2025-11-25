@@ -32,14 +32,14 @@ export default class Allocation {
             return;
         }
         console.log('selection rect', rect);
-        console.log('units positions', units.map(u => u.cords));
+        console.log('units positions', units.map(u => u.coords));
 
         const unitW = 1;
         const unitH = 1;
 
         units.forEach((unit) => {
-            const ux = unit.cords.x;
-            const uy = unit.cords.y;
+            const ux = unit.coords.x;
+            const uy = unit.coords.y;
 
             const intersects = !(
                 ux + unitW <= rect.x ||
@@ -77,8 +77,8 @@ export default class Allocation {
         const rectW = rect.width;
         const rectH = rect.height;
 
-        const unitLocalX = unit.cords.x;
-        const unitLocalY = unit.cords.y;
+        const unitLocalX = unit.coords.x;
+        const unitLocalY = unit.coords.y;
         const unitW = 1;
         const unitH = 1;
 

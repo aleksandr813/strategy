@@ -52,16 +52,16 @@ const VillageCanvas: React.FC = () => {
         drawRect(canvas, x, y, width * hpRatio, height, "#00FF00");
     };
 
-    const drawSprites = (canvas: Canvas, item: Unit | Building, cords: TPoint[]) => {
+    const drawSprites = (canvas: Canvas, item: Unit | Building, coords: TPoint[]) => {
         item.sprites.forEach((sprite, i) => {
             const spriteData = getSprite(sprite);
-            canvas.spriteFull(spritesImage, cords[i].x, cords[i].y, spriteData[0], spriteData[1], spriteData[2]);
+            canvas.spriteFull(spritesImage, coords[i].x, coords[i].y, spriteData[0], spriteData[1], spriteData[2]);
         });
     };
 
     const drawUnits = (canvas: Canvas, units: Unit[]) => {
         units.forEach((unit) => {
-            drawSprites(canvas, unit, [unit.cords]);
+            drawSprites(canvas, unit, [unit.coords]);
             
             let isSelected = unit.isSelected;
             if (allocation.isSelectingStatus) {
@@ -69,20 +69,20 @@ const VillageCanvas: React.FC = () => {
             }
                 
             if (isSelected) {
-                drawRect(canvas, unit.cords.x, unit.cords.y, 1, 1, 'rgba(0, 255, 0, 0.5)');
+                drawRect(canvas, unit.coords.x, unit.coords.y, 1, 1, 'rgba(0, 255, 0, 0.5)');
             }
 
             if (unit.hp < unit.maxHp) {
-                drawHPBar(canvas, unit.cords.x, unit.cords.y - 0.5, 0.8, 0.1, unit.hp, unit.maxHp);
+                drawHPBar(canvas, unit.coords.x, unit.coords.y - 0.5, 0.8, 0.1, unit.hp, unit.maxHp);
             }
         });
     };
 
     const drawBuildings = (canvas: Canvas, buildings: Building[]) => {
         buildings.forEach((building) => {
-            drawSprites(canvas, building, building.cords);
+            drawSprites(canvas, building, building.coords);
             if (building.hp < building.maxHp) {
-                drawHPBar(canvas, building.cords[0].x, building.cords[0].y - 0.5, building.size, 0.2, building.hp, building.maxHp);
+                drawHPBar(canvas, building.coords[0].x, building.coords[0].y - 0.5, building.size, 0.2, building.hp, building.maxHp);
             }
         });
     };
@@ -130,17 +130,18 @@ const VillageCanvas: React.FC = () => {
         drawSelectionRect(canvas);
         drawBuildingPreview(canvas);
         drawUnitPreview(canvas);
-        canvas.drawFPS(String(FPS), GREEN);
+        //canvas.drawFPS(String(FPS), GREEN);
         canvas.render();
     }
 
 
     const mouseDown = (x: number, y: number) => {
-        if (village.getScene().buildingPreview.isActiveStatus() || village.getScene().unitPreview.isActiveStatus()) return;
-        
         mouseDownPosition = { x, y };
         mouseDownTime = Date.now();
         wasDragging = false;
+        
+        if (village.getScene().buildingPreview.isActiveStatus() || village.getScene().unitPreview.isActiveStatus()) return;
+        
         allocation.start(x, y);
     };
 
@@ -164,6 +165,24 @@ const VillageCanvas: React.FC = () => {
         }
     };
 
+    const handleClick = async (x: number, y: number) => {
+        if (!village) return;
+        
+        const { buildingPreview, unitPreview } = village.getScene();
+
+        if (buildingPreview.isActiveStatus()) {
+            village.handleBuildingPlacement(game['server']);
+        } else if (unitPreview.isActiveStatus()) {
+            village.handleUnitPlacement(x, y, game['server']);
+        } else {
+            village.handleBuildingClick(x, y);
+            
+            if (!allocation.isSelectingStatus) {
+                village.moveUnits({ x, y }, game['server']);
+            }
+        }
+    };
+
     const mouseUp = (x: number, y: number) => {
         if (!village || !mouseDownPosition) return;
         const distance = Math.hypot(x - mouseDownPosition.x, y - mouseDownPosition.y);
@@ -173,8 +192,11 @@ const VillageCanvas: React.FC = () => {
             wasDragging = true;
             allocation.end(village.getScene().units);
         } else {
+            wasDragging = false;
             allocation.cancel();
+            handleClick(x, y);
         }
+        
         mouseDownPosition = null;
         mouseDownTime = 0;
     };
@@ -296,11 +318,11 @@ const VillageCanvas: React.FC = () => {
 
         return () => {
             if (WINDOW.WIDTH !== INITIAL_WINDOW_WIDTH) {
-            WINDOW.WIDTH = INITIAL_WINDOW_WIDTH;
-            WINDOW.HEIGHT = INITIAL_WINDOW_HEIGHT;
-            WINDOW.LEFT = INITIAL_WINDOW_LEFT;
-            WINDOW.TOP = INITIAL_WINDOW_TOP;
-        }
+                WINDOW.WIDTH = INITIAL_WINDOW_WIDTH;
+                WINDOW.HEIGHT = INITIAL_WINDOW_HEIGHT;
+                WINDOW.LEFT = INITIAL_WINDOW_LEFT;
+                WINDOW.TOP = INITIAL_WINDOW_TOP;
+            }
 
             village?.destructor();
             canvas?.destructor();

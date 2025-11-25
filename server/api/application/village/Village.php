@@ -2,10 +2,12 @@
 
 class Village {
     private $db;
+    private $config;
 
     public function __construct($db)
     {
         $this->db = $db;
+        $this->config = require('config.php');
     }
 
     public function getIncome($userId) {
@@ -22,14 +24,14 @@ class Village {
         $now = time();
         $diffSeconds = $now - $lastIncome;
 
-        if ($diffSeconds < 10) {
+        if ($diffSeconds < $this->config['game']['income']['interval']) {
             return [
                 'money' => $this->db->getMoney($userId)->money
             ];
         }
 
         $currentMoney = $this->db->getMoney($userId);
-        $income = $mine->level * 10;
+        $income = $mine->level * $this->config['game']['income']['incomePerLevel'];
         $newMoney = $currentMoney->money + $income;
 
         $this->db->updateMoney($userId, $newMoney);
@@ -77,8 +79,10 @@ class Village {
             return ["error" => 301];
         }
 
-        if ($building->id === '1' || $building->id === '2') {
-            return ['error' => 307];
+        for ($i = 0; $i < count($this->config['game']['prohibitedBuildings']); $i++) {
+            if ($this->config['game']['prohibitedBuildings'][$i] === $typeId) {
+                return ['error' => 307];
+            }
         }
         
         if ($user->money < $building->price) {
@@ -112,7 +116,7 @@ class Village {
         }
 
         $level = $this->db->getLevel($buildingId, $village->id);
-        if ($level->level >= 3) {
+        if ($level->level >= $this->config['game']['maxBuildingLevel']) {
             return ['error' => 312];
         }
 
@@ -146,8 +150,10 @@ class Village {
             return ['error' => 300];
         }
 
-        if ($building->typeId === '1' || $building->typeId === '2') {
-            return ['error' => 307];
+        for ($i = 0; $i < count($this->config['game']['prohibitedBuildings']); $i++) {
+            if ($this->config['game']['prohibitedBuildings'][$i] === $building->typeId) {
+                return ['error' => 307];
+            }
         }
 
         $result = $this->db->deleteBuilding($buildingId, $village->id);

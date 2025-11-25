@@ -5,7 +5,7 @@ export default class Building {
     id: number;
     typeId: number;
     type: string;
-    cords:TPoint[] = [];
+    coords:TPoint[] = [];
     hp: number;
     maxHp: number;
     level: number;
@@ -35,7 +35,7 @@ export default class Building {
         const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
         this.sprites = spriteSet;
 
-        this.cords = [
+        this.coords = [
             // Верхний Левый тайл здания на карте
             { x: Number(x), y: Number(y) },
             // Верхний Правый

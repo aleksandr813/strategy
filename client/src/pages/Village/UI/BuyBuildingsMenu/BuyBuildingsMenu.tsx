@@ -30,7 +30,7 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
     }
 
     const buyBuilding = async (building: TBuildingType) => {
-        console.log(`Покупка здания: ${building.name}`);
+        console.log(`Покупка здания: ${building.type}`);
         village.getScene().unitPreview.deactivate();
         village.getScene().buildingPreview.activate(building.id, building.hp);
         setUIElement(UIELEMENT.NULL);
@@ -54,7 +54,7 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
                         buildingTypes.map((building) => (
                             <div key={building.id} className="buy-menu-item">
                                 <div className="building-info">
-                                    <span className="building-name">{building.name}</span>
+                                    <span className="building-name">{building.type}</span>
                                     <span className="building-details">
                                         HP: {building.hp} | Цена: {building.price}
                                     </span>
