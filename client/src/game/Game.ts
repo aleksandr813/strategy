@@ -6,6 +6,7 @@ import Store from "../services/store/Store";
 import Server from "../services/server/Server";
 import Unit from './entities/Unit';
 import Building from './entities/Building';
+import GAMECONFIG from './gameConfig';
 
 class Game {
     private store: Store;
@@ -14,6 +15,8 @@ class Game {
     
     private units: Unit[] = [];
     private buildings: Building[] = [];
+    
+    private incomeInterval: NodeJS.Timer | null = null;
     
     public village: Village;
     public globalMap: GlobalMap;
@@ -28,6 +31,20 @@ class Game {
         this.village = new Village(store, server, this.getGameData(), this.easyStar, this);
         this.globalMap = new GlobalMap(store, server, this.getGameData());
         this.battle = new Battle(store, server, this.getGameData());
+        
+        this.startIncomeUpdate();
+    }
+
+    private startIncomeUpdate(): void {
+        this.updateIncome();
+        
+        this.incomeInterval = setInterval(() => {
+            this.updateIncome();
+        }, GAMECONFIG.INCOME_INTERVAL);
+    }
+
+    private async updateIncome(): Promise<void> {
+        await this.server.getIncome();
     }
 
     private removeUnit(unit: Unit): void {
@@ -82,6 +99,11 @@ class Game {
     }
 
     destructor(): void {
+        if (this.incomeInterval) {
+            clearInterval(this.incomeInterval);
+            this.incomeInterval = null;
+        }
+        
         this.village.destructor();
         this.globalMap.destructor();
         this.battle.destructor();

@@ -7,6 +7,7 @@ class Store {
     user: TUser | null = null;
     messages: TMessages = [];
     chatHash: string = 'empty chat hash';
+    money: number = 0;
 
     setToken(token: string): void {
         localStorage.setItem(TOKEN, token);
@@ -56,6 +57,12 @@ class Store {
         this.chatHash = hash;
     }
 
+    setMoney(money:number): void {
+        this.money = money;
+    }
+    getMoney(): number {
+        return this.money;
+    }
 
 }
 
