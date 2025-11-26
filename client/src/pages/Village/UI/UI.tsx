@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import BuyBuildingsMenu from './BuyBuildingsMenu/BuyBuildingsMenu';
 import BuyUnitsMenu from './BuyUnitsMenu/BuyUnitsMenu';
 import BuildingMenu from './BuildingMenu/BuildingMenu';
+import Store from '../../../services/store/Store';
 
 import "./UI.scss";
 import Panel from './Panel/Panel';
 
 export enum UIELEMENT {
-    //CHAT,
     SETTING,
     BUYUNITSMENU,
     BUYBUILDINGSMENU,
@@ -18,17 +18,19 @@ export interface IBaseUIElement {
     setUIElement: (name: UIELEMENT) => void
 }
 
-const UI: React.FC = () => {
+interface UIProps {
+    store: Store;
+}
 
+const UI: React.FC<UIProps> = ({ store }) => {
     const [uiElement, setUIElement] = useState<UIELEMENT>(UIELEMENT.NULL);
 
-    
     return (
         <div className='UI'>
             <BuildingMenu></BuildingMenu>
             {uiElement === UIELEMENT.BUYBUILDINGSMENU && <BuyBuildingsMenu setUIElement={setUIElement} />}
             {uiElement === UIELEMENT.BUYUNITSMENU && <BuyUnitsMenu setUIElement={setUIElement} />}
-            <Panel setUIElement={setUIElement}/>
+            <Panel setUIElement={setUIElement} store={store} />
         </div>
     );
 };
