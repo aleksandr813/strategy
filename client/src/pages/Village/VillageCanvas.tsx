@@ -202,7 +202,31 @@ const VillageCanvas: React.FC = () => {
     };
 
     const mouseClick = async (x: number, y: number) => {
-        // Вы думали тут что-то будет? Вы ошибались
+        if (!village || wasDragging) return;
+        
+        const { buildingPreview, unitPreview, units } = village.getScene();
+
+        if (buildingPreview.isActiveStatus()) {
+            village.handleBuildingPlacement(game['server']);
+        } else if (unitPreview.isActiveStatus()) {
+            village.handleUnitPlacement(x, y, game['server']);
+        } else {
+            const clickedUnit = village.handleUnitClick(x, y);
+            if (clickedUnit){
+                return;
+            }
+            
+            village.handleBuildingClick(x, y);
+        }
+        if (!allocation.isSelectingStatus) {
+            const hasSelectedUnits = units.some(u => u.isSelected);
+
+            if (hasSelectedUnits) {
+                village.moveUnits({ x, y }, game['server']);
+            } else {
+                village.selectUnit(null);
+            }
+        }
     };
 
     const mouseRightClickDown = (x: number, y: number) => {
