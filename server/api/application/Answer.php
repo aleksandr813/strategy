@@ -24,6 +24,8 @@ class Answer
         '501' => 'Failed to buy unit',
         '503' => 'Failed to delete unit',
         '504' => 'Units movement error',
+        '600' => 'An army cannot be empty',
+        '601' => 'Army dispatch error',
         '705' => 'User is not found',
         '1001' => 'Is it unique login?',
         '1002' => 'Wrong login or password',
