@@ -1,13 +1,13 @@
 import React, { useEffect, useContext } from 'react';
-import GAMECONFIG from '../../game/gameConfig';
-import { Canvas, useCanvas } from '../../services/canvas';
-import useSprites from './hooks/useSprites';
-import Unit from '../../game/entities/Unit';
-import Building from '../../game/entities/Building';
-import Allocation from '../../services/canvas/Allocation';
 import { GameContext } from '../../App';
 import { TPoint } from '../../config';
 import CONFIG from '../../config';
+import GAMECONFIG from '../../game/gameConfig';
+import { Canvas, useCanvas } from '../../services/canvas';
+import Allocation from '../../services/canvas/Allocation';
+import useSprites from '../../services/hooks/useSprites';
+import Unit from '../../game/entities/Unit';
+import Building from '../../game/entities/Building';
 import villageBackground from '../../assets/img/background/villageBackground.png';
 
 import "./Village.scss";
@@ -202,7 +202,31 @@ const VillageCanvas: React.FC = () => {
     };
 
     const mouseClick = async (x: number, y: number) => {
-        // Вы думали тут что-то будет? Вы ошибались
+        if (!village || wasDragging) return;
+        
+        const { buildingPreview, unitPreview, units } = village.getScene();
+
+        if (buildingPreview.isActiveStatus()) {
+            village.handleBuildingPlacement(game['server']);
+        } else if (unitPreview.isActiveStatus()) {
+            village.handleUnitPlacement(x, y, game['server']);
+        } else {
+            const clickedUnit = village.handleUnitClick(x, y);
+            if (clickedUnit){
+                return;
+            }
+            
+            village.handleBuildingClick(x, y);
+        }
+        if (!allocation.isSelectingStatus) {
+            const hasSelectedUnits = units.some(u => u.isSelected);
+
+            if (hasSelectedUnits) {
+                village.moveUnits({ x, y }, game['server']);
+            } else {
+                village.selectUnit(null);
+            }
+        }
     };
 
     const mouseRightClickDown = (x: number, y: number) => {
@@ -301,7 +325,7 @@ const VillageCanvas: React.FC = () => {
             }
 
             village?.destructor();
-            canvas?.destructor();
+            //canvas?.destructor();
             canvas = null;
         };
     }, []);

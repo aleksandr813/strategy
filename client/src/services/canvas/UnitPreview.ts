@@ -1,7 +1,7 @@
 import { TPoint } from "../../config";
+import { TUnit } from "../../services/server/types";
 import Unit from "../../game/entities/Unit";
 import Game from "../../game/Game";
-import { TUnit } from "../../services/server/types";
 
 export default class UnitPreview {
     private isActive = false;

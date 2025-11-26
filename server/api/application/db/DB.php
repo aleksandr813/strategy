@@ -114,6 +114,7 @@ class DB
                 u.y AS y,
                 u.level AS level,
                 u.current_hp AS currentHp,
+                u.on_a_crusade AS onAСrusade,
                 ut.type AS type
             FROM units AS u
             INNER JOIN unit_types AS ut
@@ -242,7 +243,7 @@ class DB
     }
 
     public function getVillage($userId) {
-        return $this->query("SELECT id, last_income_datetime FROM villages WHERE user_id = ?", [$userId]);
+        return $this->query("SELECT id, x, y, last_income_datetime FROM villages WHERE user_id = ?", [$userId]);
     }
 
     public function getBuildingType($buildingType) {
@@ -289,7 +290,7 @@ class DB
 
     public function getUnitTypes()
     {
-        return $this->queryAll("SELECT id, type, hp, price FROM unit_types");
+        return $this->queryAll("SELECT id, type, hp, price, unlock_level FROM unit_types");
     }
 
 
@@ -326,5 +327,31 @@ class DB
             "UPDATE villages SET last_income_datetime = ? WHERE id = ?",
             [$now, $villageId]
         );
+    }
+
+    public function sendArmy($userId, $targetX, $targetY, $targetId, $units) {
+        $army = [];
+        foreach($units as $unit) {
+            $army[] = $unit['id'];
+        }
+
+        $armyString = implode(',', $army);
+
+        return $this->execute("INSERT INTO army (userId, x, y, attackId, units) VALUES (?, ?, ?, ?, ?)",
+        [$userId, $targetX, $targetY, $targetId, $armyString]);
+    }
+
+    public function unitsOnACrusade($villageId, $units) {
+        $army = [];
+        foreach($units as $unit) {
+            $army[] = $unit['id'];
+        }
+
+        $placeholder = implode(',', array_fill(0, count($army), '?'));
+
+        $params = array_merge($army, [$villageId]);
+
+        return $this->execute("UPDATE units SET on_a_crusade = 1 WHERE id IN ($placeholder) AND village_id = ?",
+        $params);
     }
 }
