@@ -42,7 +42,7 @@ const BuyUnitsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
 
     useEffect(() => {
         (async () => {
-            const level = village.getBuildingLevel(BuildingTypeID.Kazarma);
+            const level = village.getBarracksLevel();
             setBarracksLevel(level);
             setUnitTypes(await loadUnitTypes());
         })();

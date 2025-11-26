@@ -39,12 +39,12 @@ class Village extends Manager {
         this.selectedBuilding = building;
     }
 
-    public getBuildingLevel(buildingTypeId: BuildingTypeID): number {
+    public getBarracksLevel(): number {
         const buildings = this.gameData.getBuildings();
-        const building = buildings.find(
-            (b) => b.typeId === buildingTypeId
+        const barracks = buildings.find(
+            (b) => b.typeId === BuildingTypeID.Kazarma
         );
-        return building ? building.level : 0;
+        return barracks ? barracks.level : 0;
     }
     
     public selectUnit(unit: Unit | null): void {
