@@ -114,7 +114,8 @@ class DB
                 u.y AS y,
                 u.level AS level,
                 u.current_hp AS currentHp,
-                ut.type AS type
+                ut.type AS type,
+                ut.unlock_level AS unlockLevel
             FROM units AS u
             INNER JOIN unit_types AS ut
             ON u.type_id = ut.id
@@ -196,13 +197,9 @@ class DB
 
     
 
-    public function deleteUnit($unitId, $villageId)
+    public function deleteUnit($unitId, $userId)
     {
-        return $this->execute("
-            DELETE FROM units 
-            WHERE id = ? AND village_id = ?", 
-            [$unitId, $villageId]
-        );
+        return $this->execute("DELETE FROM units WHERE id = ? AND user_id = ?", [$unitId, $userId]);
     }
 
     public function getBuildings($userId)
@@ -232,21 +229,12 @@ class DB
         );
     }
 
-    public function getBuilding($buildingId, $villageId) {
-        return $this->query(
-            "SELECT id, type_id  AS typeId
-            FROM buildings
-            WHERE id = ? AND village_id = ?",
-            [$buildingId, $villageId]
-        );
-    }
-
     public function getVillage($userId) {
         return $this->query("SELECT id, last_income_datetime FROM villages WHERE user_id = ?", [$userId]);
     }
 
     public function getBuildingType($buildingType) {
-        return $this->query("SELECT id, hp, price FROM building_types WHERE id = ?", [$buildingType]);
+        return $this->query("SELECT hp, price FROM building_types WHERE id = ?", [$buildingType]);
     }
 
     public function getUnitType($unitType) {
@@ -273,23 +261,25 @@ class DB
         );
     }
 
-    public function deleteBuilding($buildingId, $villageId)
+    public function deleteBuilding($buildingId, $userId)
     {
         return $this->execute(
-            "DELETE FROM buildings
-            WHERE id = ? AND village_id = ?",
-            [$buildingId, $villageId]
+            "
+            DELETE FROM buildings 
+            WHERE id = ? 
+            AND village_id = (SELECT id FROM villages WHERE user_id = ?)",
+            [$buildingId, $userId]
         );
     }
 
     public function getBuildingTypes()
     {
-        return $this->queryAll("SELECT id, type, hp, price FROM building_types");
+        return $this->queryAll("SELECT id, type, name, hp, price FROM building_types");
     }
 
     public function getUnitTypes()
     {
-        return $this->queryAll("SELECT id, type, hp, price FROM unit_types");
+        return $this->queryAll("SELECT id, type, name, hp, price, unlock_level FROM unit_types");
     }
 
 

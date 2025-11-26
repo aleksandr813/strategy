@@ -93,7 +93,8 @@ export default class UnitPreview {
             y: this.gridPosition.y,
             currentHp: this.unitHp,
             level: 1,
-            type: this.unitType
+            type: this.unitType,
+            unlockLevel: 0
         };
 
         const unit = new Unit(unitData, this.game);
