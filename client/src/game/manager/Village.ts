@@ -20,6 +20,7 @@ class Village extends Manager {
     private server: Server;
     private game: Game;
     public selectedBuilding: Building | null = null;
+    public selectedUnit: Unit | null = null;
     public easyStar: EasyStar.js;
 
     constructor(store: Store, server: Server, gameData: GameData, easyStar: EasyStar.js, game: Game) {
@@ -44,6 +45,14 @@ class Village extends Manager {
             (b) => b.typeId === buildingTypeId
         );
         return building ? building.level : 0;
+    }
+    
+    public selectUnit(unit: Unit | null): void {
+        this.gameData.getUnits().forEach(u => u.updateSelection(false));
+        if (unit){
+            unit.updateSelection(true)
+        }
+        this.selectedUnit = unit;
     }
 
     public removeBuilding(building: Building): void {
@@ -104,6 +113,21 @@ class Village extends Manager {
             clickedBuilding.takeDamage(10);
         }
         this.selectBuilding(clickedBuilding);
+    }
+
+    public handleUnitClick(x: number, y: number): Unit | null {
+        const gridX = Math.floor(x), gridY = Math.floor(y);
+        const clickedUnit = this.gameData.getUnits().find(u => {
+            const [ux, uy] = [u.coords.x, u.coords.y];
+            return gridX >= ux && gridX < ux + 1 && gridY >= uy && gridY < uy + 1; 
+        }) || null;
+
+        if (clickedUnit) {
+            console.log("Выбранный юнит", clickedUnit);
+            this.selectUnit(clickedUnit);
+        }
+
+        return clickedUnit;
     }
 
     async loadBuildings(): Promise<void> {
