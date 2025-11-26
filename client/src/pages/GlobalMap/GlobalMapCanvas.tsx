@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import CONFIG from '../../config';
 import { Canvas, useCanvas } from '../../services/canvas';
-import useSprites from '../../services/hooks/useSprites';
+import useSprites from '../../hooks/useSprites';
 import Unit from '../../game/entities/Unit';
 import Building from '../../game/entities/Building';
 import { GameContext } from '../../App';

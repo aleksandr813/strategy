@@ -6,7 +6,6 @@ import { TBuildingType, TBuilding } from './types';
 import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 import Unit from '../../game/entities/Unit';
-import Unit from '../../game/entities/Unit';
 
 const { HOST, CHAT_TIMESTAMP } = CONFIG;
 
@@ -199,9 +198,7 @@ class Server {
     }
 
     async buyUnit(typeId: number, x: number, y: number): Promise<number | null> {
-    async buyUnit(typeId: number, x: number, y: number): Promise<number | null> {
         console.log('buyUnit called with', { typeId, x, y });
-        const result = await this.request<number>('buyUnit', {
         const result = await this.request<number>('buyUnit', {
             typeId: typeId.toString(),
             x: x.toString(),
@@ -213,16 +210,11 @@ class Server {
 
     async deleteBuilding(buildingId: number): Promise<boolean | null> {
         const response = await this.request<boolean>('deleteBuilding', {
-    async deleteBuilding(buildingId: number): Promise<boolean | null> {
-        const response = await this.request<boolean>('deleteBuilding', {
             id: buildingId.toString(),
         });
         return response;
-        return response;
     }
 
-    async upgradeBuilding(buildingId: number, typeId: number): Promise<boolean | null> {
-        const response = await this.request<boolean>('upgradeBuilding', {
     async upgradeBuilding(buildingId: number, typeId: number): Promise<boolean | null> {
         const response = await this.request<boolean>('upgradeBuilding', {
             id: buildingId.toString(),

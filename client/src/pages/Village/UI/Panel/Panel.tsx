@@ -1,6 +1,8 @@
 import React from 'react';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
+import { useStoreMoney } from '../../../../hooks/useStore';
+import Store from '../../../../services/store/Store'; // поправьте путь
 
 import "./Panel.scss";
 
@@ -16,12 +18,13 @@ import rectangle from "../../../../assets/img/panel/rectangle.png";
 import chat from "../../../../assets/img/panel/chat.png";
 import icon from "../../../../assets/img/panel/icon.png";
 
+interface PanelProps extends IBaseUIElement {
+    store: Store;
+}
 
-
-
-const Panel: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
-
-    const { setUIElement } = props;
+const Panel: React.FC<PanelProps> = (props: PanelProps) => {
+    const { setUIElement, store } = props;
+    const money = useStoreMoney(store);
 
     const buildingsHandler = () => setUIElement(UIELEMENT.BUYBUILDINGSMENU);
     const unitsHandler = () => setUIElement(UIELEMENT.BUYUNITSMENU);    
@@ -30,7 +33,6 @@ const Panel: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
     const lidersHandler = () => setUIElement(UIELEMENT.NULL);
     const villageHandler = () => setUIElement(UIELEMENT.NULL);
     const chatHandler = () => setUIElement(UIELEMENT.NULL);
-
 
     return (
         <div className='Panel'>
@@ -71,6 +73,7 @@ const Panel: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
                     </div>
                     <div className='param'>
                         <img src={moneyIcon} className='money' />
+                        <span className='money-value'>{money}</span>
                         <img src={rectangle} className='rectangle' />
                         <img src={chat} className='chat-panel' />
                     </div>
@@ -92,4 +95,5 @@ const Panel: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
         </div>
     )
 }
+
 export default Panel;
