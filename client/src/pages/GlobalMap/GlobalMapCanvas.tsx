@@ -36,10 +36,10 @@ const GlobalMapCanvas: React.FC = () => {
     let middleMouseStartScreenPosition: TPoint | null = null;
     let windowStartPosition: { LEFT: number, TOP: number } | null = null;
 
-    const drawSprites = (canvas: Canvas, item: Unit | Building, cords: TPoint[]) => {
+    const drawSprites = (canvas: Canvas, item: Unit | Building, coords: TPoint[]) => {
         item.sprites.forEach((sprite, i) => {
             const spriteData = getSprite(sprite);
-            canvas.spriteFull(spritesImage, cords[i].x, cords[i].y, spriteData[0], spriteData[1], spriteData[2]);
+            canvas.spriteFull(spritesImage, coords[i].x, coords[i].y, spriteData[0], spriteData[1], spriteData[2]);
         });
     };
 
@@ -156,7 +156,7 @@ const GlobalMapCanvas: React.FC = () => {
         }
 
             globalMap?.destructor();
-            canvas?.destructor();
+            //canvas?.destructor();
             canvas = null;
         };
     }, []);

@@ -301,7 +301,7 @@ const VillageCanvas: React.FC = () => {
             }
 
             village?.destructor();
-            canvas?.destructor();
+            //canvas?.destructor();
             canvas = null;
         };
     }, []);
