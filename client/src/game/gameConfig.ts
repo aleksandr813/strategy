@@ -41,7 +41,7 @@ const GAMECONFIG = {
     GRID_WIDTH: 87,
     GRID_HEIGHT: 29,
     MOVE_INTERVAL: 100,
-    INCOME_INTERVAL: 10000, // 10 секунд
+    INCOME_INTERVAL: 1000, // 1 секунда
 };
 
 
