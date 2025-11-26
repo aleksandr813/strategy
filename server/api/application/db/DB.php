@@ -243,7 +243,7 @@ class DB
     }
 
     public function getVillage($userId) {
-        return $this->query("SELECT id, last_income_datetime FROM villages WHERE user_id = ?", [$userId]);
+        return $this->query("SELECT id, x, y, last_income_datetime FROM villages WHERE user_id = ?", [$userId]);
     }
 
     public function getBuildingType($buildingType) {
@@ -290,7 +290,7 @@ class DB
 
     public function getUnitTypes()
     {
-        return $this->queryAll("SELECT id, type, hp, price FROM unit_types");
+        return $this->queryAll("SELECT id, type, hp, price, unlock_level FROM unit_types");
     }
 
 
@@ -329,45 +329,29 @@ class DB
         );
     }
 
-    // public function sendArmy($villageId, $units, $target) {
-    //     $army = [];
-    //     $unitIdArr = [];
-    //     $unitCases = [];
-
-    //     foreach ($units as $unit) {
-    //         $unitId = (int) $unit['id'];
-    //         $unitIdArr[] = $unitId;
-    //         $unitCases[] = "WHEN ? THEN 1";
-    //     }
-
-    //     $unitIdArrStr = implode(',', $unitIdArr);
-    //     $unitCasesStr = implode(' ', $unitCases);
-
-    //     return $this->execute(
-    //         "UPDATE units SET
-    //         in_army = CASE id $unitCasesStr END
-    //         WHERE id IN ($unitIdArrStr) AND village_id = ?",
-    //         [$villageId]
-    //     );
-    // }
-
-    public function sendArmy($villageId, $units, $target) {
-        $params = [];
-        $placeholder = [];
-
-        foreach ($units as $unit) {
-            $unitId = (int) $unit['id'];
-            $placeholder[] = '(?, ?, ?)';
-            $params[] = $villageId;
-            $params[] = $unitId;
-            $params[] = $target;
+    public function sendArmy($userId, $targetX, $targetY, $targetId, $units) {
+        $army = [];
+        foreach($units as $unit) {
+            $army[] = $unit['id'];
         }
 
-        $placeholderStr = implode(',', $placeholder);
+        $armyString = implode(',', $army);
 
-        return $this->execute(
-            "INSERT INTO army (attacked_village_id, unit_id, target_village_id) VALUES ($placeholderStr)", 
-            $params
-        );
+        return $this->execute("INSERT INTO army (userId, x, y, attackId, units) VALUES (?, ?, ?, ?, ?)",
+        [$userId, $targetX, $targetY, $targetId, $armyString]);
+    }
+
+    public function unitsOnACrusade($villageId, $units) {
+        $army = [];
+        foreach($units as $unit) {
+            $army[] = $unit['id'];
+        }
+
+        $placeholder = implode(',', array_fill(0, count($army), '?'));
+
+        $params = array_merge($army, [$villageId]);
+
+        return $this->execute("UPDATE units SET on_a_crusade = 1 WHERE id IN ($placeholder) AND village_id = ?",
+        $params);
     }
 }

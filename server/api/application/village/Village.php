@@ -297,6 +297,10 @@ class Village
     }
 
     public function sendArmy($userId, $units, $target) {
+        if (count($units) === 0) {
+            return ['error' => 600];
+        }
+
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 315];
@@ -307,8 +311,13 @@ class Village
             return ['error' => 315];
         }
 
-        $result = $this->db->sendArmy($village->id, $units, $target);
-        if (!$result) {
+        $army = $this->db->sendArmy($userId, $targetVillage->x, $targetVillage->y, $target, $units);
+        if (!$army) {
+            return ['error' => 601];
+        }
+
+        $crusade = $this->db->unitsOnACrusade($village->id, $units);
+        if (!$crusade) {
             return ['error'];
         }
 
