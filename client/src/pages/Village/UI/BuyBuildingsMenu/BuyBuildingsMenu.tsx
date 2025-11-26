@@ -1,10 +1,10 @@
 import React, { useEffect, useContext, useState } from 'react';
-import Button from '../../../../components/Button/Button';
-import { UIELEMENT, IBaseUIElement } from '../UI';
+import GAMECONFIG from '../../../../game/gameConfig';
 import { GameContext } from '../../../../App';
 import { TBuildingType } from '../../../../services/server/types';
 import Server from '../../../../services/server/Server';
-import CONFIG from '../../../../config'
+import Button from '../../../../components/Button/Button';
+import { UIELEMENT, IBaseUIElement } from '../UI';
 
 import './BuyBuildingsMenu.scss'
 
@@ -21,7 +21,7 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
         const server = new Server(game['store']);
         const types = await server.getBuildingTypes();
 
-        const excludedTypes = CONFIG.EXCLUDED_BUILDINGS;
+        const excludedTypes = GAMECONFIG.EXCLUDED_BUILDINGS;
     
         const filteredTypes = types.filter(type => 
             !excludedTypes.includes(type.type)
@@ -30,7 +30,7 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
     }
 
     const buyBuilding = async (building: TBuildingType) => {
-        console.log(`Покупка здания: ${building.name}`);
+        console.log(`Покупка здания: ${building.type}`);
         village.getScene().unitPreview.deactivate();
         village.getScene().buildingPreview.activate(building.id, building.hp);
         setUIElement(UIELEMENT.NULL);
@@ -54,7 +54,7 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
                         buildingTypes.map((building) => (
                             <div key={building.id} className="buy-menu-item">
                                 <div className="building-info">
-                                    <span className="building-name">{building.name}</span>
+                                    <span className="building-name">{building.type}</span>
                                     <span className="building-details">
                                         HP: {building.hp} | Цена: {building.price}
                                     </span>

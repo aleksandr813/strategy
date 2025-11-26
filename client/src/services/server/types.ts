@@ -36,7 +36,6 @@ export interface TMessagesResponse {
 export type TBuildingType = {
     id: number;
     type: string;
-    name: string;
     hp: number;
     price: number;
     sprite: number;
@@ -65,7 +64,6 @@ export enum BuildingTypeID {
 export type TUnitType = {
     id: number;
     type: string;
-    name: string;
     hp: number;
     price: number;
 }
@@ -79,18 +77,4 @@ export type TUnit = {
     level: number;
     currentHp: number;
     type: string;
-}
-
-export enum UnitTypeID {
-    Swordman = 1,
-    Spearman = 2,
-    Berserk = 3,
-    Paladin = 4,
-    Guardian = 5,
-    Archer = 6,
-    Crossbowman = 7,
-    Knight = 9,
-    Sorcerer = 10,
-    Summoner = 11,
-    Golem = 12,
 }

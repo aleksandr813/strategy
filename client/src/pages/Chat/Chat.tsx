@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useMemo, useRef, KeyboardEvent } from 'react';
-import { ServerContext, StoreContext } from '../../App';
 import { TMessages } from '../../services/server/types';
+import { ServerContext, StoreContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 
