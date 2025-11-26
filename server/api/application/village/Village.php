@@ -295,4 +295,32 @@ class Village
 
         return true;
     }
+
+    public function sendArmy($userId, $units, $target) {
+        if (count($units) === 0) {
+            return ['error' => 600];
+        }
+
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 315];
+        }
+
+        $targetVillage = $this->db->getVillage($target);
+        if (!$targetVillage) {
+            return ['error' => 315];
+        }
+
+        $army = $this->db->sendArmy($userId, $targetVillage->x, $targetVillage->y, $target, $units);
+        if (!$army) {
+            return ['error' => 601];
+        }
+
+        $crusade = $this->db->unitsOnACrusade($village->id, $units);
+        if (!$crusade) {
+            return ['error'];
+        }
+
+        return true;
+    }
 }

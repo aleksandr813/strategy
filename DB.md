@@ -88,4 +88,15 @@
 |-|-|-|
 | id | integer | primary key |
 | name | varchar(100) | not null |
-| value | text | not null
+| value | text | not null |
+
+
+**army**
+| name | type | comment |
+|-|-|-|
+| army | integer | primary key |
+| userId | integer | not null |
+| x | integer | not null |
+| y | integer | not null |
+| attackId | integer | not null |
+| units | text | not null |
