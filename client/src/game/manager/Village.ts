@@ -109,7 +109,7 @@ class Village extends Manager {
     public handleUnitClick(x: number, y: number): Unit | null {
         const gridX = Math.floor(x), gridY = Math.floor(y);
         const clickedUnit = this.gameData.getUnits().find(u => {
-            const [ux, uy] = [u.cords.x, u.cords.y];
+            const [ux, uy] = [u.coords.x, u.coords.y];
             return gridX >= ux && gridX < ux + 1 && gridY >= uy && gridY < uy + 1; 
         }) || null;
 

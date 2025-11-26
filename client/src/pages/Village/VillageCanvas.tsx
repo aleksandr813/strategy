@@ -222,7 +222,7 @@ const VillageCanvas: React.FC = () => {
             const hasSelectedUnits = units.some(u => u.isSelected);
 
             if (hasSelectedUnits) {
-                village.moveUnits({ x, y });
+                village.moveUnits({ x, y }, game['server']);
             } else {
                 village.selectUnit(null);
             }
