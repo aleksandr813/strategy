@@ -244,6 +244,16 @@ class Server {
 
         return response !== null ? response : false;
     }
+
+    async getIncome(): Promise<void> {
+        console.log('getIncome called');
+        const result = await this.request<{ money: number }>('getIncome');
+        console.log('getIncome result:', result);
+        
+        if (result && typeof result === 'object' && 'money' in result) {
+            this.store.setMoney(result.money);
+        }
+    }
 }
 
 export default Server;

@@ -21,7 +21,7 @@ const CONFIG = {
     //udsu 
     //HOST: 'http://strategy/api',
     //HOST: 'http://server/api',
-    HOST: 'http://strategy1/api',
+    HOST: 'http://strategy/server/api',
 
     CHAT_TIMESTAMP: 200, //ms
 
