@@ -42,7 +42,7 @@ const Village: React.FC<IBasePage> = (props: IBasePage) => {
             <div>
                 <VillageCanvas />
             </div>
-            <UI />
+            <UI store={store} />
         </div>
     );
 };
