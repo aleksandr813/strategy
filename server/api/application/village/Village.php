@@ -190,6 +190,7 @@ class Village
             $unit['x'] = (int)$unit['x'];
             $unit['y'] = (int)$unit['y'];
             $unit['level'] = (int)$unit['level'];
+            $unit['speed'] = (float)$unit['speed'];
             $unit['currentHp'] = (int)$unit['currentHp'];
 
             $filteredUnits[] = $unit;
