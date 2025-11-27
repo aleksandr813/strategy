@@ -115,7 +115,8 @@ class DB
                 u.level AS level,
                 u.current_hp AS currentHp,
                 u.on_a_crusade AS onAСrusade,
-                ut.type AS type
+                ut.type AS type,
+                ut.speed AS speed
             FROM units AS u
             INNER JOIN unit_types AS ut
             ON u.type_id = ut.id
