@@ -37,17 +37,23 @@ const BuyUnitsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
     };
 
     const isUnitAvailable = (unit: TUnitType): boolean => {
+        console.log("ТИПЫ ЮНИТОВ",unit);
+        console.log("УРОВЕНЬ КАЗАРМЫ В СРАВНЕНИИ", barracksLevel);
+        console.log("УРОВЕНЬ ЮНИТА В СРАВНЕНИИ:", unit.unlockLevel);
+        console.log("СРАВНЕНИЕ", barracksLevel >= unit.unlockLevel)
         return barracksLevel >= unit.unlockLevel;
     };
 
     useEffect(() => {
         (async () => {
-            const level = village.getBarracksLevel();
+            await village.loadBuildings();
+            const level = village.getBarracksLevel(); 
+            console.log("ЗАГРУЖЕН УРОВЕНЬ КАЗАРМЫ:", level);
             setBarracksLevel(level);
+
             setUnitTypes(await loadUnitTypes());
         })();
-    }, []);
-
+    }, [village]);
     return (
         <div>
             <div className='buy-menu-overlay' onClick={closeBuyMenu}>

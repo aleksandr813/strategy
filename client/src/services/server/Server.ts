@@ -180,21 +180,12 @@ class Server {
     }
 
     async getUnitsTypes(): Promise<TUnitType[]> {
-        const response = await this.request<any[]>('getUnitTypes'); 
+        const response = await this.request<TUnitType[]>('getUnitTypes');
         if (!response) {
             return [];
         }
-        
-        const unitTypes: TUnitType[] = response.map(type => ({
-            id: Number(type.id),
-            type: type.type,
-            name: type.name,
-            hp: Number(type.hp),
-            price: Number(type.price),
-            unlockLevel: Number(type.unlock_level) 
-        }));
-        console.log('UNITTYPES FROM SERVER:', unitTypes);
-        return unitTypes;
+        console.log(response);
+        return response;
     }
 
     async buyBuilding(typeId: number, x: number, y: number): Promise<any> {

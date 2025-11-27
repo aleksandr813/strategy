@@ -147,7 +147,7 @@ class Village extends Manager {
                 buildingData.currentHp,
                 buildingData.level,
                 2,
-                Number(buildingData.typeId),
+                buildingData.typeId,
                 buildingData.x,
                 buildingData.y,   
             );
