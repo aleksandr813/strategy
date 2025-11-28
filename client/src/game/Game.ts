@@ -1,29 +1,50 @@
+import EasyStar from 'easystarjs';
+import Store from "../services/store/Store";
+import Server from "../services/server/Server";
 import GlobalMap from "./manager/GlobalMap";
 import Village from "./manager/Village";
 import Battle from "./manager/Battle";
-import Store from "../services/store/Store";
-import Server from "../services/server/Server";
 import Unit from './entities/Unit';
 import Building from './entities/Building';
+import GAMECONFIG from './gameConfig';
 
 class Game {
     private store: Store;
     private server: Server;
+    private easyStar: EasyStar.js
     
     private units: Unit[] = [];
     private buildings: Building[] = [];
+    
+    private incomeInterval: NodeJS.Timer | null = null;
     
     public village: Village;
     public globalMap: GlobalMap;
     public battle: Battle;
 
     constructor(store: Store, server: Server) {
+        
         this.store = store;
         this.server = server;
+        this.easyStar = new EasyStar.js();
         
-        this.village = new Village(store, server, this.getGameData());
+        this.village = new Village(store, server, this.getGameData(), this.easyStar, this);
         this.globalMap = new GlobalMap(store, server, this.getGameData());
         this.battle = new Battle(store, server, this.getGameData());
+        
+        this.startIncomeUpdate();
+    }
+
+    private startIncomeUpdate(): void {
+        this.updateIncome();
+        
+        this.incomeInterval = setInterval(() => {
+            this.updateIncome();
+        }, GAMECONFIG.INCOME_INTERVAL);
+    }
+
+    private async updateIncome(): Promise<void> {
+        await this.server.getIncome();
     }
 
     private removeUnit(unit: Unit): void {
@@ -53,6 +74,10 @@ class Game {
         };
     }
 
+    public getEasyStar(): EasyStar.js {
+        return this.easyStar;
+    }
+
     getVillage(): Village {
         return this.village;
     }
@@ -74,6 +99,11 @@ class Game {
     }
 
     destructor(): void {
+        if (this.incomeInterval) {
+            clearInterval(this.incomeInterval);
+            this.incomeInterval = null;
+        }
+        
         this.village.destructor();
         this.globalMap.destructor();
         this.battle.destructor();

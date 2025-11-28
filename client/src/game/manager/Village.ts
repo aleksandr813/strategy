@@ -1,11 +1,14 @@
+import EasyStar from 'easystarjs';
 import CONFIG, { TPoint } from "../../config";
-import Unit from '../entities/Unit';
-import Building from '../entities/Building';
 import BuildingPreview from "../../services/canvas/BuildingPreview";
 import UnitPreview from "../../services/canvas/UnitPreview";
 import Server from "../../services/server/Server";
 import Store from "../../services/store/Store";
+import Unit from '../entities/Unit';
+import Building from '../entities/Building';
+import Game from '../Game';
 import Manager, { GameData } from "./Manager";
+
 
 const { WIDTH, HEIGHT } = CONFIG;
 
@@ -14,20 +17,33 @@ class Village extends Manager {
     private unitPreview: UnitPreview;
     private store: Store;
     private server: Server;
+    private game: Game;
     public selectedBuilding: Building | null = null;
+    public selectedUnit: Unit | null = null;
+    public easyStar: EasyStar.js;
 
-    constructor(store: Store, server: Server, gameData: GameData) {
+    constructor(store: Store, server: Server, gameData: GameData, easyStar: EasyStar.js, game: Game) {
         super(gameData);
         this.store = store;
         this.server = server;
+        this.easyStar = easyStar;
+        this.game = game;
         this.buildingPreview = new BuildingPreview();
-        this.unitPreview = new UnitPreview();
+        this.unitPreview = new UnitPreview(game);
     }
 
     public selectBuilding(building: Building | null): void {
         this.gameData.getBuildings().forEach(b => b.deselected?.());
         if (building) building.selected?.();
         this.selectedBuilding = building;
+    }
+
+    public selectUnit(unit: Unit | null): void {
+        this.gameData.getUnits().forEach(u => u.updateSelection(false));
+        if (unit){
+            unit.updateSelection(true)
+        }
+        this.selectedUnit = unit;
     }
 
     public removeBuilding(building: Building): void {
@@ -64,10 +80,10 @@ class Village extends Manager {
 
         try {
             const result = await server.buyUnit(typeId, pos.x, pos.y);
-            if (result && !result.error) {
+            if (result) {
                 this.gameData.addUnit(newUnit);
             } else {
-                console.error('Ошибка размещения юнита:', result?.error || result);
+                console.error('Ошибка размещения юнита:', result);
                 this.unitPreview.activate(newUnit.sprites[0].toString(), typeId, newUnit.hp);
             }
         } catch (error) {
@@ -79,7 +95,7 @@ class Village extends Manager {
     public handleBuildingClick(x: number, y: number): void {
         const gridX = Math.floor(x), gridY = Math.floor(y);
         const clickedBuilding = this.gameData.getBuildings().find(b => {
-            const [bx, by] = [b.cords[0].x, b.cords[0].y];
+            const [bx, by] = [b.coords[0].x, b.coords[0].y];
             return gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2; 
         }) || null;
 
@@ -88,6 +104,21 @@ class Village extends Manager {
             clickedBuilding.takeDamage(10);
         }
         this.selectBuilding(clickedBuilding);
+    }
+
+    public handleUnitClick(x: number, y: number): Unit | null {
+        const gridX = Math.floor(x), gridY = Math.floor(y);
+        const clickedUnit = this.gameData.getUnits().find(u => {
+            const [ux, uy] = [u.coords.x, u.coords.y];
+            return gridX >= ux && gridX < ux + 1 && gridY >= uy && gridY < uy + 1; 
+        }) || null;
+
+        if (clickedUnit) {
+            console.log("Выбранный юнит", clickedUnit);
+            this.selectUnit(clickedUnit);
+        }
+
+        return clickedUnit;
     }
 
     async loadBuildings(): Promise<void> {
@@ -126,7 +157,7 @@ class Village extends Manager {
             return;
         }
 
-        const units = unitsData.map(unitData => new Unit(unitData));
+        const units = unitsData.map(unitData => new Unit(unitData, this.game));
         
         this.gameData.setUnits(units);
         console.log("Загружено юнитов:", this.gameData.getUnits().length);
@@ -147,12 +178,12 @@ class Village extends Manager {
             booleanMatrix[i] = new Array(87).fill(0);
         }
         units.forEach((element) => {
-            if (element.cords.y < 29 && element.cords.x < 87) { 
-                booleanMatrix[element.cords.y][element.cords.x] = 1;
+            if (element.coords.y < 29 && element.coords.x < 87) { 
+                booleanMatrix[element.coords.y][element.coords.x] = 1;
             }
         });
         buildings.forEach((element) => {
-            const [bx, by] = [element.cords[0].x, element.cords[0].y];
+            const [bx, by] = [element.coords[0].x, element.coords[0].y];
             if (by < 29 && bx < 87) booleanMatrix[by][bx] = 1;
             if (by + 1 < 29 && bx < 87) booleanMatrix[by + 1][bx] = 1;
             if (by < 29 && bx + 1 < 87) booleanMatrix[by][bx + 1] = 1;

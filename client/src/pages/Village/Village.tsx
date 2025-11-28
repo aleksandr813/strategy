@@ -1,9 +1,10 @@
 import React, { Component, useContext, useEffect, useRef, useState } from 'react';
+import { ServerContext,StoreContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import VillageCanvas from './VillageCanvas';
 import UI from './UI/UI';
-import { ServerContext,StoreContext } from '../../App';
+
 
 
 import "./Village.scss"
@@ -41,7 +42,7 @@ const Village: React.FC<IBasePage> = (props: IBasePage) => {
             <div>
                 <VillageCanvas />
             </div>
-            <UI />
+            <UI store={store} />
         </div>
     );
 };
