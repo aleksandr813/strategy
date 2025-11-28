@@ -1,113 +1,185 @@
 .Panel {
     position: relative;
+    width: 100%;
+    transform: translateY(-40px);
 
-    // Поднимаем всю панельку наверх
-    transform: translateY(-100%);
+    
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
 
     .panel-background {
         width: 100%;
         display: block;
+        user-select: none;
+        pointer-events: none;
+        object-fit: fill;
     }
 
-    .buttons1 {
-        position: absolute;
-        top: 0;
-        right: 0;
-        height: 100%;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            width: 100%;
-        }
-
-
-        .panel-button {
-            border: 0;
-            padding: 0;
-            line-height: 0;
-
-            &.max {
-                aspect-ratio: 1;
-
-
-            }
-
-            &.mini {
-                aspect-ratio: 1;
-                height: 50%;
-
-            }
-        }
-    }
-
-    .buttons2 {
+    .panel-content {
         position: absolute;
         top: 0;
         left: 0;
+        width: 100%;
         height: 100%;
+        
         display: flex;
         flex-direction: row;
+        justify-content: space-between; 
+        align-items: center;
+        padding: 0 2%; 
+        box-sizing: border-box;
+    }
+
+    .panel-button {
+        border: 0;
+        padding: 0;
+        line-height: 0;
+        background: transparent;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        justify-content: center;
         align-items: center;
 
-
-
-        .button-group {
-            display: flex;
-            flex-direction: column;
-
-
+        .icon-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated; 
         }
 
-        .panel-button {
-            border: 0;
-            padding: 0;
-            line-height: 0;
-
-            &.mini {
-                aspect-ratio: 1, 1;
-                height: 50%;
-            }
+        &.big-btn {
+            height: 75%; 
+            aspect-ratio: 1; 
+            width: auto;     
         }
 
-        .param {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 8px;
-
-
-            .icon,
-            .money {
-                padding: 10px;
-
-            }
-
-
-            .chat-panel {
-
-                width: 100%;
-                height: 100%;
-                padding-bottom: 8%;
-                padding-right: 1%;
-                padding-left: 7%;
-            }
-
-            .money-value {
-                color: gold;
-                font-size: large;
-            }
-
+        &.mini-btn {
+            width: 100%;  
+            height: 100%; 
+        }
+        
+        
+        &.chat-btn {
+            height: 100px; 
+            width: 100px;
         }
     }
 
+    .left-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 100%; 
+        gap: 1vw;
 
-    .max {
+        .info-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5%; 
+            height: 70%; 
+            
+            .info-row {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                height: 45%; 
+                
+                &.bottom {
+                    gap: 10px; 
+                }
+            }
+            
+            .name-plate-bg {
+                height: 100%; 
+                width: auto;
+                image-rendering: pixelated;
+            }
+
+            .money-container {
+                position: relative;
+                height: 100%; 
+                width: auto;
+                aspect-ratio: 3 / 1; 
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .money-bg {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 0;
+                    image-rendering: pixelated;
+                }
+
+                .money-content {
+                    position: relative;
+                    z-index: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 5px;
+                    width: 100%;
+
+                    .coin-icon {
+                        height: 60%; 
+                        width: auto;
+                        image-rendering: pixelated;
+                    }
+
+                    .money-value {
+                        color: #ffcc00;
+                        font-family: monospace; 
+                        font-weight: bold;
+                        font-size: clamp(12px, 1.5vw, 24px); 
+                        text-shadow: 2px 2px 0 #000;
+                    }
+                }
+            }
+        }
+    }
+
+    .right-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
         height: 100%;
+        gap: 1vw; 
 
+        .small-buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            grid-template-rows: 1fr 1fr;    
+            gap: 5px; 
+            
+            height: 80%; 
+            aspect-ratio: 1; 
+        }
+        
+        .settings-container {
+            .settings-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                
+                .settings-bg {
+                    width: 100%;
+                    height: 100%;
+                }
+                .settings-icon {
+                    position: absolute;
+                    width: 60%;
+                    height: 60%;
+                }
+            }
+        }
     }
 }
