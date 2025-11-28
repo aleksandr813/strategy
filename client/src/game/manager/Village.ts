@@ -8,6 +8,7 @@ import Unit from '../entities/Unit';
 import Building from '../entities/Building';
 import Game from '../Game';
 import Manager, { GameData } from "./Manager";
+import { BuildingTypeID } from '../../services/server/types';
 
 
 const { WIDTH, HEIGHT } = CONFIG;
@@ -38,6 +39,14 @@ class Village extends Manager {
         this.selectedBuilding = building;
     }
 
+    public getBarracksLevel(): number {
+        const buildings = this.gameData.getBuildings();
+        const barracks = buildings.find(
+            (b) => b.typeId === BuildingTypeID.Kazarma
+        );
+        return barracks ? barracks.level : 0;
+    }
+    
     public selectUnit(unit: Unit | null): void {
         this.gameData.getUnits().forEach(u => u.updateSelection(false));
         if (unit){

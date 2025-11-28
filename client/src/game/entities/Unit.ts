@@ -18,6 +18,7 @@ export default class Unit {
     sprites: number[];
     easystar: EasyStar.js;
     game: Game;
+    unlockLevel: number;
     
     isSelected: boolean = false;
     moveIntervalId: NodeJS.Timeout | null = null;
@@ -32,6 +33,7 @@ export default class Unit {
         this.hp = data.currentHp;
         this.maxHp = data.currentHp; 
         this.level = data.level;
+        this.unlockLevel = data.unlockLevel
 
         this.sprites = getUnitSprites(this.typeId);
 
