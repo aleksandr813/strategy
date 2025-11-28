@@ -5,11 +5,19 @@ import { TBuildingType } from '../../../../services/server/types';
 import Server from '../../../../services/server/Server';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
+import Store from '../../../../services/store/Store';
+import { useStoreMoney } from '../../../../hooks/useStore';
 
 import './BuyBuildingsMenu.scss'
 
-const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
-    const { setUIElement } = props;
+interface BuyBuildingMenuProps extends IBaseUIElement {
+    store: Store;
+}
+
+const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenuProps) => {
+    const { setUIElement, store } = props;
+    const gold = useStoreMoney(store);
+    
 
     const game = useContext(GameContext);
     const village = game.getVillage();
@@ -48,6 +56,9 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
                 <div className="buy-menu-container" onClick={(e) => e.stopPropagation()}>
                     <h3 className="buy-menu-title">
                         Выберите здание
+                        <div className='money-indicator'>
+                            Монеты: {gold}
+                        </div>
                     </h3>
 
                     {
