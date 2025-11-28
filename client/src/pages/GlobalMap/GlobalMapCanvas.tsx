@@ -1,12 +1,12 @@
 import React, { useEffect, useContext } from 'react';
 import CONFIG from '../../config';
 import { Canvas, useCanvas } from '../../services/canvas';
-import useSprites from '../../services/hooks/useSprites';
+import useSprites from '../../hooks/useSprites';
 import Unit from '../../game/entities/Unit';
 import Building from '../../game/entities/Building';
 import { GameContext } from '../../App';
 import { TPoint } from '../../config';
-import villageBackground from '../../assets/img/background/villageBackground.png';
+import globalMapBackground from '../../assets/img/background/globalMapBackground.png';
 
 import "./GlobalMap.scss";
 
@@ -23,7 +23,7 @@ const GlobalMapCanvas: React.FC = () => {
     const globalMap = game.getGlobalMap(); 
     
     const background = new Image();
-    background.src = villageBackground;
+    background.src = globalMapBackground;
 
     let canvas: Canvas | null = null;
     const Canvas = useCanvas(render);
