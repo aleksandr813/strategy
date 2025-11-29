@@ -39,6 +39,7 @@ export type TBuildingType = {
     hp: number;
     price: number;
     sprite: number;
+    unlockLevel: number;
 }
 
 
@@ -51,6 +52,8 @@ export type TBuilding = {
     currentHp: number;
     level: number;
     type: string;
+    unlockLevel: number;
+
 }
 
 export enum BuildingTypeID {
