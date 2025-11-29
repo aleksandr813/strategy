@@ -1,15 +1,17 @@
 .Panel {
     position: relative;
     width: 100%;
-    transform: translateY(-40px);
+    min-height: 10vh;  
+    max-height: 20vh;  
+    transform: translateY(-5vh);  
 
-    
     display: flex;
     justify-content: center;
     align-items: flex-end;
 
     .panel-background {
         width: 100%;
+        height: 100%;  
         display: block;
         user-select: none;
         pointer-events: none;
@@ -22,12 +24,12 @@
         left: 0;
         width: 100%;
         height: 100%;
-        
+
         display: flex;
         flex-direction: row;
-        justify-content: space-between; 
+        justify-content: space-between;
         align-items: center;
-        padding: 0 2%; 
+        padding: 0 2%;
         box-sizing: border-box;
     }
 
@@ -46,24 +48,23 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            image-rendering: pixelated; 
+            image-rendering: pixelated;
         }
 
         &.big-btn {
-            height: 75%; 
-            aspect-ratio: 1; 
-            width: auto;     
+            height: 75%;
+            aspect-ratio: 1;
+            width: auto;
         }
 
         &.mini-btn {
-            width: 100%;  
-            height: 100%; 
+            width: 100%;
+            height: 100%;
         }
-        
-        
+
         &.chat-btn {
-            height: 100px; 
-            width: 100px;
+            height: 10vh;  
+            width: 10vh;   
         }
     }
 
@@ -71,38 +72,38 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        height: 100%; 
-        gap: 1vw;
+        height: 100%;
+        gap: 1vw;  
 
         .info-column {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 5%; 
-            height: 70%; 
-            
+            gap: 5%;
+            height: 70%;
+
             .info-row {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                height: 45%; 
-                
+                height: 45%;
+
                 &.bottom {
-                    gap: 10px; 
+                    gap: 1vw;  
                 }
             }
-            
+
             .name-plate-bg {
-                height: 100%; 
+                height: 100%;
                 width: auto;
                 image-rendering: pixelated;
             }
 
             .money-container {
                 position: relative;
-                height: 100%; 
+                height: 100%;
                 width: auto;
-                aspect-ratio: 3 / 1; 
+                aspect-ratio: 3 / 1;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -127,16 +128,16 @@
                     width: 100%;
 
                     .coin-icon {
-                        height: 60%; 
+                        height: 60%;
                         width: auto;
                         image-rendering: pixelated;
                     }
 
                     .money-value {
                         color: #ffcc00;
-                        font-family: monospace; 
+                        font-family: monospace;
                         font-weight: bold;
-                        font-size: clamp(12px, 1.5vw, 24px); 
+                        font-size: clamp(12px, 1.5vw, 24px);  
                         text-shadow: 2px 2px 0 #000;
                     }
                 }
@@ -149,18 +150,19 @@
         flex-direction: row;
         align-items: center;
         height: 100%;
-        gap: 1vw; 
+        gap: 1vw;
+        transform: translateY(-8vh);  
 
         .small-buttons-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; 
-            grid-template-rows: 1fr 1fr;    
-            gap: 5px; 
-            
-            height: 80%; 
-            aspect-ratio: 1; 
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 5px;
+
+            height: 75%;  
+            aspect-ratio: 1;
         }
-        
+
         .settings-container {
             .settings-wrapper {
                 position: relative;
@@ -169,7 +171,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                
+
                 .settings-bg {
                     width: 100%;
                     height: 100%;
@@ -180,6 +182,85 @@
                     height: 60%;
                 }
             }
+        }
+    }
+
+    @media (max-width: 1024px) { 
+        min-height: 12vh;
+        max-height: 25vh;
+        transform: translateY(-6vh);  
+
+        .panel-content {
+            padding: 0 3%;  
+        }
+
+        .chat-btn {
+            height: 12vh;
+            width: 12vh;
+        }
+
+        .small-buttons-grid {
+            height: 80%;  
+        }
+
+        .right-section {
+            transform: translateY(-2.5vh);  
+        }
+    }
+
+    @media (max-width: 768px) {  
+        min-height: 15vh;
+        max-height: 30vh;
+        transform: translateY(-7vh);  
+
+        .panel-content {
+            flex-direction: column;  
+            justify-content: center;
+            align-items: center;
+            padding: 2% 5%;
+        }
+
+        .left-section, .right-section {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .chat-btn {
+            height: 15vh;
+            width: 15vh;
+        }
+
+        .small-buttons-grid {
+            height: 90%;
+            grid-template-columns: 1fr 1fr 1fr 1fr;  
+            grid-template-rows: 1fr;
+        }
+
+        .info-column {
+            height: 80%;
+        }
+
+        .right-section {
+            transform: translateY(0);  
+        }
+    }
+
+    @media (max-width: 480px) {  
+        min-height: 20vh;
+        max-height: 40vh;
+        transform: translateY(-8vh);
+
+        .chat-btn {
+            height: 18vh;
+            width: 18vh;
+        }
+
+        .small-buttons-grid {
+            gap: 10px;  
+        }
+
+        .right-section {
+            transform: translateY(0);  
         }
     }
 }
