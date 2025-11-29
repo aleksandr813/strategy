@@ -301,8 +301,8 @@ class Village
             return ['error' => 600];
         }
 
-        $village = $this->db->getVillage($userId);
-        if (!$village) {
+        $startVillage = $this->db->getVillage($userId);
+        if (!$startVillage) {
             return ['error' => 315];
         }
 
@@ -311,16 +311,61 @@ class Village
             return ['error' => 315];
         }
 
-        $army = $this->db->sendArmy($userId, $targetVillage->x, $targetVillage->y, $target, $units);
+        $speed = 5;
+        $startTime = date('Y-m-d H:i:s');
+        $distance = sqrt(pow($targetVillage->x - $startVillage->x, 2) + pow($targetVillage->y - $startVillage->y, 2));
+        $travelTime = $distance / $speed;
+        $arrivalTime = date('Y-m-d H:i:s', time() + $travelTime);
+
+        $army = $this->db->sendArmy(
+            $userId, 
+            $startVillage->x, 
+            $startVillage->y, 
+            $startTime,
+            $arrivalTime,
+            $targetVillage->x, 
+            $targetVillage->y, 
+            $target, 
+            $units, 
+            $speed
+        );
+
         if (!$army) {
             return ['error' => 601];
         }
 
-        $crusade = $this->db->unitsOnACrusade($village->id, $units);
+        $crusade = $this->db->unitsOnACrusade($startVillage->id, $units);
         if (!$crusade) {
             return ['error'];
         }
 
         return true;
+    }
+
+    public function getMap($hash) {
+        $villages = $this->db->getVillages();
+        $armies = $this->db->getArmies();
+
+        $mapData = [
+            'villages' => $villages,
+            'armies' => $armies,
+            'timestamp' => time()
+        ];
+
+        $currentHash = md5(json_encode($mapData));
+        $storedHash = $this->db->getMapHash();
+
+        if ($currentHash === $hash) {
+            return ['hash' => $hash];
+        }
+
+        if ($storedHash->hash !== $currentHash) {
+            $this->db->updateMapHash($currentHash);   
+        }
+
+        return [
+            'hash' => $currentHash,
+            'mapData' => $mapData
+        ];
     }
 }

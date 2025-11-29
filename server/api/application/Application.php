@@ -247,4 +247,15 @@ class Application
         }
         return ['error' => 242];
     }
+
+    public function getMap($params) {
+        if ($params['token'] && $params['hash']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->village->getMap($params['hash']);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
 }
