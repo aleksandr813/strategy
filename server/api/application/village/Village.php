@@ -297,7 +297,8 @@ class Village
         return true;
     }
 
-    public function sendArmy($userId, $units, $target) {
+    public function sendArmy($userId, $units, $target)
+    {
         if (count($units) === 0) {
             return ['error' => 600];
         }
@@ -323,5 +324,59 @@ class Village
         }
 
         return true;
+    }
+
+    public function moveArmyBack($userId)
+    {
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 315];
+        }
+
+        $units = $this->db->getUnits($userId);
+        $updatedUnits = [];
+
+        $i = 29;
+        $j = 1;
+        $maxCoordinate = 58; // 29 * 2
+
+        foreach ($units as $unit) {
+            $unit["onAСrusade"] = (int)$unit["onAСrusade"];
+
+            if ($unit["onAСrusade"]) {
+                $unit["unitId"] = $unit["id"];
+                $unit["onAСrusade"] = 0;
+                $unit["x"] = $i;
+                $unit["y"] = $j;
+
+                // Увеличиваем координаты для следующего юнита
+                $i++;
+                if ($i > $maxCoordinate) {
+                    $i = 29;
+                    $j++;
+                    if ($j > $maxCoordinate) {
+                        return ['error' => 555]; // Превышен лимит позиций
+                    }
+                }
+
+                $updatedUnits[] = $unit;
+            }
+        }
+
+        if (empty($updatedUnits)) {
+            return true; // Нет юнитов для перемещения
+        }
+
+        $result = $this->db->updateUnitsPosition($updatedUnits, $village->id);
+        if (!$result) {
+            return ['error' => 504];
+        }
+
+        $result = $this->db->unitsOffACrusade($updatedUnits, $village->id);
+        if (!$result) {
+            return ['error' => 504];
+        }
+
+        return $updatedUnits;
     }
 }
