@@ -296,12 +296,12 @@ class Village
         return true;
     }
 
-    public function sendArmy($userId, $units, $target) {
+    public function sendArmy($user, $units, $target) {
         if (count($units) === 0) {
             return ['error' => 600];
         }
 
-        $startVillage = $this->db->getVillage($userId);
+        $startVillage = $this->db->getVillage($user->id);
         if (!$startVillage) {
             return ['error' => 315];
         }
@@ -311,14 +311,31 @@ class Village
             return ['error' => 315];
         }
 
-        $speed = 5;
+        $crusadeCoast = count($units) * $this->config['game']['costPerUnit'];
+
+        if ($user->money < $crusadeCoast) {
+            return ['error' => 305];
+        }
+
+        $newMoney = $user->money - $crusadeCoast;
+        $this->db->updateMoney($user->id, $newMoney);
+
+        $unitsSpeed = $this->db->getUnitsSpeed($units);
+
+        $speed = PHP_INT_MAX;
+        foreach($unitsSpeed as $unitSpeed) {
+            if ($unitSpeed['speed'] < $speed) {
+                $speed = $unitSpeed['speed'];
+            }
+        }
+
         $startTime = date('Y-m-d H:i:s');
         $distance = sqrt(pow($targetVillage->x - $startVillage->x, 2) + pow($targetVillage->y - $startVillage->y, 2));
         $travelTime = $distance / $speed;
         $arrivalTime = date('Y-m-d H:i:s', time() + $travelTime);
 
         $army = $this->db->sendArmy(
-            $userId, 
+            $user->id, 
             $startVillage->x, 
             $startVillage->y, 
             $startTime,
@@ -339,33 +356,6 @@ class Village
             return ['error'];
         }
 
-        return true;
-    }
-
-    public function getMap($hash) {
-        $villages = $this->db->getVillages();
-        $armies = $this->db->getArmies();
-
-        $mapData = [
-            'villages' => $villages,
-            'armies' => $armies,
-            'timestamp' => time()
-        ];
-
-        $currentHash = md5(json_encode($mapData));
-        $storedHash = $this->db->getMapHash();
-
-        if ($currentHash === $hash) {
-            return ['hash' => $hash];
-        }
-
-        if ($storedHash->hash !== $currentHash) {
-            $this->db->updateMapHash($currentHash);   
-        }
-
-        return [
-            'hash' => $currentHash,
-            'mapData' => $mapData
-        ];
+        return ['newMoney' => $newMoney];
     }
 }

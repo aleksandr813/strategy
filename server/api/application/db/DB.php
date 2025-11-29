@@ -363,7 +363,38 @@ class DB
     }
 
     public function getArmies() {
-        return $this->queryAll("SELECT army, userId, x, y, attackId, units FROM army"); //Добавить новые поля на возвращение
+        return $this->queryAll("
+        SELECT 
+            army, 
+            userId, 
+            startX, 
+            startY,
+            startTime,
+            arrivalTime,
+            targetX,
+            targetY, 
+            attackId, 
+            units,
+            speed
+        FROM army");
+    }
+
+    public function getUnitsSpeed($units) {
+        $unitIds = [];
+        foreach($units as $unit) {
+            $unitIds[] = $unit['id'];
+        }
+
+        $placeholder = implode(',', array_fill(0, count($unitIds), '?'));
+
+        return $this->queryAll(
+            "SELECT u.id, ut.speed
+            FROM units AS u
+            INNER JOIN unit_types AS ut
+            ON u.type_id = ut.id
+            WHERE u.id IN ($placeholder)",
+            $unitIds
+        );
     }
 
     public function getMapHash() {
