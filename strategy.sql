@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 29 2025 г., 20:58
+-- Время создания: Ноя 29 2025 г., 12:06
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -76,19 +76,20 @@ CREATE TABLE `building_types` (
   `id` int NOT NULL,
   `type` varchar(100) NOT NULL,
   `hp` int NOT NULL DEFAULT '1',
-  `price` int NOT NULL
+  `price` int NOT NULL,
+  `unlock_level` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `building_types`
 --
 
-INSERT INTO `building_types` (`id`, `type`, `hp`, `price`) VALUES
-(1, 'Ратуша', 700, 1),
-(2, 'Шахта', 100, 1),
-(3, 'Казармы ', 500, 400),
-(4, 'Стены ', 200, 100),
-(5, 'Стрелковая башня', 300, 200);
+INSERT INTO `building_types` (`id`, `type`, `hp`, `price`, `unlock_level`) VALUES
+(1, 'Ратуша', 700, 1, 1),
+(2, 'Шахта', 100, 1, 1),
+(3, 'Казармы ', 500, 400, 1),
+(4, 'Стены ', 200, 100, 1),
+(5, 'Стрелковая башня', 300, 200, 1);
 
 -- --------------------------------------------------------
 
@@ -199,6 +200,7 @@ CREATE TABLE `messages` (
 --
 
 INSERT INTO `messages` (`id`, `user_id`, `message`, `created`) VALUES
+(4, 5, 'хай', '2025-10-10 14:33:16');
 (4, 5, 'хай', '2025-10-10 14:33:16');
 
 -- --------------------------------------------------------
