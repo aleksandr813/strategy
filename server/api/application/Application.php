@@ -171,8 +171,9 @@ class Application
         return ['error' => 242];
     }
 
-    public function takeDamage($params) {
-        if ($params['token']  && $params['units'])  {
+    public function takeDamage($params)
+    {
+        if ($params['token']  && $params['units']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
                 return $this->battle->takeDamage($user->id, $params['units']);
@@ -182,7 +183,7 @@ class Application
         return ['error' => 242];
     }
 
-    
+
     public function buyBuilding($params)
     {
         if ($params['token'] && $params['typeId'] && $params['x'] && $params['y']) {
@@ -240,7 +241,8 @@ class Application
         return ['error' => 242];
     }
 
-    public function sendArmy($params) {
+    public function sendArmy($params)
+    {
         if ($params['token'] && $params['target'] && $params['units']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
@@ -256,6 +258,18 @@ class Application
             $user = $this->user->getUser($params['token']);
             if ($user) {
                 return $this->map->getMap($params['hash']);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function moveArmyBack($params)
+    {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->village->moveArmyBack($user->id);
             }
             return ['error' => 705];
         }
