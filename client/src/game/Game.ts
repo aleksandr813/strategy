@@ -32,7 +32,7 @@ class Game {
         this.globalMap = new GlobalMap(store, server, this.getGameData());
         this.battle = new Battle(store, server, this.getGameData());
         
-        //this.startIncomeUpdate();
+        this.startIncomeUpdate();
     }
 
     private startIncomeUpdate(): void {
@@ -44,6 +44,7 @@ class Game {
     }
 
     private async updateIncome(): Promise<void> {
+        if (!this.store.user) return;
         await this.server.getIncome();
     }
 
