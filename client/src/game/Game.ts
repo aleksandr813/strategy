@@ -44,6 +44,7 @@ class Game {
     }
 
     private async updateIncome(): Promise<void> {
+        if (!this.store.user) return;
         await this.server.getIncome();
     }
 
