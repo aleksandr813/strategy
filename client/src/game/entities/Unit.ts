@@ -25,7 +25,7 @@ export default class Unit {
     private currentPath: TPoint[] | null = null;
     private currentPathIndex: number = 0;
     
-    constructor(data: TUnit, game: Game) {
+    constructor(data: TUnit, game: Game, easystar: EasyStar.js) {
         this.id = data.id;
         this.typeId = data.typeId as UnitTypeID;
         this.type = data.type;
@@ -38,7 +38,7 @@ export default class Unit {
         this.coords = { x: data.x, y: data.y };
 
         this.game = game;
-        this.easystar = game.getEasyStar();
+        this.easystar = easystar;
     }
 
     updateSelection(isSelected: boolean): void {
@@ -50,7 +50,7 @@ export default class Unit {
         this.currentPathIndex = 0;
     }
 
-    moveUnit(destination: TPoint) {
+    calcPath(destination: TPoint) {
         this.clearUnitMovement();
         
         const matrix = this.game.village.getMatrixForEasyStar(this);
@@ -91,7 +91,7 @@ export default class Unit {
 
         if (isOccupied) {
             const destination = this.currentPath[this.currentPath.length - 1];
-            this.moveUnit(destination);
+            this.calcPath(destination);
             return false;
         }
 
