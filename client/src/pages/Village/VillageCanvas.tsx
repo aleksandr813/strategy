@@ -20,7 +20,7 @@ const TIME_THRESHOLD = 200;
 let zoomFactor = 1;
 
 const VillageCanvas: React.FC = () => {
-    const { WINDOW, SPRITE_SIZE } = CONFIG;
+    const { WINDOW } = CONFIG;
     const game = useContext(GameContext);
     const village = game.getVillage(); 
     
@@ -28,7 +28,18 @@ const VillageCanvas: React.FC = () => {
     background.src = villageBackground;
 
     let canvas: Canvas | null = null;
-    const Canvas = useCanvas(render);
+    const CanvasRef = useCanvas(render);
+
+    const setCanvasSize = (canvasInstance: Canvas | null) => {
+        if (canvasInstance) {
+            canvasInstance.WIDTH = window.innerWidth;
+            canvasInstance.HEIGHT = window.innerHeight;
+            canvasInstance.canvas.width = window.innerWidth;
+            canvasInstance.canvas.height = window.innerHeight;
+            render(0); 
+        }
+    };
+
     const allocation = new Allocation();
     const [[spritesImage], getSprite] = useSprites();
 
@@ -299,16 +310,22 @@ const VillageCanvas: React.FC = () => {
     const INITIAL_WINDOW_TOP = CONFIG.WINDOW.TOP;
 
     useEffect(() => {
-        canvas = Canvas({
+        canvas = CanvasRef({
             parentId: GAME_FIELD,
-            WIDTH: WINDOW.WIDTH * SPRITE_SIZE,
-            HEIGHT: WINDOW.HEIGHT * SPRITE_SIZE,
+            WIDTH: window.innerWidth,
+            HEIGHT: window.innerHeight,
             WINDOW,
             callbacks: {
                 mouseMove, mouseDown, mouseUp, mouseRightClickDown, mouseClick,
                 mouseLeave, mouseWheel, mouseMiddleDown, mouseMiddleUp, keyDown
             },
         });
+
+        const handleResize = () => {
+            setCanvasSize(canvas);
+        };
+
+        window.addEventListener('resize', handleResize);
 
         canvas.context.imageSmoothingEnabled = false;
         canvas.contextV.imageSmoothingEnabled = false;
@@ -323,6 +340,8 @@ const VillageCanvas: React.FC = () => {
                 WINDOW.LEFT = INITIAL_WINDOW_LEFT;
                 WINDOW.TOP = INITIAL_WINDOW_TOP;
             }
+
+            window.removeEventListener('resize', handleResize);
 
             village?.destructor();
             //canvas?.destructor();
