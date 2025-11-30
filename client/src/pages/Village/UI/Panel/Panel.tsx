@@ -71,22 +71,19 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
                     </Button>
 
                     <div className='small-buttons-grid'>
-                        <Button onClick={lidersHandler} className='panel-button mini-btn' title='Таблица лидеров'>
+                        <Button onClick={lidersHandler} className='panel-button-r mini-btn' title='Таблица лидеров'>
                             <img src={leaderboard} className='icon-img' alt="leaderboard" />
                         </Button>
                         
-                        <Button onClick={buildingsHandler} className='panel-button mini-btn' title='Купить здание'>
+                        <Button onClick={buildingsHandler} className='panel-button-r mini-btn' title='Купить здание'>
                             <img src={build} className='icon-img' alt="build" />
                         </Button>
 
-                        <Button onClick={settingsHandler} className='panel-button mini-btn settings-container' title='Настройки'>
-                             <div className="settings-wrapper">
-                                <img src={settings} className='settings-bg' alt="bg" />
-                                <img src={settings1} className='settings-icon' alt="gear" /> 
-                             </div>
+                        <Button onClick={settingsHandler} className='panel-button-r mini-btn' title='Настройки'>
+                            <img src={settings} className='icon-img' alt="bg" />
                         </Button>
 
-                        <Button onClick={unitsHandler} className='panel-button mini-btn' title='Купить юнитов'>
+                        <Button onClick={unitsHandler} className='panel-button-r mini-btn' title='Купить юнитов'>
                             <img src={unit} className='icon-img' alt="units" />
                         </Button>
                     </div>

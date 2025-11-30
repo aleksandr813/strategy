@@ -1,289 +1,280 @@
 .Panel {
-    position: fixed; 
-    bottom: 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+
+  .panel-background {
+    width: 100%;
+    height: auto;
+    display: block;
+    user-select: none;
+    pointer-events: none;
+    object-fit: fill;
+  }
+
+  .panel-content {
+    position: absolute;
+    top: 0;
     left: 0;
     width: 100%;
-    z-index: 10;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 2%;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: hidden;
+  }
+}
 
-    .panel-background {
-        width: 100%;
-        height: auto; 
-        display: block;
-        user-select: none;
-        pointer-events: none;
-        object-fit: fill;
-        display: block;
+.panel-button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .icon-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+
+  &.big-btn {
+    height: 8vmin;
+    aspect-ratio: 1;
+  }
+
+  &.chat-btn {
+    height: 6vmin;
+    aspect-ratio: 1;
+  }
+}
+
+.panel-button-r {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .icon-img {
+    image-rendering: pixelated;
+  }
+
+
+}
+
+.left-section {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 1vw;
+  flex: 0 1 auto;
+
+  .info-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5%;
+    height: 70%;
+
+    .info-row {
+      display: flex;
+      align-items: center;
+      height: 45%;
+
+      &.bottom {
+        gap: 1vw;
+      }
     }
+  }
+
+  .name-plate-bg {
+    height: 100%;
+    width: auto;
+    max-width: 150px;
+    image-rendering: pixelated;
+  }
+
+  .money-container {
+    position: relative;
+    height: 100%;
+    width: auto;
+    aspect-ratio: 3 / 1;
+    max-width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .money-bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      image-rendering: pixelated;
+    }
+
+    .money-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      width: 100%;
+
+      .coin-icon {
+        height: 60%;
+        width: auto;
+        image-rendering: pixelated;
+      }
+
+      .money-value {
+        color: #ffcc00;
+        font-family: monospace;
+        font-weight: bold;
+        font-size: clamp(10px, 1.2vw, 20px);
+        text-shadow: 2px 2px 0 #000;
+      }
+    }
+  }
+}
+
+.right-section {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 0.5vw;
+  flex: 0 1 auto;
+
+  .small-buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;
+    aspect-ratio: 1;
+    flex-shrink: 0;
+    margin-bottom: 2vmin;
+    scale: 60%;
+  }
+
+  .settings-container {
+    .settings-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .settings-bg {
+        width: 100%;
+        height: 100%;
+      }
+      
+      .settings-icon {
+        position: absolute;
+        width: 60%;
+        height: 60%;
+      }
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .Panel {
+    min-height: 10vh;
 
     .panel-content {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: flex-end;
-        padding: 0 2%;
-        box-sizing: border-box;
-        /* Добавляем ограничения */
-        max-width: 100%;
-        overflow: hidden; 
+      padding: 0 3%;
+    }
+  }
+
+  .panel-button {
+    &.big-btn {
+      height: 8vmin;
     }
 
-    .panel-button {
-        border: 0;
-        padding: 0;
-        line-height: 0;
-        background: transparent;
-        cursor: pointer;
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    &.chat-btn {
+      height: 5vmin;
+    }
+  }
 
-        .icon-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            image-rendering: pixelated;
-        }
+  .left-section {
+    gap: 1vw;
 
-        &.big-btn {
-            height: min(80%, 10vmin); 
-            aspect-ratio: 1;
-            width: auto;
-            max-width: 80px; 
-            max-height: 80%; 
-        }
+    .info-column .info-row.bottom {
+      gap: 1vw;
+    }
+  }
 
-        &.mini-btn {
-            width: 100%;
-            height: 100%;
-        }
+  .right-section {
+    gap: 0.5vw;
 
-        &.chat-btn {
-            height: 6vmin; 
-            width: 6vmin; 
-        }
+    .small-buttons-grid {
+      height: 8vmin;
+      margin-bottom: 1.5vmin;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .Panel {
+    .panel-content {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2% 5%;
+    }
+  }
+
+  .left-section, .right-section {
+    width: 100%;
+    justify-content: space-around;
+    height: auto;
+    gap: 3vw;
+  }
+
+  .panel-button {
+    &.big-btn {
+      height: 10vmin;
     }
 
-    .left-section {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        height: 100%;
-        gap: 1vw;
-        flex: 0 1 auto; 
-        min-width: 0; 
+    &.chat-btn {
+      height: 8vmin;
+    }
+  }
 
-        .info-column {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 5%;
-            height: 70%;
-            min-width: 0; 
+  .right-section .small-buttons-grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+    width: min(35vmin, 100%);
+    margin-bottom: 0;
+  }
+}
 
-            .info-row {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                height: 45%;
+@media (max-width: 480px) {
+  .right-section .small-buttons-grid {
+    width: min(40vmin, 100%);
+    gap: 5px;
+  }
 
-                &.bottom {
-                    gap: 1vw;
-                }
-            }
-
-            .name-plate-bg {
-                height: 100%;
-                width: auto;
-                max-width: 150px; 
-                image-rendering: pixelated;
-            }
-
-            .money-container {
-                position: relative;
-                height: 100%;
-                width: auto;
-                aspect-ratio: 3 / 1;
-                max-width: 120px; 
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                .money-bg {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    z-index: 0;
-                    image-rendering: pixelated;
-                }
-
-                .money-content {
-                    position: relative;
-                    z-index: 1;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 5px;
-                    width: 100%;
-
-                    .coin-icon {
-                        height: 60%;
-                        width: auto;
-                        image-rendering: pixelated;
-                    }
-
-                    .money-value {
-                        color: #ffcc00;
-                        font-family: monospace;
-                        font-weight: bold;
-                        font-size: clamp(10px, 1.2vw, 20px); 
-                        text-shadow: 2px 2px 0 #000;
-                    }
-                }
-            }
-        }
+  .panel-button {
+    &.big-btn {
+      height: 12vmin;
     }
 
-    .right-section {
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        align-items: center; /* ИЗМЕНЕНО: Выравнивание по нижнему краю для стабильности */
-        height: 100%;
-        gap: 0.5vw; 
-        flex: 0 1 auto; 
-        min-width: 0; 
-
-        .small-buttons-grid {
-            display: grid;
-            transform: translateY(-40%);
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 3px; 
-            height: min(10vmin, 100%); 
-            width: min(10vmin, 100%); 
-            aspect-ratio: 1; 
-            flex-shrink: 0;
-            margin-top: 0; /* ИЗМЕНЕНО: Удален отрицательный отступ */
-            margin-bottom: 2vmin; /* ДОБАВЛЕНО: Для вертикального центрирования кнопок относительно низа панели */
-        }
-
-        .settings-container {
-            .settings-wrapper {
-                position: relative;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                .settings-bg {
-                    width: 100%;
-                    height: 100%;
-                }
-                .settings-icon {
-                    position: absolute;
-                    width: 60%;
-                    height: 60%;
-                }
-            }
-        }
+    &.chat-btn {
+      height: 10vmin;
     }
-
-    /* --- ОПТИМИЗИРОВАННЫЕ МЕДИА-ЗАПРОСЫ --- */
-
-    @media (max-width: 1024px) { 
-        min-height: 12vh;
-
-        .panel-content {
-            padding: 0 3%;
-        }
-
-        .big-btn {
-            height: min(75%, 8vmin); 
-        }
-
-        .chat-btn {
-            height: 5vmin;
-            width: 5vmin;
-        }
-
-        .right-section .small-buttons-grid {
-            height: min(8vmin, 100%);
-            width: min(8vmin, 100%);
-            margin-top: 0; /* ИЗМЕНЕНО: убираем подъем */
-            margin-bottom: 1.5vmin; /* Немного уменьшенный нижний отступ */
-        }
-    }
-
-    @media (max-width: 768px) {
-        min-height: auto; 
-
-        .panel-content {
-            flex-direction: column; 
-            justify-content: center;
-            align-items: center;
-            padding: 2% 5%;
-        }
-
-        .left-section, .right-section {
-            width: 100%;
-            justify-content: space-around; 
-            height: auto;
-            gap: 3vw; 
-            margin: 0;
-            align-items: center; /* ИЗМЕНЕНО: центрируем элементы на мобильных */
-        }
-
-        .big-btn {
-            height: 10vmin;
-            width: 10vmin;
-        }
-        
-        .chat-btn {
-            height: 8vmin;
-            width: 8vmin;
-        }
-
-        .info-column {
-            height: 100%;
-            flex-grow: 1;
-        }
-        
-        .right-section .small-buttons-grid {
-            height: min(8vmin, 100%);
-            width: min(35vmin, 100%); /* ИЗМЕНЕНО: Увеличение ширины для 4 кнопок в ряд */
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            grid-template-rows: 1fr;
-            gap: 8px;
-            margin-top: 0; 
-            margin-bottom: 0; /* Убираем нижний отступ в вертикальном layout */
-        }
-    }
-
-    @media (max-width: 480px) {
-        .right-section .small-buttons-grid {
-             height: min(10vmin, 100%);
-             gap: 5px;
-             width: min(40vmin, 100%); /* Немного больше ширины для мелких экранов */
-             margin-top: 0; 
-        }
-        
-        .big-btn {
-            height: 12vmin;
-            width: 12vmin;
-        }
-        
-        .chat-btn {
-            height: 10vmin;
-            width: 10vmin;
-        }
-    }
+  }
 }
