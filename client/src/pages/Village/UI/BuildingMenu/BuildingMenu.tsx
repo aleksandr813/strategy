@@ -28,17 +28,9 @@ const BuildingMenu: React.FC = () => {
 
     const deleteConfirm = async () => {
         if (!selectedBuilding)return;
-        const success = await server.deleteBuilding(
-        selectedBuilding.id,
-        );
-
-        if(success){
-            game.village.removeBuilding(selectedBuilding);
-            game.village.selectBuilding(null);
-            closeConfirm();
-        }else{
-            console.log("Не удалось удалить здание")
-        }
+        
+        game.village.removeBuilding(selectedBuilding);
+        game.village.selectBuilding(null);
     };
 
     const upgrade = async () => {
