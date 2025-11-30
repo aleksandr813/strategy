@@ -1,25 +1,26 @@
 import { TPoint } from "../../config";
+import Game from "../../game/Game";
 
 const BUILDING_SIZE = 2;
 
 export default class BuildingPreview {
     private isActive = false;
     private buildingTypeId = 0;
-    private buildingHp = 0;
     private gridPosition: TPoint = { x: 0, y: 0 };
     private canPlace = false;
+    private game: Game;
 
-    public activate(buildingTypeId: number, hp: number): void {
+    constructor(game: Game) {
+        this.game = game;
+    }
+
+    public activate(buildingTypeId: number): void {
         this.isActive = true;
         this.buildingTypeId = buildingTypeId;
-        this.buildingHp = hp;
-        this.canPlace = false;
     }
 
     public deactivate(): void {
         this.isActive = false;
-        this.buildingTypeId = 0;
-        this.buildingHp = 0;
         this.canPlace = false;
     }
 
@@ -32,7 +33,7 @@ export default class BuildingPreview {
     }
 
     public getPlacementPosition(): TPoint {
-        return { ...this.gridPosition };
+        return this.gridPosition;
     }
 
     public getCanPlace(): boolean {
@@ -84,13 +85,11 @@ export default class BuildingPreview {
         };
     }
 
-    public getPlacementData() {
-        if (!this.isActive) return null;
+    public tryPlace(): boolean | null {
+        if (!this.isActive || !this.canPlace) return null;
 
-        return {
-            typeId: this.buildingTypeId,
-            position: { ...this.gridPosition },
-            canPlace: this.canPlace
-        };
+        this.deactivate();
+        
+        return true;
     }
 }
