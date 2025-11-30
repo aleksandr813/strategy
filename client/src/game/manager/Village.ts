@@ -46,6 +46,14 @@ class Village extends Manager {
         );
         return barracks ? barracks.level : 0;
     }
+
+    public getTownHallLevel(): number {
+        const buildings = this.gameData.getBuildings();
+        const townHall = buildings.find(
+            (b) => b.typeId === BuildingTypeID.TownHall
+        );
+        return townHall ? townHall.level : 0;
+    }
     
     public selectUnit(unit: Unit | null): void {
         this.gameData.getUnits().forEach(u => u.updateSelection(false));
