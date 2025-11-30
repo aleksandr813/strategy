@@ -260,8 +260,11 @@ class DB
         return $this->query("SELECT id, x, y, last_income_datetime FROM villages WHERE user_id = ?", [$userId]);
     }
 
-    public function getBuildingType($buildingType)
-    {
+    public function getVillages() {
+        return $this->queryAll("SELECT id, user_id, x, y FROM villages");
+    }
+
+    public function getBuildingType($buildingType) {
         return $this->query("SELECT id, hp, price FROM building_types WHERE id = ?", [$buildingType]);
     }
 
@@ -353,8 +356,7 @@ class DB
         );
     }
 
-    public function sendArmy($userId, $targetX, $targetY, $targetId, $units)
-    {
+    public function sendArmy($userId, $startX, $startY, $startTime, $arrivalTime, $targetX, $targetY, $targetId, $units, $speed) {
         $army = [];
         foreach ($units as $unit) {
             $army[] = $unit['id'];
@@ -362,21 +364,21 @@ class DB
 
         $armyString = implode(',', $army);
 
-        return $this->execute(
-            "INSERT INTO army (userId, x, y, attackId, units) VALUES (?, ?, ?, ?, ?)",
-            [$userId, $targetX, $targetY, $targetId, $armyString]
-        );
+        return $this->execute("
+        INSERT INTO army 
+        (userId, startX, startY, startTime, arrivalTime, targetX, targetY, attackId, units, speed) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [$userId, $startX, $startY, $startTime, $arrivalTime, $targetX, $targetY, $targetId, $armyString, $speed]);
     }
 
-    public function moveArmyBack($userId, $armyId)
+  public function moveArmyBack($userId, $armyId)
     {
         return $this->execute(
             "DELETE FROM army 
             WHERE userId = ? AND army = ?",
             [$userId, $armyId]
         );
-    }
-
+  }
     public function unitsOnACrusade($villageId, $units)
     {
         $army = [];
@@ -409,5 +411,48 @@ class DB
             "UPDATE units SET on_a_crusade = 0 WHERE id IN ($placeholder) AND village_id = ?",
             $params
         );
+    }
+
+    public function getArmies() {
+        return $this->queryAll("
+        SELECT 
+            army, 
+            userId, 
+            startX, 
+            startY,
+            startTime,
+            arrivalTime,
+            targetX,
+            targetY, 
+            attackId, 
+            units,
+            speed
+        FROM army");
+    }
+
+    public function getUnitsSpeed($units) {
+        $unitIds = [];
+        foreach($units as $unit) {
+            $unitIds[] = $unit['id'];
+        }
+
+        $placeholder = implode(',', array_fill(0, count($unitIds), '?'));
+
+        return $this->queryAll(
+            "SELECT u.id, ut.speed
+            FROM units AS u
+            INNER JOIN unit_types AS ut
+            ON u.type_id = ut.id
+            WHERE u.id IN ($placeholder)",
+            $unitIds
+        );
+    }
+
+    public function getMapHash() {
+        return $this->query("SELECT id, hash FROM map_hashes WHERE id = 1");
+    }
+
+    public function updateMapHash($hash) {
+        return $this->execute("UPDATE map_hashes SET hash = ? WHERE id = 1", [$hash]);
     }
 }

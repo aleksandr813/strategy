@@ -8,6 +8,7 @@ import Unit from '../entities/Unit';
 import Building from '../entities/Building';
 import Game from '../Game';
 import Manager, { GameData } from "./Manager";
+import { BuildingTypeID } from '../../services/server/types';
 
 
 const { WIDTH, HEIGHT } = CONFIG;
@@ -36,6 +37,14 @@ class Village extends Manager {
         this.gameData.getBuildings().forEach(b => b.deselected?.());
         if (building) building.selected?.();
         this.selectedBuilding = building;
+    }
+
+    public getTownHallLevel(): number {
+        const buildings = this.gameData.getBuildings();
+        const townHall = buildings.find(
+            (b) => b.typeId === BuildingTypeID.TownHall
+        );
+        return townHall ? townHall.level : 0;
     }
 
     public selectUnit(unit: Unit | null): void {
@@ -140,7 +149,8 @@ class Village extends Manager {
                 2,
                 buildingData.typeId,
                 buildingData.x,
-                buildingData.y,   
+                buildingData.y,
+                buildingData.unlockLevel   
             );
         });
 

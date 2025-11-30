@@ -11,7 +11,8 @@ export default class Building {
     level: number;
     size: number; 
     sprites: number[];
-    isselected: boolean = false;  
+    isselected: boolean = false; 
+    unlockLevel: number; 
 
     private static SPRITE_MAP: Record<BuildingTypeID, number[]> = {
         [BuildingTypeID.TownHall]: [1, 2, 3, 4], // TownHall (Ратуша)
@@ -22,7 +23,7 @@ export default class Building {
     };
 
 
-    constructor(id:number, type: string, hp:number, maxHp:number, level:number, size:number, typeId:number, x:number, y:number) {
+    constructor(id:number, type: string, hp:number, maxHp:number, level:number, size:number, typeId:number, x:number, y:number, unlocklevel: number) {
         this.id = id;
         this.type = type;
         this.hp = hp;
@@ -30,6 +31,7 @@ export default class Building {
         this.level = level;
         this.size = 2; 
         this.typeId = typeId;
+        this.unlockLevel = unlocklevel;
 
         
         const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
