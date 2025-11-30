@@ -1,8 +1,8 @@
 .Panel {
     position: fixed; 
-    bottom: 0;       
+    bottom: 0;
     left: 0;
-    width: 100%;     
+    width: 100%;
     z-index: 10;
 
     .panel-background {
@@ -28,7 +28,7 @@
         box-sizing: border-box;
         /* Добавляем ограничения */
         max-width: 100%;
-        overflow: hidden; /* Добавлено: скрываем вылезающее за границы */
+        overflow: hidden; 
     }
 
     .panel-button {
@@ -50,11 +50,11 @@
         }
 
         &.big-btn {
-            height: min(80%, 10vmin); /* Изменено: увеличил с 60% до 80% для большей миникарты */
+            height: min(80%, 10vmin); 
             aspect-ratio: 1;
             width: auto;
-            max-width: 80px; /* Ограничиваем максимальную ширину */
-            max-height: 80%; /* Изменено: с 60% до 80% */
+            max-width: 80px; 
+            max-height: 80%; 
         }
 
         &.mini-btn {
@@ -63,7 +63,7 @@
         }
 
         &.chat-btn {
-            height: 6vmin;  /* Уменьшил с 8vmin */
+            height: 6vmin; 
             width: 6vmin; 
         }
     }
@@ -74,8 +74,8 @@
         align-items: center;
         height: 100%;
         gap: 1vw;
-        flex: 0 1 auto; /* Разрешаем сжатие, но не растяжение */
-        min-width: 0; /* Важно для правильного сжатия */
+        flex: 0 1 auto; 
+        min-width: 0; 
 
         .info-column {
             display: flex;
@@ -83,7 +83,7 @@
             justify-content: center;
             gap: 5%;
             height: 70%;
-            min-width: 0; /* Важно для правильного сжатия */
+            min-width: 0; 
 
             .info-row {
                 display: flex;
@@ -92,14 +92,14 @@
                 height: 45%;
 
                 &.bottom {
-                    gap: 1vw;  
+                    gap: 1vw;
                 }
             }
 
             .name-plate-bg {
                 height: 100%;
                 width: auto;
-                max-width: 150px; /* Ограничиваем ширину */
+                max-width: 150px; 
                 image-rendering: pixelated;
             }
 
@@ -108,7 +108,7 @@
                 height: 100%;
                 width: auto;
                 aspect-ratio: 3 / 1;
-                max-width: 120px; /* Ограничиваем ширину */
+                max-width: 120px; 
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -142,7 +142,7 @@
                         color: #ffcc00;
                         font-family: monospace;
                         font-weight: bold;
-                        font-size: clamp(10px, 1.2vw, 20px); /* Уменьшил размер */
+                        font-size: clamp(10px, 1.2vw, 20px); 
                         text-shadow: 2px 2px 0 #000;
                     }
                 }
@@ -151,24 +151,27 @@
     }
 
     .right-section {
+        position: relative;
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: center; /* ИЗМЕНЕНО: Выравнивание по нижнему краю для стабильности */
         height: 100%;
-        gap: 0.5vw; /* Уменьшил gap */
-        flex: 0 1 auto; /* Разрешаем сжатие */
-        min-width: 0; /* Важно для правильного сжатия */
+        gap: 0.5vw; 
+        flex: 0 1 auto; 
+        min-width: 0; 
 
         .small-buttons-grid {
             display: grid;
+            transform: translateY(-40%);
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 1fr;
-            gap: 3px; /* Уменьшил gap */
-            height: min(10vmin, 100%);  /* Изменено: min(10vmin, 100%) для сжатия */
-            width: min(10vmin, 100%);   /* Изменено: min(10vmin, 100%) для сжатия */
-            aspect-ratio: 1; /* Сохраняем квадратную форму */
+            gap: 3px; 
+            height: min(10vmin, 100%); 
+            width: min(10vmin, 100%); 
+            aspect-ratio: 1; 
             flex-shrink: 0;
-            margin-top: -30%; /* Добавлено: поднимаем сетку на 10% вверх относительно центра */
+            margin-top: 0; /* ИЗМЕНЕНО: Удален отрицательный отступ */
+            margin-bottom: 2vmin; /* ДОБАВЛЕНО: Для вертикального центрирования кнопок относительно низа панели */
         }
 
         .settings-container {
@@ -199,11 +202,11 @@
         min-height: 12vh;
 
         .panel-content {
-            padding: 0 3%;  
+            padding: 0 3%;
         }
 
         .big-btn {
-            height: min(75%, 8vmin); /* Изменено: с 55% до 75% для большей миникарты */
+            height: min(75%, 8vmin); 
         }
 
         .chat-btn {
@@ -212,13 +215,14 @@
         }
 
         .right-section .small-buttons-grid {
-            height: min(8vmin, 100%);  /* Изменено: min(8vmin, 100%) */
-            width: min(8vmin, 100%);   /* Изменено: min(8vmin, 100%) */
-            margin-top: -8%; /* Изменено: меньше подъём на меньших экранах */
+            height: min(8vmin, 100%);
+            width: min(8vmin, 100%);
+            margin-top: 0; /* ИЗМЕНЕНО: убираем подъем */
+            margin-bottom: 1.5vmin; /* Немного уменьшенный нижний отступ */
         }
     }
 
-    @media (max-width: 768px) {  
+    @media (max-width: 768px) {
         min-height: auto; 
 
         .panel-content {
@@ -232,8 +236,9 @@
             width: 100%;
             justify-content: space-around; 
             height: auto;
-            gap: 3vw; /* Уменьшил gap */
+            gap: 3vw; 
             margin: 0;
+            align-items: center; /* ИЗМЕНЕНО: центрируем элементы на мобильных */
         }
 
         .big-btn {
@@ -252,20 +257,22 @@
         }
         
         .right-section .small-buttons-grid {
-            height: min(8vmin, 100%);  /* Изменено: min(8vmin, 100%) */
-            width: min(8vmin, 100%);   /* Изменено: min(8vmin, 100%) */
-            grid-template-columns: 1fr 1fr 1fr 1fr;  
+            height: min(8vmin, 100%);
+            width: min(35vmin, 100%); /* ИЗМЕНЕНО: Увеличение ширины для 4 кнопок в ряд */
+            grid-template-columns: 1fr 1fr 1fr 1fr;
             grid-template-rows: 1fr;
             gap: 8px;
-            margin-top: 0; /* Изменено: убираем подъём в вертикальном layout */
+            margin-top: 0; 
+            margin-bottom: 0; /* Убираем нижний отступ в вертикальном layout */
         }
     }
 
-    @media (max-width: 480px) {  
+    @media (max-width: 480px) {
         .right-section .small-buttons-grid {
-             height: min(10vmin, 100%);  /* Изменено: min(10vmin, 100%) */
+             height: min(10vmin, 100%);
              gap: 5px;
-             margin-top: 0; /* Изменено: убираем подъём на очень маленьких экранах */
+             width: min(40vmin, 100%); /* Немного больше ширины для мелких экранов */
+             margin-top: 0; 
         }
         
         .big-btn {
