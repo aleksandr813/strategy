@@ -50,7 +50,7 @@ export default class Unit {
         this.currentPathIndex = 0;
     }
 
-    moveUnit(destination: TPoint) {
+    calcPath(destination: TPoint) {
         this.clearUnitMovement();
         
         const matrix = this.game.village.getMatrixForEasyStar(this);
@@ -91,7 +91,7 @@ export default class Unit {
 
         if (isOccupied) {
             const destination = this.currentPath[this.currentPath.length - 1];
-            this.moveUnit(destination);
+            this.calcPath(destination);
             return false;
         }
 

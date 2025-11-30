@@ -97,7 +97,7 @@ class Manager {
         const selectedUnits: Unit[] = [];
         this.gameData.getUnits().forEach((unit) => {
             if (unit.isSelected) {
-                unit.moveUnit(destination);
+                unit.calcPath(destination);
                 selectedUnits.push(unit);
             }
         });
