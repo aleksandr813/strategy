@@ -1,3 +1,16 @@
+.VillageCanvas,
+.game-field {
+    width: 100%;
+    height: 100%;
+    position: fixed; 
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; 
+    z-index: 1; 
+}
+
 .buy-menu-overlay {
     position: fixed;
     top: 0;
