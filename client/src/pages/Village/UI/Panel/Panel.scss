@@ -1,13 +1,9 @@
 .Panel {
     position: fixed; 
-    bottom: 0;      
+    bottom: 0;       
     left: 0;
-    width: 100%;
-    min-height: 10vh;  
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    z-index: 1000; 
+    width: 100%;     
+    z-index: 10;
 
     .panel-background {
         width: 100%;

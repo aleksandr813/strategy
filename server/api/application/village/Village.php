@@ -296,13 +296,13 @@ class Village
         return true;
     }
 
-    public function sendArmy($userId, $units, $target) {
+    public function sendArmy($user, $units, $target) {
         if (count($units) === 0) {
             return ['error' => 600];
         }
 
-        $village = $this->db->getVillage($userId);
-        if (!$village) {
+        $startVillage = $this->db->getVillage($user->id);
+        if (!$startVillage) {
             return ['error' => 315];
         }
 
@@ -311,16 +311,51 @@ class Village
             return ['error' => 315];
         }
 
-        $army = $this->db->sendArmy($userId, $targetVillage->x, $targetVillage->y, $target, $units);
+        $crusadeCoast = count($units) * $this->config['game']['costPerUnit'];
+
+        if ($user->money < $crusadeCoast) {
+            return ['error' => 305];
+        }
+
+        $newMoney = $user->money - $crusadeCoast;
+        $this->db->updateMoney($user->id, $newMoney);
+
+        $unitsSpeed = $this->db->getUnitsSpeed($units);
+
+        $speed = PHP_INT_MAX;
+        foreach($unitsSpeed as $unitSpeed) {
+            if ($unitSpeed['speed'] < $speed) {
+                $speed = $unitSpeed['speed'];
+            }
+        }
+
+        $startTime = date('Y-m-d H:i:s');
+        $distance = sqrt(pow($targetVillage->x - $startVillage->x, 2) + pow($targetVillage->y - $startVillage->y, 2));
+        $travelTime = $distance / $speed;
+        $arrivalTime = date('Y-m-d H:i:s', time() + $travelTime);
+
+        $army = $this->db->sendArmy(
+            $user->id, 
+            $startVillage->x, 
+            $startVillage->y, 
+            $startTime,
+            $arrivalTime,
+            $targetVillage->x, 
+            $targetVillage->y, 
+            $target, 
+            $units, 
+            $speed
+        );
+
         if (!$army) {
             return ['error' => 601];
         }
 
-        $crusade = $this->db->unitsOnACrusade($village->id, $units);
+        $crusade = $this->db->unitsOnACrusade($startVillage->id, $units);
         if (!$crusade) {
             return ['error'];
         }
 
-        return true;
+        return ['newMoney' => $newMoney];
     }
 }

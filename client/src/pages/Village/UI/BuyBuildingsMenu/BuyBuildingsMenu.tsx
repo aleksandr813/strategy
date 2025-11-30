@@ -22,6 +22,7 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
     const game = useContext(GameContext);
     const village = game.getVillage();
     const [buildingTypes, setBuildingTypes] = useState<TBuildingType[]>([]);
+    const [townHallLevel, setTownHallLevel] = useState(0);
 
     const closeBuyMenu = () => setUIElement(UIELEMENT.NULL);
 
@@ -38,15 +39,31 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
     }
 
     const buyBuilding = async (building: TBuildingType) => {
+        if (townHallLevel < building.unlockLevel) {
+            alert(`Для покупки ${building.type} нужна ратуша уровня ${building.unlockLevel}`);
+            return;
+        }
         console.log(`Покупка здания: ${building.type}`);
         village.getScene().unitPreview.deactivate();
         village.getScene().buildingPreview.activate(building.id, building.hp);
         setUIElement(UIELEMENT.NULL);
     };
 
+    const isBuildingAvailable = (building: TBuildingType): boolean => {
+        console.log("ТИПЫ ЗДАНИЙ",building);
+        console.log("УРОВЕНЬ РАТУШИ В СРАВНЕНИИ", townHallLevel);
+        console.log("УРОВЕНЬ ЗДАНИЯ В СРАВНЕНИИ:", building.unlockLevel);
+        console.log("СРАВНЕНИЕ", townHallLevel >= building.unlockLevel)
+        return townHallLevel >= building.unlockLevel;
+    }; 
+
     useEffect(() => {
         (async () => {
+            await village.loadBuildings();
             setBuildingTypes(await loadBuildingTypes());
+            const level = village.getTownHallLevel(); 
+            console.log("ЗАГРУЖЕН УРОВЕНЬ РАТУШИ:", level);
+            setTownHallLevel(level);
         })();
     }, []);
 
@@ -63,7 +80,7 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
 
                     {
                         buildingTypes.map((building) => (
-                            <div key={building.id} className="buy-menu-item">
+                            <div key={building.id} className={`buy-menu-item ${!isBuildingAvailable(building) ? 'disabled' : ''}`}>
                                 <div className="building-info">
                                     <span className="building-name">{building.type}</span>
                                     <span className="building-details">
@@ -73,6 +90,7 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
                                 <Button
                                     onClick={() => buyBuilding(building)}
                                     text='Купить'
+                                    isDisabled={!isBuildingAvailable(building)}
                                 />
                             </div>
                         ))
