@@ -1,17 +1,17 @@
 .Panel {
-    position: relative;
+    position: fixed; 
+    bottom: 0;      
+    left: 0;
     width: 100%;
     min-height: 10vh;  
-    max-height: 20vh;  
-    transform: translateY(-5vh);  
-
     display: flex;
     justify-content: center;
     align-items: flex-end;
+    z-index: 1000; 
 
     .panel-background {
         width: 100%;
-        height: 100%;  
+        height: auto; 
         display: block;
         user-select: none;
         pointer-events: none;
@@ -24,13 +24,15 @@
         left: 0;
         width: 100%;
         height: 100%;
-
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-end;
         padding: 0 2%;
         box-sizing: border-box;
+        /* Добавляем ограничения */
+        max-width: 100%;
+        overflow: hidden; /* Добавлено: скрываем вылезающее за границы */
     }
 
     .panel-button {
@@ -52,9 +54,11 @@
         }
 
         &.big-btn {
-            height: 75%;
+            height: min(80%, 10vmin); /* Изменено: увеличил с 60% до 80% для большей миникарты */
             aspect-ratio: 1;
             width: auto;
+            max-width: 80px; /* Ограничиваем максимальную ширину */
+            max-height: 80%; /* Изменено: с 60% до 80% */
         }
 
         &.mini-btn {
@@ -63,8 +67,8 @@
         }
 
         &.chat-btn {
-            height: 10vh;  
-            width: 10vh;   
+            height: 6vmin;  /* Уменьшил с 8vmin */
+            width: 6vmin; 
         }
     }
 
@@ -73,7 +77,9 @@
         flex-direction: row;
         align-items: center;
         height: 100%;
-        gap: 1vw;  
+        gap: 1vw;
+        flex: 0 1 auto; /* Разрешаем сжатие, но не растяжение */
+        min-width: 0; /* Важно для правильного сжатия */
 
         .info-column {
             display: flex;
@@ -81,6 +87,7 @@
             justify-content: center;
             gap: 5%;
             height: 70%;
+            min-width: 0; /* Важно для правильного сжатия */
 
             .info-row {
                 display: flex;
@@ -96,6 +103,7 @@
             .name-plate-bg {
                 height: 100%;
                 width: auto;
+                max-width: 150px; /* Ограничиваем ширину */
                 image-rendering: pixelated;
             }
 
@@ -104,6 +112,7 @@
                 height: 100%;
                 width: auto;
                 aspect-ratio: 3 / 1;
+                max-width: 120px; /* Ограничиваем ширину */
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -137,7 +146,7 @@
                         color: #ffcc00;
                         font-family: monospace;
                         font-weight: bold;
-                        font-size: clamp(12px, 1.5vw, 24px);  
+                        font-size: clamp(10px, 1.2vw, 20px); /* Уменьшил размер */
                         text-shadow: 2px 2px 0 #000;
                     }
                 }
@@ -150,17 +159,20 @@
         flex-direction: row;
         align-items: center;
         height: 100%;
-        gap: 1vw;
-        transform: translateY(-8vh);  
+        gap: 0.5vw; /* Уменьшил gap */
+        flex: 0 1 auto; /* Разрешаем сжатие */
+        min-width: 0; /* Важно для правильного сжатия */
 
         .small-buttons-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 1fr;
-            gap: 5px;
-
-            height: 75%;  
-            aspect-ratio: 1;
+            gap: 3px; /* Уменьшил gap */
+            height: min(10vmin, 100%);  /* Изменено: min(10vmin, 100%) для сжатия */
+            width: min(10vmin, 100%);   /* Изменено: min(10vmin, 100%) для сжатия */
+            aspect-ratio: 1; /* Сохраняем квадратную форму */
+            flex-shrink: 0;
+            margin-top: -30%; /* Добавлено: поднимаем сетку на 10% вверх относительно центра */
         }
 
         .settings-container {
@@ -185,36 +197,36 @@
         }
     }
 
+    /* --- ОПТИМИЗИРОВАННЫЕ МЕДИА-ЗАПРОСЫ --- */
+
     @media (max-width: 1024px) { 
         min-height: 12vh;
-        max-height: 25vh;
-        transform: translateY(-6vh);  
 
         .panel-content {
             padding: 0 3%;  
         }
 
+        .big-btn {
+            height: min(75%, 8vmin); /* Изменено: с 55% до 75% для большей миникарты */
+        }
+
         .chat-btn {
-            height: 12vh;
-            width: 12vh;
+            height: 5vmin;
+            width: 5vmin;
         }
 
-        .small-buttons-grid {
-            height: 80%;  
-        }
-
-        .right-section {
-            transform: translateY(-2.5vh);  
+        .right-section .small-buttons-grid {
+            height: min(8vmin, 100%);  /* Изменено: min(8vmin, 100%) */
+            width: min(8vmin, 100%);   /* Изменено: min(8vmin, 100%) */
+            margin-top: -8%; /* Изменено: меньше подъём на меньших экранах */
         }
     }
 
     @media (max-width: 768px) {  
-        min-height: 15vh;
-        max-height: 30vh;
-        transform: translateY(-7vh);  
+        min-height: auto; 
 
         .panel-content {
-            flex-direction: column;  
+            flex-direction: column; 
             justify-content: center;
             align-items: center;
             padding: 2% 5%;
@@ -222,45 +234,52 @@
 
         .left-section, .right-section {
             width: 100%;
-            justify-content: center;
+            justify-content: space-around; 
+            height: auto;
+            gap: 3vw; /* Уменьшил gap */
+            margin: 0;
         }
 
+        .big-btn {
+            height: 10vmin;
+            width: 10vmin;
+        }
+        
         .chat-btn {
-            height: 15vh;
-            width: 15vh;
-        }
-
-        .small-buttons-grid {
-            height: 90%;
-            grid-template-columns: 1fr 1fr 1fr 1fr;  
-            grid-template-rows: 1fr;
+            height: 8vmin;
+            width: 8vmin;
         }
 
         .info-column {
-            height: 80%;
+            height: 100%;
+            flex-grow: 1;
         }
-
-        .right-section {
-            transform: translateY(0);  
+        
+        .right-section .small-buttons-grid {
+            height: min(8vmin, 100%);  /* Изменено: min(8vmin, 100%) */
+            width: min(8vmin, 100%);   /* Изменено: min(8vmin, 100%) */
+            grid-template-columns: 1fr 1fr 1fr 1fr;  
+            grid-template-rows: 1fr;
+            gap: 8px;
+            margin-top: 0; /* Изменено: убираем подъём в вертикальном layout */
         }
     }
 
     @media (max-width: 480px) {  
-        min-height: 20vh;
-        max-height: 40vh;
-        transform: translateY(-8vh);
-
+        .right-section .small-buttons-grid {
+             height: min(10vmin, 100%);  /* Изменено: min(10vmin, 100%) */
+             gap: 5px;
+             margin-top: 0; /* Изменено: убираем подъём на очень маленьких экранах */
+        }
+        
+        .big-btn {
+            height: 12vmin;
+            width: 12vmin;
+        }
+        
         .chat-btn {
-            height: 18vh;
-            width: 18vh;
-        }
-
-        .small-buttons-grid {
-            gap: 10px;  
-        }
-
-        .right-section {
-            transform: translateY(0);  
+            height: 10vmin;
+            width: 10vmin;
         }
     }
 }
