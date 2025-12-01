@@ -38,6 +38,7 @@ function result($params) {
             case 'deleteBuilding': return $app->deleteBuilding($params);
             case 'getIncome': return $app->getIncome($params);
             case 'sendArmy': return $app->sendArmy($params);
+            case 'moveArmyBack': return $app->moveArmyBack($params);
             case 'getMap': return $app->getMap($params);
             //calc
             case 'getRoots': return $app->getRoots($params);
