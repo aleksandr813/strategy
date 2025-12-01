@@ -67,6 +67,7 @@ class Village extends Manager {
         if (this.selectedBuilding === building) {
             this.selectedBuilding = null;
         }
+        this.updateAllWallSprites();
     }
 
     public async handleBuildingPlacement(): Promise<void> {
@@ -79,6 +80,9 @@ class Village extends Manager {
         
         if (result) {
             await this.loadBuildings();
+            if (typeId === 4) {
+                this.updateAllWallSprites();
+            }
         }
     }
 
@@ -139,13 +143,17 @@ class Village extends Manager {
         }
 
         const buildings = buildingsData.map(buildingData => {
+            let size = 2;
+            if (buildingData.typeId === 4) {
+                size = 1;
+            };
             return new Building(
                 buildingData.id,
                 buildingData.type,
                 buildingData.currentHp, 
                 buildingData.currentHp,
                 buildingData.level,
-                2,
+                size,
                 buildingData.typeId,
                 buildingData.x,
                 buildingData.y,
@@ -154,6 +162,7 @@ class Village extends Manager {
         });
 
         this.gameData.setBuildings(buildings);
+        this.updateAllWallSprites();
         console.log("Загружено зданий:", this.gameData.getBuildings().length);
     }
 
@@ -182,24 +191,85 @@ class Village extends Manager {
     }
 
     getVillageMatrix(units: Unit[], buildings: Building[]): number[][] {
-        const matrix: number[][] = Array(29).fill(null).map(() => Array(87).fill(0));
+        const booleanMatrix: number[][] = Array(29).fill(null).map(() => Array(87).fill(0));
         
         units.forEach((unit) => {
             if (unit.coords.y < 29 && unit.coords.x < 87) { 
-                matrix[unit.coords.y][unit.coords.x] = 1;
+                booleanMatrix[unit.coords.y][unit.coords.x] = 1;
             }
         });
-        
-        buildings.forEach((building) => {
-            const [bx, by] = [building.coords[0].x, building.coords[0].y];
-            if (by < 29 && bx < 87) matrix[by][bx] = 1;
-            if (by + 1 < 29 && bx < 87) matrix[by + 1][bx] = 1;
-            if (by < 29 && bx + 1 < 87) matrix[by][bx + 1] = 1;
-            if (by + 1 < 29 && bx + 1 < 87) matrix[by + 1][bx + 1] = 1;
+        buildings.forEach((element) => {
+            const [bx, by] = [element.coords[0].x, element.coords[0].y];
+            if (element.size === 1) {
+                if (by < 29 && bx < 87) booleanMatrix[by][bx] = 1;
+            } else {
+                if (by < 29 && bx < 87) booleanMatrix[by][bx] = 1;
+                if (by + 1 < 29 && bx < 87) booleanMatrix[by + 1][bx] = 1;
+                if (by < 29 && bx + 1 < 87) booleanMatrix[by][bx + 1] = 1;
+                if (by + 1 < 29 && bx + 1 < 87) booleanMatrix[by + 1][bx + 1] = 1;
+            }
         });
-        
+        return booleanMatrix;
+    }
+
+    private getMatrixForWalls(units: Unit[], buildings: Building[]): number[][] {
+        let matrix: number[][] = Array(29).fill(null).map(() => Array(87).fill(0));
+        for (let i = 0; i < 29; i++) {
+            matrix[i] = new Array(87).fill(0);
+        }
+        units.forEach((element) => {
+            if (element.coords.y < 29 && element.coords.x < 87) {
+                matrix[element.coords.y][element.coords.x] = 2;
+            }
+        });
+        buildings.forEach((element) => {
+            const [bx, by] = [element.coords[0].x, element.coords[0].y];
+            if (element.size === 1) {
+                if (by < 29 && bx < 87) matrix[by][bx] = 1;
+            } else {
+                if (by < 29 && bx < 87) matrix[by][bx] = 1;
+                if (by + 1 < 29 && bx < 87) matrix[by + 1][bx] = 1;
+                if (by < 29 && bx + 1 < 87) matrix[by][bx + 1] = 1;
+                if (by + 1 < 29 && bx + 1 < 87) matrix[by + 1][bx + 1] = 1;
+            }
+        })
         return matrix;
     }
+
+    private updateAllWallSprites(): void {
+        const { units, buildings } = this.getScene();
+        
+        buildings.forEach(building => {
+            if (building.typeId === 4) {
+                const wallSpriteIndex = this.calculateWallSprite(building.coords[0].x, building.coords[0].y, units, buildings);
+                building.updateWallSprite(wallSpriteIndex);
+            }
+        });
+    }
+
+    private calculateWallSprite(x: number, y: number, units: Unit[], buildings: Building[]): number {
+        const matrix = this.getMatrixForWalls(units, buildings);
+
+        const up = y > 0 ? matrix[y - 1][x] : 0;
+        const down = y < 28 ? matrix[y + 1][x] : 0;
+        const left = x > 0 ? matrix[y][x - 1] : 0;
+        const right = x < 86 ? matrix[y][x + 1] : 0;
+
+        if (up === 1 && down === 1 && left === 1 && right === 1) return 41;
+        if (left === 1 && down === 1 && up === 1 && right !== 1) return 90;
+        if (right === 1 && left === 1 && up === 1 && down !== 1) return 89;
+        if (right === 1 && down === 1 && up === 1 && left !== 1) return 88;
+        if (right === 1 && left === 1 && down === 1 && up !== 1) return 87;
+        if (left === 1 && up === 1 && down !== 1 && right !== 1) return 86;
+        if (right === 1 && up === 1 && down !== 1 && left !== 1) return 85;
+        if (right === 1 && down === 1 && up !== 1 && left !== 1) return 84;
+        if (left === 1 && down === 1 && up !== 1 && right !== 1) return 83;
+        if ((left === 1 || right === 1) && up !== 1 && down !== 1) return 82;
+        if ((up === 1 || down === 1) && left !== 1 && right !== 1) return 81;
+        
+        return 81;
+    }
+
 }
 
 export default Village;

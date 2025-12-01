@@ -45,7 +45,11 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
         }
         console.log(`Покупка здания: ${building.type} c id: ${building.id}`);
         village.getScene().unitPreview.deactivate();
-        village.getScene().buildingPreview.activate(building.id);
+        let size = 2;
+        if (building.id == 4) {
+            size = 1;
+        }
+        village.getScene().buildingPreview.activate(building.id, size);
         setUIElement(UIELEMENT.NULL);
     };
 

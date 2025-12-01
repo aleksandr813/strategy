@@ -18,35 +18,64 @@ export default class Building {
         [BuildingTypeID.TownHall]: [1, 2, 3, 4], // TownHall (Ратуша)
         [BuildingTypeID.Mine]:     [5, 6, 7, 8], // Mine (Шахта)
         [BuildingTypeID.Tower]:     [9, 10, 11, 12],
-        [BuildingTypeID.Wall]:     [13],
+        [BuildingTypeID.Wall]:     [81],
         [BuildingTypeID.Kazarma]:  [14, 15, 16 ,17],
     };
 
+    private static WALL_SPRITES: Record<number, number> = {
+        41: 41, // со всех 4 сторон
+        90: 90, // слева, снизу и сверху
+        89: 89, // справа, слева и сверху
+        88: 88, // справа, снизу и сверху
+        87: 87, // справа, слева и снизу
+        86: 86, // слева и сверху
+        85: 85, // справа и сверху
+        84: 84, // справа и снизу
+        83: 83, // слева и снизу
+        82: 82, // справа и слева
+        81: 81, // сверху и снизу или нет
+    };
 
-    constructor(id:number, type: string, hp:number, maxHp:number, level:number, size:number, typeId:number, x:number, y:number, unlocklevel: number) {
+
+    constructor(id:number, type: string, hp:number, maxHp:number, level:number, size:number, typeId:number, x:number, y:number, unlocklevel: number, wallSpriteIndex?: number) {
         this.id = id;
         this.type = type;
         this.hp = hp;
         this.maxHp = maxHp;
         this.level = level;
-        this.size = 2; 
+        this.size = size; 
         this.typeId = typeId;
         this.unlockLevel = unlocklevel;
 
         
-        const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
-        this.sprites = spriteSet;
+        if (typeId === BuildingTypeID.Wall && wallSpriteIndex !== undefined) {
+            this.sprites = [Building.WALL_SPRITES[wallSpriteIndex] || 81];
+            this.coords = [
+                { x: Number(x), y: Number(y) },
+            ];
+        } else {
+            const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
+            this.sprites = spriteSet;
 
-        this.coords = [
-            // Верхний Левый тайл здания на карте
-            { x: Number(x), y: Number(y) },
-            // Верхний Правый
-            { x: Number(x) + 1, y: Number(y) },
-            // Нижний Левый
-            { x: Number(x), y: Number(y) + 1 },
-            // Нижний Правый
-            { x: Number(x) + 1, y: Number(y) + 1 },
-        ];
+            this.coords = [
+                // Верхний Левый тайл здания на карте
+                { x: Number(x), y: Number(y) },
+                // Верхний Правый
+                { x: Number(x) + 1, y: Number(y) },
+                // Нижний Левый
+                { x: Number(x), y: Number(y) + 1 },
+                // Нижний Правый
+                { x: Number(x) + 1, y: Number(y) + 1 },
+            ];
+        }
+
+        
+    }
+
+    public updateWallSprite(wallSpriteIndex: number): void {
+        if (this.typeId === BuildingTypeID.Wall) {
+            this.sprites = [Building.WALL_SPRITES[wallSpriteIndex] || 81];
+        }
     }
 
     selected():void{
