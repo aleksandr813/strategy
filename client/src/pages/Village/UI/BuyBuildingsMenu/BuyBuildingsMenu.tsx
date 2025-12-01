@@ -46,7 +46,7 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
         console.log(`Покупка здания: ${building.type} c id: ${building.id}`);
         village.getScene().unitPreview.deactivate();
         let size = 2;
-        if (building.type === 'wall') {
+        if (building.id == 4) {
             size = 1;
         }
         village.getScene().buildingPreview.activate(building.id, size);
