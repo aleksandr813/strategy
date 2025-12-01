@@ -85,7 +85,6 @@ export type TUnit = {
 
 }
 
-export type TMap = (
+export type TMap = {
     id: number;
-    
-)
+}

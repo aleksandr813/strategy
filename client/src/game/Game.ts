@@ -7,6 +7,7 @@ import Battle from "./manager/Battle";
 import Unit from './entities/Unit';
 import Building from './entities/Building';
 import GAMECONFIG from './gameConfig';
+import { Entity } from './entities/Entity';
 
 class Game {
     private store: Store;
@@ -15,6 +16,9 @@ class Game {
     
     private units: Unit[] = [];
     private buildings: Building[] = [];
+
+    private villages: Entity[] = [];
+    private armies: Entity[] = [];
     
     private incomeInterval: NodeJS.Timer | null = null;
     
@@ -60,8 +64,10 @@ class Game {
     }
 
 
-    private getGameData() {
+    protected getGameData() {
         return {
+            getArmies: () => this.armies,
+            getVillages: () => this.villages,
             getUnits: () => this.units,
             getBuildings: () => this.buildings,
             setUnits: (units: Unit[]) => { this.units = units; },

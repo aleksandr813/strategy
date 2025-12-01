@@ -4,11 +4,11 @@ import { SPRITE_MAP, UnitTypeID, getUnitSprites } from "../gameConfig";
 import { TPoint } from "../../config";
 import { TUnit } from "../../services/server/types";
 import Game from '../Game';
+import { Entity } from './Entity';
 
 const { GRID_HEIGHT, GRID_WIDTH, MOVE_INTERVAL } = GAMECONFIG
 
-export default class Unit {
-    id: number;
+export default class Unit extends Entity {
     typeId: UnitTypeID;
     type: string;
     coords: TPoint;
@@ -27,16 +27,16 @@ export default class Unit {
     private currentPathIndex: number = 0;
     
     constructor(data: TUnit, game: Game, easystar: EasyStar.js) {
-        this.id = data.id;
+        super(data.id, { x: data.x, y: data.y }, getUnitSprites(data.typeId as UnitTypeID));
+        
         this.typeId = data.typeId as UnitTypeID;
         this.type = data.type;
         this.hp = data.currentHp;
         this.maxHp = data.currentHp; 
         this.level = data.level;
-        this.unlockLevel = data.unlockLevel
+        this.unlockLevel = data.unlockLevel;
 
         this.sprites = getUnitSprites(this.typeId);
-
         this.coords = { x: data.x, y: data.y };
 
         this.game = game;

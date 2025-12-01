@@ -35,7 +35,7 @@ const Village: React.FC<IBasePage> = (props: IBasePage) => {
             <div>
                 <VillageCanvas />
             </div>
-            <UI store={store} />
+            <UI store={store} setPage={setPage} />
         </div>
     );
 };

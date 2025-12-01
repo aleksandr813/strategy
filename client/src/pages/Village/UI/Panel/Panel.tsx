@@ -3,6 +3,7 @@ import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
 import { useStoreMoney } from '../../../../hooks/useStore';
 import Store from '../../../../services/store/Store';
+import { PAGES } from '../../../PageManager';
 
 import "./Panel.scss";
 
@@ -22,20 +23,21 @@ import sendarmy from "../../../../assets/img/panel/sendarmy.png";
 
 interface PanelProps extends IBaseUIElement {
     store: Store;
+    setPage: (name: PAGES) => void;
 }
 
 const Panel: React.FC<PanelProps> = (props: PanelProps) => {
-    const { setUIElement, store } = props;
+    const { setUIElement, store, setPage } = props;
     const money = useStoreMoney(store);
 
     const buildingsHandler = () => setUIElement(UIELEMENT.BUYBUILDINGSMENU);
     const unitsHandler = () => setUIElement(UIELEMENT.BUYUNITSMENU);    
     const settingsHandler = () => setUIElement(UIELEMENT.NULL);
-    const globalmapHandler = () => setUIElement(UIELEMENT.NULL);
+    const globalmapHandler = () => setPage(PAGES.GLOBAL_MAP);
     const lidersHandler = () => setUIElement(UIELEMENT.NULL);
     const villageHandler = () => setUIElement(UIELEMENT.NULL);
     const chatHandler = () => setUIElement(UIELEMENT.NULL);
-    const sendArmyHandler = () => setUIElement(UIELEMENT.NULL)
+    const sendArmyHandler = () => setUIElement(UIELEMENT.NULL);
 
     return (
         <div className='Panel'>

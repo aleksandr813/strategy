@@ -32,7 +32,7 @@ class Server {
             const response = await fetch(url);
             const answer: TAnswer<T> = await response.json();
 
-            console.log('Server response:', answer);
+            //console.log('Server response:', answer);
 
             if (answer.result === 'ok' && answer.data) {
                 return answer.data;
@@ -246,18 +246,20 @@ class Server {
     }
 
     async getIncome(): Promise<void> {
-        console.log('getIncome called');
+        //console.log('getIncome called');
         const result = await this.request<{ money: number }>('getIncome');
-        console.log('getIncome result:', result);
+        //console.log('getIncome result:', result);
         
         if (result && typeof result === 'object' && 'money' in result) {
             this.store.setMoney(result.money);
         }
     }
 
-    //async getMap(): Promise<TMap> {
-    //    return
-    //}
+    async getMap(): Promise<void> {
+        const hash = this.store.getMapHash();
+        const map = this.request<boolean>('getMap', { hash })
+        console.log(map);
+    }
 }
 
 export default Server;

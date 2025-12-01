@@ -1,11 +1,11 @@
 import { TPoint } from "../../config";
 import { TBuilding as TBuildingType, BuildingTypeID } from "../../services/server/types";
+import { Entity } from "./Entity";
 
-export default class Building {
-    id: number;
+export default class Building extends Entity {
     typeId: number;
     type: string;
-    coords:TPoint[] = [];
+    coords: TPoint[] = [];
     hp: number;
     maxHp: number;
     level: number;
@@ -24,7 +24,16 @@ export default class Building {
 
 
     constructor(id:number, type: string, hp:number, maxHp:number, level:number, size:number, typeId:number, x:number, y:number, unlocklevel: number) {
-        this.id = id;
+        const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
+        const coords = [
+            { x: Number(x), y: Number(y) },
+            { x: Number(x) + 1, y: Number(y) },
+            { x: Number(x), y: Number(y) + 1 },
+            { x: Number(x) + 1, y: Number(y) + 1 },
+        ];
+        
+        super(id, coords, spriteSet);
+        
         this.type = type;
         this.hp = hp;
         this.maxHp = maxHp;
@@ -32,21 +41,9 @@ export default class Building {
         this.size = 2; 
         this.typeId = typeId;
         this.unlockLevel = unlocklevel;
-
         
-        const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
         this.sprites = spriteSet;
-
-        this.coords = [
-            // Верхний Левый тайл здания на карте
-            { x: Number(x), y: Number(y) },
-            // Верхний Правый
-            { x: Number(x) + 1, y: Number(y) },
-            // Нижний Левый
-            { x: Number(x), y: Number(y) + 1 },
-            // Нижний Правый
-            { x: Number(x) + 1, y: Number(y) + 1 },
-        ];
+        this.coords = coords;
     }
 
     selected():void{
