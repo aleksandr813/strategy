@@ -341,7 +341,7 @@ class DB
             "SELECT b.level AS level
             FROM buildings AS b
             INNER JOIN building_types AS bt
-            ON b.type_id = bt.id AND bt.type = 'Шахта'
+            ON b.type_id = bt.id AND bt.id = 2
             WHERE b.village_id = ?",
             [$villageId]
         );
@@ -414,7 +414,7 @@ class DB
     }
 
     public function getArmies() {
-        return $this->queryAll("
+        $result = $this->queryAll("
         SELECT 
             army, 
             userId, 
@@ -428,6 +428,20 @@ class DB
             units,
             speed
         FROM army");
+
+        foreach($result as &$army) {
+            $unitsArray = explode(',', $army['units']);
+
+            $unitsIntArr = [];
+
+            foreach($unitsArray as $unit) {
+                $unitsIntArr[] = intval($unit);
+            }
+
+            $army['units'] = $unitsIntArr;
+        }
+
+        return $result;
     }
 
     public function getUnitsSpeed($units) {
