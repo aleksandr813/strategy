@@ -44,6 +44,7 @@ class Game {
     }
 
     private async updateIncome(): Promise<void> {
+        if (!this.store.user) return;
         await this.server.getIncome();
     }
 
@@ -54,12 +55,10 @@ class Game {
         }
     }
 
-    private removeBuilding(building: Building): void {
-        const index = this.buildings.indexOf(building);
-        if (index > -1) {
-            this.buildings.splice(index, 1);
-        }
+    private async removeBuilding(building: Building): Promise<void> {
+        await this.server.deleteBuilding(building.id);
     }
+
 
     private getGameData() {
         return {

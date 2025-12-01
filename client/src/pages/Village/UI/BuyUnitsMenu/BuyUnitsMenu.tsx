@@ -39,7 +39,7 @@ const BuyUnitsMenu: React.FC<BuyUnitsMenuProps> = (props: BuyUnitsMenuProps) => 
         }
         console.log(`Покупка юнита: ${unit.type}`);
         village.getScene().buildingPreview.deactivate();
-        village.getScene().unitPreview.activate(unit.type, unit.id, unit.hp);
+        village.getScene().unitPreview.activate(unit.id);
         setUIElement(UIELEMENT.NULL);
     };
 

@@ -43,9 +43,9 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
             alert(`Для покупки ${building.type} нужна ратуша уровня ${building.unlockLevel}`);
             return;
         }
-        console.log(`Покупка здания: ${building.type}`);
+        console.log(`Покупка здания: ${building.type} c id: ${building.id}`);
         village.getScene().unitPreview.deactivate();
-        village.getScene().buildingPreview.activate(building.id, building.hp);
+        village.getScene().buildingPreview.activate(building.id);
         setUIElement(UIELEMENT.NULL);
     };
 
