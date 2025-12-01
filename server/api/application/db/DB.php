@@ -289,12 +289,12 @@ class DB
 
     public function getBuildingTypes()
     {
-        return $this->queryAll("SELECT id, type, hp, price FROM building_types");
+        return $this->queryAll("SELECT id, type, hp, price, unlock_level as unlockLevel FROM building_types");
     }
 
     public function getUnitTypes()
     {
-        return $this->queryAll("SELECT id, type, hp, price, unlock_level FROM unit_types");
+        return $this->queryAll("SELECT id, type, hp, price, unlock_level as unlockLevel FROM unit_types");
     }
 
 
