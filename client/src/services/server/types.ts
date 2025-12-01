@@ -69,6 +69,7 @@ export type TUnitType = {
     type: string;
     hp: number;
     price: number;
+    unlockLevel: number;
 }
 
 export type TUnit = {
@@ -80,6 +81,8 @@ export type TUnit = {
     level: number;
     currentHp: number;
     type: string;
+    unlockLevel: number;
+
 }
 
 export type TMap = (
