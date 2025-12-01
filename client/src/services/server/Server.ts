@@ -252,6 +252,10 @@ class Server {
             this.store.setMoney(result.money);
         }
     }
+
+    //async getMap(): Promise<TMap> {
+    //    return
+    //}
 }
 
 export default Server;

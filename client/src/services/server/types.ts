@@ -81,3 +81,8 @@ export type TUnit = {
     currentHp: number;
     type: string;
 }
+
+export type TMap = (
+    id: number;
+    
+)
