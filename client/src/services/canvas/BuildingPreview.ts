@@ -1,22 +1,23 @@
 import { TPoint } from "../../config";
 import Game from "../../game/Game";
 
-const BUILDING_SIZE = 2;
-
 export default class BuildingPreview {
     private isActive = false;
     private buildingTypeId = 0;
     private gridPosition: TPoint = { x: 0, y: 0 };
     private canPlace = false;
+    private BUILDING_SIZE: number = 2;
     private game: Game;
 
     constructor(game: Game) {
         this.game = game;
     }
 
-    public activate(buildingTypeId: number): void {
+    public activate(buildingTypeId: number, size: number): void {
         this.isActive = true;
         this.buildingTypeId = buildingTypeId;
+        this.canPlace = false;
+        this.BUILDING_SIZE = size;
     }
 
     public deactivate(): void {
@@ -58,15 +59,15 @@ export default class BuildingPreview {
     private isWithinBounds(occupiedMatrix: number[][]): boolean {
         const { x, y } = this.gridPosition;
         return x >= 0 && y >= 0 && 
-               x + BUILDING_SIZE <= occupiedMatrix[0].length && 
-               y + BUILDING_SIZE <= occupiedMatrix.length;
+               x + this.BUILDING_SIZE <= occupiedMatrix[0].length && 
+               y + this.BUILDING_SIZE <= occupiedMatrix.length;
     }
 
     private isCellsEmpty(occupiedMatrix: number[][]): boolean {
         const { x, y } = this.gridPosition;
         
-        for (let dy = 0; dy < BUILDING_SIZE; dy++) {
-            for (let dx = 0; dx < BUILDING_SIZE; dx++) {
+        for (let dy = 0; dy < this.BUILDING_SIZE; dy++) {
+            for (let dx = 0; dx < this.BUILDING_SIZE; dx++) {
                 if (occupiedMatrix[y + dy][x + dx] !== 0) {
                     return false;
                 }
@@ -81,7 +82,8 @@ export default class BuildingPreview {
 
         return {
             gridPosition: this.gridPosition,
-            canPlace: this.canPlace
+            canPlace: this.canPlace,
+            size: this.BUILDING_SIZE
         };
     }
 
