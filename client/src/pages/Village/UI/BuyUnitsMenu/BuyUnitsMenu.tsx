@@ -37,6 +37,12 @@ const BuyUnitsMenu: React.FC<BuyUnitsMenuProps> = (props: BuyUnitsMenuProps) => 
             alert(`Для покупки ${unit.type} нужна казарма уровня ${unit.unlockLevel}`);
             return;
         }
+
+        if (gold < unit.price) {
+            alert(`Недостаточно монет для покупки ${unit.type}. Нужно ${unit.price}, у вас: ${gold}`);
+            return;
+        }
+
         console.log(`Покупка юнита: ${unit.type}`);
         village.getScene().buildingPreview.deactivate();
         village.getScene().unitPreview.activate(unit.id);
