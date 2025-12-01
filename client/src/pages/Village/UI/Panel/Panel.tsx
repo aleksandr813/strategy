@@ -18,6 +18,7 @@ import moneyIcon from "../../../../assets/img/panel/moneyIcon.png";
 import rectangle from "../../../../assets/img/panel/rectangle.png";
 import rectangle1 from "../../../../assets/img/panel/rectangle1.png";
 import chat from "../../../../assets/img/panel/chat.png";
+import sendarmy from "../../../../assets/img/panel/sendarmy.png";
 
 interface PanelProps extends IBaseUIElement {
     store: Store;
@@ -34,6 +35,7 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
     const lidersHandler = () => setUIElement(UIELEMENT.NULL);
     const villageHandler = () => setUIElement(UIELEMENT.NULL);
     const chatHandler = () => setUIElement(UIELEMENT.NULL);
+    const sendArmyHandler = () => setUIElement(UIELEMENT.NULL)
 
     return (
         <div className='Panel'>
@@ -63,6 +65,12 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
                             </Button>
                         </div>
                     </div>
+                </div>
+
+                <div className='centr-section'>
+                    <Button onClick={sendArmyHandler} className='panel-button-send-army' id='sendarmy'>
+                        <img src={sendarmy} className='icon-img' alt="sendarmy" />  
+                    </Button>
                 </div>
 
                 <div className='right-section'>
