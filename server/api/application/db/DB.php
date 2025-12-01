@@ -261,7 +261,7 @@ class DB
     }
 
     public function getVillages() {
-        return $this->queryAll("SELECT id, user_id, x, y FROM villages");
+        return $this->queryAll("SELECT id, user_id AS userId, x, y FROM villages");
     }
 
     public function getBuildingType($buildingType) {
