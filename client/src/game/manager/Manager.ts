@@ -5,12 +5,16 @@ import Allocation from "../../services/canvas/Allocation";
 import Server from '../../services/server/Server';
 import GAMECONFIG from '../gameConfig';
 import Unit from '../entities/Unit';
+import VillageEntity from '../entities/VillageEntity';
+import ArmyEntity from '../entities/ArmyEntity';
 import Building from '../entities/Building';
 
 const { WIDTH, HEIGHT } = CONFIG;
 const { GRID_HEIGHT, GRID_WIDTH, MOVE_INTERVAL } = GAMECONFIG
 
 export interface GameData {
+    getArmies: () => ArmyEntity[];
+    getVillages: () => VillageEntity[];
     getUnits: () => Unit[];
     getBuildings: () => Building[];
     setUnits: (units: Unit[]) => void;

@@ -1,5 +1,7 @@
 import Store from "../../services/store/Store";
 import Server from "../../services/server/Server";
+import VillageEntity from "../entities/VillageEntity";
+import ArmyEntity from "../entities/ArmyEntity";
 import Manager, { GameData } from "../manager/Manager";
 import GAMECONFIG from '../gameConfig';
 

@@ -5,9 +5,10 @@ import GlobalMap from "./manager/GlobalMap";
 import Village from "./manager/Village";
 import Battle from "./manager/Battle";
 import Unit from './entities/Unit';
+import VillageEntity from './entities/VillageEntity';
+import ArmyEntity from './entities/ArmyEntity';
 import Building from './entities/Building';
 import GAMECONFIG from './gameConfig';
-import { Entity } from './entities/Entity';
 
 class Game {
     private store: Store;
@@ -17,8 +18,8 @@ class Game {
     private units: Unit[] = [];
     private buildings: Building[] = [];
 
-    private villages: Entity[] = [];
-    private armies: Entity[] = [];
+    private villages: VillageEntity[] = [new VillageEntity(1, {x: 2, y: 3})];
+    private armies: ArmyEntity[] = [];
     
     private incomeInterval: NodeJS.Timer | null = null;
     

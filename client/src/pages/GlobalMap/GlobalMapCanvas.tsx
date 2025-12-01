@@ -2,14 +2,13 @@ import React, { useEffect, useContext } from 'react';
 import CONFIG from '../../config';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from '../../hooks/useSprites';
-import Unit from '../../game/entities/Unit';
-import Building from '../../game/entities/Building';
+import ArmyEntity from '../../game/entities/ArmyEntity';
+import VillageEntity from '../../game/entities/VillageEntity';
 import { GameContext } from '../../App';
 import { TPoint } from '../../config';
 import globalMapBackground from '../../assets/img/background/globalMapBackground.png';
 
 import "./GlobalMap.scss";
-import { Entity } from '../../game/entities/Entity';
 
 const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
@@ -48,7 +47,7 @@ const GlobalMapCanvas: React.FC = () => {
     let middleMouseStartScreenPosition: TPoint | null = null;
     let windowStartPosition: { LEFT: number, TOP: number } | null = null;
 
-    const drawSprites = (canvas: Canvas, item: Unit | Building | Entity, coords: TPoint[]) => {
+    const drawSprites = (canvas: Canvas, item: ArmyEntity | VillageEntity, coords: TPoint[]) => {
         item.sprites.forEach((sprite, i) => {
             const spriteData = getSprite(sprite);
             canvas.spriteFull(spritesImage, coords[i].x, coords[i].y, spriteData[0], spriteData[1], spriteData[2]);
@@ -61,14 +60,16 @@ const GlobalMapCanvas: React.FC = () => {
         if (background.complete) {
             canvas.contextV.drawImage(background, canvas.xs(0), canvas.ys(0), canvas.dec(87), canvas.dec(29));
         }
+
+        const { armies, villages } = globalMap.getMap();
+
         drawVillages(canvas, villages);
         //canvas.drawFPS(String(FPS), GREEN);
         canvas.render();
     }
 
-    const drawVillages = (canvas: Canvas, villages: Entity[]) => {
+    const drawVillages = (canvas: Canvas, villages: VillageEntity[]) => {
         villages.forEach((village) => {
-            if (Array.isArray(village.coords)) return
             drawSprites(canvas, village, [village.coords]);
         });
     };
