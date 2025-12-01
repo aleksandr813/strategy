@@ -4,6 +4,7 @@ import VillageEntity from "../entities/VillageEntity";
 import ArmyEntity from "../entities/ArmyEntity";
 import Manager, { GameData } from "../manager/Manager";
 import GAMECONFIG from '../gameConfig';
+import { TVillage, TArmy, TMap } from "../../services/server/types"; // Добавил импорт типов
 
 class GlobalMap extends Manager {
     private store: Store;
@@ -28,7 +29,41 @@ class GlobalMap extends Manager {
 
     private async updateMap(): Promise<void> {
         if (!this.store.user) return;
-        const map = await this.server.getMap();
+        const mapResponse = await this.server.getMap();
+        
+        if (mapResponse) {
+            const mapData = mapResponse.mapData;
+            
+            if (mapData.villages) {
+                await this.loadVillages(mapResponse.mapData.villages);
+            }
+            
+            if (mapData.armies) {
+                this.loadArmies(mapResponse.mapData.armies);
+            }
+        }
+    }
+
+    private async loadVillages(villagesData: TVillage[]): Promise<void> {
+        console.log("Загружаем деревни из сервера...");
+        
+        const villages = villagesData.map(villageData => 
+            new VillageEntity(villageData.id, { x: villageData.x, y: villageData.y })
+        );
+        
+        this.gameData.setVillages(villages);
+        console.log("Загружено деревень:", villages.length);
+    }
+
+    private loadArmies(armiesData: TArmy[]): void {
+        console.log("Загружаем армии из сервера...");
+        
+        const armies = armiesData.map(armyData => 
+            new ArmyEntity(armyData.id, { x: armyData.currentX, y: armyData.currentY })
+        );
+        
+        this.gameData.setArmies(armies);
+        console.log("Загружено армий:", armies.length);
     }
 
     getMap() {

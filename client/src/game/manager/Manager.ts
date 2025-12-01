@@ -8,6 +8,7 @@ import Unit from '../entities/Unit';
 import VillageEntity from '../entities/VillageEntity';
 import ArmyEntity from '../entities/ArmyEntity';
 import Building from '../entities/Building';
+import { TVillage, TArmy } from '../../services/server/types'; // Добавил импорт типов
 
 const { WIDTH, HEIGHT } = CONFIG;
 const { GRID_HEIGHT, GRID_WIDTH, MOVE_INTERVAL } = GAMECONFIG
@@ -19,6 +20,8 @@ export interface GameData {
     getBuildings: () => Building[];
     setUnits: (units: Unit[]) => void;
     setBuildings: (buildings: Building[]) => void;
+    setVillages: (villages: VillageEntity[]) => void;
+    setArmies: (armies: ArmyEntity[]) => void;
     addUnit: (unit: Unit) => void;
     addBuilding: (building: Building) => void;
     removeUnit: (unit: Unit) => void;
