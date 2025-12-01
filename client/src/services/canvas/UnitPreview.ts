@@ -79,19 +79,6 @@ export default class UnitPreview {
     public tryPlace(): boolean | null {
         if (!this.isActive || !this.canPlace) return null;
 
-        const unitData: TUnit = {
-            id: 0,
-            typeId: this.unitTypeId,
-            villageId: 0,
-            x: this.gridPosition.x,
-            y: this.gridPosition.y,
-            currentHp: this.unitHp,
-            level: 1,
-            type: this.unitType,
-            unlockLevel: 0
-        };
-
-        const unit = new Unit(unitData, this.game);
         this.deactivate();
         
         return true;
