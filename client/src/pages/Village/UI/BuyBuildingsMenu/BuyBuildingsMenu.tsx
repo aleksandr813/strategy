@@ -49,7 +49,7 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
         if (building.type === 'wall') {
             size = 1;
         }
-        village.getScene().buildingPreview.activate(building.id, building.hp, size);
+        village.getScene().buildingPreview.activate(building.id, size);
         setUIElement(UIELEMENT.NULL);
     };
 

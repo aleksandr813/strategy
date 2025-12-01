@@ -191,11 +191,11 @@ class Village extends Manager {
     }
 
     getVillageMatrix(units: Unit[], buildings: Building[]): number[][] {
-        const matrix: number[][] = Array(29).fill(null).map(() => Array(87).fill(0));
+        const booleanMatrix: number[][] = Array(29).fill(null).map(() => Array(87).fill(0));
         
         units.forEach((unit) => {
             if (unit.coords.y < 29 && unit.coords.x < 87) { 
-                matrix[unit.coords.y][unit.coords.x] = 1;
+                booleanMatrix[unit.coords.y][unit.coords.x] = 1;
             }
         });
         buildings.forEach((element) => {
