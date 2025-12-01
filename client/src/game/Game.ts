@@ -18,7 +18,7 @@ class Game {
     private units: Unit[] = [];
     private buildings: Building[] = [];
 
-    private villages: VillageEntity[] = [new VillageEntity(1, {x: 2, y: 3})];
+    private villages: VillageEntity[] = [];
     private armies: ArmyEntity[] = [];
     
     private incomeInterval: NodeJS.Timer | null = null;

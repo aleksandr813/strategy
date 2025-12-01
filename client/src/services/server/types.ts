@@ -85,6 +85,8 @@ export type TUnit = {
 
 }
 
-export type TMap = {
+export type TVillage = {
     id: number;
+    x: number;
+    y: number;
 }

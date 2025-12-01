@@ -258,7 +258,6 @@ class Server {
     async getMap(): Promise<void> {
         const hash = this.store.getMapHash();
         const map = this.request<boolean>('getMap', { hash })
-        console.log(map);
     }
 }
 

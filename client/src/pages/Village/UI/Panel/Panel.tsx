@@ -36,7 +36,7 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
     const globalmapHandler = () => setPage(PAGES.GLOBAL_MAP);
     const lidersHandler = () => setUIElement(UIELEMENT.NULL);
     const villageHandler = () => setUIElement(UIELEMENT.NULL);
-    const chatHandler = () => setUIElement(UIELEMENT.NULL);
+    const chatHandler = () =>  setPage(PAGES.CHAT);
     const sendArmyHandler = () => setUIElement(UIELEMENT.NULL);
 
     return (
