@@ -37,7 +37,7 @@ export default class Building {
     };
 
 
-    constructor(id:number, type: string, hp:number, maxHp:number, level:number, size:number, typeId:number, x:number, y:number, wallSpriteIndex?: number,  unlocklevel: number) {
+    constructor(id:number, type: string, hp:number, maxHp:number, level:number, size:number, typeId:number, x:number, y:number, unlocklevel: number, wallSpriteIndex?: number) {
         this.id = id;
         this.type = type;
         this.hp = hp;
