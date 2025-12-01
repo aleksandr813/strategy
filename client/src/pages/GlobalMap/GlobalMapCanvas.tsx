@@ -63,8 +63,6 @@ const GlobalMapCanvas: React.FC = () => {
 
         const { armies, villages } = globalMap.getMap();
 
-        console.log(villages);
-
         drawVillages(canvas, villages);
         //canvas.drawFPS(String(FPS), GREEN);
         canvas.render();
