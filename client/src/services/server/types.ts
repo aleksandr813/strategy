@@ -102,7 +102,7 @@ export type TArmy = {
     startTime: string;
     targetX: number;
     targetY: number;
-    units: string;
+    units: number[];
     userId: number;
 }
 

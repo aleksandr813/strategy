@@ -45,25 +45,21 @@ class GlobalMap extends Manager {
     }
 
     private async loadVillages(villagesData: TVillage[]): Promise<void> {
-        console.log("Загружаем деревни из сервера...");
-        
         const villages = villagesData.map(villageData => 
             new VillageEntity(villageData.id, { x: villageData.x, y: villageData.y })
         );
         
         this.gameData.setVillages(villages);
-        console.log("Загружено деревень:", villages.length);
+        //console.log("Загружено деревень:", villages.length);
     }
 
-    private loadArmies(armiesData: TArmy[]): void {
-        console.log("Загружаем армии из сервера...");
-        
+    private loadArmies(armiesData: TArmy[]): void {        
         const armies = armiesData.map(armyData => 
             new ArmyEntity(armyData.id, { x: armyData.currentX, y: armyData.currentY })
         );
         
         this.gameData.setArmies(armies);
-        console.log("Загружено армий:", armies.length);
+        //console.log("Загружено армий:", armies.length);
     }
 
     getMap() {
