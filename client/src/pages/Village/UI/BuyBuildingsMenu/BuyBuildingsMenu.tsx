@@ -32,7 +32,11 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
     const buyBuilding = async (building: TBuildingType) => {
         console.log(`Покупка здания: ${building.type}`);
         village.getScene().unitPreview.deactivate();
-        village.getScene().buildingPreview.activate(building.id, building.hp);
+        let size = 2;
+        if (building.type === 'wall') {
+            size = 1;
+        }
+        village.getScene().buildingPreview.activate(building.id, building.hp, size);
         setUIElement(UIELEMENT.NULL);
     };
 

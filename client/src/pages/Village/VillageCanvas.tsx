@@ -90,12 +90,12 @@ const VillageCanvas: React.FC = () => {
     const drawBuildingPreview = (canvas: Canvas) => {
         const previewData = village.getScene().buildingPreview.getRenderData();
         if (!previewData) return;
-        const { gridPosition, canPlace } = previewData;
+        const { gridPosition, canPlace, size } = previewData;
         const color = canPlace ? 'rgba(0, 255, 0, 0.4)' : 'rgba(255, 0, 0, 0.4)';
-        drawRect(canvas, gridPosition.x, gridPosition.y, 2, 2, color);
+        drawRect(canvas, gridPosition.x, gridPosition.y, size, size, color);
         canvas.contextV.strokeStyle = canPlace ? '#00FF00' : '#FF0000';
-        canvas.contextV.lineWidth = 2;
-        canvas.contextV.strokeRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(2), canvas.dec(2));
+        canvas.contextV.lineWidth = size;
+        canvas.contextV.strokeRect(canvas.xs(gridPosition.x), canvas.ys(gridPosition.y), canvas.dec(size), canvas.dec(size));
     };
 
     const drawUnitPreview = (canvas: Canvas) => {
