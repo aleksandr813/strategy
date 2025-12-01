@@ -31,12 +31,8 @@
     * 4.15. moveUnits
     * 4.16. takeDamage
     * 4.17. sendArmy
-<<<<<<< HEAD
-    * 4.18. getMap
-=======
     * 4.18. moveArmyBack
     * 4.19. getMap
->>>>>>> 7f9e56c6a86b3418ddcc028d1f285a6afb7af9e2
 
 ## 1. Общее
 ### 1.1. Адрес сервера
