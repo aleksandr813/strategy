@@ -69,6 +69,8 @@ class Game {
         return {
             getArmies: () => this.armies,
             getVillages: () => this.villages,
+            setArmies: (armies: ArmyEntity[]) => { this.armies = armies; },
+            setVillages: (villages: VillageEntity[]) => { this.villages = villages; },
             getUnits: () => this.units,
             getBuildings: () => this.buildings,
             setUnits: (units: Unit[]) => { this.units = units; },
