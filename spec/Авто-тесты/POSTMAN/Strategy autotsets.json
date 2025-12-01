@@ -1,0 +1,458 @@
+{
+	"info": {
+		"_postman_id": "08abdedb-ccad-4e15-809e-7bcb1c8fbb8e",
+		"name": "Strategy Авто-тесты",
+		"description": "`Набор авто-тестов для браузерной игры \"Strategy\"`",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49525133",
+		"_collection_link": "https://nurs9797-3166872.postman.co/workspace/%25D0%25A1%25D0%25B5%25D1%2580%25D0%25B3%25D0%25B5%25D0%25B9-%25D0%2593%25D1%2580%25D0%25B5%25D0%25B1%25D0%25BD%25D0%25B5%25D0%25B2's-Workspace~1c4749f2-8e80-4b90-8fc4-a63ea91fc1d0/collection/49525133-08abdedb-ccad-4e15-809e-7bcb1c8fbb8e?action=share&source=collection_link&creator=49525133"
+	},
+	"item": [
+		{
+			"name": "Регистрация и авторизация",
+			"item": [
+				{
+					"name": "Положительные",
+					"item": [
+						{
+							"name": "Регистрация нового пользователя",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Регистрация прошла успешна', () => {\r",
+											"    pm.expect(pm.response.json().result).to.eql('ok');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://server/api/?method=registration&login=AutoTest333&hash=035177416e70610dbdab5c03e7e640ac&name=AutoTest&token=65b0298b4a68bf7cf3478c1137c75401",
+									"protocol": "http",
+									"host": [
+										"server"
+									],
+									"path": [
+										"api",
+										""
+									],
+									"query": [
+										{
+											"key": "method",
+											"value": "registration"
+										},
+										{
+											"key": "login",
+											"value": "AutoTest333"
+										},
+										{
+											"key": "hash",
+											"value": "035177416e70610dbdab5c03e7e640ac"
+										},
+										{
+											"key": "name",
+											"value": "AutoTest"
+										},
+										{
+											"key": "token",
+											"value": "65b0298b4a68bf7cf3478c1137c75401"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Авторизация этого пользователя",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const r = pm.response.json();\r",
+											"pm.test('Авторизация прошла успешна', () => {\r",
+											"    pm.expect(r.result).to.eql('ok');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://server/api/?method=login&login=AutoTest333&hash=22b755e1b3835e678dd1cdd76bad9dbd&rnd=65785",
+									"protocol": "http",
+									"host": [
+										"server"
+									],
+									"path": [
+										"api",
+										""
+									],
+									"query": [
+										{
+											"key": "method",
+											"value": "login"
+										},
+										{
+											"key": "login",
+											"value": "AutoTest333"
+										},
+										{
+											"key": "hash",
+											"value": "22b755e1b3835e678dd1cdd76bad9dbd"
+										},
+										{
+											"key": "rnd",
+											"value": "65785"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Отрицательные",
+					"item": [
+						{
+							"name": "Авторизация с неверным паролем",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Ошибка, неверный пароль', () => {\r",
+											"    pm.expect(pm.response.json().result).to.eql('error');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://server/api/?method=login&login=TestUser99&hash=wronghash1234567890abcdef1234567890ab&rnd=99999",
+									"protocol": "http",
+									"host": [
+										"server"
+									],
+									"path": [
+										"api",
+										""
+									],
+									"query": [
+										{
+											"key": "method",
+											"value": "login"
+										},
+										{
+											"key": "login",
+											"value": "TestUser99"
+										},
+										{
+											"key": "hash",
+											"value": "wronghash1234567890abcdef1234567890ab"
+										},
+										{
+											"key": "rnd",
+											"value": "99999"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Регистрация существующего пользователя",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Ошибка, пользователь уже существует', () => {\r",
+											"    pm.expect(pm.response.json().result).to.eql('error');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://server/api/?method=login&login=TestUserXXX&hash=22b755e1b3835e678dd1cdd76bad9dbd&rnd=65785",
+									"protocol": "http",
+									"host": [
+										"server"
+									],
+									"path": [
+										"api",
+										""
+									],
+									"query": [
+										{
+											"key": "method",
+											"value": "login"
+										},
+										{
+											"key": "login",
+											"value": "TestUserXXX"
+										},
+										{
+											"key": "hash",
+											"value": "22b755e1b3835e678dd1cdd76bad9dbd"
+										},
+										{
+											"key": "rnd",
+											"value": "65785"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Регистрация с коротким логином (ошибка 1007)",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Ошибка, логин слишком короткий', () => {\r",
+											"    pm.expect(pm.response.json().result).to.eql('error');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://server/api/?method=registration&login=Ab1&hash=e1d77f204ec0d20245039d27cd7960e4&name=Short&token=65b0298b4a68bf7cf3478c1137c75401",
+									"protocol": "http",
+									"host": [
+										"server"
+									],
+									"path": [
+										"api",
+										""
+									],
+									"query": [
+										{
+											"key": "method",
+											"value": "registration"
+										},
+										{
+											"key": "login",
+											"value": "Ab1"
+										},
+										{
+											"key": "hash",
+											"value": "e1d77f204ec0d20245039d27cd7960e4"
+										},
+										{
+											"key": "name",
+											"value": "Short"
+										},
+										{
+											"key": "token",
+											"value": "65b0298b4a68bf7cf3478c1137c75401"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					"// Выполняется перед КАЖДЫМ запросом в коллекции\r",
+					"if (pm.info.iteration === 0) {\r",
+					"    // Первая итерация - создаем тестового пользователя\r",
+					"    const testId = new Date().getTime();\r",
+					"    pm.collectionVariables.set(\"test_login\", `User${testId}`);\r",
+					"    pm.collectionVariables.set(\"test_password\", `Pass${testId}`);\r",
+					"}\r",
+					"\r",
+					"// Для каждого запроса обновляем rnd и hash\r",
+					"const login = pm.collectionVariables.get(\"test_login\");\r",
+					"const password = pm.collectionVariables.get(\"test_password\");\r",
+					"const rnd = Math.floor(Math.random() * 1000000);\r",
+					"\r",
+					"const firstHash = CryptoJS.MD5(login + password).toString();\r",
+					"const finalHash = CryptoJS.MD5(firstHash + rnd).toString();\r",
+					"\r",
+					"pm.collectionVariables.set(\"current_rnd\", rnd);\r",
+					"pm.collectionVariables.set(\"current_hash\", finalHash);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		},
+		{
+			"key": "auth_token",
+			"value": ""
+		},
+		{
+			"key": "user_id",
+			"value": ""
+		},
+		{
+			"key": "rnd",
+			"value": ""
+		},
+		{
+			"key": "user_name",
+			"value": ""
+		},
+		{
+			"key": "current_rnd",
+			"value": ""
+		},
+		{
+			"key": "current_hash",
+			"value": ""
+		},
+		{
+			"key": "test_login",
+			"value": ""
+		},
+		{
+			"key": "test_password",
+			"value": ""
+		},
+		{
+			"key": "password_hash",
+			"value": ""
+		},
+		{
+			"key": "test_name",
+			"value": ""
+		},
+		{
+			"key": "api_token",
+			"value": ""
+		},
+		{
+			"key": "computed_token",
+			"value": ""
+		},
+		{
+			"key": "login_rnd",
+			"value": ""
+		},
+		{
+			"key": "login_hash",
+			"value": ""
+		},
+		{
+			"key": "my_login",
+			"value": ""
+		}
+	]
+}
