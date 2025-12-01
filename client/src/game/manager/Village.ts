@@ -62,12 +62,13 @@ class Village extends Manager {
         this.selectedUnit = unit;
     }
 
-    public removeBuilding(building: Building): void {
+    public async removeBuilding(building: Building): Promise<void> {
         this.gameData.removeBuilding(building);
         if (this.selectedBuilding === building) {
             this.selectedBuilding = null;
         }
         this.updateAllWallSprites();
+        await this.loadBuildings();
     }
 
     public async handleBuildingPlacement(): Promise<void> {
