@@ -4,7 +4,7 @@ import VillageEntity from "../entities/VillageEntity";
 import ArmyEntity from "../entities/ArmyEntity";
 import Manager, { GameData } from "../manager/Manager";
 import GAMECONFIG from '../gameConfig';
-import { TVillage, TArmy, TMap } from "../../services/server/types"; // Добавил импорт типов
+import { TVillage, TArmy, TMap } from "../../services/server/types";
 
 class GlobalMap extends Manager {
     private store: Store;

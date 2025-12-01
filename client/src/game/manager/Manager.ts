@@ -8,7 +8,7 @@ import Unit from '../entities/Unit';
 import VillageEntity from '../entities/VillageEntity';
 import ArmyEntity from '../entities/ArmyEntity';
 import Building from '../entities/Building';
-import { TVillage, TArmy } from '../../services/server/types'; // Добавил импорт типов
+import { TVillage, TArmy } from '../../services/server/types';
 
 const { WIDTH, HEIGHT } = CONFIG;
 const { GRID_HEIGHT, GRID_WIDTH, MOVE_INTERVAL } = GAMECONFIG
