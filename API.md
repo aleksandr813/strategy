@@ -583,7 +583,7 @@ Buildings: {
 ```
 {
     token: string; - токен
-    hash: number; - hash
+    hash: string; - hash
 }
 ```
 **Успешный ответ**

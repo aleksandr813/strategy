@@ -8,6 +8,7 @@ class Store {
     user: TUser | null = null;
     messages: TMessages = [];
     chatHash: string = 'empty chat hash';
+    mapHash: string = 'empty map hash';
     money: number = 0;
     private listeners: Set<Listener> = new Set();
 
@@ -67,6 +68,15 @@ class Store {
 
     setChatHash(hash: string): void {
         this.chatHash = hash;
+        this.notify();
+    }
+
+    getMapHash(): string {
+        return this.mapHash;
+    }
+
+    setMapHash(hash: string): void {
+        this.mapHash = hash;
         this.notify();
     }
 
