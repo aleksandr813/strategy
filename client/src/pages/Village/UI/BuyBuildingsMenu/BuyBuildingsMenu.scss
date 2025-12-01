@@ -7,13 +7,14 @@
     background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    overflow-y: auto;
     z-index: 1000;
+    padding: 40px 0;
 }
 
 .buy-menu-container {
     width: 400px;
-    min-height: 300px;
     background-color: #8B4513;
     border: 5px solid #000;
     box-shadow: 0 0 0 2px #000;
@@ -44,26 +45,81 @@
     background-color: #A0522D;
     border: 2px solid #000;
     transition: background-color 0.2s;
+    position: relative;
+    overflow: hidden;
 }
 
 .buy-menu-item:hover {
     background-color: #CD853F;
 }
 
-.building-info {
+/* --- Стили для недоступных элементов --- */
+
+.buy-menu-item.disabled {
+    cursor: not-allowed;
+    background-color: #69361d;
+}
+
+.buy-menu-item.disabled:hover {
+    background-color: #69361d;
+}
+
+/* Применяем opacity к информации как для юнитов, так и для зданий */
+.buy-menu-item.disabled .unit-info, 
+.buy-menu-item.disabled .building-info { 
+    opacity: 0.6;
+}
+
+/* Эффект замка: общий для всех недоступных buy-menu-item */
+.buy-menu-item.disabled:after {
+    content: '\1F512';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+    color: #FFF;
+    text-shadow: 0 0 10px #000;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* --- Стили для отключенных кнопок --- */
+
+button:disabled {
+    background-color: #444 !important;
+    color: #888 !important;    
+    cursor: not-allowed !important;
+    border-color: #222 !important;
+    box-shadow: none;
+    filter: none !important;
+}
+
+.buy-menu-item button:disabled:hover {
+    background-color: #444;    
+}
+
+/* --- Стили для информации о юнитах/зданиях --- */
+
+.unit-info, .building-info { /* Объединено */
     display: flex;
     flex-direction: column;
     flex-grow: 1;
 }
 
-.building-name {
+.unit-name, .building-name { /* Объединено */
     font-size: 18px;
     font-weight: bold;
     color: #FFF;
     margin-bottom: 5px;
 }
 
-.building-details {
+.unit-details, .building-details { /* Объединено */
     font-size: 14px;
     color: #FFD700;
 }
@@ -89,4 +145,22 @@
 
 .buy-menu-close-button:active {
     filter: brightness(0.9);
+}
+
+.buy-menu-overlay::-webkit-scrollbar {
+    width: 10px;
+}
+
+.buy-menu-overlay::-webkit-scrollbar-track {
+    background: #5C2E0E;
+    border-radius: 4px;
+}
+
+.buy-menu-overlay::-webkit-scrollbar-thumb {
+    background: #FFD700;
+    border-radius: 4px;
+}
+
+.buy-menu-overlay::-webkit-scrollbar-thumb:hover {
+    background: #FFA500;
 }

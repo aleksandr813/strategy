@@ -76,6 +76,13 @@
 | created | timestamp | not null | now() |
 
 
+**map_hashes**
+| name | type | comment |
+|-|-|-|
+| id | integer | primary key |
+| hash | text | not null |
+
+
 **hashes**
 | name | type | comment |
 |-|-|-|
@@ -96,7 +103,12 @@
 |-|-|-|
 | army | integer | primary key |
 | userId | integer | not null |
-| x | integer | not null |
-| y | integer | not null |
+| startX | integer | not null |
+| startY | integer | not null |
+| startTime | datetime | not null |
+| arrivalTime | datetime | not null |
+| targetX | integer | not null |
+| targetY | integer | not null |
 | attackId | integer | not null |
 | units | text | not null |
+| speed | float | not null |

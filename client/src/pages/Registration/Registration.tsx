@@ -5,11 +5,6 @@ import { IBasePage, PAGES } from '../PageManager';
 import { validateLogin, validatePassword, checkLoginAvailability } from '../Verification/Verification';
 import './Registration.scss';
 
-import arrow from '../../assets/img/sprites/arrow.png';
-import swordman from '../../assets/img/sprites/swordman.png';
-import archer from '../../assets/img/sprites/archer.png';
-import spearman from '../../assets/img/sprites/spearman.png';
-
 const Registration: React.FC<IBasePage> = (props: IBasePage) => {
     const { setPage } = props;
     const server = useContext(ServerContext);
@@ -90,17 +85,6 @@ const Registration: React.FC<IBasePage> = (props: IBasePage) => {
         <div className="registration">
             <div className="background-characters left"></div>
             <div className="background-characters right"></div>
-
-            <img src={arrow} className="arrow arrow-left" />
-            <img src={arrow} className="arrow arrow-right" />
-
-            <img src={swordman} className="swordman swordman-left" />
-            <img src={archer} className="archer archer-left" />
-            <img src={spearman} className="spearman spearman-left" />
-
-            <img src={swordman} className="swordman swordman-right" />
-            <img src={archer} className="archer archer-right" />
-            <img src={spearman} className="spearman spearman-right" />
         
             <div className="registration-content">
                 <h1 className='version'>Alpha</h1>

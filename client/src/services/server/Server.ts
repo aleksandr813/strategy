@@ -171,7 +171,8 @@ class Server {
             y: Number(unit.y),
             level: Number(unit.level),
             currentHp: Number(unit.currentHp),
-            type: unit.type
+            type: unit.type,
+            unlockLevel: unit.unlockLevel
         }));
 
         console.log('Units from server:', units);
@@ -183,6 +184,7 @@ class Server {
         if (!response) {
             return [];
         }
+        console.log(response);
         return response;
     }
 
