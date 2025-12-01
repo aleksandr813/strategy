@@ -54,7 +54,7 @@ const BuyUnitsMenu: React.FC<BuyUnitsMenuProps> = (props: BuyUnitsMenuProps) => 
         console.log("УРОВЕНЬ КАЗАРМЫ В СРАВНЕНИИ", barracksLevel);
         console.log("УРОВЕНЬ ЮНИТА В СРАВНЕНИИ:", unit.unlockLevel);
         console.log("СРАВНЕНИЕ", barracksLevel >= unit.unlockLevel)
-        return barracksLevel >= unit.unlockLevel;
+        return barracksLevel >= unit.unlockLevel && gold >= unit.price;
     };
 
     useEffect(() => {

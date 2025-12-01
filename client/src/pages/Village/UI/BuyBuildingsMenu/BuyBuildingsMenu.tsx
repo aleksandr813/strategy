@@ -60,7 +60,7 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
         console.log("УРОВЕНЬ РАТУШИ В СРАВНЕНИИ", townHallLevel);
         console.log("УРОВЕНЬ ЗДАНИЯ В СРАВНЕНИИ:", building.unlockLevel);
         console.log("СРАВНЕНИЕ", townHallLevel >= building.unlockLevel)
-        return townHallLevel >= building.unlockLevel;
+        return townHallLevel >= building.unlockLevel && gold >= building.price;
     }; 
 
     useEffect(() => {
