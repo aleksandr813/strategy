@@ -87,6 +87,31 @@ export type TUnit = {
 
 export type TVillage = {
     id: number;
+    userId: number;
     x: number;
     y: number;
+}
+
+export type TArmy = {
+    arrivalTime: number;
+    attackId: number;
+    currentX: number;
+    currentY: number;
+    id: number;
+    speed: number;
+    startTime: string;
+    targetX: number;
+    targetY: number;
+    units: string;
+    userId: number;
+}
+
+export type TMap = {
+    armies: TArmy[];
+    villages: TVillage[];
+}
+
+export type TMapResponse = {
+    hash: string;
+    mapData: TMap;
 }

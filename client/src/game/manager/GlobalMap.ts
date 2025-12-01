@@ -28,7 +28,7 @@ class GlobalMap extends Manager {
 
     private async updateMap(): Promise<void> {
         if (!this.store.user) return;
-        await this.server.getMap();
+        const map = await this.server.getMap();
     }
 
     getMap() {

@@ -2,7 +2,7 @@ import md5 from 'md5';
 import GAMECONFIG from '../../game/gameConfig';
 import CONFIG from '../../config';
 import Store from "../store/Store";
-import { TBuildingType, TBuilding } from './types';
+import { TBuildingType, TBuilding, TMap } from './types';
 import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 import Unit from '../../game/entities/Unit';
@@ -255,9 +255,10 @@ class Server {
         }
     }
 
-    async getMap(): Promise<void> {
+    async getMap(): Promise<TMap | null> {
         const hash = this.store.getMapHash();
-        const map = this.request<boolean>('getMap', { hash })
+        const map = this.request<TMap>('getMap', { hash })
+        return map
     }
 }
 
