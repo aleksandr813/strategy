@@ -28,8 +28,8 @@ const UI: React.FC<UIProps> = ({ store }) => {
     return (
         <div className='UI'>
             <BuildingMenu></BuildingMenu>
-            {uiElement === UIELEMENT.BUYBUILDINGSMENU && <BuyBuildingsMenu setUIElement={setUIElement} />}
-            {uiElement === UIELEMENT.BUYUNITSMENU && <BuyUnitsMenu setUIElement={setUIElement} />}
+            {uiElement === UIELEMENT.BUYBUILDINGSMENU && <BuyBuildingsMenu setUIElement={setUIElement} store={store} />}
+            {uiElement === UIELEMENT.BUYUNITSMENU && <BuyUnitsMenu setUIElement={setUIElement} store={store} />}
             <Panel setUIElement={setUIElement} store={store} />
         </div>
     );
