@@ -39,6 +39,7 @@ export type TBuildingType = {
     hp: number;
     price: number;
     sprite: number;
+    unlockLevel: number;
 }
 
 
@@ -51,6 +52,8 @@ export type TBuilding = {
     currentHp: number;
     level: number;
     type: string;
+    unlockLevel: number;
+
 }
 
 export enum BuildingTypeID {
@@ -66,6 +69,7 @@ export type TUnitType = {
     type: string;
     hp: number;
     price: number;
+    unlockLevel: number;
 }
 
 export type TUnit = {
@@ -77,4 +81,37 @@ export type TUnit = {
     level: number;
     currentHp: number;
     type: string;
+    unlockLevel: number;
+
+}
+
+export type TVillage = {
+    id: number;
+    userId: number;
+    x: number;
+    y: number;
+}
+
+export type TArmy = {
+    arrivalTime: number;
+    attackId: number;
+    currentX: number;
+    currentY: number;
+    id: number;
+    speed: number;
+    startTime: string;
+    targetX: number;
+    targetY: number;
+    units: number[];
+    userId: number;
+}
+
+export type TMap = {
+    armies: TArmy[];
+    villages: TVillage[];
+}
+
+export type TMapResponse = {
+    hash: string;
+    mapData: TMap;
 }

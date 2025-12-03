@@ -5,16 +5,23 @@ import Allocation from "../../services/canvas/Allocation";
 import Server from '../../services/server/Server';
 import GAMECONFIG from '../gameConfig';
 import Unit from '../entities/Unit';
+import VillageEntity from '../entities/VillageEntity';
+import ArmyEntity from '../entities/ArmyEntity';
 import Building from '../entities/Building';
+import { TVillage, TArmy } from '../../services/server/types';
 
 const { WIDTH, HEIGHT } = CONFIG;
 const { GRID_HEIGHT, GRID_WIDTH, MOVE_INTERVAL } = GAMECONFIG
 
 export interface GameData {
+    getArmies: () => ArmyEntity[];
+    getVillages: () => VillageEntity[];
     getUnits: () => Unit[];
     getBuildings: () => Building[];
     setUnits: (units: Unit[]) => void;
     setBuildings: (buildings: Building[]) => void;
+    setVillages: (villages: VillageEntity[]) => void;
+    setArmies: (armies: ArmyEntity[]) => void;
     addUnit: (unit: Unit) => void;
     addBuilding: (building: Building) => void;
     removeUnit: (unit: Unit) => void;
@@ -97,7 +104,7 @@ class Manager {
         const selectedUnits: Unit[] = [];
         this.gameData.getUnits().forEach((unit) => {
             if (unit.isSelected) {
-                unit.moveUnit(destination);
+                unit.calcPath(destination);
                 selectedUnits.push(unit);
             }
         });

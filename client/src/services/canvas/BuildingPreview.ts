@@ -1,25 +1,27 @@
 import { TPoint } from "../../config";
-
-const BUILDING_SIZE = 2;
+import Game from "../../game/Game";
 
 export default class BuildingPreview {
     private isActive = false;
     private buildingTypeId = 0;
-    private buildingHp = 0;
     private gridPosition: TPoint = { x: 0, y: 0 };
     private canPlace = false;
+    private BUILDING_SIZE: number = 2;
+    private game: Game;
 
-    public activate(buildingTypeId: number, hp: number): void {
+    constructor(game: Game) {
+        this.game = game;
+    }
+
+    public activate(buildingTypeId: number, size: number): void {
         this.isActive = true;
         this.buildingTypeId = buildingTypeId;
-        this.buildingHp = hp;
         this.canPlace = false;
+        this.BUILDING_SIZE = size;
     }
 
     public deactivate(): void {
         this.isActive = false;
-        this.buildingTypeId = 0;
-        this.buildingHp = 0;
         this.canPlace = false;
     }
 
@@ -32,7 +34,7 @@ export default class BuildingPreview {
     }
 
     public getPlacementPosition(): TPoint {
-        return { ...this.gridPosition };
+        return this.gridPosition;
     }
 
     public getCanPlace(): boolean {
@@ -57,15 +59,15 @@ export default class BuildingPreview {
     private isWithinBounds(occupiedMatrix: number[][]): boolean {
         const { x, y } = this.gridPosition;
         return x >= 0 && y >= 0 && 
-               x + BUILDING_SIZE <= occupiedMatrix[0].length && 
-               y + BUILDING_SIZE <= occupiedMatrix.length;
+               x + this.BUILDING_SIZE <= occupiedMatrix[0].length && 
+               y + this.BUILDING_SIZE <= occupiedMatrix.length;
     }
 
     private isCellsEmpty(occupiedMatrix: number[][]): boolean {
         const { x, y } = this.gridPosition;
         
-        for (let dy = 0; dy < BUILDING_SIZE; dy++) {
-            for (let dx = 0; dx < BUILDING_SIZE; dx++) {
+        for (let dy = 0; dy < this.BUILDING_SIZE; dy++) {
+            for (let dx = 0; dx < this.BUILDING_SIZE; dx++) {
                 if (occupiedMatrix[y + dy][x + dx] !== 0) {
                     return false;
                 }
@@ -80,17 +82,16 @@ export default class BuildingPreview {
 
         return {
             gridPosition: this.gridPosition,
-            canPlace: this.canPlace
+            canPlace: this.canPlace,
+            size: this.BUILDING_SIZE
         };
     }
 
-    public getPlacementData() {
-        if (!this.isActive) return null;
+    public tryPlace(): boolean | null {
+        if (!this.isActive || !this.canPlace) return null;
 
-        return {
-            typeId: this.buildingTypeId,
-            position: { ...this.gridPosition },
-            canPlace: this.canPlace
-        };
+        this.deactivate();
+        
+        return true;
     }
 }

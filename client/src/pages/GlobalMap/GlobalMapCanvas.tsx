@@ -2,8 +2,8 @@ import React, { useEffect, useContext } from 'react';
 import CONFIG from '../../config';
 import { Canvas, useCanvas } from '../../services/canvas';
 import useSprites from '../../hooks/useSprites';
-import Unit from '../../game/entities/Unit';
-import Building from '../../game/entities/Building';
+import ArmyEntity from '../../game/entities/ArmyEntity';
+import VillageEntity from '../../game/entities/VillageEntity';
 import { GameContext } from '../../App';
 import { TPoint } from '../../config';
 import globalMapBackground from '../../assets/img/background/globalMapBackground.png';
@@ -18,7 +18,7 @@ const TIME_THRESHOLD = 200;
 let zoomFactor = 1;
 
 const GlobalMapCanvas: React.FC = () => {
-    const { WINDOW, SPRITE_SIZE } = CONFIG;
+    const { WINDOW } = CONFIG;
     const game = useContext(GameContext);
     const globalMap = game.getGlobalMap(); 
     
@@ -26,7 +26,18 @@ const GlobalMapCanvas: React.FC = () => {
     background.src = globalMapBackground;
 
     let canvas: Canvas | null = null;
-    const Canvas = useCanvas(render);
+    const CanvasRef = useCanvas(render);
+
+    const setCanvasSize = (canvasInstance: Canvas | null) => {
+        if (canvasInstance) {
+            canvasInstance.WIDTH = window.innerWidth;
+            canvasInstance.HEIGHT = window.innerHeight;
+            canvasInstance.canvas.width = window.innerWidth;
+            canvasInstance.canvas.height = window.innerHeight;
+            render(0); 
+        }
+    };
+
     const [[spritesImage], getSprite] = useSprites();
 
     let mouseDownPosition: TPoint | null = null;
@@ -36,7 +47,7 @@ const GlobalMapCanvas: React.FC = () => {
     let middleMouseStartScreenPosition: TPoint | null = null;
     let windowStartPosition: { LEFT: number, TOP: number } | null = null;
 
-    const drawSprites = (canvas: Canvas, item: Unit | Building, coords: TPoint[]) => {
+    const drawSprites = (canvas: Canvas, item: ArmyEntity | VillageEntity, coords: TPoint[]) => {
         item.sprites.forEach((sprite, i) => {
             const spriteData = getSprite(sprite);
             canvas.spriteFull(spritesImage, coords[i].x, coords[i].y, spriteData[0], spriteData[1], spriteData[2]);
@@ -49,9 +60,19 @@ const GlobalMapCanvas: React.FC = () => {
         if (background.complete) {
             canvas.contextV.drawImage(background, canvas.xs(0), canvas.ys(0), canvas.dec(87), canvas.dec(29));
         }
-        canvas.drawFPS(String(FPS), GREEN);
+
+        const { armies, villages } = globalMap.getMap();
+
+        drawVillages(canvas, villages);
+        //canvas.drawFPS(String(FPS), GREEN);
         canvas.render();
     }
+
+    const drawVillages = (canvas: Canvas, villages: VillageEntity[]) => {
+        villages.forEach((village) => {
+            drawSprites(canvas, village, [village.coords]);
+        });
+    };
 
 
     const mouseDown = (x: number, y: number) => {
@@ -76,7 +97,7 @@ const GlobalMapCanvas: React.FC = () => {
     };
 
     const mouseClick = async (x: number, y: number) => {
-        if (!globalMap || wasDragging) return;
+        console.log(x, y);
         
     };
 
@@ -133,10 +154,10 @@ const GlobalMapCanvas: React.FC = () => {
     const INITIAL_WINDOW_TOP = CONFIG.WINDOW.TOP;
 
     useEffect(() => {
-        canvas = Canvas({
+        canvas = CanvasRef({
             parentId: GAME_FIELD,
-            WIDTH: WINDOW.WIDTH * SPRITE_SIZE,
-            HEIGHT: WINDOW.HEIGHT * SPRITE_SIZE,
+            WIDTH: window.innerWidth,
+            HEIGHT: window.innerHeight,
             WINDOW,
             callbacks: {
                 mouseMove, mouseDown, mouseUp, mouseRightClickDown, mouseClick,
@@ -144,16 +165,24 @@ const GlobalMapCanvas: React.FC = () => {
             },
         });
 
+        const handleResize = () => {
+            setCanvasSize(canvas);
+        };
+
+        window.addEventListener('resize', handleResize);
+
         canvas.context.imageSmoothingEnabled = false;
         canvas.contextV.imageSmoothingEnabled = false;
 
         return () => {
             if (WINDOW.WIDTH !== INITIAL_WINDOW_WIDTH) {
-            WINDOW.WIDTH = INITIAL_WINDOW_WIDTH;
-            WINDOW.HEIGHT = INITIAL_WINDOW_HEIGHT;
-            WINDOW.LEFT = INITIAL_WINDOW_LEFT;
-            WINDOW.TOP = INITIAL_WINDOW_TOP;
-        }
+                WINDOW.WIDTH = INITIAL_WINDOW_WIDTH;
+                WINDOW.HEIGHT = INITIAL_WINDOW_HEIGHT;
+                WINDOW.LEFT = INITIAL_WINDOW_LEFT;
+                WINDOW.TOP = INITIAL_WINDOW_TOP;
+            }
+
+            window.removeEventListener('resize', handleResize);
 
             globalMap?.destructor();
             //canvas?.destructor();

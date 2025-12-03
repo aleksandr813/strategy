@@ -5,6 +5,7 @@ require_once('chat/Chat.php');
 require_once('calculator/Calculator.php');
 require_once('village/Village.php');
 require_once('battle/Battle.php');
+require_once('map/Map.php');
 
 class Application
 {
@@ -12,6 +13,7 @@ class Application
     private $chat;
     private $village;
     private $battle;
+    private $map;
 
     private $calculator;
 
@@ -23,6 +25,7 @@ class Application
         $this->calculator = new Calculator();
         $this->village = new Village($db);
         $this->battle = new Battle($db);
+        $this->map = new Map($db);
     }
 
     public function login($params)
@@ -168,8 +171,9 @@ class Application
         return ['error' => 242];
     }
 
-    public function takeDamage($params) {
-        if ($params['token']  && $params['units'])  {
+    public function takeDamage($params)
+    {
+        if ($params['token']  && $params['units']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
                 return $this->battle->takeDamage($user->id, $params['units']);
@@ -179,7 +183,7 @@ class Application
         return ['error' => 242];
     }
 
-    
+
     public function buyBuilding($params)
     {
         if ($params['token'] && $params['typeId'] && $params['x'] && $params['y']) {
@@ -237,11 +241,35 @@ class Application
         return ['error' => 242];
     }
 
-    public function sendArmy($params) {
+    public function sendArmy($params)
+    {
         if ($params['token'] && $params['target'] && $params['units']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->village->sendArmy($user->id, $params['units'], $params['target']);
+                return $this->village->sendArmy($user, $params['units'], $params['target']);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function getMap($params) {
+        if ($params['token'] && $params['hash']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->map->getMap($params['hash']);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function moveArmyBack($params)
+    {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->village->moveArmyBack($user->id);
             }
             return ['error' => 705];
         }
