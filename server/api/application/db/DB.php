@@ -464,7 +464,7 @@ class DB
 
     public function getUserArmies($userId) {
         $result = $this->queryAll(
-            "SELECT units, attackId, speed
+            "SELECT units, attackId, speed, startTime, arrivalTime
             FROM army
             WHERE userId = ?",
             [$userId]

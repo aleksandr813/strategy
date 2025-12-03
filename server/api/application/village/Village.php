@@ -420,6 +420,27 @@ class Village
             return ['error' => 603];
         }
 
-        return $armies;
+        $validArmmies = [];
+        $currentTime = time();
+
+        foreach($armies as $army) {
+            $arrivalTime = strtotime($army['arrivalTime']);
+
+            if ($arrivalTime > $currentTime) {
+                $validArmmies[] = [
+                    'units' => $army['units'],
+                    'attackId' => (int)$army['attackId'],
+                    'speed' => (float)$army['speed']
+                ];
+            }
+        }
+
+        var_dump($validArmmies);
+
+        if (!$validArmmies) {
+            return ['error' => 603];
+        }
+
+        return $validArmmies;
     }
 }
