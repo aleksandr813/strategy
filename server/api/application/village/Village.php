@@ -413,4 +413,13 @@ class Village
 
         return $updatedUnits;
     }
+
+    public function getUserArmies($userId) {
+        $armies = $this->db->getUserArmies($userId);
+        if (!$armies) {
+            return ['error' => 603];
+        }
+
+        return $armies;
+    }
 }
