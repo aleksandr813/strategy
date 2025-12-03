@@ -148,6 +148,11 @@ class Village extends Manager {
             if (buildingData.typeId === 4) {
                 size = 1;
             };
+
+            if (buildingData.typeId === 6) {
+                size = 1;
+            };
+
             return new Building(
                 buildingData.id,
                 buildingData.type,

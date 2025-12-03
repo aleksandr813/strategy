@@ -20,6 +20,7 @@ export default class Building {
         [BuildingTypeID.Tower]:     [9, 10, 11, 12],
         [BuildingTypeID.Wall]:     [81],
         [BuildingTypeID.Kazarma]:  [14, 15, 16 ,17],
+        [BuildingTypeID.Gates]: [91, 92]
     };
 
     private static WALL_SPRITES: Record<number, number> = {
@@ -53,7 +54,15 @@ export default class Building {
             this.coords = [
                 { x: Number(x), y: Number(y) },
             ];
-        } else {
+        }else if(typeId === BuildingTypeID.Gates){
+            const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
+            this.sprites = spriteSet;
+            this.coords = [
+                { x: Number(x), y: Number(y) },
+                { x: Number(x), y: Number(y + 1) },
+            ];
+        }
+        else {
             const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
             this.sprites = spriteSet;
 
@@ -68,7 +77,6 @@ export default class Building {
                 { x: Number(x) + 1, y: Number(y) + 1 },
             ];
         }
-
         
     }
 
