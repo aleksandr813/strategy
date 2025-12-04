@@ -53,7 +53,7 @@ export default class BuildingPreview {
     }
 
     private checkCanPlace(occupiedMatrix: number[][]): boolean {
-        return this.isWithinBounds(occupiedMatrix) && this.isCellsEmpty(occupiedMatrix);
+        return this.isWithinBounds(occupiedMatrix) && this.isCellsEmpty(occupiedMatrix) && this.isBorders();
     }
 
     private isWithinBounds(occupiedMatrix: number[][]): boolean {
@@ -74,6 +74,16 @@ export default class BuildingPreview {
             }
         }
         
+        return true;
+    }
+
+    private isBorders(): boolean {
+        const x = this.gridPosition.x;
+
+        if (x > 29) {
+            return false;
+        }
+
         return true;
     }
 
