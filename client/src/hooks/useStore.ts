@@ -1,6 +1,6 @@
-import Storage from '../services/store/Store';
+import Store from '../services/store/Store';
 import { TSTORE } from '../config';
-import Mediator from '../services/Mediator/Mediator';
+import Mediator from '../services/mediator/Mediator';
 
 type TUseStorage = {
     STORAGE: TSTORE,
@@ -9,7 +9,7 @@ type TUseStorage = {
 
 const useStore = (options: TUseStorage) => {
     const { mediator, STORAGE } = options;
-    const storage = new Storage(STORE);
+    const storage = new Store(STORE);
     const { GET_STORAGE, SET_STORAGE, CLEAR_STORAGE } = mediator.getTriggerTypes();
 
     mediator.set(GET_STORAGE, (NAME) => NAME?.name ? storage.get(NAME.name) : null);
