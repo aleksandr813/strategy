@@ -2,7 +2,8 @@ import React from 'react';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
 import { useStoreMoney } from '../../../../hooks/useStore';
-import Store from '../../../../services/store/Store'; // поправьте путь
+import Store from '../../../../services/store/Store';
+import { PAGES } from '../../../PageManager';
 
 import "./Panel.scss";
 
@@ -11,87 +12,93 @@ import unit from "../../../../assets/img/panel/unit.png";
 import map from "../../../../assets/img/panel/map.png";
 import leaderboard from "../../../../assets/img/panel/leaderboard.png";
 import settings from "../../../../assets/img/panel/settings.png";
+import settings1 from "../../../../assets/img/panel/settings1.png";
 import desk from "../../../../assets/img/panel/desk.png";
 import home from "../../../../assets/img/panel/home.png";
 import moneyIcon from "../../../../assets/img/panel/moneyIcon.png";
 import rectangle from "../../../../assets/img/panel/rectangle.png";
+import rectangle1 from "../../../../assets/img/panel/rectangle1.png";
 import chat from "../../../../assets/img/panel/chat.png";
-import icon from "../../../../assets/img/panel/icon.png";
+import sendarmy from "../../../../assets/img/panel/sendarmy.png";
 
 interface PanelProps extends IBaseUIElement {
     store: Store;
+    setPage: (name: PAGES) => void;
 }
 
 const Panel: React.FC<PanelProps> = (props: PanelProps) => {
-    const { setUIElement, store } = props;
+    const { setUIElement, store, setPage } = props;
     const money = useStoreMoney(store);
 
     const buildingsHandler = () => setUIElement(UIELEMENT.BUYBUILDINGSMENU);
     const unitsHandler = () => setUIElement(UIELEMENT.BUYUNITSMENU);    
     const settingsHandler = () => setUIElement(UIELEMENT.NULL);
-    const globalmapHandler = () => setUIElement(UIELEMENT.NULL);
+    const globalmapHandler = () => setPage(PAGES.GLOBAL_MAP);
     const lidersHandler = () => setUIElement(UIELEMENT.NULL);
     const villageHandler = () => setUIElement(UIELEMENT.NULL);
-    const chatHandler = () => setUIElement(UIELEMENT.NULL);
+    const chatHandler = () =>  setPage(PAGES.CHAT);
+    const sendArmyHandler = () => setUIElement(UIELEMENT.NULL);
 
     return (
         <div className='Panel'>
-            <img src={desk} className="panel-background" />
-            <div className='buttons1'>
+            <img src={desk} className="panel-background" alt="bg" />
 
-                <div className='button-group'>
-                    <Button onClick={globalmapHandler} className='panel-button max' title='Глобальная карта' id='testpanelmap'>
-                        <img src={map} className='max' />
+            <div className="panel-content">
+                <div className='left-section'>
+                    <Button onClick={villageHandler} className='panel-button big-btn' id='testpanelvillage'>
+                        <img src={home} className='icon-img' alt="home" />
+                    </Button>
+
+                    <div className="info-column">
+                        <div className="info-row top">
+                            <img src={rectangle1} className='name-plate-bg' alt="plate" />
+                        </div>
+                        
+                        <div className="info-row bottom">
+                            <div className='money-container'>
+                                <img src={rectangle} className='money-bg' alt="bg" />
+                                <div className="money-content">
+                                    <img src={moneyIcon} className='coin-icon' alt="gold" />
+                                    <span className='money-value'>{money}</span>
+                                </div>
+                            </div>
+                            <Button onClick={chatHandler} className='panel-button chat-btn' id='testpanelchat'>
+                                <img src={chat} className='icon-img' alt="chat" />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className='centr-section'>
+                    <Button onClick={sendArmyHandler} className='panel-button-send-army' id='sendarmy'>
+                        <img src={sendarmy} className='icon-img' alt="sendarmy" />  
                     </Button>
                 </div>
 
-                <div className='button-group'>
-                    <Button onClick={lidersHandler} className='panel-button mini' title='Таблица лидеров' id='testpanelleaderboard'>
-                        <img src={leaderboard} className='max' />
+                <div className='right-section'>
+                    <Button onClick={globalmapHandler} className='panel-button big-btn' title='Глобальная карта' id='testpanelmap'>
+                        <img src={map} className='icon-img' alt="map" />
                     </Button>
-                    <Button onClick={settingsHandler} className='panel-button mini' title='Настройки' id='testpanelsettings'>
-                        <img src={settings} className='max' />
-                    </Button>
-                </div>
 
-                <div className='button-group'>
-                    <Button onClick={buildingsHandler} className='panel-button mini' title='Купить здание' id='testpanelhouses'>
-                        <img src={build} className='max' />
-                    </Button>
-                    <Button onClick={unitsHandler} className='panel-button mini' title='Купить юнитов' id='testpanelunits'>
-                        <img src={unit} className='max' />
-                    </Button>
-                </div>
-            </div>
-            <div className='buttons2'>
-                <div className='button-group'>
-                    <div className='param'>
-                        <Button onClick={villageHandler} className='panel-button mini' id='testpanelvillage'>
-                            <img src={home} className='max' />
+                    <div className='small-buttons-grid'>
+                        <Button onClick={lidersHandler} className='panel-button-r mini-btn' title='Таблица лидеров'>
+                            <img src={leaderboard} className='icon-img' alt="leaderboard" />
                         </Button>
-                        <img src={rectangle} className='rectangle' />
-                    </div>
-                    <div className='param'>
-                        <img src={moneyIcon} className='money' />
-                        <span className='money-value'>{money}</span>
-                        <img src={rectangle} className='rectangle' />
-                        <img src={chat} className='chat-panel' />
+                        
+                        <Button onClick={buildingsHandler} className='panel-button-r mini-btn' title='Купить здание'>
+                            <img src={build} className='icon-img' alt="build" />
+                        </Button>
+
+                        <Button onClick={settingsHandler} className='panel-button-r mini-btn' title='Настройки'>
+                            <img src={settings} className='icon-img' alt="bg" />
+                        </Button>
+
+                        <Button onClick={unitsHandler} className='panel-button-r mini-btn' title='Купить юнитов'>
+                            <img src={unit} className='icon-img' alt="units" />
+                        </Button>
                     </div>
                 </div>
-
-                <div className='button-group'>
-                    <div className='param'>
-                        <img src={icon} className='icon' />
-                        <img src={rectangle} className='rectangle' />
-                    </div>
-                    <div className='param'>
-                        <img src={icon} className='icon' />
-                        <img src={rectangle} className='rectangle' />
-                    </div>
-                </div>
-
             </div>
-
         </div>
     )
 }

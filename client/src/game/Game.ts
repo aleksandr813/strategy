@@ -5,6 +5,8 @@ import GlobalMap from "./manager/GlobalMap";
 import Village from "./manager/Village";
 import Battle from "./manager/Battle";
 import Unit from './entities/Unit';
+import VillageEntity from './entities/VillageEntity';
+import ArmyEntity from './entities/ArmyEntity';
 import Building from './entities/Building';
 import GAMECONFIG from './gameConfig';
 
@@ -15,6 +17,9 @@ class Game {
     
     private units: Unit[] = [];
     private buildings: Building[] = [];
+
+    private villages: VillageEntity[] = [];
+    private armies: ArmyEntity[] = [];
     
     private incomeInterval: NodeJS.Timer | null = null;
     
@@ -44,6 +49,7 @@ class Game {
     }
 
     private async updateIncome(): Promise<void> {
+        if (!this.store.user) return;
         await this.server.getIncome();
     }
 
@@ -54,15 +60,16 @@ class Game {
         }
     }
 
-    private removeBuilding(building: Building): void {
-        const index = this.buildings.indexOf(building);
-        if (index > -1) {
-            this.buildings.splice(index, 1);
-        }
+    private async removeBuilding(building: Building): Promise<void> {
+        await this.server.deleteBuilding(building.id);
     }
 
-    private getGameData() {
+    protected getGameData() {
         return {
+            getArmies: () => this.armies,
+            getVillages: () => this.villages,
+            setArmies: (armies: ArmyEntity[]) => { this.armies = armies; },
+            setVillages: (villages: VillageEntity[]) => { this.villages = villages;},
             getUnits: () => this.units,
             getBuildings: () => this.buildings,
             setUnits: (units: Unit[]) => { this.units = units; },

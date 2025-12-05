@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 27 2025 г., 14:34
+-- Время создания: Ноя 29 2025 г., 22:17
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -30,11 +30,26 @@ SET time_zone = "+00:00";
 CREATE TABLE `army` (
   `army` int NOT NULL,
   `userId` int NOT NULL,
-  `x` int NOT NULL,
-  `y` int NOT NULL,
+  `startX` int NOT NULL,
+  `startY` int NOT NULL,
+  `startTime` datetime NOT NULL,
+  `arrivalTime` datetime NOT NULL,
+  `targetX` int NOT NULL,
+  `targetY` int NOT NULL,
   `attackId` int NOT NULL,
-  `units` text NOT NULL
+  `units` text NOT NULL,
+  `speed` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `army`
+--
+
+INSERT INTO `army` (`army`, `userId`, `startX`, `startY`, `startTime`, `arrivalTime`, `targetX`, `targetY`, `attackId`, `units`, `speed`) VALUES
+(25, 9, 496, 410, '2025-11-29 20:50:16', '2025-11-29 21:07:42', 836, 654, 5, '5,6,11', 0.4),
+(26, 9, 496, 410, '2025-11-29 21:20:21', '2025-11-29 21:37:47', 836, 654, 5, '5,6,11', 0.4),
+(27, 9, 496, 410, '2025-11-29 21:20:51', '2025-11-29 21:38:17', 836, 654, 5, '5,6,11', 0.4),
+(28, 9, 496, 410, '2025-11-29 21:32:05', '2025-11-29 21:49:31', 836, 654, 5, '5,6,11', 0.4);
 
 -- --------------------------------------------------------
 
@@ -76,19 +91,20 @@ CREATE TABLE `building_types` (
   `id` int NOT NULL,
   `type` varchar(100) NOT NULL,
   `hp` int NOT NULL DEFAULT '1',
-  `price` int NOT NULL
+  `price` int NOT NULL,
+  `unlock_level` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `building_types`
 --
 
-INSERT INTO `building_types` (`id`, `type`, `hp`, `price`) VALUES
-(1, 'Ратуша', 700, 1),
-(2, 'Шахта ', 100, 1),
-(3, 'Казармы ', 500, 400),
-(4, 'Стены ', 200, 100),
-(5, 'Стрелковая башня', 300, 200);
+INSERT INTO `building_types` (`id`, `type`, `hp`, `price`, `unlock_level`) VALUES
+(1, 'Ратуша', 700, 1, 1),
+(2, 'Шахта', 100, 1, 1),
+(3, 'Казармы ', 500, 400, 1),
+(4, 'Стены ', 200, 100, 1),
+(5, 'Стрелковая башня', 300, 200, 1);
 
 -- --------------------------------------------------------
 
@@ -184,6 +200,17 @@ CREATE TABLE `hashes` (
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `map_hashes`
+--
+
+CREATE TABLE `map_hashes` (
+  `id` int NOT NULL,
+  `hash` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `messages`
 --
 
@@ -199,6 +226,7 @@ CREATE TABLE `messages` (
 --
 
 INSERT INTO `messages` (`id`, `user_id`, `message`, `created`) VALUES
+(4, 5, 'хай', '2025-10-10 14:33:16');
 (4, 5, 'хай', '2025-10-10 14:33:16');
 
 -- --------------------------------------------------------
@@ -226,10 +254,13 @@ INSERT INTO `units` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `current_
 (1, 1, 5, 1, 4, 1, 100, 0),
 (2, 1, 5, 1, 4, 1, 100, 0),
 (3, 1, 5, 2, 2, 1, 100, 0),
-(4, 1, 5, 15, 4, 1, 100, 0),
-(5, 1, 7, 8, 2, 1, 100, 0),
+(5, 1, 7, 8, 2, 1, 100, 1),
 (6, 2, 7, 9, 3, 1, 60, 1),
-(7, 3, 7, 6, 4, 1, 90, 1);
+(7, 3, 7, 6, 4, 1, 90, 1),
+(8, 5, 7, 10, 3, 1, 400, 1),
+(9, 5, 7, 10, 4, 1, 400, 1),
+(10, 5, 7, 4, 4, 1, 400, 1),
+(11, 11, 7, 5, 4, 1, 500, 1);
 
 -- --------------------------------------------------------
 
@@ -287,9 +318,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `login`, `password`, `name`, `token`, `money`) VALUES
 (5, 'A2345688', '6866a536740d1ac4af4c89eb3d046631', '123', '7b56cc22b1324f74fc105ab2f12f4cce', 100),
-(7, 'A2345678', 'd5174b43cb0ddd0ff65e49d6689684cb', '123', '8dc52f3a822ca8f0a0bdcb8c82a12937', 57),
+(7, 'A2345678', 'd5174b43cb0ddd0ff65e49d6689684cb', '123', '8dc52f3a822ca8f0a0bdcb8c82a12937', 54),
 (8, 'A23456788', 'a0af848759b6a5928cbaad779d65898f', '123', 'b5a8070af061be665aef1b59bb04b825', 100),
-(9, 'admin', 'f6fdffe48c908deb0f4c3bd36c032e72', 'admin', '412d50d375e2bac96d72f5eab24ec32f', 1000249);
+(9, 'admin', 'f6fdffe48c908deb0f4c3bd36c032e72', 'admin', '412d50d375e2bac96d72f5eab24ec32f', 998649);
 
 -- --------------------------------------------------------
 
@@ -313,7 +344,7 @@ INSERT INTO `villages` (`id`, `user_id`, `x`, `y`, `last_income_datetime`) VALUE
 (3, 5, 836, 654, '2025-10-10 17:31:45'),
 (5, 7, 2, 814, '2025-10-10 17:46:22'),
 (6, 8, 617, 700, '2025-10-10 17:47:06'),
-(7, 9, 496, 410, '2025-11-27 14:31:26');
+(7, 9, 496, 410, '2025-11-29 20:58:50');
 
 --
 -- Индексы сохранённых таблиц
@@ -350,6 +381,12 @@ ALTER TABLE `game`
 -- Индексы таблицы `hashes`
 --
 ALTER TABLE `hashes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `map_hashes`
+--
+ALTER TABLE `map_hashes`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -395,7 +432,7 @@ ALTER TABLE `villages`
 -- AUTO_INCREMENT для таблицы `army`
 --
 ALTER TABLE `army`
-  MODIFY `army` int NOT NULL AUTO_INCREMENT;
+  MODIFY `army` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT для таблицы `buildings`
@@ -416,6 +453,12 @@ ALTER TABLE `game`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
+-- AUTO_INCREMENT для таблицы `map_hashes`
+--
+ALTER TABLE `map_hashes`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT для таблицы `messages`
 --
 ALTER TABLE `messages`
@@ -425,7 +468,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT для таблицы `units`
 --
 ALTER TABLE `units`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT для таблицы `unit_types`
