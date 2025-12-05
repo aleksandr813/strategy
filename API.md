@@ -613,8 +613,8 @@ Buildings: {
 ```
     Answer<{
         armies: array; - массив юнитов
-        attackId: string; - id атакуемой деревни
-        speed: string; - скорость армии
+        attackId: number; - id атакуемой деревни
+        speed: number; - скорость армии
     }>
 ```
 **Ошибки**
