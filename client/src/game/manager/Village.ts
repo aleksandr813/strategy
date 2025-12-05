@@ -84,6 +84,9 @@ class Village extends Manager {
             if (typeId === 4) {
                 this.updateAllWallSprites();
             }
+            if (typeId === 6){
+                this.updateAllGateSprites();
+            }
         }
     }
 
@@ -149,10 +152,6 @@ class Village extends Manager {
                 size = 1;
             };
 
-            if (buildingData.typeId === 6) {
-                size = 1;
-            };
-
             return new Building(
                 buildingData.id,
                 buildingData.type,
@@ -169,6 +168,7 @@ class Village extends Manager {
 
         this.gameData.setBuildings(buildings);
         this.updateAllWallSprites();
+        this.updateAllGateSprites();
         console.log("Загружено зданий:", this.gameData.getBuildings().length);
     }
 
@@ -274,6 +274,45 @@ class Village extends Manager {
         if ((up === 1 || down === 1) && left !== 1 && right !== 1) return 81;
         
         return 81;
+    }
+
+    private updateAllGateSprites(): void {
+        const { buildings } = this.getScene();
+        
+        buildings.forEach(building => {
+            if (building.typeId === BuildingTypeID.Gates) {
+                const [x, y] = [building.coords[0].x, building.coords[0].y];
+                const gateSpriteId = this.calculateGateSprite(x, y, buildings);
+                building.updateGateSprite(gateSpriteId); 
+            }
+        });
+    }
+
+    private calculateGateSprite(x: number, y: number, buildings: Building[]): number { 
+        const isWall = (tx: number, ty: number): boolean => {
+            if (ty < 0 || ty >= 29 || tx < 0 || tx >= 87) return false;
+            
+            return buildings.some(b => 
+                b.typeId === BuildingTypeID.Wall && 
+                b.coords.some(c => c.x === tx && c.y === ty)
+            );
+        };
+        
+        const wallLeft = isWall(x - 1, y) && isWall(x - 1, y + 1);
+        const wallRight = isWall(x + 2, y) && isWall(x + 2, y + 1);
+        
+        const wallUp = isWall(x, y - 1) && isWall(x + 1, y - 1);
+        const wallDown = isWall(x, y + 2) && isWall(x + 1, y + 2);
+        
+        if (wallLeft && wallRight) {
+            return 91; 
+        } 
+        
+        if (wallUp && wallDown) {
+            return 92; 
+        }
+
+        return 91; 
     }
 
 }

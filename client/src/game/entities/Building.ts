@@ -56,10 +56,16 @@ export default class Building {
             ];
         }else if(typeId === BuildingTypeID.Gates){
             const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
-            this.sprites = spriteSet;
+            this.sprites = [91];
             this.coords = [
+                // Верхний Левый тайл здания на карте
                 { x: Number(x), y: Number(y) },
-                { x: Number(x), y: Number(y + 1) },
+                // Верхний Правый
+                { x: Number(x) + 1, y: Number(y) },
+                // Нижний Левый
+                { x: Number(x), y: Number(y) + 1 },
+                // Нижний Правый
+                { x: Number(x) + 1, y: Number(y) + 1 },
             ];
         }
         else {
@@ -83,6 +89,12 @@ export default class Building {
     public updateWallSprite(wallSpriteIndex: number): void {
         if (this.typeId === BuildingTypeID.Wall) {
             this.sprites = [Building.WALL_SPRITES[wallSpriteIndex] || 81];
+        }
+    }
+
+    public updateGateSprite(gateSpriteId: number): void {
+        if (this.typeId === BuildingTypeID.Gates) {
+            this.sprites = [gateSpriteId]; 
         }
     }
 
