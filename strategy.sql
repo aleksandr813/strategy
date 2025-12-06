@@ -101,7 +101,7 @@ CREATE TABLE `building_types` (
 
 INSERT INTO `building_types` (`id`, `type`, `hp`, `price`, `unlock_level`) VALUES
 (1, 'Ратуша', 700, 1, 1),
-(2, 'Шахта', 100, 1, 1),
+(2, 'Шахта ', 100, 1, 1),
 (3, 'Казармы ', 500, 400, 1),
 (4, 'Стены ', 200, 100, 1),
 (5, 'Стрелковая башня', 300, 200, 1);
@@ -254,7 +254,7 @@ INSERT INTO `units` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `current_
 (1, 1, 5, 1, 4, 1, 100, 0),
 (2, 1, 5, 1, 4, 1, 100, 0),
 (3, 1, 5, 2, 2, 1, 100, 0),
-(5, 1, 7, 8, 2, 1, 100, 1),
+(5, 1, 7, 8, 2, 1, 100, 0),
 (6, 2, 7, 9, 3, 1, 60, 1),
 (7, 3, 7, 6, 4, 1, 90, 1),
 (8, 5, 7, 10, 3, 1, 400, 1),
@@ -318,7 +318,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `login`, `password`, `name`, `token`, `money`) VALUES
 (5, 'A2345688', '6866a536740d1ac4af4c89eb3d046631', '123', '7b56cc22b1324f74fc105ab2f12f4cce', 100),
-(7, 'A2345678', 'd5174b43cb0ddd0ff65e49d6689684cb', '123', '8dc52f3a822ca8f0a0bdcb8c82a12937', 54),
+(7, 'A2345678', 'd5174b43cb0ddd0ff65e49d6689684cb', '123', '8dc52f3a822ca8f0a0bdcb8c82a12937', 56),
 (8, 'A23456788', 'a0af848759b6a5928cbaad779d65898f', '123', 'b5a8070af061be665aef1b59bb04b825', 100),
 (9, 'admin', 'f6fdffe48c908deb0f4c3bd36c032e72', 'admin', '412d50d375e2bac96d72f5eab24ec32f', 998649);
 

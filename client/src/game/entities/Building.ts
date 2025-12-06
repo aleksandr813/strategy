@@ -20,6 +20,7 @@ export default class Building {
         [BuildingTypeID.Tower]:     [9, 10, 11, 12],
         [BuildingTypeID.Wall]:     [81],
         [BuildingTypeID.Kazarma]:  [14, 15, 16 ,17],
+        [BuildingTypeID.Gates]: [91, 92]
     };
 
     private static WALL_SPRITES: Record<number, number> = {
@@ -53,7 +54,21 @@ export default class Building {
             this.coords = [
                 { x: Number(x), y: Number(y) },
             ];
-        } else {
+        }else if(typeId === BuildingTypeID.Gates){
+            const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
+            this.sprites = [91];
+            this.coords = [
+                // Верхний Левый тайл здания на карте
+                { x: Number(x), y: Number(y) },
+                // Верхний Правый
+                { x: Number(x) + 1, y: Number(y) },
+                // Нижний Левый
+                { x: Number(x), y: Number(y) + 1 },
+                // Нижний Правый
+                { x: Number(x) + 1, y: Number(y) + 1 },
+            ];
+        }
+        else {
             const spriteSet = Building.SPRITE_MAP[typeId as BuildingTypeID];
             this.sprites = spriteSet;
 
@@ -68,13 +83,18 @@ export default class Building {
                 { x: Number(x) + 1, y: Number(y) + 1 },
             ];
         }
-
         
     }
 
     public updateWallSprite(wallSpriteIndex: number): void {
         if (this.typeId === BuildingTypeID.Wall) {
             this.sprites = [Building.WALL_SPRITES[wallSpriteIndex] || 81];
+        }
+    }
+
+    public updateGateSprite(gateSpriteId: number): void {
+        if (this.typeId === BuildingTypeID.Gates) {
+            this.sprites = [gateSpriteId]; 
         }
     }
 

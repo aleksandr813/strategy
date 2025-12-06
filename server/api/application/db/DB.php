@@ -118,6 +118,7 @@ class DB
                 u.level AS level,
                 u.current_hp AS currentHp,
                 u.on_a_crusade AS onAСrusade,
+                u.is_enemy AS isEnemy,
                 ut.type AS type,
                 ut.speed AS speed
             FROM units AS u
