@@ -491,7 +491,7 @@ Buildings: {
 ```
 {
     token: string; - токен
-    units: array; - массив юнитов с их id, x, y
+    units: array; - массив юнитов с их id, x, y (Пример входных данных: units=id32,x3,y4;id33,x2,y7)
 }
 ```
 **Успешный ответ**

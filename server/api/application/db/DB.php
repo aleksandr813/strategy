@@ -258,11 +258,29 @@ class DB
 
     public function getVillage($userId)
     {
-        return $this->query("SELECT id, x, y, last_income_datetime FROM villages WHERE user_id = ?", [$userId]);
+        return $this->query("
+            SELECT 
+                id, 
+                x, 
+                y, 
+                last_income_datetime, 
+                attack_id AS attackId 
+            FROM villages 
+            WHERE user_id = ?", 
+            [$userId]
+        );
     }
 
     public function getVillages() {
-        return $this->queryAll("SELECT id, user_id AS userId, x, y FROM villages");
+        return $this->queryAll("
+            SELECT 
+                id, 
+                user_id AS userId, 
+                x, 
+                y,
+                attack_id AS attackId
+            FROM villages"
+        );
     }
 
     public function getBuildingType($buildingType) {
