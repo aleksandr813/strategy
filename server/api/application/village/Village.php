@@ -414,4 +414,34 @@ class Village
 
         return $updatedUnits;
     }
+
+    public function getUserArmies($userId) {
+        $armies = $this->db->getUserArmies($userId);
+        if (!$armies) {
+            return ['error' => 603];
+        }
+
+        $validArmmies = [];
+        $currentTime = time();
+
+        foreach($armies as $army) {
+            $arrivalTime = strtotime($army['arrivalTime']);
+
+            if ($arrivalTime > $currentTime) {
+                $validArmmies[] = [
+                    'units' => $army['units'],
+                    'attackId' => (int)$army['attackId'],
+                    'speed' => (float)$army['speed']
+                ];
+            }
+        }
+
+        var_dump($validArmmies);
+
+        if (!$validArmmies) {
+            return ['error' => 603];
+        }
+
+        return $validArmmies;
+    }
 }
