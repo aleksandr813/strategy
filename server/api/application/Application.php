@@ -275,4 +275,15 @@ class Application
         }
         return ['error' => 242];
     }
+
+    public function getUserArmies($params) {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->village->getUserArmies($user->id);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
 }
