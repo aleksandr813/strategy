@@ -17,6 +17,7 @@ export type TWINDOW = {
     WIDTH: number;
 }
 
+
 const CONFIG = {
     //udsu 
     //HOST: 'http://strategy/api',
@@ -35,6 +36,17 @@ const CONFIG = {
         TOP: 0,
         HEIGHT: 10,
         WIDTH: 20,
+    },
+
+    
+    MEDIATOR: {
+        EVENTS: {
+            MONEY_CHANGE: 'MONEY_CHANGE', // какое-то событие
+        },
+        TRIGGERS: {
+            SET_STORE: 'SET_STORE', // записать в стор
+            GET_STORE: 'GET_STORE', // получить из стора
+        },
     },
 };
 
