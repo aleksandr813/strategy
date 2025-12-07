@@ -19,7 +19,8 @@ export default class Unit {
     easystar: EasyStar.js;
     game: Game;
     unlockLevel: number;
-    
+
+    isEnemy: number;
     isSelected: boolean = false;
     moveIntervalId: NodeJS.Timeout | null = null;
     
@@ -34,6 +35,7 @@ export default class Unit {
         this.maxHp = data.currentHp; 
         this.level = data.level;
         this.unlockLevel = data.unlockLevel
+        this.isEnemy = data.isEnemy
 
         this.sprites = getUnitSprites(this.typeId);
 
@@ -58,7 +60,14 @@ export default class Unit {
         const matrix = this.game.village.getMatrixForEasyStar(this);
         
         this.easystar.setGrid(matrix);
-        this.easystar.setAcceptableTiles([0]);
+
+        const acceptableTiles = [0];
+
+        if (this.isEnemy === null){
+            acceptableTiles.push(2);
+        }
+
+        this.easystar.setAcceptableTiles(acceptableTiles);
 
         this.easystar.findPath(
             this.coords.x, 

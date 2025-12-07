@@ -449,15 +449,7 @@ class DB
         FROM army");
 
         foreach($result as &$army) {
-            $unitsArray = explode(',', $army['units']);
-
-            $unitsIntArr = [];
-
-            foreach($unitsArray as $unit) {
-                $unitsIntArr[] = intval($unit);
-            }
-
-            $army['units'] = $unitsIntArr;
+            $army['units'] = array_map('intval', explode(',', $army['units']));
         }
 
         return $result;
@@ -487,5 +479,20 @@ class DB
 
     public function updateMapHash($hash) {
         return $this->execute("UPDATE map_hashes SET hash = ? WHERE id = 1", [$hash]);
+    }
+
+    public function getUserArmies($userId) {
+        $result = $this->queryAll(
+            "SELECT units, attackId, speed, startTime, arrivalTime
+            FROM army
+            WHERE userId = ?",
+            [$userId]
+        );
+
+        foreach($result as &$army) {
+            $army['units'] = array_map('intval', explode(',', $army['units']));
+        }
+
+        return $result;
     }
 }

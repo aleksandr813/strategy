@@ -9,6 +9,7 @@ import VillageEntity from '../entities/VillageEntity';
 import ArmyEntity from '../entities/ArmyEntity';
 import Building from '../entities/Building';
 import { TVillage, TArmy } from '../../services/server/types';
+import { BuildingTypeID } from '../../services/server/types';
 
 const { WIDTH, HEIGHT } = CONFIG;
 const { GRID_HEIGHT, GRID_WIDTH, MOVE_INTERVAL } = GAMECONFIG
@@ -66,6 +67,17 @@ class Manager {
         });
 
         this.gameData.getBuildings().forEach((building) => {
+
+        if (building.typeId === BuildingTypeID.Gates) {
+            const { x, y } = building.coords[0];
+            for (let dy = 0; dy <= 1; dy++) {
+                for (let dx = 0; dx <= 1; dx++) {
+                    if (y + dy < GRID_HEIGHT && x + dx < GRID_WIDTH) {
+                        matrix[y + dy][x + dx] = 2;
+                    }
+                }
+            }
+        }else{
             const { x, y } = building.coords[0];
             for (let dy = 0; dy <= 1; dy++) {
                 for (let dx = 0; dx <= 1; dx++) {
@@ -74,7 +86,9 @@ class Manager {
                     }
                 }
             }
+        } 
         });
+
 
         return matrix;
     }

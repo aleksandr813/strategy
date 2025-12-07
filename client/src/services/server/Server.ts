@@ -172,7 +172,8 @@ class Server {
             level: Number(unit.level),
             currentHp: Number(unit.currentHp),
             type: unit.type,
-            unlockLevel: unit.unlockLevel
+            unlockLevel: unit.unlockLevel,
+            isEnemy: unit.isEnemy
         }));
 
         console.log('Units from server:', units);
