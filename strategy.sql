@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 29 2025 г., 22:17
+-- Время создания: Дек 07 2025 г., 11:04
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -101,9 +101,9 @@ CREATE TABLE `building_types` (
 
 INSERT INTO `building_types` (`id`, `type`, `hp`, `price`, `unlock_level`) VALUES
 (1, 'Ратуша', 700, 1, 1),
-(2, 'Шахта ', 100, 1, 1),
-(3, 'Казармы ', 500, 400, 1),
-(4, 'Стены ', 200, 100, 1),
+(2, 'Шахта', 100, 1, 1),
+(3, 'Казармы', 500, 400, 1),
+(4, 'Стены', 200, 100, 1),
 (5, 'Стрелковая башня', 300, 200, 1);
 
 -- --------------------------------------------------------
@@ -227,7 +227,6 @@ CREATE TABLE `messages` (
 
 INSERT INTO `messages` (`id`, `user_id`, `message`, `created`) VALUES
 (4, 5, 'хай', '2025-10-10 14:33:16');
-(4, 5, 'хай', '2025-10-10 14:33:16');
 
 -- --------------------------------------------------------
 
@@ -333,18 +332,19 @@ CREATE TABLE `villages` (
   `user_id` int NOT NULL,
   `x` int NOT NULL,
   `y` int NOT NULL,
-  `last_income_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `last_income_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `attack_id` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `villages`
 --
 
-INSERT INTO `villages` (`id`, `user_id`, `x`, `y`, `last_income_datetime`) VALUES
-(3, 5, 836, 654, '2025-10-10 17:31:45'),
-(5, 7, 2, 814, '2025-10-10 17:46:22'),
-(6, 8, 617, 700, '2025-10-10 17:47:06'),
-(7, 9, 496, 410, '2025-11-29 20:58:50');
+INSERT INTO `villages` (`id`, `user_id`, `x`, `y`, `last_income_datetime`, `attack_id`) VALUES
+(3, 5, 836, 654, '2025-10-10 17:31:45', 0),
+(5, 7, 2, 814, '2025-10-10 17:46:22', 0),
+(6, 8, 617, 700, '2025-10-10 17:47:06', 0),
+(7, 9, 496, 410, '2025-11-29 20:58:50', 0);
 
 --
 -- Индексы сохранённых таблиц
@@ -504,25 +504,6 @@ ALTER TABLE `army`
 ALTER TABLE `buildings`
   ADD CONSTRAINT `buildings_ibfk_1` FOREIGN KEY (`village_id`) REFERENCES `villages` (`id`),
   ADD CONSTRAINT `buildings_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `building_types` (`id`);
-
---
--- Ограничения внешнего ключа таблицы `messages`
---
-ALTER TABLE `messages`
-  ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
-
---
--- Ограничения внешнего ключа таблицы `units`
---
-ALTER TABLE `units`
-  ADD CONSTRAINT `units_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `unit_types` (`id`),
-  ADD CONSTRAINT `units_ibfk_2` FOREIGN KEY (`village_id`) REFERENCES `villages` (`id`);
-
---
--- Ограничения внешнего ключа таблицы `villages`
---
-ALTER TABLE `villages`
-  ADD CONSTRAINT `villages_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
