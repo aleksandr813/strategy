@@ -265,11 +265,16 @@ class Village
         return $types;
     }
 
-    public function moveUnits($userId, $units)
+    public function moveUnits($userId, $unitsString)
     {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 310];
+        }
+
+        $units = $this->parseUnitsString($unitsString);
+        if (!$units) {
+            return ['error' => 504];
         }
 
         $result = $this->db->updateUnitsPosition($units, $village->id);
@@ -281,6 +286,28 @@ class Village
         return true;
     }
 
+    private function parseUnitsString($unitsString) {
+        $units = [];
+        $unitsData = explode(';', $unitsString);
+
+        foreach($unitsData as $unitData) {
+            $parts = explode(',', $unitData);
+
+            foreach($parts as $part) {
+                if (strpos($part, 'id') === 0) {
+                    $unit['unitId'] = (int) substr($part, 2);
+                } else if (strpos($part, 'x') === 0) {
+                    $unit['x'] = (int) substr($part, 1);
+                } if (strpos($part, 'y') === 0) {
+                    $unit['y'] = (int) substr($part, 1);
+                }
+            }
+
+            $units[] = $unit;
+        }
+
+        return $units;
+    }
 
     public function takeDamage($userId, $units)
     {
