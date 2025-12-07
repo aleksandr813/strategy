@@ -263,8 +263,8 @@ class DB
                 id, 
                 x, 
                 y, 
-                last_income_datetime,
-                attack_id AS attackId
+                last_income_datetime, 
+                attack_id AS attackId 
             FROM villages 
             WHERE user_id = ?", 
             [$userId]
@@ -278,7 +278,7 @@ class DB
                 user_id AS userId, 
                 x, 
                 y,
-                attack_id AS attackId 
+                attack_id AS attackId
             FROM villages"
         );
     }
