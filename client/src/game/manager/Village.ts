@@ -6,6 +6,7 @@ import Server from "../../services/server/Server";
 import Store from "../../services/store/Store";
 import Unit from '../entities/Unit';
 import Building from '../entities/Building';
+import Mediator from '../../services/mediator/Mediator';
 import Game from '../Game';
 import Manager, { GameData } from "./Manager";
 import { BuildingTypeID } from '../../services/server/types';
@@ -16,16 +17,18 @@ class Village extends Manager {
     private buildingPreview: BuildingPreview;
     private unitPreview: UnitPreview;
     private store: Store;
+    private mediator: Mediator;
     private server: Server;
     private game: Game;
     public selectedBuilding: Building | null = null;
     public selectedUnit: Unit | null = null;
     public easyStar: EasyStar.js;
 
-    constructor(store: Store, server: Server, gameData: GameData, easyStar: EasyStar.js, game: Game) {
+    constructor(store: Store, server: Server, mediator: Mediator, gameData: GameData, easyStar: EasyStar.js, game: Game) {
         super(gameData);
         this.store = store;
         this.server = server;
+        this.mediator = mediator;
         this.easyStar = easyStar;
         this.game = game;
         this.buildingPreview = new BuildingPreview(game);
@@ -87,6 +90,7 @@ class Village extends Manager {
             if (typeId === 6){
                 this.updateAllGateSprites();
             }
+            this.server.getIncome();
         }
     }
 
@@ -100,6 +104,7 @@ class Village extends Manager {
 
         if (result) {
             await this.loadUnits();
+            this.server.getIncome();
         }
     }
 
