@@ -30,9 +30,14 @@ class GlobalMap extends Manager {
     private async updateMap(): Promise<void> {
         if (!this.store.user) return;
         const mapResponse = await this.server.getMap();
+
+        if (mapResponse?.hash) {
+            this.store.setMapHash(mapResponse.hash);
+        }
         
         if (mapResponse) {
             const mapData = mapResponse.mapData;
+            if (!mapData) return;
             
             if (mapData.villages) {
                 await this.loadVillages(mapResponse.mapData.villages);
@@ -46,7 +51,7 @@ class GlobalMap extends Manager {
 
     private async loadVillages(villagesData: TVillage[]): Promise<void> {
         const villages = villagesData.map(villageData => 
-            new VillageEntity(villageData.id, { x: villageData.x, y: villageData.y })
+            new VillageEntity(villageData.id, { x: villageData.x, y: villageData.y }, villageData.name)
         );
         
         this.gameData.setVillages(villages);

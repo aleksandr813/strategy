@@ -21,11 +21,19 @@ const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
     const { setUIElement, store } = props;
 
     const closeArmyMenu = () => setUIElement(UIELEMENT.NULL);
+    const showArmiesMenu = () => {
+        const armies = 
+    };
 
     return (
         <div>
             <div className='army-menu-overlay' onClick={closeArmyMenu}>
-                <div className='army-menu-container' onClick={(e) => e.stopPropagation()} > </div>
+                <div className='army-menu-container' onClick={(e) => e.stopPropagation()} >
+                    <div className='menu-head-buttons'>
+                        <Button onClick={showArmiesMenu}>Походы</Button>
+                    </div>
+
+                </div>
             </div>
         </div>
     )

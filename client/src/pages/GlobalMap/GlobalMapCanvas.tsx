@@ -71,6 +71,7 @@ const GlobalMapCanvas: React.FC = () => {
     const drawVillages = (canvas: Canvas, villages: VillageEntity[]) => {
         villages.forEach((village) => {
             drawSprites(canvas, village, [village.coords]);
+            canvas.text(village.coords.x, village.coords.y, village.name);
         });
     };
 

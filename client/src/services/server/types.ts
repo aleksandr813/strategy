@@ -92,6 +92,7 @@ export type TVillage = {
     userId: number;
     x: number;
     y: number;
+    name: string;
 }
 
 export type TArmy = {
