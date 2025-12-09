@@ -62,6 +62,7 @@ export enum BuildingTypeID {
     Kazarma = 3,
     Wall = 4,
     Tower = 5,
+    Gates = 6
 }
 
 export type TUnitType = {
@@ -82,6 +83,7 @@ export type TUnit = {
     currentHp: number;
     type: string;
     unlockLevel: number;
+    isEnemy: number;
 
 }
 
