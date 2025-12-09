@@ -320,6 +320,20 @@ class Village extends Manager {
         return 91; 
     }
 
+    public isTileOccupiedByBuilding(x: number, y: number): boolean {
+        const gridX = Math.floor(x);
+        const gridY = Math.floor(y);
+        
+        return this.gameData.getBuildings().some(b => {
+            if (b.size === 2) {
+                const [bx, by] = [b.coords[0].x, b.coords[0].y];
+                return gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2;
+            }
+            const [bx, by] = [b.coords[0].x, b.coords[0].y];
+            return gridX === bx && gridY === by;
+        });
+    }
+
 }
 
 export default Village;
