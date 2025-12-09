@@ -72,7 +72,16 @@ const VillageCanvas: React.FC = () => {
 
     const drawUnits = (canvas: Canvas, units: Unit[]) => {
         units.forEach((unit) => {
-            drawSprites(canvas, unit, [unit.coords]);
+            const currentSpriteId = unit.getCurrentSpriteId();
+            const spriteData = getSprite(currentSpriteId); 
+            canvas.spriteFull(
+                spritesImage, 
+                unit.coords.x, 
+                unit.coords.y, 
+                spriteData[0], 
+                spriteData[1], 
+                spriteData[2]
+            );
             
             let isSelected = unit.isSelected;
             if (allocation.isSelectingStatus) {
