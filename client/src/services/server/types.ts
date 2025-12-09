@@ -122,5 +122,6 @@ export type TMapResponse = {
 export type TUserArmy = {
     units: number[];
     attackId: number;
+    enemyName: string;
     speed: number;
 }

@@ -615,6 +615,7 @@ Buildings: {
         armies: array; - массив юнитов
         attackId: number; - id атакуемой деревни
         speed: number; - скорость армии
+        enemyName; - имя того, на кого нападаем
     }>
 ```
 **Ошибки**
