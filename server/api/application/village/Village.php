@@ -281,23 +281,6 @@ class Village
         return true;
     }
 
-
-    public function takeDamage($userId, $units)
-    {
-        $village = $this->db->getVillage($userId);
-        if (!$village) {
-            return ['error' => 315];
-        }
-
-        $result = $this->db->updateUnitsHP($units, $village->id);
-
-        if (!$result) {
-            return ['error' => 510];
-        }
-
-        return true;
-    }
-
     public function sendArmy($user, $units, $target) {
         if (count($units) === 0) {
             return ['error' => 600];
