@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Дек 09 2025 г., 18:43
+-- Время создания: Дек 09 2025 г., 20:42
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -320,7 +320,7 @@ INSERT INTO `users` (`id`, `login`, `password`, `name`, `token`, `money`) VALUES
 (5, 'A2345688', '6866a536740d1ac4af4c89eb3d046631', '123', '7b56cc22b1324f74fc105ab2f12f4cce', 100),
 (7, 'A2345678', 'd5174b43cb0ddd0ff65e49d6689684cb', '123', '8dc52f3a822ca8f0a0bdcb8c82a12937', 56),
 (8, 'A23456788', 'a0af848759b6a5928cbaad779d65898f', '123', 'b5a8070af061be665aef1b59bb04b825', 100),
-(9, 'admin', 'f6fdffe48c908deb0f4c3bd36c032e72', 'admin', '412d50d375e2bac96d72f5eab24ec32f', 998649);
+(9, 'admin', 'f6fdffe48c908deb0f4c3bd36c032e72', 'admin', '412d50d375e2bac96d72f5eab24ec32f', 998659);
 
 -- --------------------------------------------------------
 
@@ -334,7 +334,7 @@ CREATE TABLE `villages` (
   `x` int NOT NULL,
   `y` int NOT NULL,
   `last_income_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `attack_id` int NOT NULL
+  `attack_id` int NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -345,7 +345,7 @@ INSERT INTO `villages` (`id`, `user_id`, `x`, `y`, `last_income_datetime`, `atta
 (3, 5, 836, 654, '2025-10-10 17:31:45', 0),
 (5, 7, 2, 814, '2025-10-10 17:46:22', 0),
 (6, 8, 617, 700, '2025-10-10 17:47:06', 0),
-(7, 9, 496, 410, '2025-11-29 20:58:50', 0);
+(7, 9, 496, 410, '2025-12-09 20:38:52', 0);
 
 --
 -- Индексы сохранённых таблиц
