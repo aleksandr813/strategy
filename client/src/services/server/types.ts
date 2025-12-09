@@ -118,3 +118,9 @@ export type TMapResponse = {
     hash: string;
     mapData: TMap;
 }
+
+export type TUserArmy = {
+    units: number[];
+    attackId: number;
+    speed: number;
+}

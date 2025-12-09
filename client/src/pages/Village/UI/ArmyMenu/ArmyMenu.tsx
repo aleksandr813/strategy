@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { GameContext } from '../../../../App';
+import { GameContext, ServerContext } from '../../../../App';
 import { TUnitType } from '../../../../services/server/types';
 import Server from '../../../../services/server/Server';
 import Button from '../../../../components/Button/Button';
@@ -18,11 +18,13 @@ interface ArmyMenuProps extends IBaseUIElement {
 const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
     const game = useContext(GameContext);
     const village = game.getVillage();
+    const server = useContext(ServerContext);
     const { setUIElement, store } = props;
 
     const closeArmyMenu = () => setUIElement(UIELEMENT.NULL);
     const showArmiesMenu = () => {
-        const armies = 
+        const armies = server.getUserArmies();
+        console.log(armies);
     };
 
     return (
