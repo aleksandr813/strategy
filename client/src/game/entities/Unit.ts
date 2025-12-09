@@ -101,6 +101,14 @@ export default class Unit {
         }
 
         const nextStep = this.currentPath[this.currentPathIndex];
+
+        const isOccupiedByBuilding = this.game.village.isTileOccupiedByBuilding(nextStep.x, nextStep.y);
+        
+        if (isOccupiedByBuilding) {
+            const destination = this.currentPath[this.currentPath.length - 1];
+            this.calcPath(destination); 
+            return false; 
+        }
         
         const isOccupied = this.game.getUnits().some(unit => 
             unit !== this && 
