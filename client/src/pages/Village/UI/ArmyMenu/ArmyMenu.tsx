@@ -46,7 +46,7 @@ const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
 
     const fetchArmies = async () => {
         const userArmies = await game.globalMap.getUserArmies();
-        setArmies(userArmies);
+        setArmies(Array.isArray(userArmies) ? userArmies : []);
     };
 
     const loadVillages = () => {
@@ -112,7 +112,7 @@ const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
         <div>
             <div className='army-menu-title'>Армии в походе</div>
             
-            {!armies || armies.length === 0 ? (
+            {!armies ? (
                 <div className='army-menu-empty'>Нет армий в походе</div>
             ) : (
                 <div className='armies-list'>
