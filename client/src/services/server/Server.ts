@@ -267,9 +267,9 @@ class Server {
         return userArmies;
     }
 
-    async moveArmyBack(armyId: number): Promise<boolean> {
-
-        const result = this.request<boolean>('moveArmyBack', { armyId.toString() } );
+    async moveArmyBack(armyId: number): Promise<boolean | null> {
+        const result = this.request<boolean>('moveArmyBack', { armyId: armyId.toString() } );
+        return result;
     }
 }
 

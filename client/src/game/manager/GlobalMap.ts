@@ -75,7 +75,10 @@ class GlobalMap extends Manager {
     }
 
     public async moveArmyBack(armyId: number): Promise<void> {
-        await this.server.send
+        const armiesBack = await this.server.moveArmyBack(armyId);
+        if (!armiesBack) {
+            console.error('Ошибка возврата армии');
+        }
     }
 
     getMap() {

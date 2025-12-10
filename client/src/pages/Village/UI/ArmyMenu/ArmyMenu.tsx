@@ -30,7 +30,7 @@ const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
         setArmies(userArmies);
     };
     
-    const handleReturnArmy = (armyId: number) => {
+    const handleReturnArmy = async (armyId: number) => {
         await game.globalMap.moveArmyBack(armyId);
     };
 
