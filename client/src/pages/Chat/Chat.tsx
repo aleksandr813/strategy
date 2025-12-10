@@ -38,6 +38,10 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
         if (event.key === 'Enter') {
             if (messageRef.current) {
                 const message = messageRef.current.value;
+                if (message.length > 100) {
+                        console.log('Сообщение не должно превышать 100 символов');
+                        return;
+                }
                 if (message) {
                     server.sendMessage(message);
                     messageRef.current.value = '';
