@@ -344,14 +344,19 @@ class Village
         return ['newMoney' => $newMoney];
     }
 
-    public function moveArmyBack($userId)
+    public function moveArmyBack($userId, $armyId)
     {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 315];
         }
 
-        $units = $this->db->getUnits($userId);
+        $army = $this->db->getArmy($armyId);
+        if (!$army) {
+            return ['error' => 603];
+        }
+
+        $units = $this->db->getUnitsInArmy($armyId);
         $updatedUnits = [];
 
         $i = 29;
@@ -359,11 +364,11 @@ class Village
         $maxCoordinate = 58; // 29 * 2
 
         foreach ($units as $unit) {
-            $unit["onAСrusade"] = (int)$unit["onAСrusade"];
+            $unit["onACrusade"] = (int)$unit["onACrusade"];
 
-            if ($unit["onAСrusade"]) {
+            if ($unit["onACrusade"]) {
                 $unit["unitId"] = $unit["id"];
-                $unit["onAСrusade"] = 0;
+                $unit["onACrusade"] = 0;
                 $unit["x"] = $i;
                 $unit["y"] = $j;
 

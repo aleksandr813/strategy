@@ -117,7 +117,7 @@ class DB
                 u.y AS y,
                 u.level AS level,
                 u.current_hp AS currentHp,
-                u.on_a_crusade AS onAСrusade,
+                u.on_a_crusade AS onACrusade,
                 u.is_enemy AS isEnemy,
                 ut.type AS type,
                 ut.speed AS speed
@@ -394,14 +394,6 @@ class DB
         [$userId, $startX, $startY, $startTime, $arrivalTime, $targetX, $targetY, $targetId, $armyString, $speed]);
     }
 
-  public function moveArmyBack($userId, $armyId)
-    {
-        return $this->execute(
-            "DELETE FROM army 
-            WHERE userId = ? AND army = ?",
-            [$userId, $armyId]
-        );
-  }
     public function unitsOnACrusade($villageId, $units)
     {
         $army = [];
@@ -433,6 +425,47 @@ class DB
         return $this->execute(
             "UPDATE units SET on_a_crusade = 0 WHERE id IN ($placeholder) AND village_id = ?",
             $params
+        );
+    }
+
+    public function getArmy($armyId) {
+        return $this->query("
+        SELECT 
+            army, 
+            userId, 
+            startX, 
+            startY,
+            startTime,
+            arrivalTime,
+            targetX,
+            targetY, 
+            attackId, 
+            units,
+            speed
+        FROM army
+        WHERE army = ?",
+        [$armyId]);
+    }
+
+    public function getUnitsInArmy($armyId) {
+        $army = $this->getArmy($armyId);
+
+        $unitIds = explode(',', $army->units);
+        $placeholder = implode(',', array_fill(0, count($unitIds), '?'));
+
+        return $this->queryAll(
+            "SELECT
+                u.id,
+                u.type_id AS typeId,
+                u.village_id AS villageId,
+                u.x,
+                u.y,
+                u.level,
+                u.current_hp AS currentHp,
+                u.on_a_crusade AS onACrusade
+            FROM units AS u
+            WHERE u.id IN ($placeholder)",
+            $unitIds
         );
     }
 
