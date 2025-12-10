@@ -281,23 +281,6 @@ class Village
         return true;
     }
 
-
-    public function takeDamage($userId, $units)
-    {
-        $village = $this->db->getVillage($userId);
-        if (!$village) {
-            return ['error' => 315];
-        }
-
-        $result = $this->db->updateUnitsHP($units, $village->id);
-
-        if (!$result) {
-            return ['error' => 510];
-        }
-
-        return true;
-    }
-
     public function sendArmy($user, $units, $target) {
         if (count($units) === 0) {
             return ['error' => 600];
@@ -418,17 +401,17 @@ class Village
     public function getUserArmies($userId) {
         $armies = $this->db->getUserArmies($userId);
         if (!$armies) {
-            return ['error' => 603];
+            return true;
         }
 
-        $validArmmies = [];
+        $validArmies = [];
         $currentTime = time();
 
         foreach($armies as $army) {
             $arrivalTime = strtotime($army['arrivalTime']);
 
             if ($arrivalTime > $currentTime) {
-                $validArmmies[] = [
+                $validArmies[] = [
                     'units' => $army['units'],
                     'attackId' => (int)$army['attackId'],
                     'speed' => (float)$army['speed']
@@ -436,12 +419,10 @@ class Village
             }
         }
 
-        var_dump($validArmmies);
-
-        if (!$validArmmies) {
-            return ['error' => 603];
+        if (!$validArmies) {
+            return true;
         }
 
-        return $validArmmies;
+        return $validArmies;
     }
 }

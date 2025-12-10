@@ -17,17 +17,17 @@ type SpriteMap = {
 };
 
 export const SPRITE_MAP: SpriteMap = {
-    [UnitTypeID.Knight]: [21],
-    [UnitTypeID.Spearman]: [22],
-    [UnitTypeID.Berserk]: [30],
-    [UnitTypeID.Paladin]: [31],
-    [UnitTypeID.Guardian]: [29],
-    [UnitTypeID.Archer]: [24],
-    [UnitTypeID.Crossbowman]: [23],
-    [UnitTypeID.Sorcerer]: [25],
-    [UnitTypeID.Summoner]: [27],
-    [UnitTypeID.Golem]: [26],
-    [UnitTypeID.Swordman]: [28]
+        [UnitTypeID.Knight]: [21, 61],
+        [UnitTypeID.Spearman]: [22, 62],
+        [UnitTypeID.Berserk]: [30, 70],
+        [UnitTypeID.Paladin]: [31],
+        [UnitTypeID.Guardian]: [29, 69],
+        [UnitTypeID.Archer]: [24, 64],
+        [UnitTypeID.Crossbowman]: [23, 63],
+        [UnitTypeID.Sorcerer]: [25],
+        [UnitTypeID.Summoner]: [27],
+        [UnitTypeID.Golem]: [26],
+        [UnitTypeID.Swordman]: [28]
 };
 
 export function getUnitSprites(typeId: UnitTypeID): number[] {
