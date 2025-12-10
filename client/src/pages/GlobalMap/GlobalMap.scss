@@ -77,3 +77,25 @@
     color: #bdc3c7;
     font-size: 14px;
 }
+
+.back-to-village-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 2px solid #0f0f0f;
+    background-color: #0000009d;
+    color: #dfdfdf;
+    font-size: 14px;
+    font-family: 'PixelifySans-Medium';
+    outline: none;
+    z-index: 100;
+    
+    &.bottom-right {
+        top: auto;
+        left: auto;
+        bottom: 4%;
+        right: 4%;
+    }
+}

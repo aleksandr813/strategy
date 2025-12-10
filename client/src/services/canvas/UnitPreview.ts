@@ -5,9 +5,7 @@ import Game from "../../game/Game";
 
 export default class UnitPreview {
     private isActive = false;
-    private unitType = '';
     private unitTypeId = 0;
-    private unitHp = 50;
     private gridPosition: TPoint = { x: 0, y: 0 };
     private canPlace = false;
     private game: Game;
@@ -16,16 +14,13 @@ export default class UnitPreview {
         this.game = game;
     }
 
-    public activate(unitType: string, unitTypeId: number, hp: number): void {
+    public activate(unitTypeId: number): void {
         this.isActive = true;
-        this.unitType = unitType;
         this.unitTypeId = unitTypeId;
-        this.unitHp = hp;
     }
 
     public deactivate(): void {
         this.isActive = false;
-        this.unitType = '';
         this.canPlace = false;
     }
 
@@ -57,7 +52,7 @@ export default class UnitPreview {
     }
 
     private checkCanPlace(occupiedMatrix: number[][]): boolean {
-        return this.isWithinBounds(occupiedMatrix) && this.isCellEmpty(occupiedMatrix);
+        return this.isWithinBounds(occupiedMatrix) && this.isCellEmpty(occupiedMatrix) && this.isBorders();
     }
 
     private isWithinBounds(occupiedMatrix: number[][]): boolean {
@@ -72,33 +67,30 @@ export default class UnitPreview {
         return occupiedMatrix[y][x] === 0;
     }
 
+    private isBorders(): boolean {
+        const x = this.gridPosition.x;
+
+        if (x > 29) {
+            return false;
+        }
+
+        return true;
+    }
+
     public getRenderData() {
         if (!this.isActive) return null;
 
         return {
             gridPosition: this.gridPosition,
             canPlace: this.canPlace,
-            unitType: this.unitType
         };
     }
 
-    public tryPlace(): Unit | null {
+    public tryPlace(): boolean | null {
         if (!this.isActive || !this.canPlace) return null;
 
-        const unitData: TUnit = {
-            id: 0,
-            typeId: this.unitTypeId,
-            villageId: 0,
-            x: this.gridPosition.x,
-            y: this.gridPosition.y,
-            currentHp: this.unitHp,
-            level: 1,
-            type: this.unitType
-        };
-
-        const unit = new Unit(unitData, this.game);
         this.deactivate();
         
-        return unit;
+        return true;
     }
 }

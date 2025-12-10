@@ -1,23 +1,31 @@
 import { TMessages, TUser } from "../server/types";
+import Mediator from "../mediator/Mediator";
 
 const TOKEN = 'token';
 
-type Listener = () => void;
-
 class Store {
+    [key: string]: any;
     user: TUser | null = null;
     messages: TMessages = [];
     chatHash: string = 'empty chat hash';
+    mapHash: string = 'empty map hash';
     money: number = 0;
-    private listeners: Set<Listener> = new Set();
+    mediator: Mediator;
 
-    subscribe(listener: Listener): () => void {
-        this.listeners.add(listener);
-        return () => this.listeners.delete(listener);
+    constructor(mediator: Mediator) {
+        this.mediator = mediator;
     }
 
-    private notify(): void {
-        this.listeners.forEach(listener => listener());
+    set<T>(key: string, data: T): void {
+        this[key] = data;
+        this.mediator.call('MONEY_CHANGE');
+    }
+
+    get<T>(key: string): T | null {
+        if (this[key]) {
+            return this[key] as T;
+        }
+        return null;
     }
 
     setToken(token: string): void {
@@ -32,7 +40,6 @@ class Store {
         const { token } = user;
         this.setToken(token);
         this.user = user;
-        this.notify();
     }
 
     getUser(): TUser | null {
@@ -42,13 +49,11 @@ class Store {
     clearUser(): void {
         this.user = null;
         this.setToken('');
-        this.notify();
     }
 
     addMessages(messages: TMessages): void {
         if (messages?.length) {
             this.messages = messages;
-            this.notify();
         }
     }
 
@@ -58,7 +63,6 @@ class Store {
 
     clearMessages(): void {
         this.messages = [];
-        this.notify();
     }
 
     getChatHash(): string {
@@ -67,12 +71,19 @@ class Store {
 
     setChatHash(hash: string): void {
         this.chatHash = hash;
-        this.notify();
+    }
+
+    getMapHash(): string {
+        return this.mapHash;
+    }
+
+    setMapHash(hash: string): void {
+        this.mapHash = hash;
     }
 
     setMoney(money: number): void {
         this.money = money;
-        this.notify();
+        this.mediator.call('MONEY_CHANGE');
     }
 
     getMoney(): number {

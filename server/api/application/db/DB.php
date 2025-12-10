@@ -118,6 +118,7 @@ class DB
                 u.level AS level,
                 u.current_hp AS currentHp,
                 u.on_a_crusade AS onAСrusade,
+                u.is_enemy AS isEnemy,
                 ut.type AS type,
                 ut.speed AS speed
             FROM units AS u
@@ -257,11 +258,29 @@ class DB
 
     public function getVillage($userId)
     {
-        return $this->query("SELECT id, x, y, last_income_datetime FROM villages WHERE user_id = ?", [$userId]);
+        return $this->query("
+            SELECT 
+                id, 
+                x, 
+                y, 
+                last_income_datetime, 
+                attack_id AS attackId 
+            FROM villages 
+            WHERE user_id = ?", 
+            [$userId]
+        );
     }
 
     public function getVillages() {
-        return $this->queryAll("SELECT id, user_id, x, y FROM villages");
+        return $this->queryAll("
+            SELECT 
+                id, 
+                user_id AS userId, 
+                x, 
+                y,
+                attack_id AS attackId
+            FROM villages"
+        );
     }
 
     public function getBuildingType($buildingType) {
@@ -341,7 +360,7 @@ class DB
             "SELECT b.level AS level
             FROM buildings AS b
             INNER JOIN building_types AS bt
-            ON b.type_id = bt.id AND bt.type = 'Шахта'
+            ON b.type_id = bt.id AND bt.id = 2
             WHERE b.village_id = ?",
             [$villageId]
         );
@@ -414,7 +433,7 @@ class DB
     }
 
     public function getArmies() {
-        return $this->queryAll("
+        $result = $this->queryAll("
         SELECT 
             army, 
             userId, 
@@ -428,6 +447,12 @@ class DB
             units,
             speed
         FROM army");
+
+        foreach($result as &$army) {
+            $army['units'] = array_map('intval', explode(',', $army['units']));
+        }
+
+        return $result;
     }
 
     public function getUnitsSpeed($units) {
@@ -454,5 +479,20 @@ class DB
 
     public function updateMapHash($hash) {
         return $this->execute("UPDATE map_hashes SET hash = ? WHERE id = 1", [$hash]);
+    }
+
+    public function getUserArmies($userId) {
+        $result = $this->queryAll(
+            "SELECT units, attackId, speed, startTime, arrivalTime
+            FROM army
+            WHERE userId = ?",
+            [$userId]
+        );
+
+        foreach($result as &$army) {
+            $army['units'] = array_map('intval', explode(',', $army['units']));
+        }
+
+        return $result;
     }
 }

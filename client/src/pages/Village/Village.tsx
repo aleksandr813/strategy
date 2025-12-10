@@ -1,5 +1,5 @@
 import React, { Component, useContext, useEffect, useRef, useState } from 'react';
-import { ServerContext,StoreContext } from '../../App';
+import { ServerContext, StoreContext, MediatorContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import VillageCanvas from './VillageCanvas';
@@ -15,6 +15,7 @@ const GREEN = '#00e81c';
 const Village: React.FC<IBasePage> = (props: IBasePage) => {
     const server = useContext(ServerContext);
     const store = useContext(StoreContext);
+    const mediator = useContext(MediatorContext);
     const token = store.getToken();
     
     const { setPage } = props;
@@ -35,7 +36,7 @@ const Village: React.FC<IBasePage> = (props: IBasePage) => {
             <div>
                 <VillageCanvas />
             </div>
-            <UI store={store} />
+            <UI store={store} mediator={mediator} setPage={setPage} />
         </div>
     );
 };

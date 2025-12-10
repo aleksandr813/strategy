@@ -5,11 +5,20 @@ import { TBuildingType } from '../../../../services/server/types';
 import Server from '../../../../services/server/Server';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
+import Store from '../../../../services/store/Store';
+import Mediator from '../../../../services/mediator/Mediator';
 
 import './BuyBuildingsMenu.scss'
 
-const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
-    const { setUIElement } = props;
+interface BuyBuildingMenuProps extends IBaseUIElement {
+    store: Store;
+    mediator: Mediator;
+}
+
+const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenuProps) => {
+    const { setUIElement, store, mediator } = props;
+    const gold = store.getMoney();
+    
 
     const game = useContext(GameContext);
     const village = game.getVillage();
@@ -35,17 +44,17 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
             alert(`Для покупки ${building.type} нужна ратуша уровня ${building.unlockLevel}`);
             return;
         }
-        console.log(`Покупка здания: ${building.type}`);
+        console.log(`Покупка здания: ${building.type} c id: ${building.id}`);
         village.getScene().unitPreview.deactivate();
-        village.getScene().buildingPreview.activate(building.id, building.hp);
+        let size = 2;
+        if (building.id == 4) {
+            size = 1;
+        }
+        village.getScene().buildingPreview.activate(building.id, size);
         setUIElement(UIELEMENT.NULL);
     };
 
     const isBuildingAvailable = (building: TBuildingType): boolean => {
-        console.log("ТИПЫ ЗДАНИЙ",building);
-        console.log("УРОВЕНЬ РАТУШИ В СРАВНЕНИИ", townHallLevel);
-        console.log("УРОВЕНЬ ЗДАНИЯ В СРАВНЕНИИ:", building.unlockLevel);
-        console.log("СРАВНЕНИЕ", townHallLevel >= building.unlockLevel)
         return townHallLevel >= building.unlockLevel;
     }; 
 
@@ -54,7 +63,6 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
             await village.loadBuildings();
             setBuildingTypes(await loadBuildingTypes());
             const level = village.getTownHallLevel(); 
-            console.log("ЗАГРУЖЕН УРОВЕНЬ РАТУШИ:", level);
             setTownHallLevel(level);
         })();
     }, []);
@@ -65,6 +73,9 @@ const BuyBuildingsMenu: React.FC<IBaseUIElement> = (props: IBaseUIElement) => {
                 <div className="buy-menu-container" onClick={(e) => e.stopPropagation()}>
                     <h3 className="buy-menu-title">
                         Выберите здание
+                        <div className='money-indicator'>
+                            Монеты: {gold}
+                        </div>
                     </h3>
 
                     {

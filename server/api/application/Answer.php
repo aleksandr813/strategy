@@ -26,6 +26,7 @@ class Answer
         '504' => 'Units movement error',
         '600' => 'An army cannot be empty',
         '601' => 'Army dispatch error',
+        '603' => 'Army is not found',
         '705' => 'User is not found',
         '1001' => 'Is it unique login?',
         '1002' => 'Wrong login or password',

@@ -5,16 +5,24 @@ import Allocation from "../../services/canvas/Allocation";
 import Server from '../../services/server/Server';
 import GAMECONFIG from '../gameConfig';
 import Unit from '../entities/Unit';
+import VillageEntity from '../entities/VillageEntity';
+import ArmyEntity from '../entities/ArmyEntity';
 import Building from '../entities/Building';
+import { TVillage, TArmy } from '../../services/server/types';
+import { BuildingTypeID } from '../../services/server/types';
 
 const { WIDTH, HEIGHT } = CONFIG;
 const { GRID_HEIGHT, GRID_WIDTH, MOVE_INTERVAL } = GAMECONFIG
 
 export interface GameData {
+    getArmies: () => ArmyEntity[];
+    getVillages: () => VillageEntity[];
     getUnits: () => Unit[];
     getBuildings: () => Building[];
     setUnits: (units: Unit[]) => void;
     setBuildings: (buildings: Building[]) => void;
+    setVillages: (villages: VillageEntity[]) => void;
+    setArmies: (armies: ArmyEntity[]) => void;
     addUnit: (unit: Unit) => void;
     addBuilding: (building: Building) => void;
     removeUnit: (unit: Unit) => void;
@@ -59,6 +67,17 @@ class Manager {
         });
 
         this.gameData.getBuildings().forEach((building) => {
+
+        if (building.typeId === BuildingTypeID.Gates) {
+            const { x, y } = building.coords[0];
+            for (let dy = 0; dy <= 1; dy++) {
+                for (let dx = 0; dx <= 1; dx++) {
+                    if (y + dy < GRID_HEIGHT && x + dx < GRID_WIDTH) {
+                        matrix[y + dy][x + dx] = 2;
+                    }
+                }
+            }
+        }else{
             const { x, y } = building.coords[0];
             for (let dy = 0; dy <= 1; dy++) {
                 for (let dx = 0; dx <= 1; dx++) {
@@ -67,7 +86,9 @@ class Manager {
                     }
                 }
             }
+        } 
         });
+
 
         return matrix;
     }
@@ -97,7 +118,7 @@ class Manager {
         const selectedUnits: Unit[] = [];
         this.gameData.getUnits().forEach((unit) => {
             if (unit.isSelected) {
-                unit.moveUnit(destination);
+                unit.calcPath(destination);
                 selectedUnits.push(unit);
             }
         });

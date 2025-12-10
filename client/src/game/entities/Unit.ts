@@ -18,27 +18,35 @@ export default class Unit {
     sprites: number[];
     easystar: EasyStar.js;
     game: Game;
-    
+    unlockLevel: number;
+
+    isEnemy: number;
     isSelected: boolean = false;
     moveIntervalId: NodeJS.Timeout | null = null;
     
     private currentPath: TPoint[] | null = null;
     private currentPathIndex: number = 0;
+    private currentSpriteIndex: number = 0;
+    private idleAnimationIntervalId: NodeJS.Timeout | null = null;
+    private static readonly IDLE_ANIMATION_DELAY: number = 300;
     
-    constructor(data: TUnit, game: Game) {
+    constructor(data: TUnit, game: Game, easystar: EasyStar.js) {
         this.id = data.id;
         this.typeId = data.typeId as UnitTypeID;
         this.type = data.type;
         this.hp = data.currentHp;
         this.maxHp = data.currentHp; 
         this.level = data.level;
+        this.unlockLevel = data.unlockLevel
+        this.isEnemy = data.isEnemy
 
         this.sprites = getUnitSprites(this.typeId);
+        this.startIdleAnimation();
 
         this.coords = { x: data.x, y: data.y };
 
         this.game = game;
-        this.easystar = game.getEasyStar();
+        this.easystar = easystar;
     }
 
     updateSelection(isSelected: boolean): void {
@@ -50,13 +58,20 @@ export default class Unit {
         this.currentPathIndex = 0;
     }
 
-    moveUnit(destination: TPoint) {
+    calcPath(destination: TPoint) {
         this.clearUnitMovement();
         
         const matrix = this.game.village.getMatrixForEasyStar(this);
         
         this.easystar.setGrid(matrix);
-        this.easystar.setAcceptableTiles([0]);
+
+        const acceptableTiles = [0];
+
+        if (this.isEnemy === null){
+            acceptableTiles.push(2);
+        }
+
+        this.easystar.setAcceptableTiles(acceptableTiles);
 
         this.easystar.findPath(
             this.coords.x, 
@@ -70,6 +85,7 @@ export default class Unit {
 
                 this.currentPath = path;
                 this.currentPathIndex = 1;
+                this.stopIdleAnimation();
             }
         );
 
@@ -78,10 +94,21 @@ export default class Unit {
 
     makeStep(): boolean {
         if (!this.currentPath || this.currentPathIndex >= this.currentPath.length) {
+            if (!this.isMoving()) {
+            this.startIdleAnimation(); 
+        }
             return false;
         }
 
         const nextStep = this.currentPath[this.currentPathIndex];
+
+        const isOccupiedByBuilding = this.game.village.isTileOccupiedByBuilding(nextStep.x, nextStep.y);
+        
+        if (isOccupiedByBuilding) {
+            const destination = this.currentPath[this.currentPath.length - 1];
+            this.calcPath(destination); 
+            return false; 
+        }
         
         const isOccupied = this.game.getUnits().some(unit => 
             unit !== this && 
@@ -91,7 +118,7 @@ export default class Unit {
 
         if (isOccupied) {
             const destination = this.currentPath[this.currentPath.length - 1];
-            this.moveUnit(destination);
+            this.calcPath(destination);
             return false;
         }
 
@@ -99,10 +126,44 @@ export default class Unit {
         this.coords.y = nextStep.y;
         this.currentPathIndex++;
 
-        return this.currentPathIndex < this.currentPath.length;
+        const stillMoving = this.currentPathIndex < this.currentPath.length;
+
+        if (!stillMoving) {
+            this.startIdleAnimation(); 
+        }
+
+        return  stillMoving;
     }
 
     isMoving(): boolean {
         return this.currentPath !== null && this.currentPathIndex < this.currentPath.length;
+    }
+
+    public getCurrentSpriteId(): number {
+        return this.sprites[this.currentSpriteIndex];
+    }
+
+    private switchSprite(): void {
+        if (this.sprites.length > 1) {
+            this.currentSpriteIndex = (this.currentSpriteIndex + 1) % this.sprites.length;
+        } else {
+            this.currentSpriteIndex = 0;
+        }
+    }
+
+    public startIdleAnimation(): void {
+        if (this.idleAnimationIntervalId !== null) return; 
+
+        this.idleAnimationIntervalId = setInterval(() => {
+            this.switchSprite(); 
+        }, Unit.IDLE_ANIMATION_DELAY); 
+    }
+
+    public stopIdleAnimation(): void {
+        if (this.idleAnimationIntervalId !== null) {
+            clearInterval(this.idleAnimationIntervalId);
+            this.idleAnimationIntervalId = null;
+            this.currentSpriteIndex = 0;
+        }
     }
 }
