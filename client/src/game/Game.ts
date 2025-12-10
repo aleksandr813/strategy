@@ -1,6 +1,7 @@
 import EasyStar from 'easystarjs';
 import Store from "../services/store/Store";
 import Server from "../services/server/Server";
+import Mediator from '../services/mediator/Mediator';
 import GlobalMap from "./manager/GlobalMap";
 import Village from "./manager/Village";
 import Battle from "./manager/Battle";
@@ -13,6 +14,7 @@ import GAMECONFIG from './gameConfig';
 class Game {
     private store: Store;
     private server: Server;
+    private mediator: Mediator
     private easyStar: EasyStar.js
     
     private units: Unit[] = [];
@@ -27,13 +29,14 @@ class Game {
     public globalMap: GlobalMap;
     public battle: Battle;
 
-    constructor(store: Store, server: Server) {
+    constructor(store: Store, server: Server, mediator: Mediator) {
         
         this.store = store;
         this.server = server;
+        this.mediator = mediator;
         this.easyStar = new EasyStar.js();
         
-        this.village = new Village(store, server, this.getGameData(), this.easyStar, this);
+        this.village = new Village(store, server, this.mediator, this.getGameData(), this.easyStar, this);
         this.globalMap = new GlobalMap(store, server, this.getGameData());
         this.battle = new Battle(store, server, this.getGameData());
         

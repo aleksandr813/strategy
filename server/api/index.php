@@ -39,6 +39,8 @@ function result($params) {
             case 'getIncome': return $app->getIncome($params);
             case 'sendArmy': return $app->sendArmy($params);
             case 'moveArmyBack': return $app->moveArmyBack($params);
+            case 'getUserArmies': return $app->getUserArmies($params);
+            //map
             case 'getMap': return $app->getMap($params);
             //calc
             case 'getRoots': return $app->getRoots($params);
