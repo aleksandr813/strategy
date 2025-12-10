@@ -1,4 +1,5 @@
 .chat {
+    margin-top: 50px;
     @font-face {
         font-family: 'PixelifySans-Medium';
         src: url('../../assets/fonts/PixelifySans-Medium.ttf');
@@ -14,8 +15,8 @@
     position: relative;
     min-height: 400px;
 
-    border: solid black 7px;
-    background-color: rgb(158, 66, 0);
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
 
     font-family: 'PixelifySans-Medium', sans-serif;
 
@@ -45,24 +46,21 @@
         min-height: 50px; 
     }
 
-    .chatIconeDiv {
-        background-color: rgb(63, 26, 0);
-        border: solid black 0px;
-        border-radius: 0%;
-        height: max-content;
+    .chatIconeDivBack {
+        background-color: rgb(0, 0, 0, 0.6);
+        border-radius: 10px;
         width: max-content;
-        right: 0; 
-        bottom: 0; 
-        margin: 5px; 
-    }
-    .chatIcone {
-        height: 50px;
-        width: 50px;
+        border: 0;
+        position: absolute;
+        right: 0;
+        min-width: 80px;
+        min-height: 10px;
+
     }
 
     .chat-buttons {
-        background-color: rgb(63, 26, 0);
-        border-top: solid black 7px;
+        background-color: rgb(0, 0, 0, 0.6);
+        border-radius: 10px;
         width: 100%;
     }
 }

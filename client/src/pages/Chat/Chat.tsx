@@ -4,7 +4,7 @@ import { ServerContext, StoreContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 
-import chatIcon from '../../assets/img/chat/back.png';
+import chatIcon from '../../assets/img/chat/X.png';
 import './Chat.scss';
 
 const Chat: React.FC<IBasePage> = (props: IBasePage) => {
@@ -57,6 +57,17 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
     const toGameClickHandler = () => setPage(PAGES.VILLAGE);
     const backClickHandler = () => setPage(PAGES.LOGIN);
 
+    const getAuthorColor = (author: string) => {
+        let hash = 0;
+        for (let i = 0; i < author.length; i++) {
+            hash = author.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        
+        // Генерируем цвет в формате HSL для лучшей читаемости
+        const hue = hash % 360;
+        return `hsl(${hue}, 70%, 50%)`;
+    }
+
     if (!user) {
         return (<div className='chat'>
             <h1>Чат</h1>
@@ -67,21 +78,21 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
     }
 
     return (<div className='chat'>
-        <h1>Чат</h1>
-        <div className='chat-user-info'>
-            <span>Привет!</span>
-            <span>{user.name}</span>
-        </div>
+        <Button onClick={toGameClickHandler} className='chatIconeDivBack'>
+            <img src={chatIcon}/>
+        </Button>
         <div className='chat-messages'>
             {messages.reverse().map((message, index) => 
-                <div key={index}>{`${message.author} (${message.created}): ${message.message}`}</div>
+                <div key={index} className='message-item'>
+                    <span style={{ color: getAuthorColor(message.author) }}>
+                        {message.author}: 
+                    </span>
+                    <span className='message-text'>{message.message}</span>
+                </div>
             )}
         </div>
         <div className='chat-buttons'>
             {input}
-            <Button onClick={toGameClickHandler} className='chatIconeDiv'>
-                <img src={chatIcon} className='chatIcone'/>
-            </Button>
         </div>
     </div>)
 }
