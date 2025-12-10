@@ -428,6 +428,10 @@ class DB
         );
     }
 
+    public function deleteArmy($userId, $armyId) {
+        return $this->execute("DELETE FROM army WHERE userId = ? AND army = ?", [$userId, $armyId]);
+    }
+
     public function getArmy($armyId) {
         return $this->query("
         SELECT 
@@ -456,12 +460,8 @@ class DB
         return $this->queryAll(
             "SELECT
                 u.id,
-                u.type_id AS typeId,
-                u.village_id AS villageId,
                 u.x,
                 u.y,
-                u.level,
-                u.current_hp AS currentHp,
                 u.on_a_crusade AS onACrusade
             FROM units AS u
             WHERE u.id IN ($placeholder)",
