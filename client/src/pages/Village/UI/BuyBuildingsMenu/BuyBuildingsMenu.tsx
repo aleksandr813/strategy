@@ -39,13 +39,16 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
     }
 
     const buyBuilding = async (building: TBuildingType) => {
+        const currentGold = Number(gold);
+        const buildingPrice = Number(building.price);
+
         if (townHallLevel < building.unlockLevel) {
             alert(`Для покупки ${building.type} нужна ратуша уровня ${building.unlockLevel}`);
             return;
         }
 
-        if (gold < building.price) {
-            alert(`Недостаточно монет для покупки ${building.type}. Нужно ${building.price}, у вас: ${gold}`);
+        if (currentGold < buildingPrice) {
+            alert(`Недостаточно монет для покупки ${building.type}. Нужно ${buildingPrice}, у вас: ${currentGold}`);
             return;
         }
 
@@ -56,11 +59,14 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
     };
 
     const isBuildingAvailable = (building: TBuildingType): boolean => {
+        const currentGold = Number(gold);
+        const buildingPrice = Number(building.price);
+
         console.log("ТИПЫ ЗДАНИЙ",building);
         console.log("УРОВЕНЬ РАТУШИ В СРАВНЕНИИ", townHallLevel);
         console.log("УРОВЕНЬ ЗДАНИЯ В СРАВНЕНИИ:", building.unlockLevel);
         console.log("СРАВНЕНИЕ", townHallLevel >= building.unlockLevel)
-        return townHallLevel >= building.unlockLevel && gold >= building.price;
+        return townHallLevel >= building.unlockLevel && currentGold >= buildingPrice;
     }; 
 
     useEffect(() => {

@@ -33,13 +33,16 @@ const BuyUnitsMenu: React.FC<BuyUnitsMenuProps> = (props: BuyUnitsMenuProps) => 
     }
 
     const buyUnit = async (unit: TUnitType) => {
+        const currentGold = Number(gold);
+        const unitPrice = Number(unit.price);
+
         if (barracksLevel < unit.unlockLevel) {
             alert(`Для покупки ${unit.type} нужна казарма уровня ${unit.unlockLevel}`);
             return;
         }
 
-        if (gold < unit.price) {
-            alert(`Недостаточно монет для покупки ${unit.type}. Нужно ${unit.price}, у вас: ${gold}`);
+        if (currentGold < unitPrice) {
+            alert(`Недостаточно монет для покупки ${unit.type}. Нужно ${unitPrice}, у вас: ${currentGold}`);
             return;
         }
 
@@ -50,11 +53,14 @@ const BuyUnitsMenu: React.FC<BuyUnitsMenuProps> = (props: BuyUnitsMenuProps) => 
     };
 
     const isUnitAvailable = (unit: TUnitType): boolean => {
+        const currentGold = Number(gold);
+        const unitPrice = Number(unit.price);
+        
         console.log("ТИПЫ ЮНИТОВ",unit);
         console.log("УРОВЕНЬ КАЗАРМЫ В СРАВНЕНИИ", barracksLevel);
         console.log("УРОВЕНЬ ЮНИТА В СРАВНЕНИИ:", unit.unlockLevel);
         console.log("СРАВНЕНИЕ", barracksLevel >= unit.unlockLevel)
-        return barracksLevel >= unit.unlockLevel && gold >= unit.price;
+        return barracksLevel >= unit.unlockLevel && currentGold >= unitPrice;
     };
 
     useEffect(() => {
