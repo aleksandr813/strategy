@@ -5,7 +5,7 @@ import ArmyEntity from "../entities/ArmyEntity";
 import Manager from "../manager/Manager";
 import Game from '../Game';
 import GAMECONFIG from '../gameConfig';
-import { TVillage, TArmy } from "../../services/server/types";
+import { TVillage, TArmy, TUserArmy } from "../../services/server/types";
 
 class GlobalMap extends Manager {
     private store: Store;
@@ -64,6 +64,18 @@ class GlobalMap extends Manager {
         );
         
         this.game.setArmies(armies);
+    }
+
+    public async getUserArmies(): Promise<TUserArmy[]> {
+        const armiesData = await this.server.getUserArmies();
+        if (armiesData) {
+            return armiesData;
+        }
+        return [];
+    }
+
+    public async moveArmyBack(armyId: number): Promise<void> {
+        await this.server.send
     }
 
     getMap() {

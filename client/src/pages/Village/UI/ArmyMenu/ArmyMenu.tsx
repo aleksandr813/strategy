@@ -1,7 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { GameContext, ServerContext } from '../../../../App';
 import { TUnitType, TUser, TUserArmy } from '../../../../services/server/types';
-import Server from '../../../../services/server/Server';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
 import Mediator from '../../../../services/mediator/Mediator';
@@ -17,27 +16,22 @@ interface ArmyMenuProps extends IBaseUIElement {
 
 const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
     const game = useContext(GameContext);
-    const village = game.getVillage();
-    const server = useContext(ServerContext);
     const { setUIElement, store } = props;
     const [armies, setArmies] = useState<TUserArmy[]>([]);
 
     useEffect(() => {
-        const fetchArmies = async () => {
-            const armiesData = await server.getUserArmies();
-            if (armiesData) {
-                setArmies(armiesData);
-            }
-        };
-        
         fetchArmies();
-    }, [server]);
+    }, []);
 
     const closeArmyMenu = () => setUIElement(UIELEMENT.NULL);
+
+    const fetchArmies = async () => {
+        const userArmies = await game.globalMap.getUserArmies();
+        setArmies(userArmies);
+    };
     
-    const handleReturnArmy = (armyIndex: number) => {
-        console.log('Returning army:', armyIndex);
-        
+    const handleReturnArmy = (armyId: number) => {
+        await game.globalMap.moveArmyBack(armyId);
     };
 
     return (
@@ -60,7 +54,7 @@ const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
                                             <div>Скорость: {army.speed}</div>
                                         </div>
                                     </div>
-                                    <Button onClick={() => handleReturnArmy(index)}>Вернуть</Button>
+                                    <Button onClick={() => handleReturnArmy(army.armyId)}>Вернуть</Button>
                                 </div>
                             ))}
                         </div>

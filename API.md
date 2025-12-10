@@ -612,7 +612,7 @@ Buildings: {
 **Успешный ответ**
 ```
     Answer<{
-        armies: array; - массив юнитов
+        armyId: number; - id армии
         attackId: number; - id атакуемой деревни
         speed: number; - скорость армии
         enemyName; - имя того, на кого нападаем

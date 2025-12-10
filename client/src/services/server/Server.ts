@@ -266,6 +266,11 @@ class Server {
         const userArmies = this.request<TUserArmy[]>('getUserArmies')
         return userArmies;
     }
+
+    async moveArmyBack(armyId: number): Promise<boolean> {
+
+        const result = this.request<boolean>('moveArmyBack', { armyId.toString() } );
+    }
 }
 
 export default Server;

@@ -487,8 +487,8 @@ class DB
 
     public function getUserArmies($userId) {
         $result = $this->queryAll(
-            "SELECT a.units, a.attackId, u.name as enemyName, a.speed, a.startTime, a.arrivalTime
-            FROM army a
+            "SELECT a.army AS armyId, a.units, a.attackId, u.name AS enemyName, a.speed, a.startTime, a.arrivalTime
+            FROM army AS a
             INNER JOIN users u ON a.attackId = u.id
             WHERE a.userId = ?",
             [$userId]

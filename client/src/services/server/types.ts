@@ -120,6 +120,7 @@ export type TMapResponse = {
 }
 
 export type TUserArmy = {
+    armyId: number;
     units: number[];
     attackId: number;
     enemyName: string;
