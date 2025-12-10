@@ -21,6 +21,9 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
             const login = loginRef.current.value;
             const password = passwordRef.current.value;
 
+            if (!(login && password)){
+                alert('Ошибка. Поле логина или пароля пусты! ');
+            }
             // Сбрасываем предыдущие ошибки
             setLoginError('');
             setPasswordError('');
