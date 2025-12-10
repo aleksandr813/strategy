@@ -266,10 +266,10 @@ class Application
 
     public function moveArmyBack($params)
     {
-        if ($params['token']) {
+        if ($params['token'] && $params['armyId']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->village->moveArmyBack($user->id);
+                return $this->village->moveArmyBack($user->id, $params['armyId']);
             }
             return ['error' => 705];
         }
