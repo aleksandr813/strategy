@@ -1,8 +1,10 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
-import { useStoreMoney } from '../../../../hooks/useStore';
 import Store from '../../../../services/store/Store';
+import Mediator from '../../../../services/mediator/Mediator';
+import { PAGES } from '../../../PageManager';
 
 import "./Panel.scss";
 
@@ -22,20 +24,37 @@ import sendarmy from "../../../../assets/img/panel/sendarmy.png";
 
 interface PanelProps extends IBaseUIElement {
     store: Store;
+    mediator: Mediator;
+    setPage: (name: PAGES) => void;
 }
 
 const Panel: React.FC<PanelProps> = (props: PanelProps) => {
-    const { setUIElement, store } = props;
-    const money = useStoreMoney(store);
+    const { setUIElement, store, mediator, setPage } = props;
+    
+    const [money, setMoney] = useState<number>(store.getMoney());
+
+    useEffect(() => {
+        const { MONEY_CHANGE } = mediator.getEventTypes();
+        
+        const handleMoneyChange = () => {
+            setMoney(store.getMoney());
+        };
+
+        mediator.subscribe(MONEY_CHANGE, handleMoneyChange);
+
+        return () => {
+            mediator.unsubscribe(MONEY_CHANGE, handleMoneyChange);
+        };
+    }, [mediator, store]);
 
     const buildingsHandler = () => setUIElement(UIELEMENT.BUYBUILDINGSMENU);
     const unitsHandler = () => setUIElement(UIELEMENT.BUYUNITSMENU);    
     const settingsHandler = () => setUIElement(UIELEMENT.NULL);
-    const globalmapHandler = () => setUIElement(UIELEMENT.NULL);
+    const globalmapHandler = () => setPage(PAGES.GLOBAL_MAP);
     const lidersHandler = () => setUIElement(UIELEMENT.NULL);
     const villageHandler = () => setUIElement(UIELEMENT.NULL);
-    const chatHandler = () => setUIElement(UIELEMENT.NULL);
-    const sendArmyHandler = () => setUIElement(UIELEMENT.NULL)
+    const chatHandler = () =>  setPage(PAGES.CHAT);
+    const sendArmyHandler = () => setUIElement(UIELEMENT.NULL);
 
     return (
         <div className='Panel'>

@@ -1,7 +1,10 @@
+import maxIcon from '../../assets/img/joke/max.webp'
+import gosIcon from '../../assets/img/joke/gos.png'
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import { ServerContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
+
 import './Login.scss';
 
 const Login: React.FC<IBasePage> = (props: IBasePage) => {
@@ -37,6 +40,8 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
             }
         }
     }
+
+    const jokeClickHandler = () => {window.open('https://rutube.ru/video/f3b615db135287a64584737e664e1e4b/?r=plwd')}
 
     useEffect(() => {
         const savedLogin = getCookie('rememberedLogin');
@@ -96,8 +101,24 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
                         <label htmlFor="rememberMe">Запомнить меня</label>
                     </div>
 
-                    <Button onClick={loginClickHandler} text='Авторизоваться' id="Test-button-autorization" />
-                    <Button onClick={regClickHandler} text='Регистрация' id="Test-button-back" />
+                    <Button onClick={loginClickHandler} text='Авторизоваться' className='buttons' id="Test-button-autorization" />
+                    <Button onClick={regClickHandler} text='Регистрация' className='buttons' id="Test-button-back" />
+                    <Button onClick={jokeClickHandler} className='max-login-btn'>
+                    <img 
+                        src= { maxIcon }
+                        alt="MAX"
+                        className="joke-icon"
+                    />
+                    Вход через MAX
+                    </Button>
+                    <Button onClick={jokeClickHandler} className='gosuslugi-login-btn'>
+                    <img 
+                        src= { gosIcon }
+                        alt="ГосУслуги"
+                        className="joke-icon"
+                    />
+                    Вход через ГосУслуги
+                    </Button>
                 </div>
             </div>
         </div>

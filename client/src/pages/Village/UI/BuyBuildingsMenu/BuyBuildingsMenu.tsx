@@ -6,17 +6,18 @@ import Server from '../../../../services/server/Server';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
 import Store from '../../../../services/store/Store';
-import { useStoreMoney } from '../../../../hooks/useStore';
+import Mediator from '../../../../services/mediator/Mediator';
 
 import './BuyBuildingsMenu.scss'
 
 interface BuyBuildingMenuProps extends IBaseUIElement {
     store: Store;
+    mediator: Mediator;
 }
 
 const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenuProps) => {
-    const { setUIElement, store } = props;
-    const gold = useStoreMoney(store);
+    const { setUIElement, store, mediator } = props;
+    const gold = store.getMoney();
     
 
     const game = useContext(GameContext);
@@ -54,19 +55,16 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
 
         console.log(`Покупка здания: ${building.type} c id: ${building.id}`);
         village.getScene().unitPreview.deactivate();
-        village.getScene().buildingPreview.activate(building.id);
+        let size = 2;
+        if (building.id == 4) {
+            size = 1;
+        }
+        village.getScene().buildingPreview.activate(building.id, size);
         setUIElement(UIELEMENT.NULL);
     };
 
     const isBuildingAvailable = (building: TBuildingType): boolean => {
-        const currentGold = Number(gold);
-        const buildingPrice = Number(building.price);
-
-        console.log("ТИПЫ ЗДАНИЙ",building);
-        console.log("УРОВЕНЬ РАТУШИ В СРАВНЕНИИ", townHallLevel);
-        console.log("УРОВЕНЬ ЗДАНИЯ В СРАВНЕНИИ:", building.unlockLevel);
-        console.log("СРАВНЕНИЕ", townHallLevel >= building.unlockLevel)
-        return townHallLevel >= building.unlockLevel && currentGold >= buildingPrice;
+        return townHallLevel >= building.unlockLevel;
     }; 
 
     useEffect(() => {
@@ -74,7 +72,6 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
             await village.loadBuildings();
             setBuildingTypes(await loadBuildingTypes());
             const level = village.getTownHallLevel(); 
-            console.log("ЗАГРУЖЕН УРОВЕНЬ РАТУШИ:", level);
             setTownHallLevel(level);
         })();
     }, []);

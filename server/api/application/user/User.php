@@ -82,8 +82,8 @@ class User
 
     private function createStarterVillage($userId){
         // Генерация случайных координат для деревни
-        $x = rand(1, 1000);
-        $y = rand(1, 1000);
+        $x = rand(1, 87);
+        $y = rand(1, 29);
 
         // Создание деревни в базе данных
         $result = $this->db->createVillage($userId, $x, $y);

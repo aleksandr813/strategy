@@ -1,14 +1,13 @@
 <?php
+require_once('config.php');
 
 class Village
 {
     private $db;
-    private $config;
 
     public function __construct($db)
     {
         $this->db = $db;
-        $this->config = require('config.php');
     }
 
     public function getIncome($userId)
@@ -26,14 +25,14 @@ class Village
         $now = time();
         $diffSeconds = $now - $lastIncome;
 
-        if ($diffSeconds < $this->config['game']['income']['interval']) {
+        if ($diffSeconds < INCOME_INTERVAL) {
             return [
                 'money' => $this->db->getMoney($userId)->money
             ];
         }
 
         $currentMoney = $this->db->getMoney($userId);
-        $income = $mine->level * $this->config['game']['income']['incomePerLevel'];
+        $income = $mine->level * INCOME_PER_LEVEL;
         $newMoney = $currentMoney->money + $income;
 
         $this->db->updateMoney($userId, $newMoney);
@@ -84,8 +83,9 @@ class Village
             return ["error" => 301];
         }
 
-        for ($i = 0; $i < count($this->config['game']['prohibitedBuildings']); $i++) {
-            if ($this->config['game']['prohibitedBuildings'][$i] === $typeId) {
+        $prohibitedBuidlings = explode(',', PROHIBITED_BUILDINGS);
+        for ($i = 0; $i < count($prohibitedBuidlings); $i++) {
+            if ($prohibitedBuidlings[$i] === $typeId) {
                 return ['error' => 307];
             }
         }
@@ -122,7 +122,7 @@ class Village
         }
 
         $level = $this->db->getLevel($buildingId, $village->id);
-        if ($level->level >= $this->config['game']['maxBuildingLevel']) {
+        if ($level->level >= MAX_BUILDING_LEVEL) {
             return ['error' => 312];
         }
 
@@ -157,8 +157,9 @@ class Village
             return ['error' => 300];
         }
 
-        for ($i = 0; $i < count($this->config['game']['prohibitedBuildings']); $i++) {
-            if ($this->config['game']['prohibitedBuildings'][$i] === $building->typeId) {
+        $prohibitedBuidlings = explode(',', PROHIBITED_BUILDINGS);
+        for ($i = 0; $i < count($prohibitedBuidlings); $i++) {
+            if ($prohibitedBuidlings[$i] === $building->typeId) {
                 return ['error' => 307];
             }
         }
@@ -280,23 +281,6 @@ class Village
         return true;
     }
 
-
-    public function takeDamage($userId, $units)
-    {
-        $village = $this->db->getVillage($userId);
-        if (!$village) {
-            return ['error' => 315];
-        }
-
-        $result = $this->db->updateUnitsHP($units, $village->id);
-
-        if (!$result) {
-            return ['error' => 510];
-        }
-
-        return true;
-    }
-
     public function sendArmy($user, $units, $target) {
         if (count($units) === 0) {
             return ['error' => 600];
@@ -312,7 +296,7 @@ class Village
             return ['error' => 315];
         }
 
-        $crusadeCoast = count($units) * $this->config['game']['costPerUnit'];
+        $crusadeCoast = count($units) * COST_PER_UNIT;
 
         if ($user->money < $crusadeCoast) {
             return ['error' => 305];
@@ -360,14 +344,19 @@ class Village
         return ['newMoney' => $newMoney];
     }
 
-    public function moveArmyBack($userId)
+    public function moveArmyBack($userId, $armyId)
     {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 315];
         }
 
-        $units = $this->db->getUnits($userId);
+        $army = $this->db->getArmy($armyId);
+        if (!$army) {
+            return ['error' => 603];
+        }
+
+        $units = $this->db->getUnitsInArmy($armyId);
         $updatedUnits = [];
 
         $i = 29;
@@ -375,11 +364,11 @@ class Village
         $maxCoordinate = 58; // 29 * 2
 
         foreach ($units as $unit) {
-            $unit["onAСrusade"] = (int)$unit["onAСrusade"];
+            $unit["onACrusade"] = (int)$unit["onACrusade"];
 
-            if ($unit["onAСrusade"]) {
+            if ($unit["onACrusade"]) {
                 $unit["unitId"] = $unit["id"];
-                $unit["onAСrusade"] = 0;
+                $unit["onACrusade"] = 0;
                 $unit["x"] = $i;
                 $unit["y"] = $j;
 
@@ -412,5 +401,33 @@ class Village
         }
 
         return $updatedUnits;
+    }
+
+    public function getUserArmies($userId) {
+        $armies = $this->db->getUserArmies($userId);
+        if (!$armies) {
+            return true;
+        }
+
+        $validArmies = [];
+        $currentTime = time();
+
+        foreach($armies as $army) {
+            $arrivalTime = strtotime($army['arrivalTime']);
+
+            if ($arrivalTime > $currentTime) {
+                $validArmies[] = [
+                    'units' => $army['units'],
+                    'attackId' => (int)$army['attackId'],
+                    'speed' => (float)$army['speed']
+                ];
+            }
+        }
+
+        if (!$validArmies) {
+            return true;
+        }
+
+        return $validArmies;
     }
 }

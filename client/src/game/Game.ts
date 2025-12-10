@@ -1,20 +1,27 @@
 import EasyStar from 'easystarjs';
 import Store from "../services/store/Store";
 import Server from "../services/server/Server";
+import Mediator from '../services/mediator/Mediator';
 import GlobalMap from "./manager/GlobalMap";
 import Village from "./manager/Village";
 import Battle from "./manager/Battle";
 import Unit from './entities/Unit';
+import VillageEntity from './entities/VillageEntity';
+import ArmyEntity from './entities/ArmyEntity';
 import Building from './entities/Building';
 import GAMECONFIG from './gameConfig';
 
 class Game {
     private store: Store;
     private server: Server;
+    private mediator: Mediator
     private easyStar: EasyStar.js
     
     private units: Unit[] = [];
     private buildings: Building[] = [];
+
+    private villages: VillageEntity[] = [];
+    private armies: ArmyEntity[] = [];
     
     private incomeInterval: NodeJS.Timer | null = null;
     
@@ -22,13 +29,14 @@ class Game {
     public globalMap: GlobalMap;
     public battle: Battle;
 
-    constructor(store: Store, server: Server) {
+    constructor(store: Store, server: Server, mediator: Mediator) {
         
         this.store = store;
         this.server = server;
+        this.mediator = mediator;
         this.easyStar = new EasyStar.js();
         
-        this.village = new Village(store, server, this.getGameData(), this.easyStar, this);
+        this.village = new Village(store, server, this.mediator, this.getGameData(), this.easyStar, this);
         this.globalMap = new GlobalMap(store, server, this.getGameData());
         this.battle = new Battle(store, server, this.getGameData());
         
@@ -59,9 +67,12 @@ class Game {
         await this.server.deleteBuilding(building.id);
     }
 
-
-    private getGameData() {
+    protected getGameData() {
         return {
+            getArmies: () => this.armies,
+            getVillages: () => this.villages,
+            setArmies: (armies: ArmyEntity[]) => { this.armies = armies; },
+            setVillages: (villages: VillageEntity[]) => { this.villages = villages;},
             getUnits: () => this.units,
             getBuildings: () => this.buildings,
             setUnits: (units: Unit[]) => { this.units = units; },

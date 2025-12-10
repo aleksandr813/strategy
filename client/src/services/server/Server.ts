@@ -2,7 +2,7 @@ import md5 from 'md5';
 import GAMECONFIG from '../../game/gameConfig';
 import CONFIG from '../../config';
 import Store from "../store/Store";
-import { TBuildingType, TBuilding } from './types';
+import { TBuildingType, TBuilding, TMap, TMapResponse } from './types';
 import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 import Unit from '../../game/entities/Unit';
@@ -32,7 +32,7 @@ class Server {
             const response = await fetch(url);
             const answer: TAnswer<T> = await response.json();
 
-            console.log('Server response:', answer);
+            //console.log('Server response:', answer);
 
             if (answer.result === 'ok' && answer.data) {
                 return answer.data;
@@ -172,7 +172,8 @@ class Server {
             level: Number(unit.level),
             currentHp: Number(unit.currentHp),
             type: unit.type,
-            unlockLevel: unit.unlockLevel
+            unlockLevel: unit.unlockLevel,
+            isEnemy: unit.isEnemy
         }));
 
         console.log('Units from server:', units);
@@ -246,13 +247,19 @@ class Server {
     }
 
     async getIncome(): Promise<void> {
-        console.log('getIncome called');
+        //console.log('getIncome called');
         const result = await this.request<{ money: number }>('getIncome');
-        console.log('getIncome result:', result);
+        //console.log('getIncome result:', result);
         
         if (result && typeof result === 'object' && 'money' in result) {
             this.store.setMoney(result.money);
         }
+    }
+
+    async getMap(): Promise<TMapResponse | null> {
+        const hash = this.store.getMapHash();
+        const map = this.request<TMapResponse>('getMap', { hash })
+        return map
     }
 }
 

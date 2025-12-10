@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import BuyBuildingsMenu from './BuyBuildingsMenu/BuyBuildingsMenu';
 import BuyUnitsMenu from './BuyUnitsMenu/BuyUnitsMenu';
 import BuildingMenu from './BuildingMenu/BuildingMenu';
 import Store from '../../../services/store/Store';
+import Mediator from '../../../services/mediator/Mediator';
+import { PAGES } from '../../PageManager';
 
 import "./UI.scss";
 import Panel from './Panel/Panel';
@@ -20,17 +22,19 @@ export interface IBaseUIElement {
 
 interface UIProps {
     store: Store;
+    mediator: Mediator;
+    setPage: (name: PAGES) => void;
 }
 
-const UI: React.FC<UIProps> = ({ store }) => {
+const UI: React.FC<UIProps> = ({ store, mediator, setPage }) => {
     const [uiElement, setUIElement] = useState<UIELEMENT>(UIELEMENT.NULL);
 
     return (
         <div className='UI'>
             <BuildingMenu></BuildingMenu>
-            {uiElement === UIELEMENT.BUYBUILDINGSMENU && <BuyBuildingsMenu setUIElement={setUIElement} store={store} />}
-            {uiElement === UIELEMENT.BUYUNITSMENU && <BuyUnitsMenu setUIElement={setUIElement} store={store} />}
-            <Panel setUIElement={setUIElement} store={store} />
+            {uiElement === UIELEMENT.BUYBUILDINGSMENU && <BuyBuildingsMenu setUIElement={setUIElement} store={store} mediator={mediator} />}
+            {uiElement === UIELEMENT.BUYUNITSMENU && <BuyUnitsMenu setUIElement={setUIElement} store={store} mediator={mediator} />}
+            <Panel setUIElement={setUIElement} store={store} mediator={mediator} setPage={setPage} />
         </div>
     );
 };

@@ -4,19 +4,20 @@ import { TUnitType } from '../../../../services/server/types';
 import Server from '../../../../services/server/Server';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
+import Mediator from '../../../../services/mediator/Mediator';
 import { BuildingTypeID } from '../../../../services/server/types';
-import { useStoreMoney } from '../../../../hooks/useStore';
+import Store from '../../../../services/store/Store';
 
 import './BuyUnitsMenu.scss'
-import Store from '../../../../services/store/Store';
 
 interface BuyUnitsMenuProps extends IBaseUIElement {
     store: Store;
+    mediator: Mediator
 }
 
 const BuyUnitsMenu: React.FC<BuyUnitsMenuProps> = (props: BuyUnitsMenuProps) => {
     const { setUIElement, store } = props;
-    const gold = useStoreMoney(store);
+    const gold = store.getMoney()
 
     const game = useContext(GameContext);
     const village = game.getVillage();
