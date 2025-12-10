@@ -78,7 +78,9 @@ class GlobalMap extends Manager {
         const armiesBack = await this.server.moveArmyBack(armyId);
         if (!armiesBack) {
             console.error('Ошибка возврата армии');
+            return
         }
+        await this.game.village.loadUnits();
     }
 
     getMap() {

@@ -63,6 +63,30 @@ class Village extends Manager {
         this.selectedUnit = unit;
     }
 
+    public getSelectedUnits(): Unit[] {
+        return this.game.getUnits().filter(u => u.isSelected);
+    }
+
+    public async sendArmy(target: number, unitIds: number[]): Promise<boolean> {
+        if (unitIds.length === 0) {
+            console.error('Нет юнитов для отправки');
+            return false;
+        }
+
+        console.log('Отправка армии:', { target, unitIds });
+        
+        const result = await this.server.sendArmy(target, unitIds);
+        
+        if (result) {
+            console.log('Армия успешно отправлена');
+            await this.loadUnits();
+            return true;
+        } else {
+            console.error('Ошибка отправки армии');
+            return false;
+        }
+    }
+
     public async removeBuilding(building: Building): Promise<void> {
         await this.game.removeBuilding(building);
         if (this.selectedBuilding === building) {

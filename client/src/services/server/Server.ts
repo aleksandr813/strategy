@@ -271,6 +271,19 @@ class Server {
         const result = this.request<boolean>('moveArmyBack', { armyId: armyId.toString() } );
         return result;
     }
+
+    async sendArmy(target: number, units: number[]): Promise<boolean | null> {
+
+        const params: { [key: string]: string } = {};
+        
+        units.forEach((unit, index) => {
+            params[`units[${index}]`] = unit.toString();
+        });
+
+        const response = await this.request<boolean>('sendArmy', params);
+
+        return response;
+    }
 }
 
 export default Server;
