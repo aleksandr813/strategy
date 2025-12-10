@@ -17,17 +17,17 @@ type SpriteMap = {
 };
 
 export const SPRITE_MAP: SpriteMap = {
-        [UnitTypeID.Knight]: [21],
-        [UnitTypeID.Spearman]: [22],
-        [UnitTypeID.Berserk]: [30],
-        [UnitTypeID.Paladin]: [31],
-        [UnitTypeID.Guardian]: [29],
-        [UnitTypeID.Archer]: [24],
-        [UnitTypeID.Crossbowman]: [23],
-        [UnitTypeID.Sorcerer]: [25],
-        [UnitTypeID.Summoner]: [27],
-        [UnitTypeID.Golem]: [26],
-        [UnitTypeID.Swordman]: [28]
+    [UnitTypeID.Knight]: [21],
+    [UnitTypeID.Spearman]: [22],
+    [UnitTypeID.Berserk]: [30],
+    [UnitTypeID.Paladin]: [31],
+    [UnitTypeID.Guardian]: [29],
+    [UnitTypeID.Archer]: [24],
+    [UnitTypeID.Crossbowman]: [23],
+    [UnitTypeID.Sorcerer]: [25],
+    [UnitTypeID.Summoner]: [27],
+    [UnitTypeID.Golem]: [26],
+    [UnitTypeID.Swordman]: [28]
 };
 
 export function getUnitSprites(typeId: UnitTypeID): number[] {
@@ -43,6 +43,11 @@ const GAMECONFIG = {
     MOVE_INTERVAL: 100,
     INCOME_INTERVAL: 5000,
     MAP_UPDATE_INTERVAL: 15000,
+
+    MIN_ZOOM: 1,
+    MAX_ZOOM: 45,
+    ZOOM_SPEED: 0.1,
+    ZOOM_THRESHOLD: 0.1,
 };
 
 
