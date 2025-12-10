@@ -26,6 +26,7 @@ const CONFIG = {
     //HOST: 'http://strategy/server/api',
 
     CHAT_TIMESTAMP: 200, //ms
+    CHAT_MAX_MESSAGE_LENGTH: 100, // максимальная длина сообщения в чате
 
     SPRITE_SIZE: 64, // размер спрайта в пикселях
     LINE_OF_SPRITES: 20, // количество спрайтов в карте спрайтов

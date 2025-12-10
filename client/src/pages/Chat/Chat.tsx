@@ -6,6 +6,7 @@ import { IBasePage, PAGES } from '../PageManager';
 
 import chatIcon from '../../assets/img/chat/back.png';
 import './Chat.scss';
+import CONFIG from '../../config';
 
 const Chat: React.FC<IBasePage> = (props: IBasePage) => {
     const { setPage } = props;
@@ -38,8 +39,8 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
         if (event.key === 'Enter') {
             if (messageRef.current) {
                 const message = messageRef.current.value;
-                if (message.length > 100) {
-                        console.log('Сообщение не должно превышать 100 символов');
+                if (message.length > CONFIG.CHAT_MAX_MESSAGE_LENGTH) {
+                        console.log(`Сообщение не должно превышать ${CONFIG.CHAT_MAX_MESSAGE_LENGTH} символов`);
                         return;
                 }
                 if (message) {
