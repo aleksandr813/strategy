@@ -7,21 +7,15 @@ import VillageEntity from '../../game/entities/VillageEntity';
 import { GameContext } from '../../App';
 import { TPoint } from '../../config';
 import globalMapBackground from '../../assets/img/background/globalMapBackground.png';
-import GAMECONFIG from '../../game/gameConfig';
 
 import "./GlobalMap.scss";
 
 const GAME_FIELD = 'game-field';
+const GREEN = '#00e81c';
+const DRAG_THRESHOLD = 5;
+const TIME_THRESHOLD = 200;
 
-// Константы для ограничения масштабирования
-const MIN_ZOOM = GAMECONFIG.MIN_ZOOM; // Минимальный размер окна
-const MAX_ZOOM = GAMECONFIG.MAX_ZOOM; // Максимальный размер окна (всё поле видно)
-const ZOOM_SPEED = GAMECONFIG.ZOOM_SPEED; // Скорость зума
-const ZOOM_THRESHOLD = GAMECONFIG.ZOOM_THRESHOLD; // Порог для предотвращения микро-корректировок
-
-// Размеры игрового поля (должны совпадать с размерами фона)
-const GAME_FIELD_WIDTH = GAMECONFIG.GRID_WIDTH;
-const GAME_FIELD_HEIGHT = GAMECONFIG.GRID_HEIGHT;
+let zoomFactor = 1;
 
 const GlobalMapCanvas: React.FC = () => {
     const { WINDOW } = CONFIG;
@@ -52,26 +46,6 @@ const GlobalMapCanvas: React.FC = () => {
     let isMiddleMouseDragging = false;
     let middleMouseStartScreenPosition: TPoint | null = null;
     let windowStartPosition: { LEFT: number, TOP: number } | null = null;
-
-    
-    const clampCameraPosition = () => {
-       
-        const maxLeft = Math.max(0, GAME_FIELD_WIDTH - WINDOW.WIDTH);
-        const maxTop = Math.max(0, GAME_FIELD_HEIGHT - WINDOW.HEIGHT);
-        
-       
-        if (WINDOW.WIDTH >= GAME_FIELD_WIDTH) {
-            WINDOW.LEFT = (GAME_FIELD_WIDTH - WINDOW.WIDTH) / 2;
-        } else {
-            WINDOW.LEFT = Math.max(0, Math.min(WINDOW.LEFT, maxLeft));
-        }
-        
-        if (WINDOW.HEIGHT >= GAME_FIELD_HEIGHT) {
-            WINDOW.TOP = (GAME_FIELD_HEIGHT - WINDOW.HEIGHT) / 2;
-        } else {
-            WINDOW.TOP = Math.max(0, Math.min(WINDOW.TOP, maxTop));
-        }
-    };
 
     const drawSprites = (canvas: Canvas, item: ArmyEntity | VillageEntity, coords: TPoint[]) => {
         item.sprites.forEach((sprite, i) => {
@@ -110,16 +84,10 @@ const GlobalMapCanvas: React.FC = () => {
 
     const mouseMove = (x: number, y: number, screenX?: number, screenY?: number) => {
         if (isMiddleMouseDragging && middleMouseStartScreenPosition && windowStartPosition && canvas && screenX !== undefined && screenY !== undefined) {
-         
             const deltaX = (screenX - middleMouseStartScreenPosition.x) / canvas.WIDTH * WINDOW.WIDTH;
             const deltaY = (screenY - middleMouseStartScreenPosition.y) / canvas.HEIGHT * WINDOW.HEIGHT;
-            
-           
             WINDOW.LEFT = windowStartPosition.LEFT - deltaX;
             WINDOW.TOP = windowStartPosition.TOP - deltaY;
-            
-         
-            clampCameraPosition();
         }
     };
 
@@ -131,6 +99,7 @@ const GlobalMapCanvas: React.FC = () => {
 
     const mouseClick = async (x: number, y: number) => {
         console.log(x, y);
+        
     };
 
     const mouseRightClickDown = (x: number, y: number) => {
@@ -147,52 +116,19 @@ const GlobalMapCanvas: React.FC = () => {
 
     const mouseWheel = (delta: number, x: number, y: number) => {
         if (!canvas) return;
-        
-
-        const zoomIn = delta > 0;
-        
-
-        let newWidth = WINDOW.WIDTH;
-        let newHeight = WINDOW.HEIGHT;
-        
-        if (zoomIn) {
-
-            newWidth *= (1 + ZOOM_SPEED);
-            newHeight *= (1 + ZOOM_SPEED);
-            
- 
-            if (newHeight > MAX_ZOOM + ZOOM_THRESHOLD) {
-                newHeight = MAX_ZOOM;
-                newWidth = newHeight * (WINDOW.WIDTH / WINDOW.HEIGHT);
-            }
+        if (delta > 0) {
+            zoomFactor = 1.1;
         } else {
-    
-            newWidth *= (1 - ZOOM_SPEED);
-            newHeight *= (1 - ZOOM_SPEED);
-
-                       if (newHeight < MIN_ZOOM - ZOOM_THRESHOLD) {
-                newHeight = MIN_ZOOM;
-                newWidth = newHeight * (WINDOW.WIDTH / WINDOW.HEIGHT);
-                
-            }
+            zoomFactor = 0.9;
         }
-        
-       
         const oldWidth = WINDOW.WIDTH;
         const oldHeight = WINDOW.HEIGHT;
-        
-     
-        WINDOW.WIDTH = newWidth;
-        WINDOW.HEIGHT = newHeight;
-        
-       
+        WINDOW.WIDTH *= zoomFactor;
+        WINDOW.HEIGHT *= zoomFactor;
         const relativeX = (x - WINDOW.LEFT) / oldWidth;
         const relativeY = (y - WINDOW.TOP) / oldHeight;
         WINDOW.LEFT = x - relativeX * WINDOW.WIDTH;
         WINDOW.TOP = y - relativeY * WINDOW.HEIGHT;
-        
-    
-        clampCameraPosition();
     };
 
     const mouseMiddleDown = (x: number, y: number, screenX?: number, screenY?: number) => {
@@ -238,9 +174,6 @@ const GlobalMapCanvas: React.FC = () => {
 
         canvas.context.imageSmoothingEnabled = false;
         canvas.contextV.imageSmoothingEnabled = false;
-
-   
-        clampCameraPosition();
 
         return () => {
             if (WINDOW.WIDTH !== INITIAL_WINDOW_WIDTH) {
