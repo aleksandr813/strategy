@@ -17,21 +17,13 @@ const GREEN = '#00e81c';
 const DRAG_THRESHOLD = 5;
 const TIME_THRESHOLD = 200;
 
-// Константы для ограничения масштабирования
-const MIN_ZOOM = 1; // Минимальный размер окна (1 клетка)
-const MAX_ZOOM = 45; // Максимальный размер окна (всё поле видно)
-const ZOOM_SPEED = 0.1; // Скорость зума
-const ZOOM_THRESHOLD = 0.1; // Порог для предотвращения микро-корректировок
-
-// Размеры игрового поля (должны совпадать с размерами фона)
-const GAME_FIELD_WIDTH = 87;
-const GAME_FIELD_HEIGHT = 29;
+let zoomFactor = 1;
 
 const VillageCanvas: React.FC = () => {
     const { WINDOW } = CONFIG;
     const game = useContext(GameContext);
-    const village = game.getVillage();
-
+    const village = game.getVillage(); 
+    
     const background = new Image();
     background.src = villageBackground;
 
@@ -44,7 +36,7 @@ const VillageCanvas: React.FC = () => {
             canvasInstance.HEIGHT = window.innerHeight;
             canvasInstance.canvas.width = window.innerWidth;
             canvasInstance.canvas.height = window.innerHeight;
-            render(0);
+            render(0); 
         }
     };
 
@@ -58,25 +50,6 @@ const VillageCanvas: React.FC = () => {
     let middleMouseStartScreenPosition: TPoint | null = null;
     let windowStartPosition: { LEFT: number, TOP: number } | null = null;
 
-
-    const clampCameraPosition = () => {
-
-        const maxLeft = Math.max(0, GAME_FIELD_WIDTH - WINDOW.WIDTH);
-        const maxTop = Math.max(0, GAME_FIELD_HEIGHT - WINDOW.HEIGHT);
-
-
-        if (WINDOW.WIDTH >= GAME_FIELD_WIDTH) {
-            WINDOW.LEFT = (GAME_FIELD_WIDTH - WINDOW.WIDTH) / 2;
-        } else {
-            WINDOW.LEFT = Math.max(0, Math.min(WINDOW.LEFT, maxLeft));
-        }
-
-        if (WINDOW.HEIGHT >= GAME_FIELD_HEIGHT) {
-            WINDOW.TOP = (GAME_FIELD_HEIGHT - WINDOW.HEIGHT) / 2;
-        } else {
-            WINDOW.TOP = Math.max(0, Math.min(WINDOW.TOP, maxTop));
-        }
-    };
 
     const drawRect = (canvas: Canvas, x: number, y: number, width: number, height: number, fillStyle: string) => {
         canvas.contextV.fillStyle = fillStyle;
@@ -114,7 +87,7 @@ const VillageCanvas: React.FC = () => {
             if (allocation.isSelectingStatus) {
                 isSelected = allocation.isUnitInSelection(unit);
             }
-
+                
             if (isSelected) {
                 drawRect(canvas, unit.coords.x, unit.coords.y, 1, 1, 'rgba(0, 255, 0, 0.5)');
             }
@@ -148,7 +121,7 @@ const VillageCanvas: React.FC = () => {
     const drawUnitPreview = (canvas: Canvas) => {
         const previewData = village.getScene().unitPreview.getRenderData();
         if (!previewData) return;
-        const { gridPosition, canPlace } = previewData;
+        const { gridPosition, canPlace} = previewData;
         const color = canPlace ? 'rgba(0, 255, 0, 0.4)' : 'rgba(255, 0, 0, 0.4)';
         drawRect(canvas, gridPosition.x, gridPosition.y, 1, 1, color);
         canvas.contextV.strokeStyle = canPlace ? '#00FF00' : '#FF0000';
@@ -181,13 +154,14 @@ const VillageCanvas: React.FC = () => {
         canvas.render();
     }
 
+
     const mouseDown = (x: number, y: number) => {
         mouseDownPosition = { x, y };
         mouseDownTime = Date.now();
         wasDragging = false;
-
+        
         if (village.getScene().buildingPreview.isActiveStatus() || village.getScene().unitPreview.isActiveStatus()) return;
-
+        
         allocation.start(x, y);
     };
 
@@ -204,22 +178,16 @@ const VillageCanvas: React.FC = () => {
         }
 
         if (isMiddleMouseDragging && middleMouseStartScreenPosition && windowStartPosition && canvas && screenX !== undefined && screenY !== undefined) {
-
             const deltaX = (screenX - middleMouseStartScreenPosition.x) / canvas.WIDTH * WINDOW.WIDTH;
             const deltaY = (screenY - middleMouseStartScreenPosition.y) / canvas.HEIGHT * WINDOW.HEIGHT;
-
-
             WINDOW.LEFT = windowStartPosition.LEFT - deltaX;
             WINDOW.TOP = windowStartPosition.TOP - deltaY;
-
-
-            clampCameraPosition();
         }
     };
 
     const handleClick = async (x: number, y: number) => {
         if (!village) return;
-
+        
         const { buildingPreview, unitPreview } = village.getScene();
 
         if (buildingPreview.isActiveStatus()) {
@@ -228,7 +196,7 @@ const VillageCanvas: React.FC = () => {
             await village.handleUnitPlacement();
         } else {
             village.handleBuildingClick(x, y);
-
+            
             if (!allocation.isSelectingStatus) {
                 village.moveUnits({ x, y }, game['server']);
             }
@@ -248,14 +216,14 @@ const VillageCanvas: React.FC = () => {
             allocation.cancel();
             handleClick(x, y);
         }
-
+        
         mouseDownPosition = null;
         mouseDownTime = 0;
     };
 
     const mouseClick = async (x: number, y: number) => {
         if (!village || wasDragging) return;
-
+        
         const { buildingPreview, unitPreview, units } = village.getScene();
 
         if (buildingPreview.isActiveStatus()) {
@@ -267,10 +235,10 @@ const VillageCanvas: React.FC = () => {
             if (clickedUnit) {
                 return;
             }
-
+            
             village.handleBuildingClick(x, y);
         }
-
+        
         if (!allocation.isSelectingStatus) {
             const hasSelectedUnits = units.some(u => u.isSelected);
 
@@ -285,7 +253,7 @@ const VillageCanvas: React.FC = () => {
     const mouseRightClickDown = (x: number, y: number) => {
         if (!village) return;
         const { buildingPreview, unitPreview, units } = village.getScene();
-
+        
         if (buildingPreview.isActiveStatus()) {
             buildingPreview.deactivate();
             console.log('Размещение здания отменено');
@@ -309,51 +277,19 @@ const VillageCanvas: React.FC = () => {
 
     const mouseWheel = (delta: number, x: number, y: number) => {
         if (!canvas) return;
-
-        const zoomIn = delta > 0;
-
-        let newWidth = WINDOW.WIDTH;
-        let newHeight = WINDOW.HEIGHT;
-
-        if (zoomIn) {
-
-            newWidth *= (1 + ZOOM_SPEED);
-            newHeight *= (1 + ZOOM_SPEED);
-
-
-
-            if (newHeight > MAX_ZOOM + ZOOM_THRESHOLD) {
-                newHeight = MAX_ZOOM;
-                newWidth = newHeight * (WINDOW.WIDTH / WINDOW.HEIGHT);
-            }
+        if (delta > 0) {
+            zoomFactor = 1.1;
         } else {
-
-            newWidth *= (1 - ZOOM_SPEED);
-            newHeight *= (1 - ZOOM_SPEED);
-
-
-            if (newHeight < MIN_ZOOM - ZOOM_THRESHOLD) {
-                newHeight = MIN_ZOOM;
-                newWidth = newHeight * (WINDOW.WIDTH / WINDOW.HEIGHT);
-
-            }
+            zoomFactor = 0.9;
         }
-
-
         const oldWidth = WINDOW.WIDTH;
         const oldHeight = WINDOW.HEIGHT;
-
-
-        WINDOW.WIDTH = newWidth;
-        WINDOW.HEIGHT = newHeight;
-
-
+        WINDOW.WIDTH *= zoomFactor;
+        WINDOW.HEIGHT *= zoomFactor;
         const relativeX = (x - WINDOW.LEFT) / oldWidth;
         const relativeY = (y - WINDOW.TOP) / oldHeight;
         WINDOW.LEFT = x - relativeX * WINDOW.WIDTH;
         WINDOW.TOP = y - relativeY * WINDOW.HEIGHT;
-
-        clampCameraPosition();
     };
 
     const mouseMiddleDown = (x: number, y: number, screenX?: number, screenY?: number) => {
@@ -372,7 +308,7 @@ const VillageCanvas: React.FC = () => {
 
     const keyDown = (event: KeyboardEvent) => {
         if (event.key !== 'Escape') return;
-
+        
         const scene = village.getScene();
         scene.buildingPreview.deactivate();
         scene.unitPreview.deactivate();
@@ -406,8 +342,6 @@ const VillageCanvas: React.FC = () => {
 
         village.loadBuildings();
         village.loadUnits();
-
-        clampCameraPosition();
 
         return () => {
             if (WINDOW.WIDTH !== INITIAL_WINDOW_WIDTH) {
