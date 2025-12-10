@@ -21,7 +21,7 @@ const ZOOM_THRESHOLD = GAMECONFIG.ZOOM_THRESHOLD; // Порог для пред�
 
 // Размеры игрового поля (должны совпадать с размерами фона)
 const GAME_FIELD_WIDTH = GAMECONFIG.GRID_WIDTH;
-const GAME_FIELD_HEIGHT = GAMECONFIG.GRID_HEIGHT;
+const GAME_FIELD_HEIGHT = GAMECONFIG.GRID_HEIGHT+10;
 
 const GlobalMapCanvas: React.FC = () => {
     const { WINDOW } = CONFIG;
