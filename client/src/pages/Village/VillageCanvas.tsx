@@ -18,14 +18,14 @@ const DRAG_THRESHOLD = 5;
 const TIME_THRESHOLD = 200;
 
 // Константы для ограничения масштабирования
-const MIN_ZOOM = 1; // Минимальный размер окна (1 клетка)
-const MAX_ZOOM = 45; // Максимальный размер окна (всё поле видно)
-const ZOOM_SPEED = 0.1; // Скорость зума
-const ZOOM_THRESHOLD = 0.1; // Порог для предотвращения микро-корректировок
+const MIN_ZOOM = GAMECONFIG.MIN_ZOOM; // Минимальный размер окна (1 клетка)
+const MAX_ZOOM = GAMECONFIG.MAX_ZOOM; // Максимальный размер окна (всё поле видно)
+const ZOOM_SPEED = GAMECONFIG.ZOOM_SPEED; // Скорость зума
+const ZOOM_THRESHOLD = GAMECONFIG.ZOOM_THRESHOLD; // Порог для предотвращения микро-корректировок
 
 // Размеры игрового поля (должны совпадать с размерами фона)
-const GAME_FIELD_WIDTH = 87;
-const GAME_FIELD_HEIGHT = 29;
+const GAME_FIELD_WIDTH = GAMECONFIG.GRID_WIDTH;
+const GAME_FIELD_HEIGHT = GAMECONFIG.GRID_HEIGHT+10;
 
 const VillageCanvas: React.FC = () => {
     const { WINDOW } = CONFIG;
