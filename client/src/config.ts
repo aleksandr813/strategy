@@ -31,6 +31,7 @@ const CONFIG = {
     LINE_OF_SPRITES: 20, // количество спрайтов в карте спрайтов
     WIDTH: 50, // ширина карты
     HEIGHT: 32, // высота карты 
+    CHAT_MAX_MESSAGE_LENGTH: 100, // максимальная длина сообщения в чате
     // игровое окно, видимое пользователю
     WINDOW: {
         LEFT: 0,
@@ -39,7 +40,7 @@ const CONFIG = {
         WIDTH: 20,
     },
 
-    
+
     MEDIATOR: {
         EVENTS: {
             MONEY_CHANGE: 'MONEY_CHANGE', // какое-то событие
