@@ -6,6 +6,7 @@ import { UIELEMENT, IBaseUIElement } from '../UI';
 import Mediator from '../../../../services/mediator/Mediator';
 import { BuildingTypeID } from '../../../../services/server/types';
 import Store from '../../../../services/store/Store';
+import VillageEntity from '../../../../game/entities/VillageEntity';
 
 import './ArmyMenu.scss'
 
@@ -14,21 +15,31 @@ interface ArmyMenuProps extends IBaseUIElement {
     mediator: Mediator
 }
 
+enum VIEW_MODE {
+    SELECTED_UNITS,
+    ARMIES_LIST,
+    VILLAGE_SELECT
+}
+
 const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
     const game = useContext(GameContext);
     const { setUIElement, store } = props;
     const [armies, setArmies] = useState<TUserArmy[]>([]);
-    const [showArmiesList, setShowArmiesList] = useState(false);
+    const [viewMode, setViewMode] = useState<VIEW_MODE>(VIEW_MODE.SELECTED_UNITS);
     const [selectedUnits, setSelectedUnits] = useState<number[]>([]);
+    const [villages, setVillages] = useState<VillageEntity[]>([]);
 
     useEffect(() => {
-        // Проверяем выделенные юниты
         const units = game.village.getScene().units;
         const selected = units.filter(unit => unit.isSelected).map(unit => unit.id);
         setSelectedUnits(selected);
         
-        // Загружаем армии всегда
         fetchArmies();
+        loadVillages();
+        
+        if (selected.length === 0) {
+            setViewMode(VIEW_MODE.ARMIES_LIST);
+        }
     }, []);
 
     const closeArmyMenu = () => setUIElement(UIELEMENT.NULL);
@@ -37,19 +48,29 @@ const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
         const userArmies = await game.globalMap.getUserArmies();
         setArmies(userArmies);
     };
+
+    const loadVillages = () => {
+        const villagesData = game.getVillages();
+        //console.log(villages)
+        setVillages(villagesData);
+    };
     
     const handleReturnArmy = async (armyId: number) => {
         await game.globalMap.moveArmyBack(armyId);
+        await fetchArmies();
     };
 
-    const handleSendArmy = async () => {
+    const handleShowVillageSelect = () => {
+        setViewMode(VIEW_MODE.VILLAGE_SELECT);
+    };
+
+    const handleSelectVillage = async (villageId: number) => {
         if (selectedUnits.length === 0) {
             console.log('Нет выделенных юнитов');
             return;
         }
         
-        const target = 1;
-        const result = await game.village.sendArmy(target, selectedUnits);
+        const result = await game.village.sendArmy(villageId, selectedUnits);
         
         if (result) {
             console.log('Армия успешно отправлена');
@@ -71,12 +92,12 @@ const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
                         <div>ID юнитов: {selectedUnits.join(', ')}</div>
                     </div>
                 </div>
-                <Button onClick={handleSendArmy}>Отправить</Button>
+                <Button onClick={handleShowVillageSelect}>Отправить</Button>
             </div>
 
             <button 
                 className='army-menu-show-armies-button' 
-                onClick={() => setShowArmiesList(true)}
+                onClick={() => setViewMode(VIEW_MODE.ARMIES_LIST)}
             >
                 Армии
             </button>
@@ -114,7 +135,7 @@ const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
             {selectedUnits.length > 0 && (
                 <button 
                     className='army-menu-back-button' 
-                    onClick={() => setShowArmiesList(false)}
+                    onClick={() => setViewMode(VIEW_MODE.SELECTED_UNITS)}
                 >
                     Назад
                 </button>
@@ -126,14 +147,62 @@ const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
         </div>
     );
 
+    const renderVillageSelectView = () => (
+        <div>
+            <div className='army-menu-title'>Выберите цель</div>
+            
+            {!villages || villages.length === 0 ? (
+                <div className='army-menu-empty'>Нет доступных деревень</div>
+            ) : (
+                <div className='villages-list'>
+                    {villages.map((village, index) => (
+                        <div 
+                            key={village.id} 
+                            className='army-menu-item village-item'
+                            onClick={() => handleSelectVillage(village.id)}
+                        >
+                            <div className='unit-info'>
+                                <div className='unit-name'>{village.name}</div>
+                                <div className='unit-details'>
+                                    <div>Координаты: ({village.coords.x}, {village.coords.y})</div>
+                                </div>
+                            </div>
+                            <Button onClick={() => handleSelectVillage(village.id)}>Атаковать</Button>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            <button 
+                className='army-menu-back-button' 
+                onClick={() => setViewMode(VIEW_MODE.SELECTED_UNITS)}
+            >
+                Назад
+            </button>
+
+            <button className='army-menu-close-button' onClick={closeArmyMenu}>
+                Закрыть
+            </button>
+        </div>
+    );
+
+    const renderView = () => {
+        switch (viewMode) {
+            case VIEW_MODE.VILLAGE_SELECT:
+                return renderVillageSelectView();
+            case VIEW_MODE.ARMIES_LIST:
+                return renderArmiesListView();
+            case VIEW_MODE.SELECTED_UNITS:
+            default:
+                return renderSelectedUnitsView();
+        }
+    };
+
     return (
         <div>
             <div className='army-menu-overlay' onClick={closeArmyMenu}>
                 <div className='army-menu-container' onClick={(e) => e.stopPropagation()} >
-                    {selectedUnits.length > 0 && !showArmiesList 
-                        ? renderSelectedUnitsView()
-                        : renderArmiesListView()
-                    }
+                    {renderView()}
                 </div>
             </div>
         </div>

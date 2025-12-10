@@ -166,7 +166,7 @@ button:disabled {
     width: 100%;
     padding: 15px;
     margin-bottom: 10px;
-    background-color: #0f8500;
+    background-color: #4169E1;
     color: #FFF;
     border: 3px solid #000;
     cursor: pointer;
@@ -179,7 +179,7 @@ button:disabled {
 }
 
 .army-menu-show-armies-button:hover {
-    background-color: #1c9926;
+    background-color: #5A7FE1;
 }
 
 .army-menu-show-armies-button:active {
@@ -240,6 +240,44 @@ button:disabled {
     flex-direction: column;
     gap: 10px;
     margin-bottom: 20px;
+}
+
+/* --- Список деревень --- */
+
+.villages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.villages-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.villages-list::-webkit-scrollbar-track {
+    background: #5C2E0E;
+    border-radius: 4px;
+}
+
+.villages-list::-webkit-scrollbar-thumb {
+    background: #FFD700;
+    border-radius: 4px;
+}
+
+.villages-list::-webkit-scrollbar-thumb:hover {
+    background: #FFA500;
+}
+
+.village-item {
+    cursor: pointer;
+}
+
+.village-item:hover {
+    background-color: #CD853F;
+    transition: all 0.2s;
 }
 
 .army-menu-empty {
