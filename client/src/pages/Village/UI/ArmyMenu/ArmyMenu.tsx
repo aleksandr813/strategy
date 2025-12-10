@@ -37,7 +37,7 @@ const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
     
     const handleReturnArmy = (armyIndex: number) => {
         console.log('Returning army:', armyIndex);
-        // Здесь добавить логику возврата армии
+        
     };
 
     return (

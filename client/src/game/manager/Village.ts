@@ -8,7 +8,7 @@ import Unit from '../entities/Unit';
 import Building from '../entities/Building';
 import Mediator from '../../services/mediator/Mediator';
 import Game from '../Game';
-import Manager, { GameData } from "./Manager";
+import Manager from "./Manager";
 import { BuildingTypeID } from '../../services/server/types';
 
 const { WIDTH, HEIGHT } = CONFIG;
@@ -19,30 +19,28 @@ class Village extends Manager {
     private store: Store;
     private mediator: Mediator;
     private server: Server;
-    private game: Game;
     public selectedBuilding: Building | null = null;
     public selectedUnit: Unit | null = null;
     public easyStar: EasyStar.js;
 
-    constructor(store: Store, server: Server, mediator: Mediator, gameData: GameData, easyStar: EasyStar.js, game: Game) {
-        super(gameData);
+    constructor(store: Store, server: Server, mediator: Mediator, easyStar: EasyStar.js, game: Game) {
+        super(game);
         this.store = store;
         this.server = server;
         this.mediator = mediator;
         this.easyStar = easyStar;
-        this.game = game;
         this.buildingPreview = new BuildingPreview(game);
         this.unitPreview = new UnitPreview(game);
     }
 
     public selectBuilding(building: Building | null): void {
-        this.gameData.getBuildings().forEach(b => b.deselected?.());
+        this.game.getBuildings().forEach(b => b.deselected?.());
         if (building) building.selected?.();
         this.selectedBuilding = building;
     }
 
     public getBarracksLevel(): number {
-        const buildings = this.gameData.getBuildings();
+        const buildings = this.game.getBuildings();
         const barracks = buildings.find(
             (b) => b.typeId === BuildingTypeID.Kazarma
         );
@@ -50,7 +48,7 @@ class Village extends Manager {
     }
 
     public getTownHallLevel(): number {
-        const buildings = this.gameData.getBuildings();
+        const buildings = this.game.getBuildings();
         const townHall = buildings.find(
             (b) => b.typeId === BuildingTypeID.TownHall
         );
@@ -58,7 +56,7 @@ class Village extends Manager {
     }
     
     public selectUnit(unit: Unit | null): void {
-        this.gameData.getUnits().forEach(u => u.updateSelection(false));
+        this.game.getUnits().forEach(u => u.updateSelection(false));
         if (unit) {
             unit.updateSelection(true);
         }
@@ -66,7 +64,7 @@ class Village extends Manager {
     }
 
     public async removeBuilding(building: Building): Promise<void> {
-        this.gameData.removeBuilding(building);
+        await this.game.removeBuilding(building);
         if (this.selectedBuilding === building) {
             this.selectedBuilding = null;
         }
@@ -112,7 +110,7 @@ class Village extends Manager {
         const gridX = Math.floor(x);
         const gridY = Math.floor(y);
         
-        const clickedBuilding = this.gameData.getBuildings().find(b => {
+        const clickedBuilding = this.game.getBuildings().find(b => {
             const [bx, by] = [b.coords[0].x, b.coords[0].y];
             return gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2; 
         }) || null;
@@ -129,7 +127,7 @@ class Village extends Manager {
         const gridX = Math.floor(x);
         const gridY = Math.floor(y);
         
-        const clickedUnit = this.gameData.getUnits().find(u => {
+        const clickedUnit = this.game.getUnits().find(u => {
             const [ux, uy] = [u.coords.x, u.coords.y];
             return gridX >= ux && gridX < ux + 1 && gridY >= uy && gridY < uy + 1; 
         }) || null;
@@ -171,10 +169,10 @@ class Village extends Manager {
             );
         });
 
-        this.gameData.setBuildings(buildings);
+        this.game.setBuildings(buildings);
         this.updateAllWallSprites();
         this.updateAllGateSprites();
-        console.log("Загружено зданий:", this.gameData.getBuildings().length);
+        console.log("Загружено зданий:", this.game.getBuildings().length);
     }
 
     async loadUnits(): Promise<void> {
@@ -188,14 +186,14 @@ class Village extends Manager {
 
         const units = unitsData.map(unitData => new Unit(unitData, this.game, this.easyStar));
         
-        this.gameData.setUnits(units);
-        console.log("Загружено юнитов:", this.gameData.getUnits().length);
+        this.game.setUnits(units);
+        console.log("Загружено юнитов:", this.game.getUnits().length);
     }
 
     getScene() {
         return {
-            units: this.gameData.getUnits(),
-            buildings: this.gameData.getBuildings(),
+            units: this.game.getUnits(),
+            buildings: this.game.getBuildings(),
             buildingPreview: this.buildingPreview,
             unitPreview: this.unitPreview,
         };
@@ -324,7 +322,7 @@ class Village extends Manager {
         const gridX = Math.floor(x);
         const gridY = Math.floor(y);
         
-        return this.gameData.getBuildings().some(b => {
+        return this.game.getBuildings().some(b => {
             if (b.size === 2) {
                 const [bx, by] = [b.coords[0].x, b.coords[0].y];
                 return gridX >= bx && gridX < bx + 2 && gridY >= by && gridY < by + 2;
