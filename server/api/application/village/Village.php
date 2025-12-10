@@ -418,7 +418,9 @@ class Village
 
             if ($arrivalTime > $currentTime) {
                 $validArmies[] = [
+                    'armyId' => (int)$army['armyId'],
                     'units' => $army['units'],
+                    'enemyName' => $army['enemyName'],
                     'attackId' => (int)$army['attackId'],
                     'speed' => (float)$army['speed']
                 ];

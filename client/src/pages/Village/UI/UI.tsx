@@ -2,17 +2,20 @@ import React, { useContext, useState } from 'react';
 import BuyBuildingsMenu from './BuyBuildingsMenu/BuyBuildingsMenu';
 import BuyUnitsMenu from './BuyUnitsMenu/BuyUnitsMenu';
 import BuildingMenu from './BuildingMenu/BuildingMenu';
+import Panel from './Panel/Panel';
+import ArmyMenu from './ArmyMenu/ArmyMenu';
 import Store from '../../../services/store/Store';
 import Mediator from '../../../services/mediator/Mediator';
 import { PAGES } from '../../PageManager';
 
 import "./UI.scss";
-import Panel from './Panel/Panel';
+
 
 export enum UIELEMENT {
     SETTING,
     BUYUNITSMENU,
     BUYBUILDINGSMENU,
+    ARMYMENU,
     NULL
 }
 
@@ -34,6 +37,7 @@ const UI: React.FC<UIProps> = ({ store, mediator, setPage }) => {
             <BuildingMenu></BuildingMenu>
             {uiElement === UIELEMENT.BUYBUILDINGSMENU && <BuyBuildingsMenu setUIElement={setUIElement} store={store} mediator={mediator} />}
             {uiElement === UIELEMENT.BUYUNITSMENU && <BuyUnitsMenu setUIElement={setUIElement} store={store} mediator={mediator} />}
+            {uiElement === UIELEMENT.ARMYMENU && <ArmyMenu setUIElement={setUIElement} store={store} mediator={mediator} />}
             <Panel setUIElement={setUIElement} store={store} mediator={mediator} setPage={setPage} />
         </div>
     );
