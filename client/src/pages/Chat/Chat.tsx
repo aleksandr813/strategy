@@ -5,6 +5,7 @@ import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 
 import chatIcon from '../../assets/img/chat/X.png';
+import CONFIG from '../../config';
 import './Chat.scss';
 
 const Chat: React.FC<IBasePage> = (props: IBasePage) => {
@@ -38,6 +39,10 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
         if (event.key === 'Enter') {
             if (messageRef.current) {
                 const message = messageRef.current.value;
+                if (message.length > CONFIG.CHAT_MAX_MESSAGE_LENGTH) {
+                        console.log(`Сообщение не должно превышать ${CONFIG.CHAT_MAX_MESSAGE_LENGTH} символов`);
+                        return;
+                }
                 if (message) {
                     server.sendMessage(message);
                     messageRef.current.value = '';
@@ -51,6 +56,7 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
             ref={messageRef} 
             onKeyUp={handleKeyUp} 
             placeholder='сообщение' 
+            className='inputChat'
         />, 
     [handleKeyUp]);
 
