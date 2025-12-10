@@ -367,7 +367,6 @@ class Village
             $unit["onACrusade"] = (int)$unit["onACrusade"];
 
             if ($unit["onACrusade"]) {
-                $unit["unitId"] = $unit["id"];
                 $unit["onACrusade"] = 0;
                 $unit["x"] = $i;
                 $unit["y"] = $j;
@@ -399,6 +398,8 @@ class Village
         if (!$result) {
             return ['error' => 504];
         }
+
+        $this->db->deleteArmy($userId, $army->army);
 
         return $updatedUnits;
     }
