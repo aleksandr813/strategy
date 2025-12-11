@@ -3,6 +3,7 @@ import { ServerContext, StoreContext, MediatorContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import VillageCanvas from './VillageCanvas';
+import MiniMapCanvas from '../MiniMap/MiniMapCanvas';
 import UI from './UI/UI';
 
 
@@ -32,13 +33,13 @@ const Village: React.FC<IBasePage> = (props: IBasePage) => {
     const chatClickHandler = () => setPage(PAGES.CHAT);
 
     return (
-        <div className='game'>
-            <div>
-                <VillageCanvas />
-            </div>
-            <UI store={store} mediator={mediator} setPage={setPage} />
+    <div className='game'>
+        <div>
+            <VillageCanvas />
         </div>
-    );
+        <UI store={store} mediator={mediator} setPage={setPage} />
+    </div>
+);
 };
 
 export default Village;
