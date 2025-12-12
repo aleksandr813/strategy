@@ -29,7 +29,7 @@ class User
                 'token' => $token
             ];
         }
-        
+
         return ['error' => 1002]; // Wrong login or password
     }
 
@@ -66,7 +66,7 @@ class User
                 'token' => $token
             ];
         }
-        
+
         return ['error' => 9000]; // unknown error
     }
 
@@ -80,11 +80,34 @@ class User
         return ['error' => 1003];
     }
 
-    private function createStarterVillage($userId){
+    private function createStarterVillage($userId)
+    {
         // Генерация случайных координат для деревни
-        $x = rand(1, 87);
-        $y = rand(1, 29);
+        $flag = true;
+        $i = 0;
 
+        while ($flag) {
+            $i++;
+            if ($i > 100) {
+                return ['error' => 666];
+            }
+
+            $x = rand(33, 34);
+            $y = rand(4, 5);
+            $flag = false;
+
+            $villages = $this->db->getVillages();
+            echo($villages[3]->x);
+
+            foreach ($villages as $village) {
+                //Расстояние
+                $distance = abs((int)$village->x - $x) + abs((int)$village->y - $y);
+                if ($distance <= 2) { // Деревни на расстоянии 2 клетки или меньше
+                    $flag = true;
+                    break;
+                }
+            }
+        }
         // Создание деревни в базе данных
         $result = $this->db->createVillage($userId, $x, $y);
         if (!$result) {
@@ -138,7 +161,7 @@ class User
 
         // Проверка на пробелы и специальные символы
         if (preg_match('/[\s@#$%]/', $login)) {
-            return ['error' => 1010]; 
+            return ['error' => 1010];
         }
         // Проверка на пробелы
         if (strpos($login, ' ') !== false) {
