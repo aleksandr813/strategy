@@ -7,7 +7,7 @@ import { IBasePage, PAGES } from '../PageManager';
 import chatIcon from '../../assets/img/chat/X.png';
 import CONFIG from '../../config';
 import './Chat.scss';
-import CONFIG from '../../config';
+
 
 const Chat: React.FC<IBasePage> = (props: IBasePage) => {
     const { setPage } = props;
