@@ -233,13 +233,13 @@ class Server {
             y: unit.coords.y,
         }));
 
-        const params: { [key: string]: string } = {};
-        
-        unitsForMove.forEach((unit, index) => {
-            params[`units[${index}][unitId]`] = unit.id.toString();
-            params[`units[${index}][x]`] = unit.x.toString();
-            params[`units[${index}][y]`] = unit.y.toString();
-        });
+        const unitsString = unitsForMove.map(unit =>
+            `id${unit.id},x${unit.x},y${unit.y}`
+        ).join(';');
+
+        const params: { [key: string]: string } = {
+            units: unitsString,
+        };
 
         const response = await this.request<boolean>('moveUnits', params);
 
