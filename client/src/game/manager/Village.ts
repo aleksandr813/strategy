@@ -141,7 +141,7 @@ class Village extends Manager {
 
         if (clickedBuilding) {
             console.log("Выбранное здание", clickedBuilding);
-            clickedBuilding.takeDamage(10);
+            //clickedBuilding.takeDamage(10);
         }
         
         this.selectBuilding(clickedBuilding);

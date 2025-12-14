@@ -5,17 +5,19 @@ import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
 import Mediator from '../../../../services/mediator/Mediator';
 import Store from '../../../../services/store/Store';
+import { PAGES } from '../../../PageManager';
 
 import './ArmyMenu.scss'
 
 interface ArmyMenuProps extends IBaseUIElement {
     store: Store;
-    mediator: Mediator
+    mediator: Mediator;
+    setPage: (name: PAGES) => void;
 }
 
 const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
     const game = useContext(GameContext);
-    const { setUIElement } = props;
+    const { setUIElement, setPage } = props;
     const [armies, setArmies] = useState<TUserArmy[]>([]);
     const [selectedUnits, setSelectedUnits] = useState<number[]>([]);
     const [showArmiesList, setShowArmiesList] = useState(false);
@@ -39,7 +41,9 @@ const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
     };
 
     const handleSendArmy = () => {
-        
+        setUIElement(UIELEMENT.NULL);
+        game.globalMap.sendingArmy = true;
+        setPage(PAGES.GLOBAL_MAP);
     };
     
     const handleReturnArmy = async (armyId: number) => {

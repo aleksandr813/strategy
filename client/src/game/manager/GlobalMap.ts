@@ -10,6 +10,8 @@ import { TVillage, TArmy, TUserArmy } from "../../services/server/types";
 class GlobalMap extends Manager {
     private store: Store;
     private server: Server;
+    private selectedVillage: VillageEntity | null = null;
+    public sendingArmy = false;
     private mapUpdateInterval: NodeJS.Timer | null = null;
 
     constructor(store: Store, server: Server, game: Game) {
@@ -81,6 +83,24 @@ class GlobalMap extends Manager {
             return
         }
         await this.game.village.loadUnits();
+    }
+
+    public selectVillage(village: VillageEntity | null): void {
+        this.game.getVillages().forEach(v => v.deselected?.());
+        if (!village) return;
+        this.selectedVillage = village;
+    }
+
+    public handleVillageClick(x: number, y: number): void {
+        const gridX = Math.floor(x);
+        const gridY = Math.floor(y);
+        
+        const clickedVillage = this.game.getVillages().find(v => {
+            const [vx, vy] = [v.coords.x, v.coords.y];
+            return gridX >= vx && gridX < vx + 2 && gridY >= vy && gridY < vy + 2; 
+        }) || null;
+        
+        this.selectVillage(clickedVillage);
     }
 
     getMap() {
