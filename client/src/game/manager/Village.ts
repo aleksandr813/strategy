@@ -37,6 +37,7 @@ class Village extends Manager {
         this.game.getBuildings().forEach(b => b.deselected?.());
         if (building) building.selected?.();
         this.selectedBuilding = building;
+        this.mediator.call('BUILDING_SELECTED', building);
     }
 
     public getBarracksLevel(): number {

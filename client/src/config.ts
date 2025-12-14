@@ -43,7 +43,9 @@ const CONFIG = {
 
     MEDIATOR: {
         EVENTS: {
-            MONEY_CHANGE: 'MONEY_CHANGE', // какое-то событие
+            MONEY_CHANGE: 'MONEY_CHANGE',
+            BUILDING_SELECTED: 'BUILDING_SELECTED', // событие выбора здания
+            VILLAGE_SELECTED: 'VILLAGE_SELECTED', // событие выбора деревни на глобальной карте
         },
         TRIGGERS: {
             SET_STORE: 'SET_STORE', // записать в стор

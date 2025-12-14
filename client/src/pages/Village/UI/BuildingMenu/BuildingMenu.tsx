@@ -2,24 +2,33 @@ import React, { useContext, useEffect, useState } from 'react';
 import GAMECONFIG from '../../../../game/gameConfig';
 import { GameContext, ServerContext} from '../../../../App';
 import Building from '../../../../game/entities/Building';
+import Mediator from '../../../../services/mediator/Mediator';
 
 import "./BuildingMenu.css";
 
-const BuildingMenu: React.FC = () => {
+interface BuildingMenuProps {
+    mediator: Mediator;
+}
+
+const BuildingMenu: React.FC<BuildingMenuProps> = ({ mediator }) => {
     const game = useContext(GameContext);
     const server = useContext(ServerContext);
     const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
     const [showConfirm, setShowConfirm] = useState(false);
 
     useEffect(() => {
-        let raf: number;
-        const update = () => {
-            setSelectedBuilding(game.village.selectedBuilding);
-            raf = requestAnimationFrame(update);
+        const { BUILDING_SELECTED } = mediator.getEventTypes();
+        
+        const handleBuildingSelected = (building: Building | null) => {
+            setSelectedBuilding(building);
         };
-        raf = requestAnimationFrame(update);
-        return () => cancelAnimationFrame(raf);
-    }, [game.village]);
+
+        mediator.subscribe(BUILDING_SELECTED, handleBuildingSelected);
+
+        return () => {
+            mediator.unsubscribe(BUILDING_SELECTED, handleBuildingSelected);
+        };
+    }, [mediator]);
 
     if (!selectedBuilding) return null;
 
@@ -27,17 +36,17 @@ const BuildingMenu: React.FC = () => {
     const closeConfirm = () => setShowConfirm(false);
 
     const deleteConfirm = async () => {
-        if (!selectedBuilding)return;
+        if (!selectedBuilding) return;
         
         game.village.removeBuilding(selectedBuilding);
         game.village.selectBuilding(null);
     };
 
     const upgrade = async () => {
-        if (!selectedBuilding)return;
+        if (!selectedBuilding) return;
         const success = await server.upgradeBuilding(
-        selectedBuilding.id,
-        selectedBuilding.typeId
+            selectedBuilding.id,
+            selectedBuilding.typeId
         );
 
         if (success) {
@@ -86,26 +95,26 @@ const BuildingMenu: React.FC = () => {
                     </div>
                 </div>
             </div>
-        {showConfirm && (
-            <div className="confirm-overlay" onClick={closeConfirm}>
-                <div className="confirm-container" onClick={e => e.stopPropagation()}>
-                    <p>
-                        Вы точно хотите удалить <strong>
-                            {selectedBuilding.type} (lvl {selectedBuilding.level})
-                        </strong>?
-                    </p>
-                    <div className="confirm-buttons">
-                        <button className='confirm-yes' onClick={deleteConfirm}>
-                        ДА
-                        </button>
-                        <button className='confirm-no' onClick={closeConfirm}>
-                        НЕТ
-                        </button>
+            {showConfirm && (
+                <div className="confirm-overlay" onClick={closeConfirm}>
+                    <div className="confirm-container" onClick={e => e.stopPropagation()}>
+                        <p>
+                            Вы точно хотите удалить <strong>
+                                {selectedBuilding.type} (lvl {selectedBuilding.level})
+                            </strong>?
+                        </p>
+                        <div className="confirm-buttons">
+                            <button className='confirm-yes' onClick={deleteConfirm}>
+                                ДА
+                            </button>
+                            <button className='confirm-no' onClick={closeConfirm}>
+                                НЕТ
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>    
             )}
-        </div>    
+        </div>
     );
 };
 

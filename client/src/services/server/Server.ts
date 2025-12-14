@@ -279,6 +279,7 @@ class Server {
         units.forEach((unit, index) => {
             params[`units[${index}]`] = unit.toString();
         });
+        params['target'] = target.toString();
 
         const response = await this.request<boolean>('sendArmy', params);
 

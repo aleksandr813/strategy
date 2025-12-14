@@ -1,4 +1,5 @@
 import Store from "../../services/store/Store";
+import Mediator from "../../services/mediator/Mediator";
 import Server from "../../services/server/Server";
 import VillageEntity from "../entities/VillageEntity";
 import ArmyEntity from "../entities/ArmyEntity";
@@ -10,14 +11,16 @@ import { TVillage, TArmy, TUserArmy } from "../../services/server/types";
 class GlobalMap extends Manager {
     private store: Store;
     private server: Server;
+    private mediator: Mediator;
     private selectedVillage: VillageEntity | null = null;
     public sendingArmy = false;
     private mapUpdateInterval: NodeJS.Timer | null = null;
 
-    constructor(store: Store, server: Server, game: Game) {
+    constructor(store: Store, server: Server, game: Game, mediator: Mediator) {
         super(game);
         this.store = store;
         this.server = server;
+        this.mediator = mediator
         
         this.startMapUpdate();
     }
@@ -87,9 +90,14 @@ class GlobalMap extends Manager {
 
     public selectVillage(village: VillageEntity | null): void {
         this.game.getVillages().forEach(v => v.deselected?.());
-        if (!village) return;
+        
         this.selectedVillage = village;
-        console.log(11111111111);
+        this.mediator.call('VILLAGE_SELECTED', village);
+
+        if (village) {
+            village.selected?.();
+            console.log('Выбрана деревня:', village.name, 'ID:', village.id);
+        }
     }
 
     public handleVillageClick(x: number, y: number): void {
@@ -100,10 +108,13 @@ class GlobalMap extends Manager {
             const [vx, vy] = [v.coords.x, v.coords.y];
             return gridX >= vx && gridX < vx + 2 && gridY >= vy && gridY < vy + 2; 
         }) || null;
+
+        if (clickedVillage) {
+            console.log('Клик по деревне:', clickedVillage.name);
+        }
         
         this.selectVillage(clickedVillage);
     }
-
 
     public getSelectedVillage(): VillageEntity | null {
         return this.selectedVillage;
@@ -121,6 +132,7 @@ class GlobalMap extends Manager {
             clearInterval(this.mapUpdateInterval);
             this.mapUpdateInterval = null;
         }
+        this.selectedVillage = null;
     }
 }
 
