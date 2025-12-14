@@ -6,7 +6,7 @@ import VillageEntity from '../../../../game/entities/VillageEntity';
 import Game from '../../../../game/Game';
 import Mediator from '../../../../services/mediator/Mediator';
 
-import "./VillageMenu.scss";
+import './VillageMenu.scss'
 
 interface VillageMenuProps {
     setPage: (name: PAGES) => void;

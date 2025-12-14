@@ -4,139 +4,126 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(6px);
     display: flex;
     justify-content: center;
     align-items: flex-start;
     overflow-y: auto;
     z-index: 1000;
-    padding: 40px 0;
+    padding: 40px 20px;
 }
 
 .army-menu-container {
-    width: 400px;
-    background-color: #8B4513;
-    border: 5px solid #000;
-    box-shadow: 0 0 0 2px #000;
-    padding: 20px;
+    width: 100%;
+    max-width: 480px;
+    background: rgba(25, 25, 30, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    padding: 28px;
     display: flex;
     flex-direction: column;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: #FFF;
 }
 
 .army-menu-title {
     text-align: center;
-    font-size: 24px;
+    font-size: 26px;
     color: #FFD700;
-    text-transform: uppercase;
-    font-weight: bold;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #FFD700;
+    font-weight: 600;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
 }
 
 .army-menu-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 10px;
-    margin-bottom: 10px;
-    background-color: #A0522D;
-    border: 2px solid #000;
-    transition: background-color 0.2s;
+    padding: 18px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
     position: relative;
-    overflow: hidden;
 }
 
 .army-menu-item:hover {
-    background-color: #CD853F;
+    background: rgba(255, 255, 255, 0.09);
 }
 
-/* --- Стили для недоступных элементов --- */
-
+/* Стили для недоступных элементов */
 .army-menu-item.disabled {
     cursor: not-allowed;
-    background-color: #69361d;
+    background: rgba(255, 255, 255, 0.03);
+    opacity: 0.5;
 }
 
 .army-menu-item.disabled:hover {
-    background-color: #69361d;
+    background: rgba(255, 255, 255, 0.03);
 }
 
-.army-menu-item.disabled .unit-info, 
-.army-menu-item.disabled .building-info { 
-    opacity: 0.6;
-}
-
-.army-menu-item.disabled:after {
-    content: '\1F512';
+.army-menu-item.disabled::after {
+    content: '🔒';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 50px;
-    color: #FFF;
-    text-shadow: 0 0 10px #000;
-    z-index: 2;
-    pointer-events: none;
+    font-size: 42px;
+    border-radius: 14px;
 }
 
-/* --- Стили для отключенных кнопок --- */
-
+/* Стили для отключенных кнопок */
 button:disabled {
-    background-color: #444 !important;
-    color: #888 !important;    
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.3) !important;
     cursor: not-allowed !important;
-    border-color: #222 !important;
-    box-shadow: none;
-    filter: none !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
 }
 
-.army-menu-item button:disabled:hover {
-    background-color: #444;    
-}
-
-/* --- Стили для информации о юнитах/зданиях --- */
-
-.unit-info, .building-info {
+/* Информация о юнитах */
+.unit-info {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    gap: 6px;
 }
 
-.unit-name, .building-name {
-    font-size: 18px;
-    font-weight: bold;
+.unit-name {
+    font-size: 17px;
+    font-weight: 600;
     color: #FFF;
-    margin-bottom: 5px;
 }
 
-.unit-details, .building-details {
+.unit-details {
     font-size: 14px;
-    color: #FFD700;
+    color: rgba(255, 215, 0, 0.85);
+    line-height: 1.4;
 }
 
-/* --- Новые стили для блока выделенных юнитов --- */
+.unit-details > div {
+    margin-bottom: 3px;
+}
 
+/* Блок выделенных юнитов */
 .selected-units-block {
-    background-color: #A0522D;
-    border: 2px solid #FFD700;
-    padding: 15px 10px;
-    margin-bottom: 15px;
+    background: rgba(255, 215, 0, 0.12);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: background-color 0.2s;
-}
-
-.selected-units-block:hover {
-    background-color: #CD853F;
 }
 
 .selected-units-block .unit-info {
@@ -144,131 +131,98 @@ button:disabled {
     margin-right: 15px;
 }
 
-.selected-units-block .unit-name {
-    font-size: 18px;
-    font-weight: bold;
-    color: #FFF;
-    margin-bottom: 5px;
-}
-
-.selected-units-block .unit-details {
-    font-size: 14px;
-    color: #FFD700;
-}
-
-.selected-units-block .unit-details > div {
-    margin-bottom: 3px;
-}
-
-/* --- Стили для кнопок навигации --- */
-
+/* Кнопки */
 .army-menu-show-armies-button {
     width: 100%;
-    padding: 15px;
-    margin-bottom: 10px;
-    background-color: #4169E1;
+    padding: 14px;
+    margin-bottom: 12px;
+    background: #4169E1;
     color: #FFF;
-    border: 3px solid #000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     cursor: pointer;
     font-family: inherit;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
+    font-size: 15px;
+    font-weight: 600;
     text-align: center;
-    transition: background-color 0.1s;
 }
 
 .army-menu-show-armies-button:hover {
-    background-color: #5A7FE1;
-}
-
-.army-menu-show-armies-button:active {
-    filter: brightness(0.9);
+    background: #5A7FE1;
 }
 
 .army-menu-back-button {
     width: 100%;
-    padding: 15px;
-    margin-bottom: 10px;
-    background-color: #696969;
+    padding: 14px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.1);
     color: #FFF;
-    border: 3px solid #000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     cursor: pointer;
     font-family: inherit;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
+    font-size: 15px;
+    font-weight: 600;
     text-align: center;
-    transition: background-color 0.1s;
 }
 
 .army-menu-back-button:hover {
-    background-color: #808080;
-}
-
-.army-menu-back-button:active {
-    filter: brightness(0.9);
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .army-menu-close-button {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #8B0000;
+    margin-top: 16px;
+    padding: 14px;
+    background: #DC143C;
     color: #FFF;
-    border: 3px solid #000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     cursor: pointer;
     font-family: inherit;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
+    font-size: 15px;
+    font-weight: 600;
     text-align: center;
-    transition: background-color 0.1s;
 }
 
 .army-menu-close-button:hover {
-    background-color: #A52A2A;
+    background: #C41230;
 }
 
-.army-menu-close-button:active {
-    filter: brightness(0.9);
-}
-
-/* --- Список армий --- */
-
+/* Список армий */
 .armies-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 16px;
 }
 
-/* --- Список деревень --- */
-
+/* Список деревень */
 .villages-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 16px;
     max-height: 400px;
     overflow-y: auto;
+    padding-right: 6px;
 }
 
 .villages-list::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 .villages-list::-webkit-scrollbar-track {
-    background: #5C2E0E;
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
 }
 
 .villages-list::-webkit-scrollbar-thumb {
-    background: #FFD700;
-    border-radius: 4px;
+    background: rgba(255, 215, 0, 0.4);
+    border-radius: 6px;
 }
 
 .villages-list::-webkit-scrollbar-thumb:hover {
-    background: #FFA500;
+    background: rgba(255, 215, 0, 0.6);
 }
 
 .village-item {
@@ -276,36 +230,34 @@ button:disabled {
 }
 
 .village-item:hover {
-    background-color: #CD853F;
-    transition: all 0.2s;
+    background: rgba(255, 255, 255, 0.09);
 }
 
 .army-menu-empty {
     text-align: center;
-    padding: 30px;
-    font-size: 16px;
-    color: #FFD700;
-    background-color: #A0522D;
-    border: 2px solid #000;
-    margin-bottom: 20px;
+    padding: 36px;
+    font-size: 15px;
+    color: rgba(255, 215, 0, 0.7);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    margin-bottom: 16px;
 }
 
-/* --- Скроллбар --- */
-
+/* Скроллбар оверлея */
 .army-menu-overlay::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
 }
 
 .army-menu-overlay::-webkit-scrollbar-track {
-    background: #5C2E0E;
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .army-menu-overlay::-webkit-scrollbar-thumb {
-    background: #FFD700;
-    border-radius: 4px;
+    background: rgba(255, 215, 0, 0.4);
+    border-radius: 6px;
 }
 
 .army-menu-overlay::-webkit-scrollbar-thumb:hover {
-    background: #FFA500;
+    background: rgba(255, 215, 0, 0.6);
 }

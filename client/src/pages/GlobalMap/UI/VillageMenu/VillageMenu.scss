@@ -1,0 +1,86 @@
+.buy-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.buy-menu-container {
+    background: rgba(25, 25, 30, 0.95);
+    backdrop-filter: blur(15px);
+    padding: 28px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 320px;
+}
+
+.buy-menu-title {
+    color: white;
+    text-align: center;
+    margin: 0 0 14px 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.buy-menu-item {
+    background: rgba(255, 255, 255, 0.06);
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.buy-menu-item:hover {
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.buy-menu-item-text {
+    color: white;
+}
+
+.buy-menu-close-button {
+    margin-top: 14px;
+    padding: 14px;
+    background: #DC143C;
+    color: #FFF;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.buy-menu-close-button:hover {
+    background: #C41230;
+}
+
+.building-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.building-name {
+    color: white;
+    font-weight: 600;
+    font-size: 17px;
+}
+
+.building-details {
+    color: rgba(255, 215, 0, 0.85);
+    font-size: 14px;
+    line-height: 1.4;
+}

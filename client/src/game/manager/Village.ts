@@ -209,7 +209,10 @@ class Village extends Manager {
             return;
         }
 
-        const units = unitsData.map(unitData => new Unit(unitData, this.game, this.easyStar));
+
+    const units = unitsData
+        .filter(unitData => !unitData.onACrusade)
+        .map(unitData => new Unit(unitData, this.game, this.easyStar));
         
         this.game.setUnits(units);
         console.log("Загружено юнитов:", this.game.getUnits().length);
