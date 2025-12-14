@@ -89,6 +89,7 @@ class GlobalMap extends Manager {
         this.game.getVillages().forEach(v => v.deselected?.());
         if (!village) return;
         this.selectedVillage = village;
+        console.log(11111111111);
     }
 
     public handleVillageClick(x: number, y: number): void {
@@ -101,6 +102,11 @@ class GlobalMap extends Manager {
         }) || null;
         
         this.selectVillage(clickedVillage);
+    }
+
+
+    public getSelectedVillage(): VillageEntity | null {
+        return this.selectedVillage;
     }
 
     getMap() {

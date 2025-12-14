@@ -119,7 +119,9 @@ const GlobalMapCanvas: React.FC = () => {
     };
 
     const mouseClick = async (x: number, y: number) => {
-        console.log(x, y);
+        if (!game.globalMap.getSelectedVillage()) {
+            globalMap.handleVillageClick(x, y);
+        }
         
     };
 
