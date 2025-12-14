@@ -13,10 +13,7 @@ interface MiniMapCanvasProps {
 
 let canvas: Canvas | null = null;
 
-const stupidCallback = (x: number, y: number, screenX?: number, screenY?: number) => {}; //пока что коллбэки заглушки
-const stupidCallbackWheel = (delta: number, x: number, y: number) => {};
-const stupidCallbackKey = (event: KeyboardEvent) => {};
-const stupidCallbackNoArgs = () => {};
+const dummy = (...args: any[]) => {};
 
 
 const MiniMapCanvas: React.FC<MiniMapCanvasProps> = ({ onMapClick }) => {
@@ -51,16 +48,16 @@ const MiniMapCanvas: React.FC<MiniMapCanvasProps> = ({ onMapClick }) => {
             HEIGHT: MINIMAP_HEIGHT,
             WINDOW: MINIMAL_WINDOW, 
             callbacks: {
-                mouseMove: stupidCallback, 
-                mouseDown: stupidCallback, 
-                mouseUp: stupidCallback, 
-                mouseRightClickDown: stupidCallback, 
+                mouseMove: dummy,  
+                mouseDown: dummy, 
+                mouseUp: dummy, 
+                mouseRightClickDown: dummy, 
                 mouseClick: handleClick,
-                mouseLeave: stupidCallbackNoArgs, 
-                mouseWheel: stupidCallbackWheel, 
-                mouseMiddleDown: stupidCallback, 
-                mouseMiddleUp: stupidCallbackNoArgs,
-                keyDown: stupidCallbackKey,
+                mouseLeave: dummy, 
+                mouseWheel: dummy, 
+                mouseMiddleDown: dummy, 
+                mouseMiddleUp: dummy,
+                keyDown: dummy,
             },
         });
 
