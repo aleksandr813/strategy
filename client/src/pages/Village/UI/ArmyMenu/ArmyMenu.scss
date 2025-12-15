@@ -1,194 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 .army-menu-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(6px);
+    background-color: rgba(0, 0, 0, 0.85);
     display: flex;
     justify-content: center;
     align-items: flex-start;
     overflow-y: auto;
     z-index: 1000;
     padding: 40px 20px;
+    image-rendering: pixelated;
 }
 
 .army-menu-container {
     width: 100%;
     max-width: 480px;
-    background: rgba(25, 25, 30, 0.95);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    color: #FFF;
+    background: #1a1410;
+    border: 6px solid #3d2817;
+    box-shadow: 
+        inset 0 0 0 2px #2a1f15,
+        0 8px 0 #0d0a08,
+        0 0 20px rgba(0, 0, 0, 0.8);
+    padding: 24px;
+    font-family: 'Press Start 2P', monospace;
+    color: #e8d4b8;
 }
 
 .army-menu-title {
     text-align: center;
-    font-size: 26px;
-    color: #FFD700;
-    font-weight: 600;
-    margin-bottom: 24px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    font-size: 12px;
+    color: #d4a574;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #3d2817;
+    line-height: 1.8;
+    text-shadow: 2px 2px 0 #000;
 }
 
 .army-menu-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px;
+    padding: 16px;
     margin-bottom: 12px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 14px;
-    position: relative;
+    background: #2a1f15;
+    border: 3px solid #3d2817;
+    box-shadow: 3px 3px 0 #0d0a08;
+    transition: all 0.1s;
+    
+    &:hover {
+        background: #322519;
+        box-shadow: 2px 2px 0 #0d0a08;
+        transform: translate(1px, 1px);
+    }
+    
+    &.disabled {
+        cursor: not-allowed;
+        background: #1a1410;
+        opacity: 0.4;
+        
+        &:hover {
+            background: #1a1410;
+            transform: none;
+        }
+        
+        &::after {
+            content: '🔒';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+        }
+    }
 }
 
-.army-menu-item:hover {
-    background: rgba(255, 255, 255, 0.09);
-}
-
-/* Стили для недоступных элементов */
-.army-menu-item.disabled {
-    cursor: not-allowed;
-    background: rgba(255, 255, 255, 0.03);
-    opacity: 0.5;
-}
-
-.army-menu-item.disabled:hover {
-    background: rgba(255, 255, 255, 0.03);
-}
-
-.army-menu-item.disabled::after {
-    content: '🔒';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(2px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 42px;
-    border-radius: 14px;
-}
-
-/* Стили для отключенных кнопок */
-button:disabled {
-    background: rgba(255, 255, 255, 0.05) !important;
-    color: rgba(255, 255, 255, 0.3) !important;
-    cursor: not-allowed !important;
-    border-color: rgba(255, 255, 255, 0.05) !important;
-}
-
-/* Информация о юнитах */
 .unit-info {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    gap: 6px;
+    gap: 8px;
 }
 
 .unit-name {
-    font-size: 17px;
-    font-weight: 600;
-    color: #FFF;
+    font-size: 10px;
+    color: #d4a574;
+    line-height: 1.6;
 }
 
 .unit-details {
-    font-size: 14px;
-    color: rgba(255, 215, 0, 0.85);
-    line-height: 1.4;
+    font-size: 8px;
+    color: #8b7355;
+    line-height: 1.8;
 }
 
-.unit-details > div {
-    margin-bottom: 3px;
-}
-
-/* Блок выделенных юнитов */
 .selected-units-block {
-    background: rgba(255, 215, 0, 0.12);
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    border-radius: 14px;
-    padding: 18px;
+    background: #4a5d7e;
+    border: 3px solid #3d2817;
+    box-shadow: 3px 3px 0 #0d0a08;
+    padding: 16px;
     margin-bottom: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    
+    .unit-info {
+        flex-grow: 1;
+        margin-right: 16px;
+    }
+    
+    .unit-name {
+        color: #e8d4b8;
+    }
+    
+    .unit-details {
+        color: #c4b09a;
+    }
 }
 
-.selected-units-block .unit-info {
-    flex-grow: 1;
-    margin-right: 15px;
-}
-
-/* Кнопки */
-.army-menu-show-armies-button {
+.army-menu-show-armies-button,
+.army-menu-back-button,
+.army-menu-close-button {
     width: 100%;
-    padding: 14px;
-    margin-bottom: 12px;
-    background: #4169E1;
-    color: #FFF;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    padding: 12px;
+    border: 3px solid #3d2817;
     cursor: pointer;
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
     text-align: center;
+    line-height: 1.6;
+    box-shadow: 3px 3px 0 #0d0a08;
+    transition: all 0.1s;
 }
 
-.army-menu-show-armies-button:hover {
-    background: #5A7FE1;
+.army-menu-show-armies-button {
+    background: #4a5d7e;
+    color: #e8d4b8;
+    margin-bottom: 12px;
+    
+    &:hover {
+        background: #5a6d8e;
+        box-shadow: 2px 2px 0 #0d0a08;
+        transform: translate(1px, 1px);
+    }
+    
+    &:active {
+        box-shadow: 1px 1px 0 #0d0a08;
+        transform: translate(2px, 2px);
+    }
 }
 
 .army-menu-back-button {
-    width: 100%;
-    padding: 14px;
+    background: #3d2817;
+    color: #e8d4b8;
     margin-bottom: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #FFF;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
-    text-align: center;
-}
-
-.army-menu-back-button:hover {
-    background: rgba(255, 255, 255, 0.15);
+    
+    &:hover {
+        background: #4a3320;
+        box-shadow: 2px 2px 0 #0d0a08;
+        transform: translate(1px, 1px);
+    }
+    
+    &:active {
+        box-shadow: 1px 1px 0 #0d0a08;
+        transform: translate(2px, 2px);
+    }
 }
 
 .army-menu-close-button {
+    background: #c9453d;
+    color: #e8d4b8;
     margin-top: 16px;
-    padding: 14px;
-    background: #DC143C;
-    color: #FFF;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
-    text-align: center;
+    
+    &:hover {
+        background: #d94f47;
+        box-shadow: 2px 2px 0 #0d0a08;
+        transform: translate(1px, 1px);
+    }
+    
+    &:active {
+        box-shadow: 1px 1px 0 #0d0a08;
+        transform: translate(2px, 2px);
+    }
 }
 
-.army-menu-close-button:hover {
-    background: #C41230;
-}
-
-/* Список армий */
 .armies-list {
     display: flex;
     flex-direction: column;
@@ -196,7 +200,6 @@ button:disabled {
     margin-bottom: 16px;
 }
 
-/* Список деревень */
 .villages-list {
     display: flex;
     flex-direction: column;
@@ -204,60 +207,54 @@ button:disabled {
     margin-bottom: 16px;
     max-height: 400px;
     overflow-y: auto;
-    padding-right: 6px;
-}
-
-.villages-list::-webkit-scrollbar {
-    width: 6px;
-}
-
-.villages-list::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-}
-
-.villages-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 215, 0, 0.4);
-    border-radius: 6px;
-}
-
-.villages-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 215, 0, 0.6);
+    padding-right: 8px;
+    
+    &::-webkit-scrollbar {
+        width: 12px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: #0d0a08;
+        border: 2px solid #3d2817;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: #d4a574;
+        border: 2px solid #8b6f47;
+        
+        &:hover {
+            background: #e6b886;
+        }
+    }
 }
 
 .village-item {
     cursor: pointer;
-}
-
-.village-item:hover {
-    background: rgba(255, 255, 255, 0.09);
+    
+    &:hover {
+        background: #322519;
+        box-shadow: 2px 2px 0 #0d0a08;
+        transform: translate(1px, 1px);
+    }
 }
 
 .army-menu-empty {
     text-align: center;
-    padding: 36px;
-    font-size: 15px;
-    color: rgba(255, 215, 0, 0.7);
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 14px;
+    padding: 32px;
+    font-size: 10px;
+    color: #5a4a38;
+    background: #0d0a08;
+    border: 3px solid #3d2817;
     margin-bottom: 16px;
+    line-height: 1.8;
 }
 
-/* Скроллбар оверлея */
-.army-menu-overlay::-webkit-scrollbar {
-    width: 8px;
-}
-
-.army-menu-overlay::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.army-menu-overlay::-webkit-scrollbar-thumb {
-    background: rgba(255, 215, 0, 0.4);
-    border-radius: 6px;
-}
-
-.army-menu-overlay::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 215, 0, 0.6);
+button:disabled {
+    background: #1a1410 !important;
+    color: #3d2817 !important;
+    cursor: not-allowed !important;
+    border-color: #2a1f15 !important;
+    box-shadow: 3px 3px 0 #0d0a08 !important;
+    transform: none !important;
+    opacity: 0.5;
 }

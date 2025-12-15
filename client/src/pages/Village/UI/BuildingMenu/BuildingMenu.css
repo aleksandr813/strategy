@@ -1,107 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 .menu-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.85);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    image-rendering: pixelated;
 }
 
 .menu-container {
-    width: 300px;
+    width: 100%;
+    max-width: 400px;
     min-height: 250px;
-    background-color: #8B4513;
-    border: 5px solid #000;
-    box-shadow: 0 0 0 2px #000;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    font-family: 'Courier New', Courier, monospace;
-    color: #FFF;
+    background: #1a1410;
+    border: 6px solid #3d2817;
+    box-shadow: 
+        inset 0 0 0 2px #2a1f15,
+        0 8px 0 #0d0a08,
+        0 0 20px rgba(0, 0, 0, 0.8);
+    padding: 24px;
+    font-family: 'Press Start 2P', monospace;
+    color: #e8d4b8;
 }
 
 .menu-header {
     text-align: center;
-    padding: 10px 0;
-    line-height: 1.5;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 3px solid #3d2817;
 }
 
 .name-lvl {
-    font-size: 24px;
-    color: #FFF;
-    text-transform: uppercase;
-    font-weight: bold;
+    font-size: 12px;
+    color: #d4a574;
+    margin-bottom: 8px;
+    line-height: 1.8;
+    text-shadow: 2px 2px 0 #000;
 }
 
 .hp-status {
-    font-size: 18px;
-    color: #FFF;
-    margin-top: 5px;
+    font-size: 10px;
+    color: #8b7355;
+    line-height: 1.6;
 }
 
 .menu-footer {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
-    padding-top: 20px;
+    gap: 12px;
+    margin-top: 20px;
 }
 
 .menu-footer button {
-    flex-grow: 1;
-    padding: 15px 10px;
-    border: 3px solid #000;
+    flex: 1;
+    padding: 12px;
+    border: 3px solid #3d2817;
     cursor: pointer;
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
     text-align: center;
-    line-height: 1.2;
-    transition: background-color 0.1s;
-}
-
-.levelup-button {
-    background-color: #6B8E23;
-    color: #FFD700;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.levelup-button::before {
-    content: "Cost";
-    display: block;
-    font-size: 18px;
-}
-
-.levelup-button::after {
-    content: "to lvlup";
-    display: block;
-    font-size: 14px;
-    font-weight: normal;
-}
-
-.delete-button {
-    background-color: #8B0000;
-    color: #FFF;
+    user-select: none;
+    line-height: 1.6;
+    box-shadow: 3px 3px 0 #0d0a08;
+    transition: all 0.1s;
 }
 
 .menu-footer button:hover {
-    filter: brightness(1.2);
+    box-shadow: 2px 2px 0 #0d0a08;
+    transform: translate(1px, 1px);
 }
 
 .menu-footer button:active {
-    filter: brightness(0.9);
+    box-shadow: 1px 1px 0 #0d0a08;
+    transform: translate(2px, 2px);
 }
 
-.menu-footer button {
-    user-select: none;
+.levelup-button {
+    background: #4a5d7e;
+    color: #e8d4b8;
+}
+
+.levelup-button:hover {
+    background: #5a6d8e;
+}
+
+.delete-button {
+    background: #c9453d;
+    color: #e8d4b8;
+}
+
+.delete-button:hover {
+    background: #d94f47;
 }
 
 .confirm-overlay {
@@ -110,68 +105,77 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.85); 
+    background-color: rgba(0, 0, 0, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1001; 
+    z-index: 1001;
+    image-rendering: pixelated;
 }
 
 .confirm-container {
-    width: 350px;
-    background-color: #8B4513;
-    border: 5px solid #000;
-    box-shadow: 0 0 0 2px #000;
-    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    background: #1a1410;
+    border: 6px solid #3d2817;
+    box-shadow: 
+        inset 0 0 0 2px #2a1f15,
+        0 8px 0 #0d0a08,
+        0 0 20px rgba(0, 0, 0, 0.8);
+    padding: 24px;
     text-align: center;
-    font-family: 'Courier New', Courier, monospace;
-    color: #FFF;
+    font-family: 'Press Start 2P', monospace;
+    color: #e8d4b8;
 }
 
 .confirm-container p {
-    font-size: 18px;
-    margin-bottom: 25px;
-    line-height: 1.4;
+    font-size: 10px;
+    margin-bottom: 20px;
+    line-height: 1.8;
 }
 
 .confirm-container strong {
-    color: #FFD700; 
-    text-transform: uppercase;
+    color: #d4a574;
 }
 
 .confirm-buttons {
     display: flex;
     justify-content: space-between;
-    gap: 15px;
+    gap: 12px;
 }
 
 .confirm-buttons button {
-    flex-grow: 1;
-    padding: 10px 10px;
-    border: 3px solid #000;
+    flex: 1;
+    padding: 12px;
+    border: 3px solid #3d2817;
     cursor: pointer;
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: background-color 0.1s;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
     user-select: none;
+    line-height: 1.6;
+    box-shadow: 3px 3px 0 #0d0a08;
+    transition: all 0.1s;
+}
+
+.confirm-buttons button:hover {
+    box-shadow: 2px 2px 0 #0d0a08;
+    transform: translate(1px, 1px);
 }
 
 .confirm-yes {
-    background-color: #8B0000; 
-    color: #FFF;
+    background: #c9453d;
+    color: #e8d4b8;
 }
 
 .confirm-yes:hover {
-    filter: brightness(1.2);
+    background: #d94f47;
 }
 
 .confirm-no {
-    background-color: #6B8E23; 
-    color: #FFD700;
+    background: #4a5d7e;
+    color: #e8d4b8;
 }
 
 .confirm-no:hover {
-    filter: brightness(1.2);
+    background: #5a6d8e;
 }

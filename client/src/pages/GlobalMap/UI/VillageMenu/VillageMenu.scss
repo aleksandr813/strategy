@@ -1,86 +1,75 @@
-.buy-menu-overlay {
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.menu-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(6px);
+    background-color: rgba(0, 0, 0, 0.85);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    image-rendering: pixelated;
 }
 
-.buy-menu-container {
-    background: rgba(25, 25, 30, 0.95);
-    backdrop-filter: blur(15px);
-    padding: 28px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    min-width: 320px;
+.menu-container {
+    width: 100%;
+    max-width: 400px;
+    background: #1a1410;
+    border: 6px solid #3d2817;
+    box-shadow: 
+        inset 0 0 0 2px #2a1f15,
+        0 8px 0 #0d0a08,
+        0 0 20px rgba(0, 0, 0, 0.8);
+    padding: 24px;
+    font-family: 'Press Start 2P', monospace;
+    color: #e8d4b8;
 }
 
-.buy-menu-title {
-    color: white;
+.menu-header {
     text-align: center;
-    margin: 0 0 14px 0;
-    font-size: 24px;
-    font-weight: 600;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 3px solid #3d2817;
 }
 
-.buy-menu-item {
-    background: rgba(255, 255, 255, 0.06);
-    padding: 18px;
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.village-name {
+    font-size: 12px;
+    color: #d4a574;
+    line-height: 1.8;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.menu-footer {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
+    gap: 12px;
 }
 
-.buy-menu-item:hover {
-    background: rgba(255, 255, 255, 0.09);
-}
-
-.buy-menu-item-text {
-    color: white;
-}
-
-.buy-menu-close-button {
-    margin-top: 14px;
-    padding: 14px;
-    background: #DC143C;
-    color: #FFF;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+.attack-button {
+    flex: 1;
+    padding: 12px;
+    background: #c9453d;
+    color: #e8d4b8;
+    border: 3px solid #3d2817;
     cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-}
-
-.buy-menu-close-button:hover {
-    background: #C41230;
-}
-
-.building-info {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.building-name {
-    color: white;
-    font-weight: 600;
-    font-size: 17px;
-}
-
-.building-details {
-    color: rgba(255, 215, 0, 0.85);
-    font-size: 14px;
-    line-height: 1.4;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    text-align: center;
+    line-height: 1.6;
+    box-shadow: 3px 3px 0 #0d0a08;
+    transition: all 0.1s;
+    
+    &:hover {
+        background: #d94f47;
+        box-shadow: 2px 2px 0 #0d0a08;
+        transform: translate(1px, 1px);
+    }
+    
+    &:active {
+        box-shadow: 1px 1px 0 #0d0a08;
+        transform: translate(2px, 2px);
+    }
 }
