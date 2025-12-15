@@ -12,14 +12,14 @@ import GAMECONFIG from '../../game/gameConfig';
 import "./GlobalMap.scss";
 
 const GAME_FIELD = 'game-field';
+const BORDER_PADDING = GAMECONFIG.BORDER_PADDING;
 
-const MIN_ZOOM = GAMECONFIG.MIN_ZOOM;   // Минимальный зум (обзор всего поля)
-const MAX_ZOOM = GAMECONFIG.MAX_ZOOM;  // Максимальный зум (близко к объектам)
-const ZOOM_FACTOR = GAMECONFIG.ZOOM_FACTOR; // (скорость зума) - это коэффициент, который определяет, 
-// насколько сильно будет изменяться масштаб при каждом вращении колесика мыши.
+const MIN_ZOOM = GAMECONFIG.MIN_ZOOM;
+const MAX_ZOOM = GAMECONFIG.MAX_ZOOM;
+const ZOOM_FACTOR = GAMECONFIG.ZOOM_FACTOR;
 
-const GLOBAL_MAP_WIDTH = GAMECONFIG.GRID_WIDTH;  // Ширина карты в игровых единицах
-const GLOBAL_MAP_HEIGHT = GAMECONFIG.GRID_HEIGHT; // Высота карты в игровых единицах
+const GLOBAL_MAP_WIDTH = GAMECONFIG.GRID_WIDTH;
+const GLOBAL_MAP_HEIGHT = GAMECONFIG.GRID_HEIGHT;
 
 const GlobalMapCanvas: React.FC = () => {
     const { WINDOW } = CONFIG;
@@ -51,13 +51,15 @@ const GlobalMapCanvas: React.FC = () => {
     let middleMouseStartScreenPosition: TPoint | null = null;
     let windowStartPosition: { LEFT: number, TOP: number } | null = null;
 
-    const clampCamera = () => {
-        // Автоматически рассчитываем границы на основе текущего зума
-        const maxLeft = Math.max(0, GLOBAL_MAP_WIDTH - WINDOW.WIDTH);
-        const maxTop = Math.max(0, GLOBAL_MAP_HEIGHT - WINDOW.HEIGHT);
+    const clampCamera = () => { 
+        const maxLeft = Math.max(0, GLOBAL_MAP_WIDTH - WINDOW.WIDTH + BORDER_PADDING);
+        const maxTop = Math.max(0, GLOBAL_MAP_HEIGHT - WINDOW.HEIGHT + BORDER_PADDING);
         
-        WINDOW.LEFT = Math.max(0, Math.min(WINDOW.LEFT, maxLeft));
-        WINDOW.TOP = Math.max(0, Math.min(WINDOW.TOP, maxTop));
+        const minLeft = -BORDER_PADDING;
+        const minTop = -BORDER_PADDING;
+        
+        WINDOW.LEFT = Math.max(minLeft, Math.min(WINDOW.LEFT, maxLeft));
+        WINDOW.TOP = Math.max(minTop, Math.min(WINDOW.TOP, maxTop));
     };
 
     const drawSprites = (canvas: Canvas, item: ArmyEntity | VillageEntity, coords: TPoint[]) => {
@@ -77,7 +79,6 @@ const GlobalMapCanvas: React.FC = () => {
         const { armies, villages } = globalMap.getMap();
 
         drawVillages(canvas, villages);
-        //canvas.drawFPS(String(FPS), GREEN);
         canvas.render();
     }
 
@@ -206,7 +207,6 @@ const GlobalMapCanvas: React.FC = () => {
             window.removeEventListener('resize', handleResize);
 
             globalMap?.destructor();
-            //canvas?.destructor();
             canvas = null;
         };
     }, []);

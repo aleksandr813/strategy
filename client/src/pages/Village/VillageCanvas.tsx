@@ -13,17 +13,14 @@ import villageBackground from '../../assets/img/background/villageBackground.png
 import "./Village.scss";
 
 const GAME_FIELD = 'game-field';
-const DRAG_THRESHOLD = 5; //Минимальное расстояние перемещения мыши в пикселях, чтобы действие считалось перетаскиванием
-const TIME_THRESHOLD = 200; //Максимальное время нажатия мыши в миллисекундах для определения клика
+const DRAG_THRESHOLD = 5;
+const TIME_THRESHOLD = 200;
+const BORDER_PADDING = GAMECONFIG.BORDER_PADDING;
 
+const MIN_ZOOM = GAMECONFIG.MIN_ZOOM;
+const MAX_ZOOM = GAMECONFIG.MAX_ZOOM;
+const ZOOM_FACTOR = GAMECONFIG.ZOOM_FACTOR;
 
-const MIN_ZOOM = GAMECONFIG.MIN_ZOOM;   // Минимальный зум (обзор всего поля)
-const MAX_ZOOM = GAMECONFIG.MAX_ZOOM;  // Максимальный зум (близко к объектам)
-const ZOOM_FACTOR = GAMECONFIG.ZOOM_FACTOR; // (скорость зума) - это коэффициент, который определяет, 
-// насколько сильно будет изменяться масштаб при каждом вращении колесика мыши.
-
-
-// Размеры игрового поля
 const GAME_FIELD_WIDTH = GAMECONFIG.GRID_WIDTH;
 const GAME_FIELD_HEIGHT = GAMECONFIG.GRID_HEIGHT;
 
@@ -59,12 +56,16 @@ const VillageCanvas: React.FC = () => {
     let windowStartPosition: { LEFT: number, TOP: number } | null = null;
 
     const clampCamera = () => {
-        // Автоматически рассчитываем границы на основе текущего зума
-        const maxLeft = Math.max(0, GAME_FIELD_WIDTH - WINDOW.WIDTH);
-        const maxTop = Math.max(0, GAME_FIELD_HEIGHT - WINDOW.HEIGHT);
+        // границы с учётом отступа
+        const maxLeft = Math.max(0, GAME_FIELD_WIDTH - WINDOW.WIDTH + BORDER_PADDING);
+        const maxTop = Math.max(0, GAME_FIELD_HEIGHT - WINDOW.HEIGHT + BORDER_PADDING);
         
-        WINDOW.LEFT = Math.max(0, Math.min(WINDOW.LEFT, maxLeft));
-        WINDOW.TOP = Math.max(0, Math.min(WINDOW.TOP, maxTop));
+        // минимальные значения
+        const minLeft = -BORDER_PADDING;
+        const minTop = -BORDER_PADDING;
+        
+        WINDOW.LEFT = Math.max(minLeft, Math.min(WINDOW.LEFT, maxLeft));
+        WINDOW.TOP = Math.max(minTop, Math.min(WINDOW.TOP, maxTop));
     };
 
     const drawRect = (canvas: Canvas, x: number, y: number, width: number, height: number, fillStyle: string) => {
@@ -166,7 +167,6 @@ const VillageCanvas: React.FC = () => {
         drawSelectionRect(canvas);
         drawBuildingPreview(canvas);
         drawUnitPreview(canvas);
-        //canvas.drawFPS(String(FPS), GREEN);
         canvas.render();
     }
 
@@ -300,10 +300,8 @@ const VillageCanvas: React.FC = () => {
         const newWidth = WINDOW.WIDTH * zoomAmount;
         const newHeight = WINDOW.HEIGHT * zoomAmount;
         
-        // Ограничение зума
         if (newHeight < MIN_ZOOM || newHeight > MAX_ZOOM) return;
         
-        // Масштабирование относительно точки курсора
         const scale = newWidth / WINDOW.WIDTH;
         WINDOW.LEFT = x - (x - WINDOW.LEFT) * scale;
         WINDOW.TOP = y - (y - WINDOW.TOP) * scale;
@@ -378,7 +376,6 @@ const VillageCanvas: React.FC = () => {
             window.removeEventListener('resize', handleResize);
 
             village?.destructor();
-            //canvas?.destructor();
             canvas = null;
         };
     }, []);
