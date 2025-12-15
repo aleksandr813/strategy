@@ -101,7 +101,6 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
             <div className="background-characters right"></div>
 
             <div className='login-content'>
-                <h1 className='version'>Alpha</h1>
                 <h1 className="title">STRATEGY</h1>
                 <div className="login-form">
                     <label>Логин</label>

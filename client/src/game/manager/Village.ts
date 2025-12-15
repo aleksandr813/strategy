@@ -37,6 +37,7 @@ class Village extends Manager {
         this.game.getBuildings().forEach(b => b.deselected?.());
         if (building) building.selected?.();
         this.selectedBuilding = building;
+        this.mediator.call('BUILDING_SELECTED', building);
     }
 
     public getBarracksLevel(): number {
@@ -141,7 +142,7 @@ class Village extends Manager {
 
         if (clickedBuilding) {
             console.log("Выбранное здание", clickedBuilding);
-            clickedBuilding.takeDamage(10);
+            //clickedBuilding.takeDamage(10);
         }
         
         this.selectBuilding(clickedBuilding);
@@ -208,7 +209,10 @@ class Village extends Manager {
             return;
         }
 
-        const units = unitsData.map(unitData => new Unit(unitData, this.game, this.easyStar));
+
+    const units = unitsData
+        .filter(unitData => !unitData.onACrusade)
+        .map(unitData => new Unit(unitData, this.game, this.easyStar));
         
         this.game.setUnits(units);
         console.log("Загружено юнитов:", this.game.getUnits().length);

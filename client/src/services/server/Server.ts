@@ -172,8 +172,9 @@ class Server {
             level: Number(unit.level),
             currentHp: Number(unit.currentHp),
             type: unit.type,
-            unlockLevel: unit.unlockLevel,
-            isEnemy: unit.isEnemy
+            unlockLevel: Number(unit.unlockLevel),
+            isEnemy: unit.isEnemy,
+            onACrusade: Number(unit.onACrusade)
         }));
 
         console.log('Units from server:', units);
@@ -277,8 +278,9 @@ class Server {
         const params: { [key: string]: string } = {};
         
         units.forEach((unit, index) => {
-            params[`units[${index}]`] = unit.toString();
+            params[`units[${index}][id]`] = unit.toString();
         });
+        params['target'] = target.toString();
 
         const response = await this.request<boolean>('sendArmy', params);
 

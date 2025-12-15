@@ -35,7 +35,7 @@ class Game {
         this.easyStar = new EasyStar.js();
         
         this.village = new Village(store, server, this.mediator, this.easyStar, this);
-        this.globalMap = new GlobalMap(store, server, this);
+        this.globalMap = new GlobalMap(store, server, this, this.mediator);
         this.battle = new Battle(store, server, this);
         
         this.startIncomeUpdate();

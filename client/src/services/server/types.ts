@@ -84,6 +84,7 @@ export type TUnit = {
     type: string;
     unlockLevel: number;
     isEnemy: number;
+    onACrusade: number;
 
 }
 
