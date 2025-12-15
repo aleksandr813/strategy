@@ -86,9 +86,12 @@ class User
         $flag = true;
         $i = 0;
 
+        $x = 0;
+        $y = 0;
+
         while ($flag) {
-            $i++;
-            if ($i > 100) {
+
+            if ($i > 2) {
                 return ['error' => 666];
             }
 
@@ -97,11 +100,11 @@ class User
             $flag = false;
 
             $villages = $this->db->getVillages();
-            echo($villages[3]->x);
+            $i++;
 
             foreach ($villages as $village) {
                 //Расстояние
-                $distance = abs((int)$village->x - $x) + abs((int)$village->y - $y);
+                $distance = abs((int)$village['x'] - $x) + abs((int)$village['y'] - $y);
                 if ($distance <= 2) { // Деревни на расстоянии 2 клетки или меньше
                     $flag = true;
                     break;
