@@ -278,7 +278,7 @@ class Server {
         const params: { [key: string]: string } = {};
         
         units.forEach((unit, index) => {
-            params[`units[${index}]`] = unit.toString();
+            params[`units[${index}][id]`] = unit.toString();
         });
         params['target'] = target.toString();
 
