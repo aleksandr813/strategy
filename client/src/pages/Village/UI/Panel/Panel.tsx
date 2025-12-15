@@ -54,7 +54,7 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
     const lidersHandler = () => setUIElement(UIELEMENT.NULL);
     const villageHandler = () => setUIElement(UIELEMENT.NULL);
     const chatHandler = () =>  setPage(PAGES.CHAT);
-    const sendArmyHandler = () => setUIElement(UIELEMENT.NULL);
+    const sendArmyHandler = () => setUIElement(UIELEMENT.ARMYMENU);
 
     return (
         <div className='Panel'>

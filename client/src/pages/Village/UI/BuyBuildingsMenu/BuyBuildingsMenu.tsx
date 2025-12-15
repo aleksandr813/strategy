@@ -40,10 +40,19 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
     }
 
     const buyBuilding = async (building: TBuildingType) => {
+        const currentGold = Number(gold);
+        const buildingPrice = Number(building.price);
+
         if (townHallLevel < building.unlockLevel) {
             alert(`Для покупки ${building.type} нужна ратуша уровня ${building.unlockLevel}`);
             return;
         }
+
+        if (currentGold < buildingPrice) {
+            alert(`Недостаточно монет для покупки ${building.type}. Нужно ${buildingPrice}, у вас: ${currentGold}`);
+            return;
+        }
+
         console.log(`Покупка здания: ${building.type} c id: ${building.id}`);
         village.getScene().unitPreview.deactivate();
         let size = 2;

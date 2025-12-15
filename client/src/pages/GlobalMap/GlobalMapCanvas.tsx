@@ -69,10 +69,32 @@ const GlobalMapCanvas: React.FC = () => {
     }
 
     const drawVillages = (canvas: Canvas, villages: VillageEntity[]) => {
-        villages.forEach((village) => {
-            drawSprites(canvas, village, [village.coords]);
-        });
-    };
+    const ctx = canvas.contextV;
+
+    villages.forEach((village) => {
+        drawSprites(canvas, village, [village.coords]);
+
+        const screenX = Math.round(canvas.xs(village.coords.x));
+        const screenY = Math.round(canvas.ys(village.coords.y));
+
+        ctx.save();
+
+        const FONT_SIZE = 32;
+        ctx.font = `${FONT_SIZE}px PixelifySans-Bold`;
+        ctx.fillStyle = '#fff';
+        ctx.textBaseline = 'bottom';
+
+        const textWidth = ctx.measureText(village.name).width;
+
+        ctx.fillText(
+            village.name,
+            screenX - Math.round(textWidth / 2),
+            screenY - 6
+        );
+
+        ctx.restore();
+    });
+};
 
 
     const mouseDown = (x: number, y: number) => {

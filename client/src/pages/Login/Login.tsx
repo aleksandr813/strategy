@@ -56,7 +56,13 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
         }
     }
 
-    const jokeClickHandler = () => { window.open('https://rutube.ru/video/f3b615db135287a64584737e664e1e4b/?r=plwd') }
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            loginClickHandler();
+        }
+    };
+
+    const jokeClickHandler = () => {window.open('https://rutube.ru/video/f3b615db135287a64584737e664e1e4b/?r=plwd')}
 
     useEffect(() => {
         const savedLogin = getCookie('rememberedLogin');
@@ -99,11 +105,11 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
                 <h1 className="title">STRATEGY</h1>
                 <div className="login-form">
                     <label>Логин</label>
-                    <input ref={loginRef} id="Test-input-login" />
+                    <input ref={loginRef} id="Test-input-login" onKeyDown={handleKeyDown} />
                     {loginError && <p className="error-message">{loginError}</p>}
 
                     <label>Пароль</label>
-                    <input ref={passwordRef} type='password' id="Test-input-password" />
+                    <input ref={passwordRef} type='password' id="Test-input-password" onKeyDown={handleKeyDown} />
                     {passwordError && <p className="error-message">{passwordError}</p>}
 
                     <div className="remember-me">
