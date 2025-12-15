@@ -4,7 +4,7 @@ import React, { useContext, useRef, useState, useEffect } from 'react';
 import { ServerContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
-import { validateLoginFromLogin, validatePasswordFromLogin } from '../Verification/Verification';
+import { validateLoginFromLogin, validatePasswordFromLogin } from '../../services/verification/Verification';
 
 import './Login.scss';
 
