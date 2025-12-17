@@ -55,7 +55,7 @@ class User
             // Создание стартовой деревни для пользователя
             $villageCreated = $this->createStarterVillage($user->id);
             if (!$villageCreated) {
-                return ['error' => 1090];
+                return ['error' => 666];
             }
 
             $token = md5(rand());
@@ -82,35 +82,37 @@ class User
 
     private function createStarterVillage($userId)
     {
-        // Генерация случайных координат для деревни
-        $flag = true;
-        $i = 0;
-
         $x = 0;
         $y = 0;
 
-        while ($flag) {
+        for ($attempt = 1; $attempt <= 100; $attempt++) {
 
-            if ($i > 2) {
-                return ['error' => 666];
+            if ($attempt === 100) {
+                return false;
             }
 
-            $x = rand(33, 34);
-            $y = rand(4, 5);
-            $flag = false;
+            $x = rand(1, 89);
+            $y = rand(1, 27);
 
             $villages = $this->db->getVillages();
-            $i++;
+            $validLocation = true;
 
             foreach ($villages as $village) {
-                //Расстояние
                 $distance = abs((int)$village['x'] - $x) + abs((int)$village['y'] - $y);
-                if ($distance <= 2) { // Деревни на расстоянии 2 клетки или меньше
-                    $flag = true;
-                    break;
+
+                if ($distance <= 2) {
+                    $validLocation = false;
+                    break; // Координаты не подходят, пробуем снова
                 }
             }
+
+            if ($validLocation) {
+
+                // Координаты подходят
+                break;
+            }
         }
+
         // Создание деревни в базе данных
         $result = $this->db->createVillage($userId, $x, $y);
         if (!$result) {
