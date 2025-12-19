@@ -2,7 +2,7 @@ import React, { useContext, useRef, useState, useEffect } from 'react';
 import { ServerContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
-import { validateLogin, validatePassword, checkLoginAvailability } from '../Verification/Verification';
+import { validateLogin, validatePassword, checkLoginAvailability } from '../../services/verification/Verification';
 import './Registration.scss';
 
 const Registration: React.FC<IBasePage> = (props: IBasePage) => {

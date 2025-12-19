@@ -84,6 +84,7 @@ export type TUnit = {
     type: string;
     unlockLevel: number;
     isEnemy: number;
+    onACrusade: number;
 
 }
 
@@ -92,6 +93,7 @@ export type TVillage = {
     userId: number;
     x: number;
     y: number;
+    name: string;
 }
 
 export type TArmy = {
@@ -116,4 +118,12 @@ export type TMap = {
 export type TMapResponse = {
     hash: string;
     mapData: TMap;
+}
+
+export type TUserArmy = {
+    armyId: number;
+    units: number[];
+    attackId: number;
+    enemyName: string;
+    speed: number;
 }

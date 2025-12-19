@@ -5,6 +5,7 @@ import { UIELEMENT, IBaseUIElement } from '../UI';
 import Store from '../../../../services/store/Store';
 import Mediator from '../../../../services/mediator/Mediator';
 import { PAGES } from '../../../PageManager';
+import MiniMapCanvas from '../../../MiniMap/MiniMapCanvas';
 
 import "./Panel.scss";
 
@@ -54,7 +55,7 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
     const lidersHandler = () => setUIElement(UIELEMENT.NULL);
     const villageHandler = () => setUIElement(UIELEMENT.NULL);
     const chatHandler = () =>  setPage(PAGES.CHAT);
-    const sendArmyHandler = () => setUIElement(UIELEMENT.NULL);
+    const sendArmyHandler = () => setUIElement(UIELEMENT.ARMYMENU);
 
     return (
         <div className='Panel'>
@@ -93,9 +94,14 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
                 </div>
 
                 <div className='right-section'>
-                    <Button onClick={globalmapHandler} className='panel-button big-btn' title='Глобальная карта' id='testpanelmap'>
-                        <img src={map} className='icon-img' alt="map" />
-                    </Button>
+                    <div 
+                        className='panel-button big-btn' 
+                        title='Глобальная карта' 
+                        id='testpanelmap' 
+                        style={{ overflow: 'hidden' }} 
+                    >
+                        <MiniMapCanvas onMapClick={globalmapHandler} />
+                    </div>
 
                     <div className='small-buttons-grid'>
                         <Button onClick={lidersHandler} className='panel-button-r mini-btn' title='Таблица лидеров'>

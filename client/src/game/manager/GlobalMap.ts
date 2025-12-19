@@ -1,20 +1,26 @@
 import Store from "../../services/store/Store";
+import Mediator from "../../services/mediator/Mediator";
 import Server from "../../services/server/Server";
 import VillageEntity from "../entities/VillageEntity";
 import ArmyEntity from "../entities/ArmyEntity";
-import Manager, { GameData } from "../manager/Manager";
+import Manager from "../manager/Manager";
+import Game from '../Game';
 import GAMECONFIG from '../gameConfig';
-import { TVillage, TArmy, TMap } from "../../services/server/types";
+import { TVillage, TArmy, TUserArmy } from "../../services/server/types";
 
 class GlobalMap extends Manager {
     private store: Store;
     private server: Server;
+    private mediator: Mediator;
+    private selectedVillage: VillageEntity | null = null;
+    public sendingArmy = false;
     private mapUpdateInterval: NodeJS.Timer | null = null;
 
-    constructor(store: Store, server: Server, gameData: GameData) {
-        super(gameData);
+    constructor(store: Store, server: Server, game: Game, mediator: Mediator) {
+        super(game);
         this.store = store;
         this.server = server;
+        this.mediator = mediator
         
         this.startMapUpdate();
     }
@@ -30,9 +36,14 @@ class GlobalMap extends Manager {
     private async updateMap(): Promise<void> {
         if (!this.store.user) return;
         const mapResponse = await this.server.getMap();
+
+        if (mapResponse?.hash) {
+            this.store.setMapHash(mapResponse.hash);
+        }
         
         if (mapResponse) {
             const mapData = mapResponse.mapData;
+            if (!mapData) return;
             
             if (mapData.villages) {
                 await this.loadVillages(mapResponse.mapData.villages);
@@ -46,11 +57,10 @@ class GlobalMap extends Manager {
 
     private async loadVillages(villagesData: TVillage[]): Promise<void> {
         const villages = villagesData.map(villageData => 
-            new VillageEntity(villageData.id, { x: villageData.x, y: villageData.y })
+            new VillageEntity(villageData.id, { x: villageData.x, y: villageData.y }, villageData.name)
         );
         
-        this.gameData.setVillages(villages);
-        //console.log("Загружено деревень:", villages.length);
+        this.game.setVillages(villages);
     }
 
     private loadArmies(armiesData: TArmy[]): void {        
@@ -58,14 +68,62 @@ class GlobalMap extends Manager {
             new ArmyEntity(armyData.id, { x: armyData.currentX, y: armyData.currentY })
         );
         
-        this.gameData.setArmies(armies);
-        //console.log("Загружено армий:", armies.length);
+        this.game.setArmies(armies);
+    }
+
+    public async getUserArmies(): Promise<TUserArmy[]> {
+        const armiesData = await this.server.getUserArmies();
+        if (armiesData) {
+            return armiesData;
+        }
+        return [];
+    }
+
+    public async moveArmyBack(armyId: number): Promise<void> {
+        const armiesBack = await this.server.moveArmyBack(armyId);
+        if (!armiesBack) {
+            console.error('Ошибка возврата армии');
+            return
+        }
+        await this.game.village.loadUnits();
+    }
+
+    public selectVillage(village: VillageEntity | null): void {
+        this.game.getVillages().forEach(v => v.deselected?.());
+        
+        this.selectedVillage = village;
+        this.mediator.call('VILLAGE_SELECTED', village);
+
+        if (village) {
+            village.selected?.();
+            console.log('Выбрана деревня:', village.name, 'ID:', village.id);
+        }
+    }
+
+    public handleVillageClick(x: number, y: number): void {
+        const gridX = Math.floor(x);
+        const gridY = Math.floor(y);
+        
+        const clickedVillage = this.game.getVillages().find(v => {
+            const [vx, vy] = [v.coords.x, v.coords.y];
+            return gridX >= vx && gridX < vx + 2 && gridY >= vy && gridY < vy + 2; 
+        }) || null;
+
+        if (clickedVillage) {
+            console.log('Клик по деревне:', clickedVillage.name);
+        }
+        
+        this.selectVillage(clickedVillage);
+    }
+
+    public getSelectedVillage(): VillageEntity | null {
+        return this.selectedVillage;
     }
 
     getMap() {
         return {
-            armies: this.gameData.getArmies(),
-            villages: this.gameData.getVillages(),
+            armies: this.game.getArmies(),
+            villages: this.game.getVillages(),
         };
     }
 
@@ -74,6 +132,7 @@ class GlobalMap extends Manager {
             clearInterval(this.mapUpdateInterval);
             this.mapUpdateInterval = null;
         }
+        this.selectedVillage = null;
     }
 }
 

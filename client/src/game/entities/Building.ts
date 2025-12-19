@@ -11,7 +11,7 @@ export default class Building {
     level: number;
     size: number; 
     sprites: number[];
-    isselected: boolean = false; 
+    isSelected: boolean = false; 
     unlockLevel: number; 
 
     private static SPRITE_MAP: Record<BuildingTypeID, number[]> = {
@@ -99,11 +99,11 @@ export default class Building {
     }
 
     selected():void{
-        this.isselected =true;
+        this.isSelected =true;
     }
 
     deselected():void{
-        this.isselected =false;
+        this.isSelected =false;
     }
 
     getInfo(){

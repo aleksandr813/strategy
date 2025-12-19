@@ -177,7 +177,13 @@ class Village
         if (!$userId) {
             return ['error' => 705];
         }
-        $units = $this->db->getUnits($userId);
+
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
+        }
+
+        $units = $this->db->getUnits($village->id);
 
         $filteredUnits = [];
         foreach ($units as &$unit) {
@@ -265,17 +271,61 @@ class Village
         return $types;
     }
 
-    public function moveUnits($userId, $units)
+    public function moveUnits($userId, $unitsString)
     {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 310];
         }
 
+        $units = $this->parseUnitsString($unitsString);
+        if (!$units) {
+            return ['error' => 504];
+        }
+
         $result = $this->db->updateUnitsPosition($units, $village->id);
 
         if (!$result) {
             return ['error' => 504];
+        }
+
+        return true;
+    }
+
+    private function parseUnitsString($unitsString) {
+        $units = [];
+        $unitsData = explode(';', $unitsString);
+
+        foreach($unitsData as $unitData) {
+            $parts = explode(',', $unitData);
+
+            foreach($parts as $part) {
+                if (strpos($part, 'id') === 0) {
+                    $unit['unitId'] = (int) substr($part, 2);
+                } else if (strpos($part, 'x') === 0) {
+                    $unit['x'] = (int) substr($part, 1);
+                } if (strpos($part, 'y') === 0) {
+                    $unit['y'] = (int) substr($part, 1);
+                }
+            }
+
+            $units[] = $unit;
+        }
+
+        return $units;
+    }
+
+    public function takeDamage($userId, $units)
+    {
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 315];
+        }
+
+        $result = $this->db->updateUnitsHP($units, $village->id);
+
+        if (!$result) {
+            return ['error' => 510];
         }
 
         return true;
@@ -341,17 +391,24 @@ class Village
             return ['error'];
         }
 
+        $this->db->markVillageAsAttacked($startVillage->id, $targetVillage->id);
+
         return ['newMoney' => $newMoney];
     }
 
-    public function moveArmyBack($userId)
+    public function moveArmyBack($userId, $armyId)
     {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 315];
         }
 
-        $units = $this->db->getUnits($userId);
+        $army = $this->db->getArmy($armyId);
+        if (!$army) {
+            return ['error' => 603];
+        }
+
+        $units = $this->db->getUnitsInArmy($armyId);
         $updatedUnits = [];
 
         $i = 29;
@@ -359,11 +416,10 @@ class Village
         $maxCoordinate = 58; // 29 * 2
 
         foreach ($units as $unit) {
-            $unit["onAСrusade"] = (int)$unit["onAСrusade"];
+            $unit["onACrusade"] = (int)$unit["onACrusade"];
 
-            if ($unit["onAСrusade"]) {
-                $unit["unitId"] = $unit["id"];
-                $unit["onAСrusade"] = 0;
+            if ($unit["onACrusade"]) {
+                $unit["onACrusade"] = 0;
                 $unit["x"] = $i;
                 $unit["y"] = $j;
 
@@ -395,6 +451,8 @@ class Village
             return ['error' => 504];
         }
 
+        $this->db->deleteArmy($userId, $army->army);
+
         return $updatedUnits;
     }
 
@@ -412,7 +470,9 @@ class Village
 
             if ($arrivalTime > $currentTime) {
                 $validArmies[] = [
+                    'armyId' => (int)$army['armyId'],
                     'units' => $army['units'],
+                    'enemyName' => $army['enemyName'],
                     'attackId' => (int)$army['attackId'],
                     'speed' => (float)$army['speed']
                 ];

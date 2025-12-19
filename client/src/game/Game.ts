@@ -14,12 +14,11 @@ import GAMECONFIG from './gameConfig';
 class Game {
     private store: Store;
     private server: Server;
-    private mediator: Mediator
-    private easyStar: EasyStar.js
+    private mediator: Mediator;
+    private easyStar: EasyStar.js;
     
     private units: Unit[] = [];
     private buildings: Building[] = [];
-
     private villages: VillageEntity[] = [];
     private armies: ArmyEntity[] = [];
     
@@ -30,15 +29,14 @@ class Game {
     public battle: Battle;
 
     constructor(store: Store, server: Server, mediator: Mediator) {
-        
         this.store = store;
         this.server = server;
         this.mediator = mediator;
         this.easyStar = new EasyStar.js();
         
-        this.village = new Village(store, server, this.mediator, this.getGameData(), this.easyStar, this);
-        this.globalMap = new GlobalMap(store, server, this.getGameData());
-        this.battle = new Battle(store, server, this.getGameData());
+        this.village = new Village(store, server, this.mediator, this.easyStar, this);
+        this.globalMap = new GlobalMap(store, server, this, this.mediator);
+        this.battle = new Battle(store, server, this);
         
         this.startIncomeUpdate();
     }
@@ -56,59 +54,78 @@ class Game {
         await this.server.getIncome();
     }
 
-    private removeUnit(unit: Unit): void {
+    public getArmies(): ArmyEntity[] {
+        return this.armies;
+    }
+
+    public setArmies(armies: ArmyEntity[]): void {
+        this.armies = armies;
+    }
+
+    public getVillages(): VillageEntity[] {
+        return this.villages;
+    }
+
+    public setVillages(villages: VillageEntity[]): void {
+        this.villages = villages;
+    }
+
+    public getUnits(): Unit[] {
+        return this.units;
+    }
+
+    public setUnits(units: Unit[]): void {
+        this.units = units;
+    }
+
+    public addUnit(unit: Unit): void {
+        this.units.push(unit);
+    }
+
+    public removeUnit(unit: Unit): void {
         const index = this.units.indexOf(unit);
         if (index > -1) {
             this.units.splice(index, 1);
         }
     }
 
-    private async removeBuilding(building: Building): Promise<void> {
-        await this.server.deleteBuilding(building.id);
+    public getBuildings(): Building[] {
+        return this.buildings;
     }
 
-    protected getGameData() {
-        return {
-            getArmies: () => this.armies,
-            getVillages: () => this.villages,
-            setArmies: (armies: ArmyEntity[]) => { this.armies = armies; },
-            setVillages: (villages: VillageEntity[]) => { this.villages = villages;},
-            getUnits: () => this.units,
-            getBuildings: () => this.buildings,
-            setUnits: (units: Unit[]) => { this.units = units; },
-            setBuildings: (buildings: Building[]) => { this.buildings = buildings; },
-            addUnit: (unit: Unit) => { this.units.push(unit); },
-            addBuilding: (building: Building) => { this.buildings.push(building); },
-            removeUnit: (unit: Unit) => this.removeUnit(unit),
-            removeBuilding: (building: Building) => this.removeBuilding(building)
-        };
+    public setBuildings(buildings: Building[]): void {
+        this.buildings = buildings;
+    }
+
+    public addBuilding(building: Building): void {
+        this.buildings.push(building);
+    }
+
+    public async removeBuilding(building: Building): Promise<void> {
+        const index = this.buildings.indexOf(building);
+        if (index > -1) {
+            this.buildings.splice(index, 1);
+        }
+        await this.server.deleteBuilding(building.id);
     }
 
     public getEasyStar(): EasyStar.js {
         return this.easyStar;
     }
 
-    getVillage(): Village {
+    public getVillage(): Village {
         return this.village;
     }
 
-    getGlobalMap(): GlobalMap {
+    public getGlobalMap(): GlobalMap {
         return this.globalMap;
     }
 
-    getBattle(): Battle {
+    public getBattle(): Battle {
         return this.battle;
     }
 
-    getUnits(): Unit[] {
-        return this.units;
-    }
-
-    getBuildings(): Building[] {
-        return this.buildings;
-    }
-
-    destructor(): void {
+    public destructor(): void {
         if (this.incomeInterval) {
             clearInterval(this.incomeInterval);
             this.incomeInterval = null;
