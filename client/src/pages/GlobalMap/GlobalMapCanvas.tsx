@@ -1,0 +1,275 @@
+import React, { useEffect, useContext } from 'react';
+import CONFIG from '../../config';
+import { Canvas, useCanvas } from '../../services/canvas';
+import useSprites from '../../hooks/useSprites';
+import ArmyEntity from '../../game/entities/ArmyEntity';
+import VillageEntity from '../../game/entities/VillageEntity';
+import { GameContext } from '../../App';
+import { TPoint } from '../../config';
+import globalMapBackground from '../../assets/img/background/globalMapBackground.png';
+import GAMECONFIG from '../../game/gameConfig';
+
+import "./GlobalMap.scss";
+
+const GAME_FIELD = 'game-field';
+const BORDER_PADDING = GAMECONFIG.BORDER_PADDING;
+
+const MIN_ZOOM = GAMECONFIG.MIN_ZOOM;
+const MAX_ZOOM = GAMECONFIG.MAX_ZOOM;
+const ZOOM_FACTOR = GAMECONFIG.ZOOM_FACTOR;
+
+const GLOBAL_MAP_WIDTH = GAMECONFIG.GRID_WIDTH;
+const GLOBAL_MAP_HEIGHT = GAMECONFIG.GRID_HEIGHT;
+
+const GlobalMapCanvas: React.FC = () => {
+    const { WINDOW } = CONFIG;
+    const game = useContext(GameContext);
+    const globalMap = game.getGlobalMap(); 
+    
+    const background = new Image();
+    background.src = globalMapBackground;
+
+    let canvas: Canvas | null = null;
+    const CanvasRef = useCanvas(render);
+
+    const setCanvasSize = (canvasInstance: Canvas | null) => {
+        if (canvasInstance) {
+            canvasInstance.WIDTH = window.innerWidth;
+            canvasInstance.HEIGHT = window.innerHeight;
+            canvasInstance.canvas.width = window.innerWidth;
+            canvasInstance.canvas.height = window.innerHeight;
+            render(0); 
+        }
+    };
+
+    const [[spritesImage], getSprite] = useSprites();
+
+    let mouseDownPosition: TPoint | null = null;
+    let mouseDownTime = 0;
+    let wasDragging = false;
+    let isMiddleMouseDragging = false;
+    let middleMouseStartScreenPosition: TPoint | null = null;
+    let windowStartPosition: { LEFT: number, TOP: number } | null = null;
+    let animationTime = 0;
+
+    const clampCamera = () => { 
+        const maxLeft = Math.max(0, GLOBAL_MAP_WIDTH - WINDOW.WIDTH + BORDER_PADDING);
+        const maxTop = Math.max(0, GLOBAL_MAP_HEIGHT - WINDOW.HEIGHT + BORDER_PADDING);
+        
+        const minLeft = -BORDER_PADDING;
+        const minTop = -BORDER_PADDING;
+        
+        WINDOW.LEFT = Math.max(minLeft, Math.min(WINDOW.LEFT, maxLeft));
+        WINDOW.TOP = Math.max(minTop, Math.min(WINDOW.TOP, maxTop));
+    };
+
+    const drawSprites = (canvas: Canvas, item: ArmyEntity | VillageEntity, coords: TPoint[]) => {
+        item.sprites.forEach((sprite, i) => {
+            const spriteData = getSprite(sprite);
+            canvas.spriteFull(spritesImage, coords[i].x, coords[i].y, spriteData[0], spriteData[1], spriteData[2]);
+        });
+    };
+
+    function render(FPS: number) {
+        if (FPS > 0) {
+            animationTime += (1 / FPS);
+        } else {
+            animationTime += (1 / 60);
+            }
+        if (!canvas) return;
+        canvas.clear();
+        if (background.complete) {
+            canvas.contextV.drawImage(background, canvas.xs(0), canvas.ys(0), canvas.dec(87), canvas.dec(29));
+        }
+
+        const { armies, villages } = globalMap.getMap();
+
+        drawVillages(canvas, villages);
+        if (armies && armies.length > 0) {
+            drawArmies(canvas, armies, animationTime);
+        }
+        canvas.render();
+    }
+
+    const drawVillages = (canvas: Canvas, villages: VillageEntity[]) => {
+    const ctx = canvas.contextV;
+
+    villages.forEach((village) => {
+        drawSprites(canvas, village, [village.coords]);
+
+        const screenX = Math.round(canvas.xs(village.coords.x));
+        const screenY = Math.round(canvas.ys(village.coords.y));
+
+        ctx.save();
+
+        const FONT_SIZE = 32;
+        ctx.font = `${FONT_SIZE}px PixelifySans-Bold`;
+        ctx.fillStyle = '#fff';
+        ctx.textBaseline = 'bottom';
+
+        const textWidth = ctx.measureText(village.name).width;
+
+        ctx.fillText(
+            village.name,
+            screenX - Math.round(textWidth / 2),
+            screenY - 6
+        );
+
+        ctx.restore();
+    });
+};
+
+const drawArmies = (canvas: Canvas, armies: ArmyEntity[], time: number) => {
+        const ctx = canvas.contextV;
+        const PULSE_RADIUS = 5 + Math.sin(time * 5) * 3.5;
+
+        armies.forEach((army) => {
+            drawSprites(canvas, army, [army.coords]);
+        });
+
+        armies.forEach((army) => {
+            ctx.save();
+            ctx.shadowColor = '#FF00FF'; 
+            ctx.shadowBlur = PULSE_RADIUS;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+            drawSprites(canvas, army, [army.coords]);
+
+            ctx.restore();
+        });
+    };
+
+    const mouseDown = (x: number, y: number) => {
+        mouseDownPosition = { x, y };
+        mouseDownTime = Date.now();
+        wasDragging = false;
+    };
+
+    const mouseMove = (x: number, y: number, screenX?: number, screenY?: number) => {
+        if (isMiddleMouseDragging && middleMouseStartScreenPosition && windowStartPosition && canvas && screenX !== undefined && screenY !== undefined) {
+            const deltaX = (screenX - middleMouseStartScreenPosition.x) / canvas.WIDTH * WINDOW.WIDTH;
+            const deltaY = (screenY - middleMouseStartScreenPosition.y) / canvas.HEIGHT * WINDOW.HEIGHT;
+            
+            WINDOW.LEFT = windowStartPosition.LEFT - deltaX;
+            WINDOW.TOP = windowStartPosition.TOP - deltaY;
+            
+            clampCamera();
+        }
+    };
+
+    const mouseUp = (x: number, y: number) => {
+        if (!globalMap || !mouseDownPosition) return;
+        mouseDownPosition = null;
+        mouseDownTime = 0;
+    };
+
+    const mouseClick = async (x: number, y: number) => {
+        if (!game.globalMap.getSelectedVillage()) {
+            globalMap.handleVillageClick(x, y);
+        }
+        
+    };
+
+    const mouseRightClickDown = (x: number, y: number) => {
+        if (!globalMap) return;
+    };
+
+    const mouseLeave = () => {
+        console.log('Мышь покинула канвас');
+        wasDragging = false;
+        isMiddleMouseDragging = false;
+        middleMouseStartScreenPosition = null;
+        windowStartPosition = null;
+    };
+
+    const mouseWheel = (delta: number, x: number, y: number) => {
+        if (!canvas) return;
+        
+        const zoomAmount = delta > 0 ? 1 + ZOOM_FACTOR : 1 - ZOOM_FACTOR;
+        const newWidth = WINDOW.WIDTH * zoomAmount;
+        const newHeight = WINDOW.HEIGHT * zoomAmount;
+        
+        // Ограничение зума
+        if (newHeight < MIN_ZOOM || newHeight > MAX_ZOOM) return;
+        
+        // Масштабирование относительно точки курсора
+        const scale = newWidth / WINDOW.WIDTH;
+        WINDOW.LEFT = x - (x - WINDOW.LEFT) * scale;
+        WINDOW.TOP = y - (y - WINDOW.TOP) * scale;
+        
+        WINDOW.WIDTH = newWidth;
+        WINDOW.HEIGHT = newHeight;
+        
+        clampCamera();
+    };
+
+    const mouseMiddleDown = (x: number, y: number, screenX?: number, screenY?: number) => {
+        isMiddleMouseDragging = true;
+        if (screenX !== undefined && screenY !== undefined) {
+            middleMouseStartScreenPosition = { x: screenX, y: screenY };
+        }
+        windowStartPosition = { LEFT: WINDOW.LEFT, TOP: WINDOW.TOP };
+    };
+
+    const mouseMiddleUp = () => {
+        isMiddleMouseDragging = false;
+        middleMouseStartScreenPosition = null;
+        windowStartPosition = null;
+    };
+
+    const keyDown = (event: KeyboardEvent) => {
+        if (event.key !== 'Escape') return;
+    };
+
+    const INITIAL_WINDOW_WIDTH = CONFIG.WINDOW.WIDTH;
+    const INITIAL_WINDOW_HEIGHT = CONFIG.WINDOW.HEIGHT;
+    const INITIAL_WINDOW_LEFT = CONFIG.WINDOW.LEFT;
+    const INITIAL_WINDOW_TOP = CONFIG.WINDOW.TOP;
+
+    useEffect(() => {
+        canvas = CanvasRef({
+            parentId: GAME_FIELD,
+            WIDTH: window.innerWidth,
+            HEIGHT: window.innerHeight,
+            WINDOW,
+            callbacks: {
+                mouseMove, mouseDown, mouseUp, mouseRightClickDown, mouseClick,
+                mouseLeave, mouseWheel, mouseMiddleDown, mouseMiddleUp, keyDown
+            },
+        });
+
+        const handleResize = () => {
+            setCanvasSize(canvas);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        canvas.context.imageSmoothingEnabled = false;
+        canvas.contextV.imageSmoothingEnabled = false;
+
+        clampCamera();
+
+        return () => {
+            if (WINDOW.WIDTH !== INITIAL_WINDOW_WIDTH) {
+                WINDOW.WIDTH = INITIAL_WINDOW_WIDTH;
+                WINDOW.HEIGHT = INITIAL_WINDOW_HEIGHT;
+                WINDOW.LEFT = INITIAL_WINDOW_LEFT;
+                WINDOW.TOP = INITIAL_WINDOW_TOP;
+            }
+
+            window.removeEventListener('resize', handleResize);
+
+            globalMap?.destructor();
+            canvas = null;
+        };
+    }, []);
+
+    return (
+        <div className='GlobalMapCanvas'>
+            <div id={GAME_FIELD} className={GAME_FIELD}></div>
+        </div>
+    );
+};
+
+export default GlobalMapCanvas;

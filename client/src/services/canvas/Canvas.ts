@@ -13,20 +13,25 @@ export type TCanvas = {
     WIDTH: number;
     HEIGHT: number;
     callbacks: {
-        mouseMove: (x: number, y: number) => void;
+        mouseMove: (x: number, y: number, screenX?: number, screenY?: number) => void;
+        mouseDown: (x: number, y: number) => void;
+        mouseUp: (x: number, y: number) => void;
+        mouseRightClickDown: (x: number, y: number) => void;
         mouseClick: (x: number, y: number) => void;
-        mouseRightClick: () => void;
+        mouseLeave?: () => void;
+        mouseWheel?: (delta: number, x: number, y: number) => void;
+        mouseMiddleDown?: (x: number, y: number, screenX?: number, screenY?: number) => void;
+        mouseMiddleUp?: (x: number, y: number) => void;
+        keyDown?: (event: KeyboardEvent) => void;
     },
 }
 
 class Canvas {
     parentId: string;
-    // контексты и канвасы
     canvas: HTMLCanvasElement;
     context: CanvasRenderingContext2D;
     canvasV: HTMLCanvasElement;
     contextV: CanvasRenderingContext2D;
-    // общая ширина и высота канвасов
     WIDTH: number;
     HEIGHT: number;
     WINDOW: TWINDOW;
@@ -39,16 +44,12 @@ class Canvas {
     dx = 0;
     dy = 0;
     interval: NodeJS.Timer;
-    callbacks: {
-        mouseMove: (x: number, y: number) => void;
-        mouseClick: (x: number, y: number) => void;
-        mouseRightClick: () => void;
-    }
+    callbacks: TCanvas['callbacks'];
+    isMiddleMouseDown = false;
 
     constructor(options: TCanvas) {
         const { parentId, WINDOW, WIDTH, HEIGHT, callbacks } = options;
         this.parentId = parentId;
-        // задаём канвасы
         this.canvas = document.createElement('canvas');
         if (parentId) {
             document.getElementById(parentId)?.appendChild(this.canvas);
@@ -56,24 +57,29 @@ class Canvas {
             document.querySelector('body')?.appendChild(this.canvas);
         }
         this.WIDTH = WIDTH || window.innerWidth;
-        this.HEIGHT = HEIGHT || window.innerHeight; // потому что иначе эта скотина добавляет вертикальный скролл
-        // main canvas
+        this.HEIGHT = HEIGHT || window.innerHeight;
         this.canvas.width = this.WIDTH;
         this.canvas.height = this.HEIGHT;
         this.context = this.canvas.getContext('2d')!;
-        // virtual canvas
         this.canvasV = document.createElement('canvas');
         this.canvasV.width = this.WIDTH;
         this.canvasV.height = this.HEIGHT;
         this.contextV = this.canvasV.getContext('2d')!;
-        // задаем окошко
         this.WINDOW = WINDOW;
         this.callbacks = callbacks;
 
         this.canvas.addEventListener('mousemove', (event) => this.mouseMoveHandler(event));
-        this.canvas.addEventListener('mouseleave', () => this.mouseLeaveHandler());
+        this.canvas.addEventListener('mousedown', (event) => this.mouseDownHandler(event));
+        this.canvas.addEventListener('mouseup', (event) => this.mouseUpHandler(event));
         this.canvas.addEventListener('click', (event) => this.mouseClickHandler(event));
-        this.canvas.addEventListener('contextmenu', (event) => this.mouseRightClickHandler(event));
+        this.canvas.addEventListener('mouseleave', () => this.mouseLeaveHandler());
+        this.canvas.addEventListener('wheel', (event) => this.mouseWheelHandler(event));
+        this.canvas.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            this.mouseRightClickDownHandler(event);
+        });
+        this.canvas.addEventListener('keydown', (event) => this.keyDownHandler(event));
+
         this.interval = setInterval(() => {
             if (this.dx === 0 && this.dy === 0) {
                 return;
@@ -85,68 +91,97 @@ class Canvas {
 
     destructor() {
         document.getElementById(this.parentId)?.removeChild(this.canvas);
-        // @ts-ignore
-        this.contextV = null;
-        // @ts-ignore
-        this.canvasV = null;
-        // @ts-ignore
-        this.context = null;
-        // @ts-ignore
-        this.canvas = null;
+        this.contextV = null as any;
+        this.canvasV = null as any;
+        this.context = null as any;
+        this.canvas = null as any;
         clearInterval(this.interval);
     }
 
-    mouseClickHandler(event: MouseEvent) {
-        const { offsetX, offsetY } = event;
-        this.callbacks.mouseClick(this.sx(offsetX), this.sy(offsetY));
+    mouseDownHandler(event: MouseEvent) {
+        event.preventDefault();
+        const { offsetX, offsetY, button } = event;
+        if (button === 0) {
+            this.callbacks.mouseDown(this.sx(offsetX), this.sy(offsetY));
+        } else if (button === 1) {
+            this.isMiddleMouseDown = true;
+            if (this.callbacks.mouseMiddleDown) {
+                this.callbacks.mouseMiddleDown(this.sx(offsetX), this.sy(offsetY), offsetX, offsetY);
+            }
+        }
     }
 
-    mouseRightClickHandler(event: MouseEvent) {
+    mouseUpHandler(event: MouseEvent) {
         event.preventDefault();
-        this.callbacks.mouseRightClick();
+        const { offsetX, offsetY, button } = event;
+        if (button === 0) {
+            this.callbacks.mouseUp(this.sx(offsetX), this.sy(offsetY));
+        } else if (button === 1) {
+            this.isMiddleMouseDown = false;
+            if (this.callbacks.mouseMiddleUp) {
+                this.callbacks.mouseMiddleUp(this.sx(offsetX), this.sy(offsetY));
+            }
+        }
+    }
+
+    mouseRightClickDownHandler(event: MouseEvent) {
+        const { offsetX, offsetY, button } = event;
+        if (button === 2) {
+            this.callbacks.mouseRightClickDown(this.sx(offsetX), this.sy(offsetY));
+        }
+    }
+
+    mouseClickHandler(event: MouseEvent) {
+        event.preventDefault();
+        const { offsetX, offsetY, button } = event;
+        if (button === 0) {
+            this.callbacks.mouseClick(this.sx(offsetX), this.sy(offsetY));
+        }
     }
 
     mouseMoveHandler(event: MouseEvent) {
         const { offsetX, offsetY } = event;
-        // для скролла окошка относительно положения мышки
-        /*
-        const pX = offsetX / this.WIDTH;
-        const pY = offsetY / this.HEIGHT;
-        if (pX <= 0.1) {
-            this.dx = -1;
-        } else if (pX >= 0.9) {
-            this.dx = 1;
-        } else {
-            this.dx = 0;
-        }
-        if (pY <= 0.1) {
-            this.dy = -1;
-        } else if (pY >= 0.9) {
-            this.dy = 1;
-        } else {
-            this.dy = 0;
-        }
-        */
-        this.callbacks.mouseMove(this.sx(offsetX), this.sy(offsetY));
+        this.callbacks.mouseMove(this.sx(offsetX), this.sy(offsetY), offsetX, offsetY);
     }
 
     mouseLeaveHandler() {
         this.dx = 0;
         this.dy = 0;
+        if (this.callbacks.mouseLeave) {
+            this.callbacks.mouseLeave();
+        }
     }
 
-    // перевод в экранные координаты
+    mouseWheelHandler(event: WheelEvent) {
+        event.preventDefault();
+        const { offsetX, offsetY, deltaY } = event;
+        if (this.callbacks.mouseWheel) {
+            this.callbacks.mouseWheel(deltaY, this.sx(offsetX), this.sy(offsetY));
+        }
+    }
+
+    keyDownHandler = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+            if (this.callbacks.keyDown) { 
+                this.callbacks.keyDown(event);
+            }
+        }
+    };
+
+    
+
     xs(x: number): number {
         return (x - this.WINDOW.LEFT) / this.WINDOW.WIDTH * this.WIDTH;
     }
+
     ys(y: number): number {
-        //return this.HEIGHT - (y - this.WINDOW.TOP) / this.WINDOW.HEIGHT * this.HEIGHT;
-        return (y - this.WINDOW.TOP) / this.WINDOW.HEIGHT * this.HEIGHT; // пришлось рисовать так, потому что тайлед отдаёт в таком сраном формате
+        return (y - this.WINDOW.TOP) / this.WINDOW.HEIGHT * this.HEIGHT;
     }
-    // перевод из экранных координат в локальные
+
     sx(x: number): number {
         return x * this.WINDOW.WIDTH / this.WIDTH + this.WINDOW.LEFT;
     }
+
     sy(y: number): number {
         return y * this.WINDOW.HEIGHT / this.HEIGHT + this.WINDOW.TOP;
     }
@@ -179,23 +214,27 @@ class Canvas {
         this.contextV.font = font;
         this.contextV.fillText(text, this.xs(x), this.ys(y));
     }
-
-    rect(x: number, y: number, size = 64, color = '#f004'): void {
+    
+    drawFPS(FPS: string, color = '#fff', font = 'bold 1rem Arial'): void {
         this.contextV.fillStyle = color;
-        this.contextV.fillRect(this.xs(x), this.ys(y), size, size)
+        this.contextV.font = font;
+        this.contextV.fillText(FPS, 12, 36);
     }
 
-    // прямоугольник. НЕ квадрат
+    rect(x: number, y: number, size = 64, color = 'rgba(255, 0, 0, 1)'): void {
+        this.contextV.fillStyle = color;
+        this.contextV.fillRect(this.xs(x), this.ys(y), size, size);
+    }
+
     rectangle(x: number, y: number, width = 64, height = 64, color = '#f004'): void {
         this.contextV.fillStyle = color;
         this.contextV.fillRect(this.xs(x), this.ys(y), width, height);
     }
 
     spriteFull(image: HTMLImageElement, dx: number, dy: number, sx: number, sy: number, size: number): void {
-        this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), size, size);
+        this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), this.dec(1), this.dec(1));
     }
 
-    // копируем изображение с виртуального канваса на основной
     render(): void {
         this.context.drawImage(this.canvasV, 0, 0);
     }

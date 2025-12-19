@@ -1,15 +1,19 @@
 import md5 from 'md5';
-import CONFIG from "../../config";
+import GAMECONFIG from '../../game/gameConfig';
+import CONFIG from '../../config';
 import Store from "../store/Store";
+import { TBuildingType, TBuilding, TMap, TMapResponse, TUserArmy } from './types';
+import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
+import Unit from '../../game/entities/Unit';
 
-const { CHAT_TIMESTAMP, HOST } = CONFIG;
+const { HOST, CHAT_TIMESTAMP } = CONFIG;
 
 class Server {
     HOST = HOST;
     store: Store;
     chatInterval: NodeJS.Timer | null = null;
-    showErrorCb: (error: TError) => void = () => {};
+    showErrorCb: (error: TError) => void = () => { };
 
     constructor(store: Store) {
         this.store = store;
@@ -23,15 +27,25 @@ class Server {
             if (token) {
                 params.token = token;
             }
-            const response = await fetch(`${this.HOST}/?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`);
+            const url = `${this.HOST}/?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`;
+
+            const response = await fetch(url);
             const answer: TAnswer<T> = await response.json();
+
+            //console.log('Server response:', answer);
+
             if (answer.result === 'ok' && answer.data) {
                 return answer.data;
             }
             answer.error && this.setError(answer.error);
+
+            if (answer.error) {
+                console.error('Server error:', answer.error);
+            }
+
             return null;
         } catch (e) {
-            console.log(e);
+            console.log('Request exception:', e);
             this.setError({
                 code: 9000,
                 text: 'Unknown error',
@@ -59,16 +73,23 @@ class Server {
         return false;
     }
 
-    async logout() {
-        const result = await this.request<boolean>('logout');
-        if (result) {
-            this.store.clearUser();
+    async registration(login: string, password: string, name: string): Promise<boolean> {
+        const hash = md5(`${login}${password}`);
+        const user = await this.request<TUser>('registration', { login, hash, name });
+        if (user) {
+            this.store.setUser(user);
+            return true;
         }
+        return false;
     }
 
-    registration(login: string, password: string, name: string): Promise<boolean | null> {
-        const hash = md5(`${login}${password}`);
-        return this.request<boolean>('registration', { login, hash, name });
+    async logout(token: string) {
+        const result = await this.request<boolean>('logout', { token });
+        if (result) {
+            this.store.clearUser();
+            return true;
+        }
+        return false;
     }
 
     sendMessage(message: string): void {
@@ -94,7 +115,6 @@ class Server {
                 cb(hash);
             }
         }, CHAT_TIMESTAMP);
-
     }
 
     stopChatMessages(): void {
@@ -103,6 +123,168 @@ class Server {
             this.chatInterval = null;
             this.store.clearMessages();
         }
+    }
+
+    async getRoots(coeffs: number[]): Promise<any> {
+        const params: { [key: string]: string } = { method: 'getRoots' };
+
+        // Создаем параметры a, b, c, d, e
+        const paramNames = ['a', 'b', 'c', 'd', 'e'];
+        coeffs.forEach((coeff, index) => {
+            if (index < paramNames.length) {
+                params[paramNames[index]] = coeff.toString();
+            }
+        });
+
+        return await this.request<any>('getRoots', params);
+    }
+
+    async getBuildings(): Promise<TBuilding[] | null> {
+        const response = await this.request<TBuilding[]>('getBuildings');
+        if (!response) {
+            return null;
+        }
+
+        console.log('Buildings from server:', response);
+        return response;
+    }
+
+    async getBuildingTypes(): Promise<TBuildingType[]> {
+        const response = await this.request<TBuildingType[]>('getBuildingTypes');
+        if (!response) {
+            return [];
+        }
+        return response;
+    }
+
+    async getUnits(): Promise<TUnit[] | null> {
+        const response = await this.request<any[]>('getUnits');
+        if (!response) {
+            return null;
+        }
+
+        const units: TUnit[] = response.map(unit => ({
+            id: Number(unit.id),
+            typeId: Number(unit.typeId),
+            villageId: Number(unit.villageId),
+            x: Number(unit.x),
+            y: Number(unit.y),
+            level: Number(unit.level),
+            currentHp: Number(unit.currentHp),
+            type: unit.type,
+            unlockLevel: Number(unit.unlockLevel),
+            isEnemy: unit.isEnemy,
+            onACrusade: Number(unit.onACrusade)
+        }));
+
+        console.log('Units from server:', units);
+        return units;
+    }
+
+    async getUnitsTypes(): Promise<TUnitType[]> {
+        const response = await this.request<TUnitType[]>('getUnitTypes');
+        if (!response) {
+            return [];
+        }
+        console.log(response);
+        return response;
+    }
+
+    async buyBuilding(typeId: number, x: number, y: number): Promise<any> {
+        console.log('buyBuilding called with:', { typeId, x, y });
+        const result = await this.request<any>('buyBuilding', {
+            typeId: typeId.toString(),
+            x: x.toString(),
+            y: y.toString()
+        });
+        console.log('buyBuilding result:', result);
+        return result;
+    }
+
+    async buyUnit(typeId: number, x: number, y: number): Promise<number | null> {
+        console.log('buyUnit called with', { typeId, x, y });
+        const result = await this.request<number>('buyUnit', {
+            typeId: typeId.toString(),
+            x: x.toString(),
+            y: y.toString()
+        });
+        console.log('buyUnit result:', result);
+        return result;
+    }
+
+    async deleteBuilding(buildingId: number): Promise<boolean | null> {
+        const response = await this.request<boolean>('deleteBuilding', {
+            id: buildingId.toString(),
+        });
+        return response;
+    }
+
+    async upgradeBuilding(buildingId: number, typeId: number): Promise<boolean | null> {
+        const response = await this.request<boolean>('upgradeBuilding', {
+            id: buildingId.toString(),
+            typeId: typeId.toString()
+        });
+        return response || null;
+    }
+
+    async moveUnits(units: Unit[]): Promise<boolean> {
+        const unitsForMove = units.map(unit => ({
+            id: unit.id,
+            x: unit.coords.x,
+            y: unit.coords.y,
+        }));
+
+        const unitsString = unitsForMove.map(unit =>
+            `id${unit.id},x${unit.x},y${unit.y}`
+        ).join(';');
+
+        const params: { [key: string]: string } = {
+            units: unitsString,
+        };
+
+        const response = await this.request<boolean>('moveUnits', params);
+
+        return response !== null ? response : false;
+    }
+
+    async getIncome(): Promise<void> {
+        //console.log('getIncome called');
+        const result = await this.request<{ money: number }>('getIncome');
+        //console.log('getIncome result:', result);
+        
+        if (result && typeof result === 'object' && 'money' in result) {
+            this.store.setMoney(result.money);
+        }
+    }
+
+    async getMap(): Promise<TMapResponse | null> {
+        const hash = this.store.getMapHash();
+        const map = this.request<TMapResponse>('getMap', { hash })
+        return map
+    }
+
+    async getUserArmies(): Promise<TUserArmy[] | null> {
+        const userArmies = this.request<TUserArmy[]>('getUserArmies')
+        return userArmies;
+    }
+
+    async moveArmyBack(armyId: number): Promise<boolean | null> {
+        const result = this.request<boolean>('moveArmyBack', { armyId: armyId.toString() } );
+        return result;
+    }
+
+    async sendArmy(target: number, units: number[]): Promise<boolean | null> {
+
+        const params: { [key: string]: string } = {};
+        
+        units.forEach((unit, index) => {
+            params[`units[${index}][id]`] = unit.toString();
+        });
+        params['target'] = target.toString();
+
+        const response = await this.request<boolean>('sendArmy', params);
+
+        return response;
     }
 }
 
