@@ -85,16 +85,13 @@ class User
         $x = 0;
         $y = 0;
 
-        for ($attempt = 1; $attempt <= 100; $attempt++) {
+        $villages = $this->db->getVillages();
 
-            if ($attempt === 100) {
-                return false;
-            }
+        for ($attempt = 1; $attempt <= 99; $attempt++) {
 
-            $x = rand(1, 89);
-            $y = rand(1, 27);
+            $x = rand(1, MAP_WIDTH);
+            $y = rand(1, MAP_HEIGHT);
 
-            $villages = $this->db->getVillages();
             $validLocation = true;
 
             foreach ($villages as $village) {
