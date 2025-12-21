@@ -292,19 +292,19 @@ class Village extends Manager {
         const left = x > 0 ? matrix[y][x - 1] : 0;
         const right = x < 86 ? matrix[y][x + 1] : 0;
 
-        if (up === 1 && down === 1 && left === 1 && right === 1) return 41;
-        if (left === 1 && down === 1 && up === 1 && right !== 1) return 90;
-        if (right === 1 && left === 1 && up === 1 && down !== 1) return 89;
-        if (right === 1 && down === 1 && up === 1 && left !== 1) return 88;
-        if (right === 1 && left === 1 && down === 1 && up !== 1) return 87;
-        if (left === 1 && up === 1 && down !== 1 && right !== 1) return 86;
-        if (right === 1 && up === 1 && down !== 1 && left !== 1) return 85;
-        if (right === 1 && down === 1 && up !== 1 && left !== 1) return 84;
-        if (left === 1 && down === 1 && up !== 1 && right !== 1) return 83;
-        if ((left === 1 || right === 1) && up !== 1 && down !== 1) return 82;
-        if ((up === 1 || down === 1) && left !== 1 && right !== 1) return 81;
+        if (up === 1 && down === 1 && left === 1 && right === 1) return 36;
+        if (left === 1 && down === 1 && up === 1 && right !== 1) return 35;
+        if (right === 1 && left === 1 && up === 1 && down !== 1) return 34;
+        if (right === 1 && down === 1 && up === 1 && left !== 1) return 33;
+        if (right === 1 && left === 1 && down === 1 && up !== 1) return 32;
+        if (left === 1 && up === 1 && down !== 1 && right !== 1) return 31;
+        if (right === 1 && up === 1 && down !== 1 && left !== 1) return 30;
+        if (right === 1 && down === 1 && up !== 1 && left !== 1) return 29;
+        if (left === 1 && down === 1 && up !== 1 && right !== 1) return 28;
+        if ((left === 1 || right === 1) && up !== 1 && down !== 1) return 27;
+        if ((up === 1 || down === 1) && left !== 1 && right !== 1) return 26;
         
-        return 81;
+        return 26;
     }
 
     private updateAllGateSprites(): void {
