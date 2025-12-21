@@ -18,23 +18,23 @@ export default class Building {
         [BuildingTypeID.TownHall]: [1, 2, 3, 4], // TownHall (Ратуша)
         [BuildingTypeID.Mine]:     [5, 6, 7, 8], // Mine (Шахта)
         [BuildingTypeID.Tower]:     [9, 10, 11, 12],
-        [BuildingTypeID.Wall]:     [81],
+        [BuildingTypeID.Wall]:     [26],
         [BuildingTypeID.Kazarma]:  [14, 15, 16 ,17],
         [BuildingTypeID.Gates]: [91, 92]
     };
 
     private static WALL_SPRITES: Record<number, number> = {
-        41: 41, // со всех 4 сторон
-        90: 90, // слева, снизу и сверху
-        89: 89, // справа, слева и сверху
-        88: 88, // справа, снизу и сверху
-        87: 87, // справа, слева и снизу
-        86: 86, // слева и сверху
-        85: 85, // справа и сверху
-        84: 84, // справа и снизу
-        83: 83, // слева и снизу
-        82: 82, // справа и слева
-        81: 81, // сверху и снизу или нет
+        21: 21, // со всех 4 сторон
+        35: 35, // слева, снизу и сверху
+        34: 34, // справа, слева и сверху
+        33: 33, // справа, снизу и сверху
+        32: 32, // справа, слева и снизу
+        31: 31, // слева и сверху
+        30: 30, // справа и сверху
+        29: 29, // справа и снизу
+        28: 28, // слева и снизу
+        27: 27, // справа и слева
+        26: 26, // сверху и снизу или нет
     };
 
 
@@ -50,7 +50,7 @@ export default class Building {
 
         
         if (typeId === BuildingTypeID.Wall && wallSpriteIndex !== undefined) {
-            this.sprites = [Building.WALL_SPRITES[wallSpriteIndex] || 81];
+            this.sprites = [Building.WALL_SPRITES[wallSpriteIndex] || 26];
             this.coords = [
                 { x: Number(x), y: Number(y) },
             ];
@@ -88,7 +88,7 @@ export default class Building {
 
     public updateWallSprite(wallSpriteIndex: number): void {
         if (this.typeId === BuildingTypeID.Wall) {
-            this.sprites = [Building.WALL_SPRITES[wallSpriteIndex] || 81];
+            this.sprites = [Building.WALL_SPRITES[wallSpriteIndex] || 26];
         }
     }
 

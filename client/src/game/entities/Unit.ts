@@ -85,7 +85,6 @@ export default class Unit {
 
                 this.currentPath = path;
                 this.currentPathIndex = 1;
-                this.stopIdleAnimation();
             }
         );
 
@@ -94,9 +93,6 @@ export default class Unit {
 
     makeStep(): boolean {
         if (!this.currentPath || this.currentPathIndex >= this.currentPath.length) {
-            if (!this.isMoving()) {
-            this.startIdleAnimation(); 
-        }
             return false;
         }
 
@@ -128,10 +124,6 @@ export default class Unit {
 
         const stillMoving = this.currentPathIndex < this.currentPath.length;
 
-        if (!stillMoving) {
-            this.startIdleAnimation(); 
-        }
-
         return  stillMoving;
     }
 
@@ -157,13 +149,5 @@ export default class Unit {
         this.idleAnimationIntervalId = setInterval(() => {
             this.switchSprite(); 
         }, Unit.IDLE_ANIMATION_DELAY); 
-    }
-
-    public stopIdleAnimation(): void {
-        if (this.idleAnimationIntervalId !== null) {
-            clearInterval(this.idleAnimationIntervalId);
-            this.idleAnimationIntervalId = null;
-            this.currentSpriteIndex = 0;
-        }
     }
 }
