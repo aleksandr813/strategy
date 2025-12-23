@@ -43,10 +43,12 @@ class Village
 
     public function getBuildings($userId)
     {
-        if (!$userId) {
-            return ['error' => 705];
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
         }
-        $buildings = $this->db->getBuildings($userId);
+
+        $buildings = $this->db->getBuildings($village->id);
 
         foreach ($buildings as &$building) {
             $building['id'] = (int)$building['id'];

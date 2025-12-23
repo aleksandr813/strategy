@@ -106,31 +106,6 @@ class DB
         );
     }
 
-    // public function getUnits($userId)
-    // {
-    //     return $this->queryAll(
-    //         "SELECT 
-    //             u.id AS id,
-    //             u.type_id AS typeId,
-    //             u.village_id AS villageId,
-    //             u.x AS x,
-    //             u.y AS y,
-    //             u.level AS level,
-    //             u.current_hp AS currentHp,
-    //             u.on_a_crusade AS onACrusade,
-    //             u.is_enemy AS isEnemy,
-    //             ut.type AS type,
-    //             ut.speed AS speed,
-    //             ut.range AS range,
-    //             ut.damage AS damage
-    //         FROM units AS u
-    //         INNER JOIN unit_types AS ut
-    //         ON u.type_id = ut.id
-    //         WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)",
-    //         [$userId]
-    //     );
-    // }
-
     public function getUnits($villageId)
     {
         return $this->queryAll(
@@ -244,7 +219,7 @@ class DB
         );
     }
 
-    public function getBuildings($userId)
+    public function getBuildings($villageId)
     {
         return $this->queryAll(
             "SELECT 
@@ -259,8 +234,8 @@ class DB
             FROM buildings AS b
             INNER JOIN building_types AS bt
             ON b.type_id = bt.id
-            WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)",
-            [$userId]
+            WHERE village_id = ?",
+            [$villageId]
         );
     }
 
@@ -491,8 +466,10 @@ class DB
         return $this->queryAll(
             "SELECT
                 u.id,
+                u.village_id AS villageId,
                 u.x,
                 u.y,
+                u.current_hp AS currentHp,
                 u.on_a_crusade AS onACrusade
             FROM units AS u
             WHERE u.id IN ($placeholder)",
@@ -521,6 +498,12 @@ class DB
         }
 
         return $result;
+    }
+
+    public function deleteArmyById($armyId) {
+        return $this->execute(
+            "DELETE FROM army WHERE army = ?", [$armyId]
+        );
     }
 
     public function getUnitsSpeed($units) {
@@ -563,5 +546,101 @@ class DB
         }
 
         return $result;
+    }
+
+    public function addObjectsToBattle($objects, $type, $battleId) {
+        $insertData = [];
+        $params = [];
+
+        foreach($objects as $object) {
+            $insertData[] = "(?, ?, ?, ?, ?, ?, ?)";
+            $params = array_merge($params, [
+                $battleId,
+                $type,
+                (int)$object['id'],
+                (int)$object['villageId'],
+                (int)$object['x'],
+                (int)$object['y'],
+                (int)$object['currentHp']
+            ]);
+        }
+
+        $placeholder = implode(',', $insertData);
+
+        return $this->execute(
+            "INSERT INTO battle_objects
+            (battle_id, object_type, original_id, owner_village_id, x, y, current_hp)
+            VALUES $placeholder",
+            $params
+        );
+    }
+
+    public function getBattleHash($battleId) {
+        return $this->query("SELECT hash FROM battles WHERE id = ?", [$battleId]);
+    }
+
+    public function updateBattleHash($battleId, $hash) {
+        return $this->execute("UPDATE battles SET hash = ? WHERE id = ?", [$hash, $battleId]);
+    }
+
+    public function startBattle($attackerVillageId, $defenderVillageId, $attackerLastOnline, $defenderLastOnline, $hash) {
+        $this->execute(
+            "INSERT INTO battles 
+            (attacker_village_id, defender_village_id, attacker_last_online, defender_last_online, hash)
+            VALUES (?, ?, ?, ?, ?)",
+            [$attackerVillageId, $defenderVillageId, $attackerLastOnline, $defenderLastOnline, $hash]
+        );
+
+        return $this->pdo->lastInsertId();
+    }
+
+    public function getActiveBattle($villageId) {
+        return $this->query(
+            "SELECT 
+                id, 
+                attacker_village_id AS attackerVillageId, 
+                defender_village_id AS defenderVillageId,
+                attacker_last_online AS attackerLastOnline,
+                defender_last_online AS defenderLastOnline,
+                hash 
+            FROM battles
+            WHERE (attacker_village_id = ? OR defender_village_id = ?)",
+            [$villageId, $villageId]
+        );
+    }
+
+    public function getBattleObjects($battleId) {
+        return $this->queryAll(
+            "SELECT
+                id,
+                battle_id AS battleId,
+                object_type AS objectType,
+                original_id AS orirginalId,
+                owner_village_id AS ownerVillageId,
+                x,
+                y,
+                current_hp AS currentHp
+            FROM battle_objects
+            WHERE battle_id = ?",
+            [$battleId]
+        );
+    }
+
+    public function updateAttackerStatus($battleId, $timestamp) {
+        return $this->execute(
+            "UPDATE battles SET attacker_last_online = ? WHERE id = ?",
+            [$timestamp, $battleId]
+        );
+    }
+
+    public function updateDefenderStatus($battleId, $timestamp) {
+        return $this->execute(
+            "UPDATE battles SET defender_last_online = ? WHERE id = ?",
+            [$timestamp, $battleId]
+        );
+    }
+
+    public function markVillageAttack($villageId) {
+        return $this->execute("UPDATE villages SET is_attacked = 1 WHERE id = ?", [$villageId]);
     }
 }
