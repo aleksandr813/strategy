@@ -7,6 +7,7 @@ import VillageEntity from '../../game/entities/VillageEntity';
 import { GameContext } from '../../App';
 import { TPoint } from '../../config';
 import globalMapBackground from '../../assets/img/background/globalMapBackground.png';
+import tableBackground from '../../assets/img/background/tableBackground.png'
 import GAMECONFIG from '../../game/gameConfig';
 
 import "./GlobalMap.scss";
@@ -50,6 +51,7 @@ const GlobalMapCanvas: React.FC = () => {
     let isMiddleMouseDragging = false;
     let middleMouseStartScreenPosition: TPoint | null = null;
     let windowStartPosition: { LEFT: number, TOP: number } | null = null;
+    let animationTime = 0;
 
     const clampCamera = () => { 
         const maxLeft = Math.max(0, GLOBAL_MAP_WIDTH - WINDOW.WIDTH + BORDER_PADDING);
@@ -70,6 +72,11 @@ const GlobalMapCanvas: React.FC = () => {
     };
 
     function render(FPS: number) {
+        if (FPS > 0) {
+            animationTime += (1 / FPS);
+        } else {
+            animationTime += (1 / 60);
+            }
         if (!canvas) return;
         canvas.clear();
         if (background.complete) {
@@ -79,6 +86,9 @@ const GlobalMapCanvas: React.FC = () => {
         const { armies, villages } = globalMap.getMap();
 
         drawVillages(canvas, villages);
+        if (armies && armies.length > 0) {
+            drawArmies(canvas, armies, animationTime);
+        }
         canvas.render();
     }
 
@@ -109,6 +119,27 @@ const GlobalMapCanvas: React.FC = () => {
         ctx.restore();
     });
 };
+
+const drawArmies = (canvas: Canvas, armies: ArmyEntity[], time: number) => {
+        const ctx = canvas.contextV;
+        const PULSE_RADIUS = 5 + Math.sin(time * 5) * 3.5;
+
+        armies.forEach((army) => {
+            drawSprites(canvas, army, [army.coords]);
+        });
+
+        armies.forEach((army) => {
+            ctx.save();
+            ctx.shadowColor = '#FF00FF'; 
+            ctx.shadowBlur = PULSE_RADIUS;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+            drawSprites(canvas, army, [army.coords]);
+
+            ctx.restore();
+        });
+    };
 
     const mouseDown = (x: number, y: number) => {
         mouseDownPosition = { x, y };
@@ -236,7 +267,13 @@ const GlobalMapCanvas: React.FC = () => {
     }, []);
 
     return (
-        <div className='GlobalMapCanvas'>
+        <div className='GlobalMapCanvas'
+        style={{
+                backgroundImage: `url(${tableBackground})`,
+                backgroundRepeat: 'repeat',
+                backgroundPosition: 'center',
+                imageRendering: 'pixelated' 
+            }}>
             <div id={GAME_FIELD} className={GAME_FIELD}></div>
         </div>
     );

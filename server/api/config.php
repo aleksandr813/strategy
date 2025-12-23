@@ -14,3 +14,6 @@ const PROHIBITED_BUILDINGS = '1,2';
 
 // Увеличение стоимости похода за каждого юнита
 const COST_PER_UNIT = 50;
+
+const MAP_WIDTH = 89;
+const MAP_HEIGHT = 27;

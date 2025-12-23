@@ -106,7 +106,32 @@ class DB
         );
     }
 
-    public function getUnits($userId)
+    // public function getUnits($userId)
+    // {
+    //     return $this->queryAll(
+    //         "SELECT 
+    //             u.id AS id,
+    //             u.type_id AS typeId,
+    //             u.village_id AS villageId,
+    //             u.x AS x,
+    //             u.y AS y,
+    //             u.level AS level,
+    //             u.current_hp AS currentHp,
+    //             u.on_a_crusade AS onACrusade,
+    //             u.is_enemy AS isEnemy,
+    //             ut.type AS type,
+    //             ut.speed AS speed,
+    //             ut.range AS range,
+    //             ut.damage AS damage
+    //         FROM units AS u
+    //         INNER JOIN unit_types AS ut
+    //         ON u.type_id = ut.id
+    //         WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)",
+    //         [$userId]
+    //     );
+    // }
+
+    public function getUnits($villageId)
     {
         return $this->queryAll(
             "SELECT 
@@ -120,12 +145,14 @@ class DB
                 u.on_a_crusade AS onACrusade,
                 u.is_enemy AS isEnemy,
                 ut.type AS type,
-                ut.speed AS speed
+                ut.speed AS speed,
+                ut.range_attack AS rangeAttack,
+                ut.damage AS damage
             FROM units AS u
             INNER JOIN unit_types AS ut
             ON u.type_id = ut.id
-            WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)",
-            [$userId]
+            WHERE village_id = ?",
+            [$villageId]
         );
     }
 
@@ -392,6 +419,10 @@ class DB
         (userId, startX, startY, startTime, arrivalTime, targetX, targetY, attackId, units, speed) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [$userId, $startX, $startY, $startTime, $arrivalTime, $targetX, $targetY, $targetId, $armyString, $speed]);
+    }
+
+    public function markVillageAsAttacked($attackerVillageId, $targetVillageId) {
+        return $this->execute("UPDATE villages SET attack_id = ? WHERE id = ?", [$attackerVillageId, $targetVillageId]);
     }
 
     public function unitsOnACrusade($villageId, $units)

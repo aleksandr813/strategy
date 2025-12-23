@@ -177,7 +177,13 @@ class Village
         if (!$userId) {
             return ['error' => 705];
         }
-        $units = $this->db->getUnits($userId);
+
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
+        }
+
+        $units = $this->db->getUnits($village->id);
 
         $filteredUnits = [];
         foreach ($units as &$unit) {
@@ -384,6 +390,8 @@ class Village
         if (!$crusade) {
             return ['error'];
         }
+
+        $this->db->markVillageAsAttacked($startVillage->id, $targetVillage->id);
 
         return ['newMoney' => $newMoney];
     }

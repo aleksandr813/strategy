@@ -22,6 +22,7 @@ class Village extends Manager {
     public selectedBuilding: Building | null = null;
     public selectedUnit: Unit | null = null;
     public easyStar: EasyStar.js;
+    private isPlacingRightNow = false;
 
     constructor(store: Store, server: Server, mediator: Mediator, easyStar: EasyStar.js, game: Game) {
         super(game);
@@ -100,6 +101,8 @@ class Village extends Manager {
     public async handleBuildingPlacement(): Promise<void> {
         if (!this.buildingPreview.tryPlace()) return;
 
+        this.isPlacingRightNow = true;
+
         const typeId = this.buildingPreview.getBuildingTypeId();
         const position = this.buildingPreview.getPlacementPosition();
         
@@ -115,6 +118,8 @@ class Village extends Manager {
             }
             this.server.getIncome();
         }
+
+        setTimeout(() => { this.isPlacingRightNow = false; }, 100);
     }
 
     public async handleUnitPlacement(): Promise<void> {
@@ -132,6 +137,7 @@ class Village extends Manager {
     }
 
     public handleBuildingClick(x: number, y: number): void {
+        if (this.isPlacingRightNow) return;
         const gridX = Math.floor(x);
         const gridY = Math.floor(y);
         
@@ -292,19 +298,19 @@ class Village extends Manager {
         const left = x > 0 ? matrix[y][x - 1] : 0;
         const right = x < 86 ? matrix[y][x + 1] : 0;
 
-        if (up === 1 && down === 1 && left === 1 && right === 1) return 41;
-        if (left === 1 && down === 1 && up === 1 && right !== 1) return 90;
-        if (right === 1 && left === 1 && up === 1 && down !== 1) return 89;
-        if (right === 1 && down === 1 && up === 1 && left !== 1) return 88;
-        if (right === 1 && left === 1 && down === 1 && up !== 1) return 87;
-        if (left === 1 && up === 1 && down !== 1 && right !== 1) return 86;
-        if (right === 1 && up === 1 && down !== 1 && left !== 1) return 85;
-        if (right === 1 && down === 1 && up !== 1 && left !== 1) return 84;
-        if (left === 1 && down === 1 && up !== 1 && right !== 1) return 83;
-        if ((left === 1 || right === 1) && up !== 1 && down !== 1) return 82;
-        if ((up === 1 || down === 1) && left !== 1 && right !== 1) return 81;
+        if (up === 1 && down === 1 && left === 1 && right === 1) return 36;
+        if (left === 1 && down === 1 && up === 1 && right !== 1) return 35;
+        if (right === 1 && left === 1 && up === 1 && down !== 1) return 34;
+        if (right === 1 && down === 1 && up === 1 && left !== 1) return 33;
+        if (right === 1 && left === 1 && down === 1 && up !== 1) return 32;
+        if (left === 1 && up === 1 && down !== 1 && right !== 1) return 31;
+        if (right === 1 && up === 1 && down !== 1 && left !== 1) return 30;
+        if (right === 1 && down === 1 && up !== 1 && left !== 1) return 29;
+        if (left === 1 && down === 1 && up !== 1 && right !== 1) return 28;
+        if ((left === 1 || right === 1) && up !== 1 && down !== 1) return 27;
+        if ((up === 1 || down === 1) && left !== 1 && right !== 1) return 26;
         
-        return 81;
+        return 26;
     }
 
     private updateAllGateSprites(): void {
