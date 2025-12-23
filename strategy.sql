@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Дек 23 2025 г., 22:47
+-- Время создания: Дек 23 2025 г., 22:57
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -473,7 +473,9 @@ ALTER TABLE `army`
 -- Индексы таблицы `battles`
 --
 ALTER TABLE `battles`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `attacker_village_id` (`attacker_village_id`,`defender_village_id`),
+  ADD KEY `defender_village_id` (`defender_village_id`);
 
 --
 -- Индексы таблицы `battle_objects`
@@ -634,6 +636,14 @@ ALTER TABLE `villages`
 --
 ALTER TABLE `army`
   ADD CONSTRAINT `army_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `battles`
+--
+ALTER TABLE `battles`
+  ADD CONSTRAINT `battles_ibfk_1` FOREIGN KEY (`id`) REFERENCES `battle_objects` (`battle_id`),
+  ADD CONSTRAINT `battles_ibfk_2` FOREIGN KEY (`attacker_village_id`) REFERENCES `villages` (`id`),
+  ADD CONSTRAINT `battles_ibfk_3` FOREIGN KEY (`defender_village_id`) REFERENCES `villages` (`id`);
 
 --
 -- Ограничения внешнего ключа таблицы `buildings`
