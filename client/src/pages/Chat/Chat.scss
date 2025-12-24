@@ -8,6 +8,23 @@
     min-height: 400px;
     width: 600px;
     height: 600px;
+
+    border-radius: 15px;
+    background-color: rgba(0, 0, 0, 0.7);
+
+    font-family: 'PixelifySans-Medium', sans-serif;
+    overflow: hidden;
+
+    &-user-info {
+        padding: 10px;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-bottom: solid black 3px;
+        
+        span {
+            display: block;
+            font-size: 1.2em;
+        }
+    }
     border-radius: 0;
     background-color: #1a1410;
     border: 6px solid #3d2817;
