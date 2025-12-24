@@ -4,6 +4,7 @@ import React, { useContext, useRef, useState, useEffect } from 'react';
 import { ServerContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
+import { validateLoginFromLogin, validatePasswordFromLogin } from '../../services/verification/Verification';
 
 import './Login.scss';
 
@@ -25,6 +26,20 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
             setLoginError('');
             setPasswordError('');
 
+            let hasErrors = false;
+
+            const loginValidation = validateLoginFromLogin(login);
+            if (!loginValidation.isValid) {
+                setLoginError(loginValidation.message);
+                hasErrors = true;
+            }
+
+            // Проверка пароля
+            const passwordValidation = validatePasswordFromLogin(password);
+            if (!passwordValidation.isValid) {
+                setPasswordError(passwordValidation.message);
+                hasErrors = true;
+            }
             // Сохранение логина и пароля в cookies если отмечено "Запомнить меня"
             if (rememberMe) {
                 setCookie('rememberedLogin', login, 30);
@@ -52,7 +67,7 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
     useEffect(() => {
         const savedLogin = getCookie('rememberedLogin');
         const savedPassword = getCookie('rememberedPassword');
-        
+
         if (loginRef.current && savedLogin) {
             loginRef.current.value = savedLogin;
             setRememberMe(true);
@@ -84,22 +99,21 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
         <div className='login'>
             <div className="background-characters left"></div>
             <div className="background-characters right"></div>
-            
+
             <div className='login-content'>
-                <h1 className='version'>Alpha</h1>
                 <h1 className="title">STRATEGY</h1>
                 <div className="login-form">
                     <label>Логин</label>
                     <input ref={loginRef} id="Test-input-login" onKeyDown={handleKeyDown} />
                     {loginError && <p className="error-message">{loginError}</p>}
-                    
+
                     <label>Пароль</label>
                     <input ref={passwordRef} type='password' id="Test-input-password" onKeyDown={handleKeyDown} />
                     {passwordError && <p className="error-message">{passwordError}</p>}
-                    
+
                     <div className="remember-me">
-                        <input 
-                            type="checkbox" 
+                        <input
+                            type="checkbox"
                             id="rememberMe"
                             checked={rememberMe}
                             onChange={(e) => setRememberMe(e.target.checked)}
@@ -110,20 +124,20 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
                     <Button onClick={loginClickHandler} text='Авторизоваться' className='buttons' id="Test-button-autorization" />
                     <Button onClick={regClickHandler} text='Регистрация' className='buttons' id="Test-button-back" />
                     <Button onClick={jokeClickHandler} className='max-login-btn'>
-                    <img 
-                        src= { maxIcon }
-                        alt="MAX"
-                        className="joke-icon"
-                    />
-                    Вход через MAX
+                        <img
+                            src={maxIcon}
+                            alt="MAX"
+                            className="joke-icon"
+                        />
+                        Вход через MAX
                     </Button>
                     <Button onClick={jokeClickHandler} className='gosuslugi-login-btn'>
-                    <img 
-                        src= { gosIcon }
-                        alt="ГосУслуги"
-                        className="joke-icon"
-                    />
-                    Вход через ГосУслуги
+                        <img
+                            src={gosIcon}
+                            alt="ГосУслуги"
+                            className="joke-icon"
+                        />
+                        Вход через ГосУслуги
                     </Button>
                 </div>
             </div>

@@ -6,10 +6,9 @@ export enum UnitTypeID {
     Guardian = 5,
     Archer = 6,
     Crossbowman = 7,
-    Knight = 9,
-    Sorcerer = 10,
-    Summoner = 11,
-    Golem = 12,
+    Knight = 8,
+    Sorcerer = 9,
+    Golem = 10,
 }
 
 type SpriteMap = {
@@ -17,17 +16,16 @@ type SpriteMap = {
 };
 
 export const SPRITE_MAP: SpriteMap = {
-        [UnitTypeID.Knight]: [21, 61],
-        [UnitTypeID.Spearman]: [22, 62],
-        [UnitTypeID.Berserk]: [30, 70],
-        [UnitTypeID.Paladin]: [31],
-        [UnitTypeID.Guardian]: [29, 69],
-        [UnitTypeID.Archer]: [24, 64],
-        [UnitTypeID.Crossbowman]: [23, 63],
-        [UnitTypeID.Sorcerer]: [25],
-        [UnitTypeID.Summoner]: [27],
-        [UnitTypeID.Golem]: [26],
-        [UnitTypeID.Swordman]: [28]
+    [UnitTypeID.Swordman]: [68, 88],
+    [UnitTypeID.Spearman]: [42, 62],
+    [UnitTypeID.Berserk]: [50, 70],
+    [UnitTypeID.Paladin]: [51, 71],
+    [UnitTypeID.Guardian]: [49, 69],
+    [UnitTypeID.Archer]: [44, 64],
+    [UnitTypeID.Crossbowman]: [43, 63],
+    [UnitTypeID.Knight]: [41, 61],
+    [UnitTypeID.Sorcerer]: [45],
+    [UnitTypeID.Golem]: [46],    
 };
 
 export function getUnitSprites(typeId: UnitTypeID): number[] {
@@ -37,6 +35,13 @@ export function getUnitSprites(typeId: UnitTypeID): number[] {
 
 const GAMECONFIG = {
     EXCLUDED_BUILDINGS: ['Ратуша', 'Шахта'],
+
+
+    MIN_ZOOM: 1,
+    MAX_ZOOM: 45,
+    ZOOM_FACTOR: 0.1,
+
+    BORDER_PADDING: 2,
 
     GRID_WIDTH: 87,
     GRID_HEIGHT: 29,

@@ -34,10 +34,10 @@ const UI: React.FC<UIProps> = ({ store, mediator, setPage }) => {
 
     return (
         <div className='UI'>
-            <BuildingMenu></BuildingMenu>
+            <BuildingMenu mediator={mediator} />
             {uiElement === UIELEMENT.BUYBUILDINGSMENU && <BuyBuildingsMenu setUIElement={setUIElement} store={store} mediator={mediator} />}
             {uiElement === UIELEMENT.BUYUNITSMENU && <BuyUnitsMenu setUIElement={setUIElement} store={store} mediator={mediator} />}
-            {uiElement === UIELEMENT.ARMYMENU && <ArmyMenu setUIElement={setUIElement} store={store} mediator={mediator} />}
+            {uiElement === UIELEMENT.ARMYMENU && <ArmyMenu setPage={setPage} setUIElement={setUIElement} store={store} mediator={mediator} />}
             <Panel setUIElement={setUIElement} store={store} mediator={mediator} setPage={setPage} />
         </div>
     );

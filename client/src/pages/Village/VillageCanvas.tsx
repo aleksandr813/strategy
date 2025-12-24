@@ -9,20 +9,26 @@ import useSprites from '../../hooks/useSprites';
 import Unit from '../../game/entities/Unit';
 import Building from '../../game/entities/Building';
 import villageBackground from '../../assets/img/background/villageBackground.png';
+import tableBackground from '../../assets/img/background/tableBackground.png'
 
 import "./Village.scss";
 
 const GAME_FIELD = 'game-field';
-const GREEN = '#00e81c';
 const DRAG_THRESHOLD = 5;
 const TIME_THRESHOLD = 200;
+const BORDER_PADDING = GAMECONFIG.BORDER_PADDING;
 
-let zoomFactor = 1;
+const MIN_ZOOM = GAMECONFIG.MIN_ZOOM;
+const MAX_ZOOM = GAMECONFIG.MAX_ZOOM;
+const ZOOM_FACTOR = GAMECONFIG.ZOOM_FACTOR;
+
+const GAME_FIELD_WIDTH = GAMECONFIG.GRID_WIDTH;
+const GAME_FIELD_HEIGHT = GAMECONFIG.GRID_HEIGHT;
 
 const VillageCanvas: React.FC = () => {
     const { WINDOW } = CONFIG;
     const game = useContext(GameContext);
-    const village = game.getVillage(); 
+    const village = game.getVillage();
     
     const background = new Image();
     background.src = villageBackground;
@@ -50,6 +56,18 @@ const VillageCanvas: React.FC = () => {
     let middleMouseStartScreenPosition: TPoint | null = null;
     let windowStartPosition: { LEFT: number, TOP: number } | null = null;
 
+    const clampCamera = () => {
+        // границы с учётом отступа
+        const maxLeft = Math.max(0, GAME_FIELD_WIDTH - WINDOW.WIDTH + BORDER_PADDING);
+        const maxTop = Math.max(0, GAME_FIELD_HEIGHT - WINDOW.HEIGHT + BORDER_PADDING);
+        
+        // минимальные значения
+        const minLeft = -BORDER_PADDING;
+        const minTop = -BORDER_PADDING;
+        
+        WINDOW.LEFT = Math.max(minLeft, Math.min(WINDOW.LEFT, maxLeft));
+        WINDOW.TOP = Math.max(minTop, Math.min(WINDOW.TOP, maxTop));
+    };
 
     const drawRect = (canvas: Canvas, x: number, y: number, width: number, height: number, fillStyle: string) => {
         canvas.contextV.fillStyle = fillStyle;
@@ -150,10 +168,8 @@ const VillageCanvas: React.FC = () => {
         drawSelectionRect(canvas);
         drawBuildingPreview(canvas);
         drawUnitPreview(canvas);
-        //canvas.drawFPS(String(FPS), GREEN);
         canvas.render();
     }
-
 
     const mouseDown = (x: number, y: number) => {
         mouseDownPosition = { x, y };
@@ -180,8 +196,11 @@ const VillageCanvas: React.FC = () => {
         if (isMiddleMouseDragging && middleMouseStartScreenPosition && windowStartPosition && canvas && screenX !== undefined && screenY !== undefined) {
             const deltaX = (screenX - middleMouseStartScreenPosition.x) / canvas.WIDTH * WINDOW.WIDTH;
             const deltaY = (screenY - middleMouseStartScreenPosition.y) / canvas.HEIGHT * WINDOW.HEIGHT;
+            
             WINDOW.LEFT = windowStartPosition.LEFT - deltaX;
             WINDOW.TOP = windowStartPosition.TOP - deltaY;
+            
+            clampCamera();
         }
     };
 
@@ -277,19 +296,21 @@ const VillageCanvas: React.FC = () => {
 
     const mouseWheel = (delta: number, x: number, y: number) => {
         if (!canvas) return;
-        if (delta > 0) {
-            zoomFactor = 1.1;
-        } else {
-            zoomFactor = 0.9;
-        }
-        const oldWidth = WINDOW.WIDTH;
-        const oldHeight = WINDOW.HEIGHT;
-        WINDOW.WIDTH *= zoomFactor;
-        WINDOW.HEIGHT *= zoomFactor;
-        const relativeX = (x - WINDOW.LEFT) / oldWidth;
-        const relativeY = (y - WINDOW.TOP) / oldHeight;
-        WINDOW.LEFT = x - relativeX * WINDOW.WIDTH;
-        WINDOW.TOP = y - relativeY * WINDOW.HEIGHT;
+        
+        const zoomAmount = delta > 0 ? 1 + ZOOM_FACTOR : 1 - ZOOM_FACTOR;
+        const newWidth = WINDOW.WIDTH * zoomAmount;
+        const newHeight = WINDOW.HEIGHT * zoomAmount;
+        
+        if (newHeight < MIN_ZOOM || newHeight > MAX_ZOOM) return;
+        
+        const scale = newWidth / WINDOW.WIDTH;
+        WINDOW.LEFT = x - (x - WINDOW.LEFT) * scale;
+        WINDOW.TOP = y - (y - WINDOW.TOP) * scale;
+        
+        WINDOW.WIDTH = newWidth;
+        WINDOW.HEIGHT = newHeight;
+        
+        clampCamera();
     };
 
     const mouseMiddleDown = (x: number, y: number, screenX?: number, screenY?: number) => {
@@ -343,6 +364,8 @@ const VillageCanvas: React.FC = () => {
         village.loadBuildings();
         village.loadUnits();
 
+        clampCamera();
+
         return () => {
             if (WINDOW.WIDTH !== INITIAL_WINDOW_WIDTH) {
                 WINDOW.WIDTH = INITIAL_WINDOW_WIDTH;
@@ -354,13 +377,18 @@ const VillageCanvas: React.FC = () => {
             window.removeEventListener('resize', handleResize);
 
             village?.destructor();
-            //canvas?.destructor();
             canvas = null;
         };
     }, []);
 
     return (
-        <div className='VillageCanvas'>
+        <div className='VillageCanvas'
+        style={{
+                backgroundImage: `url(${tableBackground})`,
+                backgroundRepeat: 'repeat',
+                backgroundPosition: 'center',
+                imageRendering: 'pixelated' 
+            }}>
             <div id={GAME_FIELD} className={GAME_FIELD}></div>
         </div>
     );
