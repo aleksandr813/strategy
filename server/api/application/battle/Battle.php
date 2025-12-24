@@ -92,9 +92,34 @@ class Battle {
 
         $objects = $this->db->getBattleObjects($battle->id);
 
+        $units = [];
+        $buildings = [];
+        $corpse = [];
+        $ruin = [];
+
+        foreach($objects as $object) {
+            switch($object['objectType']) {
+                case 'UNIT':
+                    $units[] = $object;
+                    break;
+                case 'BUILDING':
+                    $buildings[] = $object;
+                    break;
+                case 'CORSPE':
+                    $corpse[] = $object;
+                    break;
+                case 'RUIN':
+                    $ruin = $object;
+                    break;
+            }
+        }
+
         $battleData = [
             'battleId' => $battle->id,
-            'objects' => $objects,
+            'units' => $units,
+            'buildings' => $buildings,
+            'corspe' => $corpse,
+            'ruin' => $ruin,
             'enemyOnline' => $enemyOnline,
             'isAttacker' => $isAttacker
         ];

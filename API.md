@@ -668,7 +668,7 @@ Buildings: {
             battleId: number; id битвы
             enemyOnline: boolean; в сети опонент или нет
             isAttacker: boolean; является ли посылающий запрос атакующим или нет
-            objects {
+            units, building, corspe, ruin {
                 id: number; id объекта
                 battleId: number; id битвы которой принадлежит объект
                 objectType: string; тип объекта представлен как enum ("UNIT", "BUILDING", "RUIN", "CORPSE")
