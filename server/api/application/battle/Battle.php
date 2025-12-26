@@ -73,4 +73,91 @@ class Battle {
     private function culculateDistance($x1, $y1, $x2, $y2) {
         return sqrt(pow($x2 - $x1, 2) + pow($y2 - $y1, 2));
     }
+
+    public function getBattle($userId, $hash) {
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
+        }
+
+        $battle = $this->db->getActiveBattle($village->id);
+        if (!$battle) {
+            return true;
+        }
+
+        $isAttacker = $battle->attackerVillageId == $village->id;
+        $this->updateOnlineStatus($battle, $isAttacker);
+
+        $enemyOnline = $this->isEnemyOnline($battle, $isAttacker);
+
+        $objects = $this->db->getBattleObjects($battle->id);
+
+        $units = [];
+        $buildings = [];
+        $corpse = [];
+        $ruin = [];
+
+        foreach($objects as $object) {
+            switch($object['objectType']) {
+                case 'UNIT':
+                    $units[] = $object;
+                    break;
+                case 'BUILDING':
+                    $buildings[] = $object;
+                    break;
+                case 'CORSPE':
+                    $corpse[] = $object;
+                    break;
+                case 'RUIN':
+                    $ruin = $object;
+                    break;
+            }
+        }
+
+        $battleData = [
+            'battleId' => $battle->id,
+            'units' => $units,
+            'buildings' => $buildings,
+            'corspe' => $corpse,
+            'ruin' => $ruin,
+            'enemyOnline' => $enemyOnline,
+            'isAttacker' => $isAttacker
+        ];
+
+        $currentHash = md5(json_encode($battleData));
+
+        if ($currentHash === $hash) {
+            return ['hash' => $hash];
+        }
+
+        if ($battle->hash !== $currentHash) {
+            $this->db->updateBattleHash($battle->id, $currentHash);
+        }
+
+        return [
+            'hash' => $currentHash,
+            'battleData' => $battleData
+        ];
+    }
+
+    private function updateOnlineStatus($battle, $isAttacker) {
+        $now = date('Y-m-d H:i:s');
+
+        if ($isAttacker) {
+            return $this->db->updateAttackerStatus($battle->id, $now);
+        } else {
+            return $this->db->updateDefenderStatus($battle->id, $now);
+        }
+    }
+
+    private function isEnemyOnline($battle, $isAttacker) {
+        $now = time();
+
+        $lastOnlineStr = $isAttacker ? $battle->defenderLastOnline : $battle->attackerLastOnline;
+
+        $lastOnline = strtotime($lastOnlineStr);
+        $timeDiff = $now - $lastOnline;
+
+        return $timeDiff <= ONLINE_TIMEOUT;
+    }
 }
