@@ -25,7 +25,7 @@ class Village
         $now = time();
         $diffSeconds = $now - $lastIncome;
 
-        if ($diffSeconds < INCOME_INTERVAL) {
+        if ($diffSeconds < INCOME_INTERVAL && $diffSeconds > 0) {
             return [
                 'money' => $this->db->getMoney($userId)->money
             ];
