@@ -64,8 +64,45 @@ class Map {
                 'units' => $army['units'],
                 'speed' => (float) $army['speed']
             ];
+
+            if ($progress == 1) {
+                $this->startBattle((int)$army['army']);
+                $this->db->deleteArmyById($army['army']);
+            }
         }
         
         return $result;
+    }
+
+    private function startBattle($armyId) {
+        $army = $this->db->getArmy($armyId);
+        if (!$army) {
+            return ['error' => 603];
+        }
+
+        $defenderVillage = $this->db->getVillage($army->attackId);
+        if (!$defenderVillage) {
+            return ['error' => 315];
+        }
+
+        $attackerVillage = $this->db->getVillage($army->userId);
+        if (!$attackerVillage) {
+            return ['error' => 315];
+        }
+
+        $defenderdUnits = $this->db->getUnits($defenderVillage->id);
+        $attackerUnits = $this->db->getUnitsInArmy($armyId);
+
+        $defenderBuildings = $this->db->getBuildings($defenderVillage->id);
+
+        $now = date('Y-m-d H:m:s');
+        $battleId = $this->db->startBattle($attackerVillage->id, $defenderVillage->id, $now, $now, md5(rand()));
+
+        $this->db->addObjectsToBattle($defenderdUnits, 'UNIT', $battleId);
+        $this->db->addObjectsToBattle($attackerUnits, 'UNIT', $battleId);
+
+        $this->db->addObjectsToBattle($defenderBuildings, 'BUILDING', $battleId);
+
+        $this->db->markVillageAttack($defenderVillage->id);
     }
 }

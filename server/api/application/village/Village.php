@@ -25,7 +25,7 @@ class Village
         $now = time();
         $diffSeconds = $now - $lastIncome;
 
-        if ($diffSeconds < INCOME_INTERVAL) {
+        if ($diffSeconds < INCOME_INTERVAL && $diffSeconds > 0) {
             return [
                 'money' => $this->db->getMoney($userId)->money
             ];
@@ -43,10 +43,12 @@ class Village
 
     public function getBuildings($userId)
     {
-        if (!$userId) {
-            return ['error' => 705];
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
         }
-        $buildings = $this->db->getBuildings($userId);
+
+        $buildings = $this->db->getBuildings($village->id);
 
         foreach ($buildings as &$building) {
             $building['id'] = (int)$building['id'];

@@ -22,6 +22,7 @@ class Village extends Manager {
     public selectedBuilding: Building | null = null;
     public selectedUnit: Unit | null = null;
     public easyStar: EasyStar.js;
+    private isPlacingRightNow = false;
 
     constructor(store: Store, server: Server, mediator: Mediator, easyStar: EasyStar.js, game: Game) {
         super(game);
@@ -100,6 +101,8 @@ class Village extends Manager {
     public async handleBuildingPlacement(): Promise<void> {
         if (!this.buildingPreview.tryPlace()) return;
 
+        this.isPlacingRightNow = true;
+
         const typeId = this.buildingPreview.getBuildingTypeId();
         const position = this.buildingPreview.getPlacementPosition();
         
@@ -115,6 +118,8 @@ class Village extends Manager {
             }
             this.server.getIncome();
         }
+
+        setTimeout(() => { this.isPlacingRightNow = false; }, 100);
     }
 
     public async handleUnitPlacement(): Promise<void> {
@@ -132,6 +137,7 @@ class Village extends Manager {
     }
 
     public handleBuildingClick(x: number, y: number): void {
+        if (this.isPlacingRightNow) return;
         const gridX = Math.floor(x);
         const gridY = Math.floor(y);
         
