@@ -65,9 +65,9 @@ class Map {
                 'speed' => (float) $army['speed']
             ];
 
-            if ($progress == 1) {
+            if ($progress == 1 && $army['inBattle'] == 0) {
                 $this->startBattle((int)$army['army']);
-                $this->db->deleteArmyById($army['army']);
+                $this->db->markArmyInBattle((int)$army['army']);
             }
         }
         
@@ -96,7 +96,7 @@ class Map {
         $defenderBuildings = $this->db->getBuildings($defenderVillage->id);
 
         $now = date('Y-m-d H:m:s');
-        $battleId = $this->db->startBattle($attackerVillage->id, $defenderVillage->id, $now, $now, md5(rand()));
+        $battleId = $this->db->startBattle($armyId, $attackerVillage->id, $defenderVillage->id, $now, $now, md5(rand()));
 
         $this->db->addObjectsToBattle($defenderdUnits, 'UNIT', $battleId);
         $this->db->addObjectsToBattle($attackerUnits, 'UNIT', $battleId);

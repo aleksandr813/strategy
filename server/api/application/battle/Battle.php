@@ -92,8 +92,10 @@ class Battle {
 
         $objects = $this->db->getBattleObjects($battle->id);
 
-        $units = [];
-        $buildings = [];
+        $defenderUnits = $this->db->getUnits($battle->defenderVillageId);
+        $attackerUnits = $this->db->getUnitsInArmy($battle->armyAttackId);
+
+        $buildings = $this->db->getBuildings($battle->defenderVillageId);
         $corpse = [];
         $ruin = [];
 
@@ -102,24 +104,28 @@ class Battle {
             unset($objectWithoutType['objectType']);
 
             switch($object['objectType']) {
-                case 'UNIT':
-                    $units[] = $objectWithoutType;
-                    break;
-                case 'BUILDING':
-                    $buildings[] = $objectWithoutType;
-                    break;
                 case 'CORPSE':
                     $corpse[] = $objectWithoutType;
                     break;
+
                 case 'RUIN':
                     $ruin = $objectWithoutType;
                     break;
             }
         }
 
+        if ($isAttacker) {
+            $alliedUnits = $attackerUnits;
+            $enemyUnits = $defenderUnits;
+        } else {
+            $alliedUnits = $defenderUnits;
+            $enemyUnits = $attackerUnits;
+        }
+
         $battleData = [
             'battleId' => $battle->id,
-            'units' => $units,
+            'alliedUnits' => $alliedUnits,
+            'enemyUnits' => $enemyUnits,
             'buildings' => $buildings,
             'corpse' => $corpse,
             'ruin' => $ruin,
