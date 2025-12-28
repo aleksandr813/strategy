@@ -286,6 +286,10 @@ class Server {
 
         return response;
     }
+
+    async getBattle(): Promise<TBattle | null> {
+        
+    }
 }
 
 export default Server;

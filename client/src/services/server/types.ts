@@ -127,3 +127,8 @@ export type TUserArmy = {
     enemyName: string;
     speed: number;
 }
+
+export type TBattle = {
+    hash: string;
+    
+}
