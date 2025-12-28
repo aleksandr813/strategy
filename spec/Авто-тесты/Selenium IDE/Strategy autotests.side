@@ -322,14 +322,14 @@
       "command": "verifyText",
       "target": "css=.popup-title",
       "targets": [],
-      "value": "ОШИБКА №1001"
+      "value": "Ошибка №1001"
     }, {
       "id": "7625a887-382c-4f0b-ae37-59fc89ecd1da",
       "comment": "",
       "command": "verifyText",
       "target": "css=.popup--info-text",
       "targets": [],
-      "value": "IS IT UNIQUE LOGIN?"
+      "value": "Is it unique login?"
     }, {
       "id": "09ad43ed-5a8a-41e8-87c0-66e90c5757f9",
       "comment": "",
@@ -1809,7 +1809,7 @@
     }, {
       "id": "fe169028-5ed3-4a6a-81c9-eabeff22a402",
       "comment": "",
-      "command": "close",
+      "command": "//close",
       "target": "",
       "targets": [],
       "value": ""
@@ -4080,7 +4080,7 @@
         ["xpath=//div[@id='root']/div/div/div[3]/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": "LongPassword"
+      "value": "Userrealypasslon"
     }, {
       "id": "71e87e22-17e4-46ba-83ae-d6fcebc80ede",
       "comment": "",
@@ -5212,7 +5212,7 @@
         ["xpath=//div[@id='root']/div/div/div[3]/div/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": "LongPassword"
+      "value": "Userrealypasslon"
     }, {
       "id": "bf6d8c71-8306-4ff3-9767-fc95e53ae4fa",
       "comment": "",
@@ -5364,7 +5364,7 @@
       "command": "verifyText",
       "target": "css=.popup-title",
       "targets": [],
-      "value": "ОШИБКА №1005"
+      "value": "Ошибка №1005"
     }, {
       "id": "7225457d-d91f-4360-bb59-d5926533414e",
       "comment": "",
@@ -5375,7 +5375,7 @@
         ["xpath=//div[@id='root']/div/div/div/div/div[2]", "xpath:idRelative"],
         ["xpath=//div/div[2]", "xpath:position"]
       ],
-      "value": "USER IS NO EXISTS"
+      "value": "User is no exists"
     }, {
       "id": "4a60675a-0578-4e71-a795-fa0dd8f5082f",
       "comment": "",
@@ -5473,7 +5473,7 @@
       "command": "verifyText",
       "target": "css=.popup-title",
       "targets": [],
-      "value": "ОШИБКА №1002"
+      "value": "Ошибка №1002"
     }, {
       "id": "b6622707-0028-4f6f-867e-8f65b54b1411",
       "comment": "",
@@ -5484,7 +5484,7 @@
         ["xpath=//div[@id='root']/div/div/div/div/div[2]", "xpath:idRelative"],
         ["xpath=//div/div[2]", "xpath:position"]
       ],
-      "value": "WRONG LOGIN OR PASSWORD"
+      "value": "Wrong login or password"
     }, {
       "id": "1626e214-39b7-473e-9fe4-36ad58ba0626",
       "comment": "",
@@ -5547,27 +5547,26 @@
       "id": "d5a72601-dd56-4f87-9c95-0d215b88c92d",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.popup-title",
-      "targets": [],
+      "target": "css=.error-message",
+      "targets": [
+        ["css=.error-message", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[3]/div/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'Логин должен быть от 5 до 20 символов')]", "xpath:innerText"]
+      ],
       "value": "3000"
     }, {
       "id": "67618c9e-867e-4c86-b3ad-4253c9b5c06e",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.popup-title",
-      "targets": [],
-      "value": "ОШИБКА №1016"
-    }, {
-      "id": "95dca57d-c88c-4543-99ba-22a623690e1e",
-      "comment": "",
-      "command": "verifyText",
-      "target": "css=.popup--info-text",
+      "target": "css=.error-message",
       "targets": [
-        ["css=.popup--info-text", "css:finder"],
-        ["xpath=//div[@id='root']/div/div/div/div/div[2]", "xpath:idRelative"],
-        ["xpath=//div/div[2]", "xpath:position"]
+        ["css=.error-message", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[3]/div/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'Логин должен быть от 5 до 20 символов')]", "xpath:innerText"]
       ],
-      "value": "PARAMS LOGIN OR PASSWORD NOT SET"
+      "value": "Логин должен быть от 5 до 20 символов"
     }, {
       "id": "edeeaa01-565c-4823-a2d2-31f02aae6fc1",
       "comment": "",
@@ -5665,7 +5664,7 @@
       "command": "verifyText",
       "target": "css=.popup-title",
       "targets": [],
-      "value": "ОШИБКА №1005"
+      "value": "Ошибка №1005"
     }, {
       "id": "96004cee-ad74-4384-968f-9c2eea825d46",
       "comment": "",
@@ -5676,7 +5675,7 @@
         ["xpath=//div[@id='root']/div/div/div/div/div[2]", "xpath:idRelative"],
         ["xpath=//div/div[2]", "xpath:position"]
       ],
-      "value": "USER IS NO EXISTS"
+      "value": "User is no exists"
     }, {
       "id": "028788da-525f-4f28-8b24-8c81cd0b693f",
       "comment": "",
@@ -5713,27 +5712,20 @@
       "id": "f7e594ee-f5eb-4104-a613-190f56bfaf5a",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.popup-title",
+      "target": "css=.error-message",
       "targets": [],
       "value": "3000"
-    }, {
-      "id": "8246c1ae-f486-4248-9aba-37220fd2e846",
-      "comment": "",
-      "command": "verifyText",
-      "target": "css=.popup-title",
-      "targets": [],
-      "value": "ОШИБКА №1016"
     }, {
       "id": "193b3d55-b653-4c2b-8276-5f7686caffd9",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.popup--info-text",
+      "target": "css=.error-message",
       "targets": [
         ["css=.popup--info-text", "css:finder"],
         ["xpath=//div[@id='root']/div/div/div/div/div[2]", "xpath:idRelative"],
         ["xpath=//div/div[2]", "xpath:position"]
       ],
-      "value": "PARAMS LOGIN OR PASSWORD NOT SET"
+      "value": "Логин должен быть от 5 до 20 символов"
     }, {
       "id": "357043ff-eee4-4890-ba1e-b3e3cfbdb8b6",
       "comment": "",
@@ -5796,27 +5788,16 @@
       "id": "2a74d085-c42e-464f-8e12-200cee48e41e",
       "comment": "",
       "command": "waitForElementPresent",
-      "target": "css=.popup-title",
+      "target": "css=.error-message",
       "targets": [],
       "value": "3000"
     }, {
       "id": "acd75e45-73ce-48e7-a542-129bde570dab",
       "comment": "",
       "command": "verifyText",
-      "target": "css=.popup-title",
+      "target": "css=.error-message",
       "targets": [],
-      "value": "ОШИБКА №1016"
-    }, {
-      "id": "99b930c1-0825-4c08-826d-5e301d5f43e3",
-      "comment": "",
-      "command": "verifyText",
-      "target": "css=.popup--info-text",
-      "targets": [
-        ["css=.popup--info-text", "css:finder"],
-        ["xpath=//div[@id='root']/div/div/div/div/div[2]", "xpath:idRelative"],
-        ["xpath=//div/div[2]", "xpath:position"]
-      ],
-      "value": "PARAMS LOGIN OR PASSWORD NOT SET"
+      "value": "Пароль должен быть не менее 8 символов"
     }, {
       "id": "c72188eb-a4d5-4906-8764-eaa7f1be9f74",
       "comment": "",
@@ -5914,7 +5895,7 @@
       "command": "verifyText",
       "target": "css=.popup-title",
       "targets": [],
-      "value": "ОШИБКА №1005"
+      "value": "Ошибка №1002"
     }, {
       "id": "851bf903-a4b6-4a1f-bed3-70ad7a44ed61",
       "comment": "",
@@ -5925,7 +5906,7 @@
         ["xpath=//div[@id='root']/div/div/div/div/div[2]", "xpath:idRelative"],
         ["xpath=//div/div[2]", "xpath:position"]
       ],
-      "value": "USER IS NO EXISTS"
+      "value": "Wrong login or password"
     }, {
       "id": "0fb980c9-b26f-4019-979e-4390e796ff1b",
       "comment": "",
@@ -6023,7 +6004,7 @@
       "command": "verifyText",
       "target": "css=.popup-title",
       "targets": [],
-      "value": "ОШИБКА №1002"
+      "value": "Ошибка №1002"
     }, {
       "id": "efed9efe-8f6f-42cf-b7aa-5739be98c403",
       "comment": "",
@@ -6034,7 +6015,7 @@
         ["xpath=//div[@id='root']/div/div/div/div/div[2]", "xpath:idRelative"],
         ["xpath=//div/div[2]", "xpath:position"]
       ],
-      "value": "WRONG LOGIN OR PASSWORD"
+      "value": "Wrong login or password"
     }, {
       "id": "e45360a8-5a5d-459a-9423-1ce695730225",
       "comment": "",

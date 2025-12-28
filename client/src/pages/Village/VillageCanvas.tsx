@@ -9,6 +9,7 @@ import useSprites from '../../hooks/useSprites';
 import Unit from '../../game/entities/Unit';
 import Building from '../../game/entities/Building';
 import villageBackground from '../../assets/img/background/villageBackground.png';
+import tableBackground from '../../assets/img/background/tableBackground.png'
 
 import "./Village.scss";
 
@@ -381,7 +382,13 @@ const VillageCanvas: React.FC = () => {
     }, []);
 
     return (
-        <div className='VillageCanvas'>
+        <div className='VillageCanvas'
+        style={{
+                backgroundImage: `url(${tableBackground})`,
+                backgroundRepeat: 'repeat',
+                backgroundPosition: 'center',
+                imageRendering: 'pixelated' 
+            }}>
             <div id={GAME_FIELD} className={GAME_FIELD}></div>
         </div>
     );

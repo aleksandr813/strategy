@@ -7,6 +7,7 @@ import VillageEntity from '../../game/entities/VillageEntity';
 import { GameContext } from '../../App';
 import { TPoint } from '../../config';
 import globalMapBackground from '../../assets/img/background/globalMapBackground.png';
+import tableBackground from '../../assets/img/background/tableBackground.png'
 import GAMECONFIG from '../../game/gameConfig';
 
 import "./GlobalMap.scss";
@@ -266,7 +267,13 @@ const drawArmies = (canvas: Canvas, armies: ArmyEntity[], time: number) => {
     }, []);
 
     return (
-        <div className='GlobalMapCanvas'>
+        <div className='GlobalMapCanvas'
+        style={{
+                backgroundImage: `url(${tableBackground})`,
+                backgroundRepeat: 'repeat',
+                backgroundPosition: 'center',
+                imageRendering: 'pixelated' 
+            }}>
             <div id={GAME_FIELD} className={GAME_FIELD}></div>
         </div>
     );
