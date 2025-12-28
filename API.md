@@ -462,7 +462,12 @@ Buildings: {
         y: number; - координата по y,
         level: number; - уровень юнита,
         currentHp: number; - текущее здоровье юнита,
-        type: string; - тип юнита
+        onACrusade: number; - указывает в походе юнит или нет (1 - в походе, 0 - нет),
+        isEnemy: number; - указывает союзный юнит или нет (1 - свой, 0 - враг),
+        type: string; - тип юнита,
+        speed: number; - скорость юнита,
+        rangeAttack: number; - дистанция атаки юнита,
+        damage: number; - урон юнита
     }>
 ```
 **Ошибки**
@@ -512,7 +517,7 @@ Buildings: {
 * `504` - Ошибка перемещения юнитов (Units movement error)
 
 ### 4.16. takeDamage
-Обновить положение юнитов
+Операция нанесения урона
 
 **Параметры**
 ```
