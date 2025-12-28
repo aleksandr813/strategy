@@ -676,7 +676,6 @@ Buildings: {
             units, building, corspe, ruin {
                 id: number; id объекта
                 battleId: number; id битвы которой принадлежит объект
-                objectType: string; тип объекта представлен как enum ("UNIT", "BUILDING", "RUIN", "CORPSE")
                 originalId: number; id объекта из исходной таблицы
                 ownerVillageId: number; id деревни, которой принадлежит объект
                 x: number; текущее положение объекта по координате x

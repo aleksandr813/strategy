@@ -98,18 +98,21 @@ class Battle {
         $ruin = [];
 
         foreach($objects as $object) {
+            $objectWithoutType = $object;
+            unset($objectWithoutType['objectType']);
+
             switch($object['objectType']) {
                 case 'UNIT':
-                    $units[] = $object;
+                    $units[] = $objectWithoutType;
                     break;
                 case 'BUILDING':
-                    $buildings[] = $object;
+                    $buildings[] = $objectWithoutType;
                     break;
-                case 'CORSPE':
-                    $corpse[] = $object;
+                case 'CORPSE':
+                    $corpse[] = $objectWithoutType;
                     break;
                 case 'RUIN':
-                    $ruin = $object;
+                    $ruin = $objectWithoutType;
                     break;
             }
         }
@@ -118,7 +121,7 @@ class Battle {
             'battleId' => $battle->id,
             'units' => $units,
             'buildings' => $buildings,
-            'corspe' => $corpse,
+            'corpse' => $corpse,
             'ruin' => $ruin,
             'enemyOnline' => $enemyOnline,
             'isAttacker' => $isAttacker
