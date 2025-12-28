@@ -191,8 +191,7 @@ class Canvas {
     }
 
     clear(): void {
-        this.contextV.fillStyle = '#305160';
-        this.contextV.fillRect(0, 0, this.WIDTH, this.HEIGHT);
+        this.contextV.clearRect(0, 0, this.WIDTH, this.HEIGHT);
     }
 
     clearImage(image: HTMLImageElement): void {
@@ -236,6 +235,7 @@ class Canvas {
     }
 
     render(): void {
+        this.context.clearRect(0, 0, this.WIDTH, this.HEIGHT);
         this.context.drawImage(this.canvasV, 0, 0);
     }
 }
