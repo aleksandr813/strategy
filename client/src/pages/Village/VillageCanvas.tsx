@@ -30,8 +30,12 @@ const VillageCanvas: React.FC = () => {
     const game = useContext(GameContext);
     const village = game.getVillage();
     
-    const background = new Image();
-    background.src = villageBackground;
+    const tableBg = new Image();
+    tableBg.src = tableBackground;
+
+    const villageBg = new Image();
+    villageBg.src = villageBackground;
+
 
     let canvas: Canvas | null = null;
     const CanvasRef = useCanvas(render);
@@ -159,9 +163,25 @@ const VillageCanvas: React.FC = () => {
     function render(FPS: number) {
         if (!canvas || !village) return;
         canvas.clear();
-        if (background.complete) {
-            canvas.contextV.drawImage(background, canvas.xs(0), canvas.ys(0), canvas.dec(87), canvas.dec(29));
-        }
+        if (tableBg.complete) {
+        canvas.contextV.drawImage(
+            tableBg,
+            canvas.xs(WINDOW.LEFT),
+            canvas.ys(WINDOW.TOP),
+            canvas.dec(WINDOW.WIDTH),
+            canvas.dec(WINDOW.HEIGHT)
+        );
+    }
+
+    if (villageBg.complete) {
+        canvas.contextV.drawImage(
+            villageBg,
+            canvas.xs(0),
+            canvas.ys(0),
+            canvas.dec(87),
+            canvas.dec(29)
+        );
+    }
         const { units, buildings } = village.getScene();
         drawUnits(canvas, units);
         drawBuildings(canvas, buildings);
@@ -381,16 +401,8 @@ const VillageCanvas: React.FC = () => {
         };
     }, []);
 
-    return (
-        <div className='VillageCanvas'
-        style={{
-                backgroundImage: `url(${tableBackground})`,
-                backgroundRepeat: 'repeat',
-                backgroundPosition: 'center',
-                imageRendering: 'pixelated' 
-            }}>
-            <div id={GAME_FIELD} className={GAME_FIELD}></div>
-        </div>
+    return (    
+        <div id={GAME_FIELD} className={GAME_FIELD}></div>
     );
 };
 
