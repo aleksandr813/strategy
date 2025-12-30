@@ -1,5 +1,5 @@
 import { TPoint } from "../../config";
-import { TBuilding as TBuildingType, BuildingTypeID } from "../../services/server/types";
+import { TBuildingType, BuildingTypeID } from "../../services/server/types";
 
 export default class Building {
     id: number;
@@ -16,6 +16,8 @@ export default class Building {
     damage: number = 0;
     range: number = 0;
     upgradeCost: number = 0;
+
+    typeData: TBuildingType | null = null;
 
     private static SPRITE_MAP: Record<BuildingTypeID, number[]> = {
         [BuildingTypeID.TownHall]: [1, 2, 3, 4], // TownHall (Ратуша)
@@ -90,6 +92,38 @@ export default class Building {
             ];
         }
         
+    }
+
+    public updateStats(): void {
+        if (!this.typeData) return;
+
+        const level = this.level;
+
+        switch (level) {
+            case 1:
+                this.maxHp = this.typeData.hpLevel1;
+                this.damage = this.typeData.damageLevel1;
+                this.range = this.typeData.rangeAttackLevel1;
+                this.upgradeCost = this.typeData.priceLevel2;
+                break;
+            case 2:
+                this.maxHp = this.typeData.hpLevel2;
+                this.damage = this.typeData.damageLevel2;
+                this.range = this.typeData.rangeAttackLevel2;
+                this.upgradeCost = this.typeData.priceLevel3;
+                break;
+            case 3:
+                this.maxHp = this.typeData.hpLevel3;
+                this.damage = this.typeData.damageLevel3;
+                this.range = this.typeData.rangeAttackLevel3;
+                this.upgradeCost = Number.MAX_VALUE;
+                break;
+        }
+    }
+
+    public setTypeData(typeData: TBuildingType): void {
+        this.typeData = typeData;
+        this.updateStats();
     }
 
     public updateWallSprite(wallSpriteIndex: number): void {
