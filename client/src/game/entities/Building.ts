@@ -16,7 +16,6 @@ export default class Building {
     damage: number = 0;
     range: number = 0;
     upgradeCost: number = 0;
-
     typeData: TBuildingType | null = null;
 
     private static SPRITE_MAP: Record<BuildingTypeID, number[]> = {
@@ -43,19 +42,20 @@ export default class Building {
     };
 
 
-    constructor(id:number, type: string, hp:number, maxHp:number, level:number, size:number, typeId:number, x:number, y:number, unlocklevel: number, wallSpriteIndex?: number, damage?: number, range?: number, upgradeCost?: number) {
+    constructor(id:number, type: string, hp:number, maxHp:number, level:number, size:number, typeId:number, x:number, y:number, unlocklevel: number, wallSpriteIndex?: number, typeData?: TBuildingType) {
         this.id = id;
         this.type = type;
         this.hp = hp;
-        this.maxHp = maxHp;
+        this.maxHp = 0;
         this.level = level;
         this.size = size; 
         this.typeId = typeId;
         this.unlockLevel = unlocklevel;
-        this.damage = damage || 0;
-        this.range = range || 0;
-        this.upgradeCost = upgradeCost || 0;
-
+        
+        if (typeData) {
+            this.typeData = typeData;
+            this.updateStats();
+        }
         
         if (typeId === BuildingTypeID.Wall && wallSpriteIndex !== undefined) {
             this.sprites = [Building.WALL_SPRITES[wallSpriteIndex] || 26];
@@ -95,11 +95,11 @@ export default class Building {
     }
 
     public updateStats(): void {
-        if (!this.typeData) return;
+        if (!this.typeData) {
+            return;
+        }
 
-        const level = this.level;
-
-        switch (level) {
+        switch (this.level) {
             case 1:
                 this.maxHp = this.typeData.hpLevel1;
                 this.damage = this.typeData.damageLevel1;

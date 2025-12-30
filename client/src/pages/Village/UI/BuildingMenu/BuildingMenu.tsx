@@ -84,7 +84,7 @@ const BuildingMenu: React.FC<BuildingMenuProps> = ({ mediator }) => {
     const canDeleteBuilding = !GAMECONFIG.EXCLUDED_BUILDINGS.includes(selectedBuilding.type);
 
     const isMaxLevel = selectedBuilding.level >= GAMECONFIG.MAX_LEVEL_BUILDING;
-    const hasEnoughMoney = store.getMoney() >= selectedBuilding.upgradeCost || 0;
+    const hasEnoughMoney = store.getMoney() >= selectedBuilding.upgradeCost;
     const canUpgrade = !isMaxLevel && hasEnoughMoney;
 
     return (

@@ -72,6 +72,23 @@ class Village
     public function getBuildingTypes()
     {
         $types = $this->db->getBuildingTypes();
+
+        foreach ($types as &$type) {
+            $type['id'] = (int)$type['id'];
+            $type['priceLevel1'] = (int)$type['priceLevel1'];
+            $type['priceLevel2'] = (int)$type['priceLevel2'];
+            $type['priceLevel3'] = (int)$type['priceLevel3'];
+            $type['hpLevel1'] = (int)$type['hpLevel1'];
+            $type['hpLevel2'] = (int)$type['hpLevel2'];
+            $type['hpLevel3'] = (int)$type['hpLevel3'];
+            $type['rangeAttackLevel1'] = (int)$type['rangeAttackLevel1'];
+            $type['rangeAttackLevel2'] = (int)$type['rangeAttackLevel2'];
+            $type['rangeAttackLevel3'] = (int)$type['rangeAttackLevel3'];
+            $type['damageLevel1'] = (int)$type['damageLevel1'];
+            $type['damageLevel2'] = (int)$type['damageLevel2'];
+            $type['damageLevel3'] = (int)$type['damageLevel3'];
+        }
+
         return $types;
     }
 
