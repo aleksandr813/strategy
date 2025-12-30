@@ -126,7 +126,7 @@ class DB
             FROM units AS u
             INNER JOIN unit_types AS ut
             ON u.type_id = ut.id
-            WHERE village_id = ?",
+            WHERE village_id = ? AND u.on_a_crusade = 0",
             [$villageId]
         );
     }
@@ -582,7 +582,8 @@ class DB
             targetY, 
             attackId, 
             units,
-            speed
+            speed,
+            in_battle AS inBattle
         FROM army
         WHERE army = ?",
         [$armyId]);
@@ -596,13 +597,22 @@ class DB
 
         return $this->queryAll(
             "SELECT
-                u.id,
+                u.id AS id,
+                u.type_id AS typeId,
                 u.village_id AS villageId,
-                u.x,
-                u.y,
+                u.x AS x,
+                u.y AS y,
+                u.level AS level,
                 u.current_hp AS currentHp,
-                u.on_a_crusade AS onACrusade
+                u.on_a_crusade AS onACrusade,
+                u.is_enemy AS isEnemy,
+                ut.type AS type,
+                ut.speed AS speed,
+                ut.range_attack AS rangeAttack,
+                ut.damage AS damage
             FROM units AS u
+            INNER JOIN unit_types AS ut
+            ON u.type_id = ut.id
             WHERE u.id IN ($placeholder)",
             $unitIds
         );
@@ -621,7 +631,8 @@ class DB
             targetY, 
             attackId, 
             units,
-            speed
+            speed,
+            in_battle AS inBattle
         FROM army");
 
         foreach($result as &$army) {
@@ -714,12 +725,12 @@ class DB
         return $this->execute("UPDATE battles SET hash = ? WHERE id = ?", [$hash, $battleId]);
     }
 
-    public function startBattle($attackerVillageId, $defenderVillageId, $attackerLastOnline, $defenderLastOnline, $hash) {
+    public function startBattle($armyId, $attackerVillageId, $defenderVillageId, $attackerLastOnline, $defenderLastOnline, $hash) {
         $this->execute(
             "INSERT INTO battles 
-            (attacker_village_id, defender_village_id, attacker_last_online, defender_last_online, hash)
-            VALUES (?, ?, ?, ?, ?)",
-            [$attackerVillageId, $defenderVillageId, $attackerLastOnline, $defenderLastOnline, $hash]
+            (army_attack_id, attacker_village_id, defender_village_id, attacker_last_online, defender_last_online, hash)
+            VALUES (?, ?, ?, ?, ?, ?)",
+            [$armyId, $attackerVillageId, $defenderVillageId, $attackerLastOnline, $defenderLastOnline, $hash]
         );
 
         return $this->pdo->lastInsertId();
@@ -728,7 +739,8 @@ class DB
     public function getActiveBattle($villageId) {
         return $this->query(
             "SELECT 
-                id, 
+                id,
+                army_attack_id AS armyAttackId,
                 attacker_village_id AS attackerVillageId, 
                 defender_village_id AS defenderVillageId,
                 attacker_last_online AS attackerLastOnline,
@@ -773,5 +785,9 @@ class DB
 
     public function markVillageAttack($villageId) {
         return $this->execute("UPDATE villages SET is_attacked = 1 WHERE id = ?", [$villageId]);
+    }
+
+    public function markArmyInBattle($armyId) {
+        return $this->execute("UPDATE army SET in_battle = 1 WHERE army = ?", [$armyId]);
     }
 }
