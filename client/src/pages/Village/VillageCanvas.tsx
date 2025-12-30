@@ -46,6 +46,7 @@ const VillageCanvas: React.FC = () => {
             canvasInstance.HEIGHT = window.innerHeight;
             canvasInstance.canvas.width = window.innerWidth;
             canvasInstance.canvas.height = window.innerHeight;
+            WINDOW.WIDTH = window.innerWidth * (WINDOW.HEIGHT / window.innerHeight);
             render(0); 
         }
     };
