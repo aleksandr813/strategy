@@ -58,6 +58,8 @@ class Village
             $building['y'] = (int)$building['y'];
             $building['level'] = (int)$building['level'];
             $building['currentHp'] = (int)$building['currentHp'];
+            $building['damage'] = (int)$building['damage'];
+            $building['rangeAttack'] = (int)$building['rangeAttack'];
         }
 
         if (count($buildings) === 0) {
@@ -92,7 +94,8 @@ class Village
             }
         }
 
-        if ($user->money < $building->price) {
+        $price = $building->priceLevel1;
+        if ($user->money < $price) {
             return ['error' => 305];
         }
 
@@ -101,14 +104,14 @@ class Village
             return ['error' => 311];
         }
 
-        $newMoney = $user->money - $building->price;
+        $newMoney = $user->money - $price;
         $this->db->updateMoney($user->id, $newMoney);
         $this->db->buyBuilding(
             $village->id,
             $typeId,
             $x,
             $y,
-            $building->hp
+            $building->hpLevel1
         );
 
         return [
@@ -128,18 +131,25 @@ class Village
             return ['error' => 312];
         }
 
+        $currentLevel = (int)$level->level;
+
         $building = $this->db->getBuildingType($typeId);
         if (!$building) {
             return ["error" => 301];
         }
 
-        if ($user->money < $building->price) {
+        $upgradeCost = $this->db->getUpgradeCost($typeId, $currentLevel + 1);
+        $newStats = $this->db->getBuildingStatsForLevel($typeId, $currentLevel + 1);
+
+        if ($user->money < $upgradeCost->price) {
             return ['error' => 305];
         }
 
-        $newMoney = $user->money - $building->price;
+        $newMoney = $user->money - $upgradeCost->price;
         $this->db->updateMoney($user->id, $newMoney);
-        $result = $this->db->upgradeBuilding($buildingId, $village->id);
+
+        $result = $this->db->upgradeBuilding($buildingId, $village->id, $currentLevel + 1, (int)$newStats->hp);
+
         if (!$result) {
             return ['error' => 302];
         }
