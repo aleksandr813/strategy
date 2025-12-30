@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Дек 23 2025 г., 22:57
+-- Время создания: Дек 30 2025 г., 19:12
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -38,8 +38,21 @@ CREATE TABLE `army` (
   `targetY` int NOT NULL,
   `attackId` int NOT NULL,
   `units` text NOT NULL,
-  `speed` float NOT NULL
+  `speed` float NOT NULL,
+  `in_battle` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `army`
+--
+
+INSERT INTO `army` (`army`, `userId`, `startX`, `startY`, `startTime`, `arrivalTime`, `targetX`, `targetY`, `attackId`, `units`, `speed`, `in_battle`) VALUES
+(80, 12, 65, 18, '2025-12-29 16:27:22', '2025-12-29 16:28:03', 33, 8, 11, '26,27', 0.8, 0),
+(81, 12, 65, 18, '2025-12-29 18:54:26', '2025-12-29 18:55:07', 33, 8, 11, '26,27', 0.8, 0),
+(82, 12, 65, 18, '2025-12-29 20:49:05', '2025-12-29 20:49:46', 33, 8, 11, '26,27', 0.8, 0),
+(83, 12, 65, 18, '2025-12-29 21:33:15', '2025-12-29 21:33:56', 33, 8, 11, '26,27', 0.8, 0),
+(84, 12, 65, 18, '2025-12-30 09:08:39', '2025-12-30 09:09:20', 33, 8, 11, '26,27', 0.8, 0),
+(85, 12, 65, 18, '2025-12-30 18:31:10', '2025-12-30 18:31:51', 33, 8, 11, '26,27', 0.8, 0);
 
 -- --------------------------------------------------------
 
@@ -49,19 +62,13 @@ CREATE TABLE `army` (
 
 CREATE TABLE `battles` (
   `id` int NOT NULL,
+  `army_attack_id` int NOT NULL,
   `attacker_village_id` int NOT NULL,
   `defender_village_id` int NOT NULL,
   `attacker_last_online` datetime NOT NULL,
   `defender_last_online` datetime NOT NULL,
   `hash` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Дамп данных таблицы `battles`
---
-
-INSERT INTO `battles` (`id`, `attacker_village_id`, `defender_village_id`, `attacker_last_online`, `defender_last_online`, `hash`) VALUES
-(7, 10, 9, '2025-12-23 22:44:03', '2025-12-23 22:33:57', 'd30fed90f562e58499fc46aee5fc92f1');
 
 -- --------------------------------------------------------
 
@@ -80,39 +87,6 @@ CREATE TABLE `battle_objects` (
   `current_hp` int NOT NULL,
   `is_alive` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Дамп данных таблицы `battle_objects`
---
-
-INSERT INTO `battle_objects` (`id`, `battle_id`, `object_type`, `original_id`, `owner_village_id`, `x`, `y`, `current_hp`, `is_alive`) VALUES
-(115, 7, 'UNIT', 17, 9, 24, 19, 90, 1),
-(116, 7, 'UNIT', 18, 9, 23, 17, 100, 1),
-(117, 7, 'UNIT', 19, 9, 23, 18, 300, 1),
-(118, 7, 'UNIT', 20, 9, 25, 19, 400, 1),
-(119, 7, 'UNIT', 21, 9, 23, 19, 70, 1),
-(120, 7, 'UNIT', 22, 9, 24, 17, 110, 1),
-(121, 7, 'UNIT', 23, 9, 22, 17, 130, 1),
-(122, 7, 'UNIT', 26, 10, 23, 13, 180, 1),
-(123, 7, 'UNIT', 27, 10, 27, 14, 110, 1),
-(124, 7, 'BUILDING', 13, 9, 15, 15, 100, 1),
-(125, 7, 'BUILDING', 14, 9, 5, 5, 100, 1),
-(126, 7, 'BUILDING', 15, 9, 22, 12, 500, 1),
-(127, 7, 'BUILDING', 25, 9, 19, 13, 500, 1),
-(128, 7, 'BUILDING', 16, 9, 29, 12, 200, 1),
-(129, 7, 'BUILDING', 17, 9, 29, 13, 200, 1),
-(130, 7, 'BUILDING', 18, 9, 29, 14, 200, 1),
-(131, 7, 'BUILDING', 19, 9, 29, 15, 200, 1),
-(132, 7, 'BUILDING', 21, 9, 29, 16, 200, 1),
-(133, 7, 'BUILDING', 23, 9, 29, 17, 200, 1),
-(134, 7, 'BUILDING', 24, 9, 28, 18, 200, 1),
-(135, 7, 'BUILDING', 26, 9, 28, 17, 200, 1),
-(136, 7, 'BUILDING', 27, 9, 28, 19, 200, 1),
-(137, 7, 'BUILDING', 28, 9, 27, 19, 200, 1),
-(138, 7, 'BUILDING', 29, 9, 26, 19, 200, 1),
-(139, 7, 'BUILDING', 20, 9, 27, 13, 300, 1),
-(140, 7, 'BUILDING', 22, 9, 25, 17, 300, 1),
-(141, 7, 'BUILDING', 30, 9, 27, 15, 300, 1);
 
 -- --------------------------------------------------------
 
@@ -165,9 +139,16 @@ INSERT INTO `buildings` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `curr
 (28, 4, 9, 27, 19, 3, 200),
 (29, 4, 9, 26, 19, 1, 200),
 (30, 5, 9, 27, 15, 1, 300),
-(31, 1, 10, 15, 15, 1, 100),
+(31, 1, 10, 15, 15, 3, 1500),
 (32, 2, 10, 5, 5, 1, 100),
-(33, 3, 10, 18, 12, 3, 500);
+(33, 3, 10, 18, 12, 3, 500),
+(34, 1, 11, 15, 15, 3, 100),
+(35, 2, 11, 5, 5, 3, 100),
+(36, 3, 11, 9, 1, 3, 1150),
+(37, 1, 12, 15, 15, 1, 100),
+(38, 2, 12, 5, 5, 1, 100),
+(39, 5, 11, 15, 9, 2, 400),
+(40, 5, 11, 11, 10, 3, 500);
 
 -- --------------------------------------------------------
 
@@ -178,8 +159,18 @@ INSERT INTO `buildings` (`id`, `type_id`, `village_id`, `x`, `y`, `level`, `curr
 CREATE TABLE `building_types` (
   `id` int NOT NULL,
   `type` varchar(100) NOT NULL,
-  `hp` int NOT NULL DEFAULT '1',
-  `price` int NOT NULL,
+  `hp_level_1` int NOT NULL,
+  `hp_level_2` int NOT NULL,
+  `hp_level_3` int NOT NULL,
+  `price_level_1` int NOT NULL,
+  `price_level_2` int NOT NULL,
+  `price_level_3` int NOT NULL,
+  `range_attack_level_1` int NOT NULL,
+  `range_attack_level_2` int NOT NULL,
+  `range_attack_level_3` int NOT NULL,
+  `damage_level_1` int NOT NULL,
+  `damage_level_2` int NOT NULL,
+  `damage_level_3` int NOT NULL,
   `unlock_level` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -187,12 +178,14 @@ CREATE TABLE `building_types` (
 -- Дамп данных таблицы `building_types`
 --
 
-INSERT INTO `building_types` (`id`, `type`, `hp`, `price`, `unlock_level`) VALUES
-(1, 'Ратуша', 700, 1, 1),
-(2, 'Шахта ', 100, 1, 1),
-(3, 'Казармы ', 500, 400, 1),
-(4, 'Стены ', 200, 100, 1),
-(5, 'Стрелковая башня', 300, 200, 1);
+INSERT INTO `building_types` (`id`, `type`, `hp_level_1`, `hp_level_2`, `hp_level_3`, `price_level_1`, `price_level_2`, `price_level_3`, `range_attack_level_1`, `range_attack_level_2`, `range_attack_level_3`, `damage_level_1`, `damage_level_2`, `damage_level_3`, `unlock_level`) VALUES
+(1, 'Ратуша', 800, 1100, 1500, 0, 800, 1200, 0, 0, 0, 0, 0, 0, 1),
+(2, 'Шахта ', 100, 200, 300, 0, 300, 600, 0, 0, 0, 0, 0, 0, 1),
+(3, 'Казармы ', 600, 850, 1150, 400, 500, 900, 0, 0, 0, 0, 0, 0, 1),
+(4, 'Стены ', 200, 300, 400, 100, 200, 300, 0, 0, 0, 0, 0, 0, 1),
+(5, 'Стрелковая башня', 300, 400, 500, 200, 300, 500, 5, 6, 7, 18, 25, 35, 1),
+(6, 'Вьетнамская ловушка', 1, 1, 1, 50, 75, 100, 1, 1, 1, 25, 50, 65, 2),
+(8, 'Пушка', 400, 500, 600, 500, 700, 1100, 5, 5, 5, 30, 50, 70, 3);
 
 -- --------------------------------------------------------
 
@@ -427,7 +420,9 @@ INSERT INTO `users` (`id`, `login`, `password`, `name`, `token`, `money`) VALUES
 (9, 'admin', 'f6fdffe48c908deb0f4c3bd36c032e72', 'admin', '412d50d375e2bac96d72f5eab24ec32f', 997709),
 (10, 'Pasha', '0ee5b804bc87ef937b626d220a453182', 'Pavel', '5f21ef40a49e10fe36461094031f9fcd', 220),
 (11, 'User1', '3b04e04686f8dfe70f2034c470bbff71', 'UseR', 'acca58668194d94516d813ae30b8b23c', 7518),
-(12, 'User2', '2d3351551125bc81456c6486a81e673c', 'User2', '59ed9ccdf839e5c6bd7cf7abba4d0ce0', 6180);
+(12, 'User2', '2d3351551125bc81456c6486a81e673c', 'User2', '59ed9ccdf839e5c6bd7cf7abba4d0ce0', 2878),
+(13, 'User3', '71769f53755dd1629726be2d5dd51036', 'User3', 'bebc69684c8a7f40b556300552eaec7a', 1340),
+(14, 'User4', '1dfd3d6965055587980dda0f43b062b4', 'User4', 'b212b36d6d6e76e1f632decb4ff42443', 500);
 
 -- --------------------------------------------------------
 
@@ -456,7 +451,9 @@ INSERT INTO `villages` (`id`, `user_id`, `x`, `y`, `last_income_datetime`, `atta
 (7, 9, 496, 410, '2025-12-23 22:18:49', 0, 0),
 (8, 10, 239, 49, '2025-12-10 20:55:43', 0, 0),
 (9, 11, 33, 8, '2025-12-15 14:29:32', 10, 1),
-(10, 12, 65, 18, '2025-12-16 21:17:50', 0, 0);
+(10, 12, 65, 18, '2025-12-16 21:17:50', 0, 0),
+(11, 13, 24, 4, '2025-12-30 19:09:38', 0, 0),
+(12, 14, 29, 3, '2025-12-30 14:12:27', 0, 0);
 
 --
 -- Индексы сохранённых таблиц
@@ -482,7 +479,8 @@ ALTER TABLE `battles`
 --
 ALTER TABLE `battle_objects`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `battle_id` (`battle_id`,`original_id`);
+  ADD KEY `battle_id` (`battle_id`,`original_id`),
+  ADD KEY `original_id` (`original_id`);
 
 --
 -- Индексы таблицы `buildings`
@@ -559,31 +557,31 @@ ALTER TABLE `villages`
 -- AUTO_INCREMENT для таблицы `army`
 --
 ALTER TABLE `army`
-  MODIFY `army` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `army` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
 --
 -- AUTO_INCREMENT для таблицы `battles`
 --
 ALTER TABLE `battles`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT для таблицы `battle_objects`
 --
 ALTER TABLE `battle_objects`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=142;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=372;
 
 --
 -- AUTO_INCREMENT для таблицы `buildings`
 --
 ALTER TABLE `buildings`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT для таблицы `building_types`
 --
 ALTER TABLE `building_types`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT для таблицы `game`
@@ -619,13 +617,13 @@ ALTER TABLE `unit_types`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT для таблицы `villages`
 --
 ALTER TABLE `villages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
@@ -641,9 +639,14 @@ ALTER TABLE `army`
 -- Ограничения внешнего ключа таблицы `battles`
 --
 ALTER TABLE `battles`
-  ADD CONSTRAINT `battles_ibfk_1` FOREIGN KEY (`id`) REFERENCES `battle_objects` (`battle_id`),
   ADD CONSTRAINT `battles_ibfk_2` FOREIGN KEY (`attacker_village_id`) REFERENCES `villages` (`id`),
   ADD CONSTRAINT `battles_ibfk_3` FOREIGN KEY (`defender_village_id`) REFERENCES `villages` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `battle_objects`
+--
+ALTER TABLE `battle_objects`
+  ADD CONSTRAINT `battle_objects_ibfk_1` FOREIGN KEY (`battle_id`) REFERENCES `battles` (`id`);
 
 --
 -- Ограничения внешнего ключа таблицы `buildings`
