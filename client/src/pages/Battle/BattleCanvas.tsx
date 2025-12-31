@@ -159,7 +159,7 @@ const BattleCanvas: React.FC = () => {
 
     const mouseMove = (x: number, y: number, screenX?: number, screenY?: number) => {
         const { units, buildings } = battle.getScene();
-        const matrix = battle.getBattleMatrix(units, buildings);
+        //const matrix = battle.getBattleMatrix(units, buildings);
 
 
         if (isMiddleMouseDragging && middleMouseStartScreenPosition && windowStartPosition && canvas && screenX !== undefined && screenY !== undefined) {
@@ -280,7 +280,7 @@ const BattleCanvas: React.FC = () => {
         canvas.context.imageSmoothingEnabled = false;
         canvas.contextV.imageSmoothingEnabled = false;
 
-        battle.getBattle();
+        //battle.getBattle();
 
         clampCamera();
 
