@@ -140,6 +140,11 @@ export type TUserArmy = {
 }
 
 export type TBattle = {
+    buildings: TBuilding[];
+    units: TUnit[];
+}
+
+export type TBattleResponse = {
     hash: string;
-    
+    battle: TBattle;
 }

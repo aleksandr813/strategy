@@ -9,6 +9,7 @@ class Store {
     messages: TMessages = [];
     chatHash: string = 'empty chat hash';
     mapHash: string = 'empty map hash';
+    battleHash: string = 'empty battle hash';
     money: number = 0;
     mediator: Mediator;
 
@@ -75,6 +76,14 @@ class Store {
 
     getMapHash(): string {
         return this.mapHash;
+    }
+
+    setBattleHash(hash: string): void {
+        this.battleHash = hash;
+    }
+
+    getBattleHash(): string {
+        return this.battleHash;
     }
 
     setMapHash(hash: string): void {
