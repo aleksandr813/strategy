@@ -280,7 +280,7 @@ const BattleCanvas: React.FC = () => {
         canvas.context.imageSmoothingEnabled = false;
         canvas.contextV.imageSmoothingEnabled = false;
 
-        //battle.getBattle();
+        battle.loadBattle();
 
         clampCamera();
 
