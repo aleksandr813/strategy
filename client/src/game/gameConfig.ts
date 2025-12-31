@@ -35,7 +35,7 @@ export function getUnitSprites(typeId: UnitTypeID): number[] {
 
 const GAMECONFIG = {
     EXCLUDED_BUILDINGS: ['Ратуша', 'Шахта'],
-
+    MAX_LEVEL_BUILDING: 3,
 
     MIN_ZOOM: 1,
     MAX_ZOOM: 45,
