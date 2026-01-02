@@ -230,7 +230,19 @@ class DB
                 b.y AS y,
                 b.level AS level,
                 b.current_hp AS currentHp,
-                bt.type AS type
+                bt.type AS type,
+                
+                CASE b.level
+                    WHEN 1 THEN bt.damage_level_1
+                    WHEN 2 THEN bt.damage_level_2
+                    WHEN 3 THEN bt.damage_level_3
+                END AS damage,
+                
+                CASE b.level
+                    WHEN 1 THEN bt.range_attack_level_1
+                    WHEN 2 THEN bt.range_attack_level_2
+                    WHEN 3 THEN bt.range_attack_level_3
+                END AS rangeAttack
             FROM buildings AS b
             INNER JOIN building_types AS bt
             ON b.type_id = bt.id
@@ -255,6 +267,87 @@ class DB
             FROM buildings
             WHERE id = ? AND village_id = ?",
             [$buildingId, $villageId]
+        );
+    }
+
+    // public function getBuilding($buildingId, $villageId)
+    // {
+    //     return $this->query(
+    //         "SELECT 
+    //             b.id AS id, 
+    //             b.type_id AS typeId, 
+    //             b.village_id AS villageId, 
+    //             b.x AS x, 
+    //             b.y AS y,
+    //             b.level AS level,
+    //             b.current_hp AS currentHp,
+    //             bt.type AS type,
+                
+    //             CASE b.level
+    //                 WHEN 1 THEN bt.damage_level_1
+    //                 WHEN 2 THEN bt.damage_level_2
+    //                 WHEN 3 THEN bt.damage_level_3
+    //             END AS damage,
+                
+    //             CASE b.level
+    //                 WHEN 1 THEN bt.range_attack_level_1
+    //                 WHEN 2 THEN bt.range_attack_level_2
+    //                 WHEN 3 THEN bt.range_attack_level_3
+    //             END AS rangeAttack
+    //         FROM buildings AS b
+    //         INNER JOIN building_types AS bt
+    //         ON b.type_id = bt.id
+    //         WHERE id = ? AND village_id = ?",
+    //         [$buildingId, $villageId]
+    //     );
+    // }
+
+    public function getBuildingStatsForLevel($buildingTypeId, $level) {
+        return $this->query(
+            "SELECT
+                id,
+                type,
+                CASE ?
+                    WHEN 1 THEN hp_level_1
+                    WHEN 2 THEN hp_level_2
+                    WHEN 3 THEN hp_level_3
+                END AS hp,
+
+                CASE ?
+                    WHEN 1 THEN price_level_1
+                    WHEN 2 THEN price_level_2
+                    WHEN 3 THEN price_level_3
+                END AS price,
+                
+                CASE ?
+                    WHEN 1 THEN damage_level_1
+                    WHEN 2 THEN damage_level_2
+                    WHEN 3 THEN damage_level_3
+                END AS damage,
+                
+                CASE ?
+                    WHEN 1 THEN range_attack_level_1
+                    WHEN 2 THEN range_attack_level_2
+                    WHEN 3 THEN range_attack_level_3
+                END AS rangeAttack,
+                unlock_level AS unlockLevel
+            FROM building_types
+            WHERE id = ?",
+            [$level, $level, $level, $level, $buildingTypeId]
+        );
+    }
+
+    public function getUpgradeCost($buildingTypeId, $nextLevel) {
+        return $this->query(
+            "SELECT
+                CASE ?
+                    WHEN 1 THEN price_level_1
+                    WHEN 2 THEN price_level_2
+                    WHEN 3 THEN price_level_3
+                END AS price
+            FROM building_types
+            WHERE id = ?",
+            [$nextLevel, $buildingTypeId]
         );
     }
 
@@ -290,7 +383,27 @@ class DB
     }
 
     public function getBuildingType($buildingType) {
-        return $this->query("SELECT id, hp, price FROM building_types WHERE id = ?", [$buildingType]);
+        return $this->query(
+            "SELECT 
+                id, 
+                type, 
+                hp_level_1 AS hpLevel1, 
+                hp_level_2 AS hpLevel2,
+                hp_level_3 AS hpLevel3,
+                price_level_1 AS priceLevel1,
+                price_level_2 AS priceLevel2,
+                price_level_3 AS priceLevel3,
+                range_attack_level_1 AS rangeAttackLevel1,
+                range_attack_level_2 AS rangeAttackLevel2,
+                range_attack_level_3 AS rangeAttackLevel3,
+                damage_level_1 AS damageLevel1, 
+                damage_level_2 AS damageLevel2, 
+                damage_level_3 AS damageLevel3, 
+                unlock_level as unlockLevel
+            FROM building_types
+            WHERE id = ?", 
+            [$buildingType]
+        );
     }
 
     public function getUnitType($unitType)
@@ -308,11 +421,11 @@ class DB
         return $this->execute("UPDATE users SET money = ? WHERE id = ?", [$money, $userId]);
     }
 
-    public function upgradeBuilding($buildingId, $villageId)
+    public function upgradeBuilding($buildingId, $villageId, $nextLevel, $hp)
     {
         return $this->execute(
-            "UPDATE buildings SET level = level + 1 WHERE id = ? AND village_id = ?",
-            [$buildingId, $villageId]
+            "UPDATE buildings SET level = ?, current_hp = ? WHERE id = ? AND village_id = ?",
+            [$nextLevel, $hp, $buildingId, $villageId]
         );
     }
 
@@ -335,7 +448,25 @@ class DB
 
     public function getBuildingTypes()
     {
-        return $this->queryAll("SELECT id, type, hp, price, unlock_level as unlockLevel FROM building_types");
+        return $this->queryAll(
+            "SELECT 
+                id, 
+                type, 
+                hp_level_1 AS hpLevel1, 
+                hp_level_2 AS hpLevel2,
+                hp_level_3 AS hpLevel3,
+                price_level_1 AS priceLevel1,
+                price_level_2 AS priceLevel2,
+                price_level_3 AS priceLevel3,
+                range_attack_level_1 AS rangeAttackLevel1,
+                range_attack_level_2 AS rangeAttackLevel2,
+                range_attack_level_3 AS rangeAttackLevel3,
+                damage_level_1 AS damageLevel1, 
+                damage_level_2 AS damageLevel2, 
+                damage_level_3 AS damageLevel3, 
+                unlock_level as unlockLevel
+            FROM building_types"
+        );
     }
 
     public function getUnitTypes()

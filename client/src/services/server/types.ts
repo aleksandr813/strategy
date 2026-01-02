@@ -37,7 +37,19 @@ export type TBuildingType = {
     id: number;
     type: string;
     hp: number;
-    price: number;
+    hpLevel1: number;
+    hpLevel2: number;
+    hpLevel3: number;
+    price?: number;
+    priceLevel1: number;
+    priceLevel2: number;
+    priceLevel3: number;
+    damageLevel1: number;
+    damageLevel2: number;
+    damageLevel3: number;
+    rangeAttackLevel1: number;
+    rangeAttackLevel2: number;
+    rangeAttackLevel3: number;
     sprite: number;
     unlockLevel: number;
 }
@@ -53,7 +65,6 @@ export type TBuilding = {
     level: number;
     type: string;
     unlockLevel: number;
-
 }
 
 export enum BuildingTypeID {

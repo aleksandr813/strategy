@@ -174,6 +174,13 @@ class Village extends Manager {
     async loadBuildings(): Promise<void> {
         console.log("Загружаем здания из сервера...");
 
+        const buildingTypes = await this.server.getBuildingTypes();
+        if (!buildingTypes) {
+            console.error('Не удалось загрузить типы зданий');
+            return;
+        }
+        console.log("Получены типы зданий:", buildingTypes);
+
         const buildingsData = await this.server.getBuildings();
         if (!buildingsData) {
             console.log('Нету зданий для загрузки');
@@ -181,12 +188,14 @@ class Village extends Manager {
         }
 
         const buildings = buildingsData.map(buildingData => {
+            const typeData = buildingTypes.find(type => type.id === buildingData.typeId);
+
             let size = 2;
             if (buildingData.typeId === 4) {
                 size = 1;
             };
 
-            return new Building(
+            const building = new Building(
                 buildingData.id,
                 buildingData.type,
                 buildingData.currentHp, 
@@ -196,8 +205,16 @@ class Village extends Manager {
                 buildingData.typeId,
                 buildingData.x,
                 buildingData.y,
-                buildingData.unlockLevel   
+                buildingData.unlockLevel,
+                undefined,
+                typeData
             );
+
+            if (typeData && !building.typeData) {
+                building.setTypeData(typeData);
+            }
+
+            return building;
         });
 
         this.game.setBuildings(buildings);
