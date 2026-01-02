@@ -299,10 +299,10 @@ class Application
     }
 
     public function getBattle($params) {
-        if ($params['token'] && $params['hash']) {
+        if ($params['token'] && $params['hash'] && $params['id']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->battle->getBattle($user->id, $params['hash']);
+                return $this->battle->getBattle($user->id, $params['hash'], $params['id']);
             }
             return ['error' => 705];
         }
