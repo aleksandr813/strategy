@@ -98,7 +98,9 @@ class Map {
         $now = date('Y-m-d H:m:s');
         $battleId = $this->db->startBattle($armyId, $attackerVillage->id, $defenderVillage->id, $now, $now, md5(rand()));
 
-        $this->db->addObjectsToBattle($defenderdUnits, 'UNIT', $battleId);
+        if (!empty($defenderdUnits)) {
+            $this->db->addObjectsToBattle($defenderdUnits, 'UNIT', $battleId);
+        }
         $this->db->addObjectsToBattle($attackerUnits, 'UNIT', $battleId);
 
         $this->db->addObjectsToBattle($defenderBuildings, 'BUILDING', $battleId);

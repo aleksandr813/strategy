@@ -697,13 +697,13 @@ class DB
         foreach($objects as $object) {
             $insertData[] = "(?, ?, ?, ?, ?, ?, ?)";
             $params = array_merge($params, [
-                $battleId,
-                $type,
-                (int)$object['id'],
-                (int)$object['villageId'],
-                (int)$object['x'],
-                (int)$object['y'],
-                (int)$object['currentHp']
+                $params[] = $battleId,
+                $params[] = $type,
+                $params[] = (int)$object['id'],
+                $params[] = (int)$object['villageId'],
+                $params[] = (int)$object['x'],
+                $params[] = (int)$object['y'],
+                $params[] = (int)$object['currentHp']
             ]);
         }
 
@@ -736,7 +736,7 @@ class DB
         return $this->pdo->lastInsertId();
     }
 
-    public function getActiveBattle($villageId) {
+    public function getActiveBattle($id, $villageId) {
         return $this->query(
             "SELECT 
                 id,
@@ -747,8 +747,8 @@ class DB
                 defender_last_online AS defenderLastOnline,
                 hash 
             FROM battles
-            WHERE (attacker_village_id = ? OR defender_village_id = ?)",
-            [$villageId, $villageId]
+            WHERE (attacker_village_id = ? OR defender_village_id = ?) AND id = ?",
+            [$villageId, $villageId, $id]
         );
     }
 
