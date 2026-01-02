@@ -106,31 +106,6 @@ class DB
         );
     }
 
-    // public function getUnits($userId)
-    // {
-    //     return $this->queryAll(
-    //         "SELECT 
-    //             u.id AS id,
-    //             u.type_id AS typeId,
-    //             u.village_id AS villageId,
-    //             u.x AS x,
-    //             u.y AS y,
-    //             u.level AS level,
-    //             u.current_hp AS currentHp,
-    //             u.on_a_crusade AS onACrusade,
-    //             u.is_enemy AS isEnemy,
-    //             ut.type AS type,
-    //             ut.speed AS speed,
-    //             ut.range AS range,
-    //             ut.damage AS damage
-    //         FROM units AS u
-    //         INNER JOIN unit_types AS ut
-    //         ON u.type_id = ut.id
-    //         WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)",
-    //         [$userId]
-    //     );
-    // }
-
     public function getUnits($villageId)
     {
         return $this->queryAll(
@@ -151,7 +126,7 @@ class DB
             FROM units AS u
             INNER JOIN unit_types AS ut
             ON u.type_id = ut.id
-            WHERE village_id = ?",
+            WHERE village_id = ? AND u.on_a_crusade = 0",
             [$villageId]
         );
     }
@@ -244,7 +219,7 @@ class DB
         );
     }
 
-    public function getBuildings($userId)
+    public function getBuildings($villageId)
     {
         return $this->queryAll(
             "SELECT 
@@ -255,12 +230,24 @@ class DB
                 b.y AS y,
                 b.level AS level,
                 b.current_hp AS currentHp,
-                bt.type AS type
+                bt.type AS type,
+                
+                CASE b.level
+                    WHEN 1 THEN bt.damage_level_1
+                    WHEN 2 THEN bt.damage_level_2
+                    WHEN 3 THEN bt.damage_level_3
+                END AS damage,
+                
+                CASE b.level
+                    WHEN 1 THEN bt.range_attack_level_1
+                    WHEN 2 THEN bt.range_attack_level_2
+                    WHEN 3 THEN bt.range_attack_level_3
+                END AS rangeAttack
             FROM buildings AS b
             INNER JOIN building_types AS bt
             ON b.type_id = bt.id
-            WHERE village_id = (SELECT id FROM villages WHERE user_id = ?)",
-            [$userId]
+            WHERE village_id = ?",
+            [$villageId]
         );
     }
 
@@ -280,6 +267,87 @@ class DB
             FROM buildings
             WHERE id = ? AND village_id = ?",
             [$buildingId, $villageId]
+        );
+    }
+
+    // public function getBuilding($buildingId, $villageId)
+    // {
+    //     return $this->query(
+    //         "SELECT 
+    //             b.id AS id, 
+    //             b.type_id AS typeId, 
+    //             b.village_id AS villageId, 
+    //             b.x AS x, 
+    //             b.y AS y,
+    //             b.level AS level,
+    //             b.current_hp AS currentHp,
+    //             bt.type AS type,
+                
+    //             CASE b.level
+    //                 WHEN 1 THEN bt.damage_level_1
+    //                 WHEN 2 THEN bt.damage_level_2
+    //                 WHEN 3 THEN bt.damage_level_3
+    //             END AS damage,
+                
+    //             CASE b.level
+    //                 WHEN 1 THEN bt.range_attack_level_1
+    //                 WHEN 2 THEN bt.range_attack_level_2
+    //                 WHEN 3 THEN bt.range_attack_level_3
+    //             END AS rangeAttack
+    //         FROM buildings AS b
+    //         INNER JOIN building_types AS bt
+    //         ON b.type_id = bt.id
+    //         WHERE id = ? AND village_id = ?",
+    //         [$buildingId, $villageId]
+    //     );
+    // }
+
+    public function getBuildingStatsForLevel($buildingTypeId, $level) {
+        return $this->query(
+            "SELECT
+                id,
+                type,
+                CASE ?
+                    WHEN 1 THEN hp_level_1
+                    WHEN 2 THEN hp_level_2
+                    WHEN 3 THEN hp_level_3
+                END AS hp,
+
+                CASE ?
+                    WHEN 1 THEN price_level_1
+                    WHEN 2 THEN price_level_2
+                    WHEN 3 THEN price_level_3
+                END AS price,
+                
+                CASE ?
+                    WHEN 1 THEN damage_level_1
+                    WHEN 2 THEN damage_level_2
+                    WHEN 3 THEN damage_level_3
+                END AS damage,
+                
+                CASE ?
+                    WHEN 1 THEN range_attack_level_1
+                    WHEN 2 THEN range_attack_level_2
+                    WHEN 3 THEN range_attack_level_3
+                END AS rangeAttack,
+                unlock_level AS unlockLevel
+            FROM building_types
+            WHERE id = ?",
+            [$level, $level, $level, $level, $buildingTypeId]
+        );
+    }
+
+    public function getUpgradeCost($buildingTypeId, $nextLevel) {
+        return $this->query(
+            "SELECT
+                CASE ?
+                    WHEN 1 THEN price_level_1
+                    WHEN 2 THEN price_level_2
+                    WHEN 3 THEN price_level_3
+                END AS price
+            FROM building_types
+            WHERE id = ?",
+            [$nextLevel, $buildingTypeId]
         );
     }
 
@@ -315,7 +383,27 @@ class DB
     }
 
     public function getBuildingType($buildingType) {
-        return $this->query("SELECT id, hp, price FROM building_types WHERE id = ?", [$buildingType]);
+        return $this->query(
+            "SELECT 
+                id, 
+                type, 
+                hp_level_1 AS hpLevel1, 
+                hp_level_2 AS hpLevel2,
+                hp_level_3 AS hpLevel3,
+                price_level_1 AS priceLevel1,
+                price_level_2 AS priceLevel2,
+                price_level_3 AS priceLevel3,
+                range_attack_level_1 AS rangeAttackLevel1,
+                range_attack_level_2 AS rangeAttackLevel2,
+                range_attack_level_3 AS rangeAttackLevel3,
+                damage_level_1 AS damageLevel1, 
+                damage_level_2 AS damageLevel2, 
+                damage_level_3 AS damageLevel3, 
+                unlock_level as unlockLevel
+            FROM building_types
+            WHERE id = ?", 
+            [$buildingType]
+        );
     }
 
     public function getUnitType($unitType)
@@ -333,11 +421,11 @@ class DB
         return $this->execute("UPDATE users SET money = ? WHERE id = ?", [$money, $userId]);
     }
 
-    public function upgradeBuilding($buildingId, $villageId)
+    public function upgradeBuilding($buildingId, $villageId, $nextLevel, $hp)
     {
         return $this->execute(
-            "UPDATE buildings SET level = level + 1 WHERE id = ? AND village_id = ?",
-            [$buildingId, $villageId]
+            "UPDATE buildings SET level = ?, current_hp = ? WHERE id = ? AND village_id = ?",
+            [$nextLevel, $hp, $buildingId, $villageId]
         );
     }
 
@@ -360,7 +448,25 @@ class DB
 
     public function getBuildingTypes()
     {
-        return $this->queryAll("SELECT id, type, hp, price, unlock_level as unlockLevel FROM building_types");
+        return $this->queryAll(
+            "SELECT 
+                id, 
+                type, 
+                hp_level_1 AS hpLevel1, 
+                hp_level_2 AS hpLevel2,
+                hp_level_3 AS hpLevel3,
+                price_level_1 AS priceLevel1,
+                price_level_2 AS priceLevel2,
+                price_level_3 AS priceLevel3,
+                range_attack_level_1 AS rangeAttackLevel1,
+                range_attack_level_2 AS rangeAttackLevel2,
+                range_attack_level_3 AS rangeAttackLevel3,
+                damage_level_1 AS damageLevel1, 
+                damage_level_2 AS damageLevel2, 
+                damage_level_3 AS damageLevel3, 
+                unlock_level as unlockLevel
+            FROM building_types"
+        );
     }
 
     public function getUnitTypes()
@@ -476,7 +582,8 @@ class DB
             targetY, 
             attackId, 
             units,
-            speed
+            speed,
+            in_battle AS inBattle
         FROM army
         WHERE army = ?",
         [$armyId]);
@@ -490,11 +597,22 @@ class DB
 
         return $this->queryAll(
             "SELECT
-                u.id,
-                u.x,
-                u.y,
-                u.on_a_crusade AS onACrusade
+                u.id AS id,
+                u.type_id AS typeId,
+                u.village_id AS villageId,
+                u.x AS x,
+                u.y AS y,
+                u.level AS level,
+                u.current_hp AS currentHp,
+                u.on_a_crusade AS onACrusade,
+                u.is_enemy AS isEnemy,
+                ut.type AS type,
+                ut.speed AS speed,
+                ut.range_attack AS rangeAttack,
+                ut.damage AS damage
             FROM units AS u
+            INNER JOIN unit_types AS ut
+            ON u.type_id = ut.id
             WHERE u.id IN ($placeholder)",
             $unitIds
         );
@@ -513,7 +631,8 @@ class DB
             targetY, 
             attackId, 
             units,
-            speed
+            speed,
+            in_battle AS inBattle
         FROM army");
 
         foreach($result as &$army) {
@@ -521,6 +640,12 @@ class DB
         }
 
         return $result;
+    }
+
+    public function deleteArmyById($armyId) {
+        return $this->execute(
+            "DELETE FROM army WHERE army = ?", [$armyId]
+        );
     }
 
     public function getUnitsSpeed($units) {
@@ -563,5 +688,106 @@ class DB
         }
 
         return $result;
+    }
+
+    public function addObjectsToBattle($objects, $type, $battleId) {
+        $insertData = [];
+        $params = [];
+
+        foreach($objects as $object) {
+            $insertData[] = "(?, ?, ?, ?, ?, ?, ?)";
+            $params = array_merge($params, [
+                $params[] = $battleId,
+                $params[] = $type,
+                $params[] = (int)$object['id'],
+                $params[] = (int)$object['villageId'],
+                $params[] = (int)$object['x'],
+                $params[] = (int)$object['y'],
+                $params[] = (int)$object['currentHp']
+            ]);
+        }
+
+        $placeholder = implode(',', $insertData);
+
+        return $this->execute(
+            "INSERT INTO battle_objects
+            (battle_id, object_type, original_id, owner_village_id, x, y, current_hp)
+            VALUES $placeholder",
+            $params
+        );
+    }
+
+    public function getBattleHash($battleId) {
+        return $this->query("SELECT hash FROM battles WHERE id = ?", [$battleId]);
+    }
+
+    public function updateBattleHash($battleId, $hash) {
+        return $this->execute("UPDATE battles SET hash = ? WHERE id = ?", [$hash, $battleId]);
+    }
+
+    public function startBattle($armyId, $attackerVillageId, $defenderVillageId, $attackerLastOnline, $defenderLastOnline, $hash) {
+        $this->execute(
+            "INSERT INTO battles 
+            (army_attack_id, attacker_village_id, defender_village_id, attacker_last_online, defender_last_online, hash)
+            VALUES (?, ?, ?, ?, ?, ?)",
+            [$armyId, $attackerVillageId, $defenderVillageId, $attackerLastOnline, $defenderLastOnline, $hash]
+        );
+
+        return $this->pdo->lastInsertId();
+    }
+
+    public function getActiveBattle($id, $villageId) {
+        return $this->query(
+            "SELECT 
+                id,
+                army_attack_id AS armyAttackId,
+                attacker_village_id AS attackerVillageId, 
+                defender_village_id AS defenderVillageId,
+                attacker_last_online AS attackerLastOnline,
+                defender_last_online AS defenderLastOnline,
+                hash 
+            FROM battles
+            WHERE (attacker_village_id = ? OR defender_village_id = ?) AND id = ?",
+            [$villageId, $villageId, $id]
+        );
+    }
+
+    public function getBattleObjects($battleId) {
+        return $this->queryAll(
+            "SELECT
+                id,
+                battle_id AS battleId,
+                object_type AS objectType,
+                original_id AS orirginalId,
+                owner_village_id AS ownerVillageId,
+                x,
+                y,
+                current_hp AS currentHp
+            FROM battle_objects
+            WHERE battle_id = ?",
+            [$battleId]
+        );
+    }
+
+    public function updateAttackerStatus($battleId, $timestamp) {
+        return $this->execute(
+            "UPDATE battles SET attacker_last_online = ? WHERE id = ?",
+            [$timestamp, $battleId]
+        );
+    }
+
+    public function updateDefenderStatus($battleId, $timestamp) {
+        return $this->execute(
+            "UPDATE battles SET defender_last_online = ? WHERE id = ?",
+            [$timestamp, $battleId]
+        );
+    }
+
+    public function markVillageAttack($villageId) {
+        return $this->execute("UPDATE villages SET is_attacked = 1 WHERE id = ?", [$villageId]);
+    }
+
+    public function markArmyInBattle($armyId) {
+        return $this->execute("UPDATE army SET in_battle = 1 WHERE army = ?", [$armyId]);
     }
 }

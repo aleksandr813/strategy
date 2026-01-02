@@ -29,7 +29,7 @@ class User
                 'token' => $token
             ];
         }
-        
+
         return ['error' => 1002]; // Wrong login or password
     }
 
@@ -55,7 +55,7 @@ class User
             // Создание стартовой деревни для пользователя
             $villageCreated = $this->createStarterVillage($user->id);
             if (!$villageCreated) {
-                return ['error' => 1090];
+                return ['error' => 666];
             }
 
             $token = md5(rand());
@@ -66,7 +66,7 @@ class User
                 'token' => $token
             ];
         }
-        
+
         return ['error' => 9000]; // unknown error
     }
 
@@ -80,10 +80,35 @@ class User
         return ['error' => 1003];
     }
 
-    private function createStarterVillage($userId){
-        // Генерация случайных координат для деревни
-        $x = rand(1, 87);
-        $y = rand(1, 29);
+    private function createStarterVillage($userId)
+    {
+        $x = 0;
+        $y = 0;
+
+        $villages = $this->db->getVillages();
+
+        for ($attempt = 1; $attempt <= 99; $attempt++) {
+
+            $x = rand(1, MAP_WIDTH);
+            $y = rand(1, MAP_HEIGHT);
+
+            $validLocation = true;
+
+            foreach ($villages as $village) {
+                $distance = abs((int)$village['x'] - $x) + abs((int)$village['y'] - $y);
+
+                if ($distance <= 2) {
+                    $validLocation = false;
+                    break; // Координаты не подходят, пробуем снова
+                }
+            }
+
+            if ($validLocation) {
+
+                // Координаты подходят
+                break;
+            }
+        }
 
         // Создание деревни в базе данных
         $result = $this->db->createVillage($userId, $x, $y);
@@ -138,7 +163,7 @@ class User
 
         // Проверка на пробелы и специальные символы
         if (preg_match('/[\s@#$%]/', $login)) {
-            return ['error' => 1010]; 
+            return ['error' => 1010];
         }
         // Проверка на пробелы
         if (strpos($login, ' ') !== false) {

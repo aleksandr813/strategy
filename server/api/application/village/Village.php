@@ -25,7 +25,7 @@ class Village
         $now = time();
         $diffSeconds = $now - $lastIncome;
 
-        if ($diffSeconds < INCOME_INTERVAL) {
+        if ($diffSeconds < INCOME_INTERVAL && $diffSeconds > 0) {
             return [
                 'money' => $this->db->getMoney($userId)->money
             ];
@@ -43,10 +43,12 @@ class Village
 
     public function getBuildings($userId)
     {
-        if (!$userId) {
-            return ['error' => 705];
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
         }
-        $buildings = $this->db->getBuildings($userId);
+
+        $buildings = $this->db->getBuildings($village->id);
 
         foreach ($buildings as &$building) {
             $building['id'] = (int)$building['id'];
@@ -56,6 +58,8 @@ class Village
             $building['y'] = (int)$building['y'];
             $building['level'] = (int)$building['level'];
             $building['currentHp'] = (int)$building['currentHp'];
+            $building['damage'] = (int)$building['damage'];
+            $building['rangeAttack'] = (int)$building['rangeAttack'];
         }
 
         if (count($buildings) === 0) {
@@ -68,6 +72,23 @@ class Village
     public function getBuildingTypes()
     {
         $types = $this->db->getBuildingTypes();
+
+        foreach ($types as &$type) {
+            $type['id'] = (int)$type['id'];
+            $type['priceLevel1'] = (int)$type['priceLevel1'];
+            $type['priceLevel2'] = (int)$type['priceLevel2'];
+            $type['priceLevel3'] = (int)$type['priceLevel3'];
+            $type['hpLevel1'] = (int)$type['hpLevel1'];
+            $type['hpLevel2'] = (int)$type['hpLevel2'];
+            $type['hpLevel3'] = (int)$type['hpLevel3'];
+            $type['rangeAttackLevel1'] = (int)$type['rangeAttackLevel1'];
+            $type['rangeAttackLevel2'] = (int)$type['rangeAttackLevel2'];
+            $type['rangeAttackLevel3'] = (int)$type['rangeAttackLevel3'];
+            $type['damageLevel1'] = (int)$type['damageLevel1'];
+            $type['damageLevel2'] = (int)$type['damageLevel2'];
+            $type['damageLevel3'] = (int)$type['damageLevel3'];
+        }
+
         return $types;
     }
 
@@ -90,7 +111,8 @@ class Village
             }
         }
 
-        if ($user->money < $building->price) {
+        $price = $building->priceLevel1;
+        if ($user->money < $price) {
             return ['error' => 305];
         }
 
@@ -99,14 +121,14 @@ class Village
             return ['error' => 311];
         }
 
-        $newMoney = $user->money - $building->price;
+        $newMoney = $user->money - $price;
         $this->db->updateMoney($user->id, $newMoney);
         $this->db->buyBuilding(
             $village->id,
             $typeId,
             $x,
             $y,
-            $building->hp
+            $building->hpLevel1
         );
 
         return [
@@ -126,18 +148,25 @@ class Village
             return ['error' => 312];
         }
 
+        $currentLevel = (int)$level->level;
+
         $building = $this->db->getBuildingType($typeId);
         if (!$building) {
             return ["error" => 301];
         }
 
-        if ($user->money < $building->price) {
+        $upgradeCost = $this->db->getUpgradeCost($typeId, $currentLevel + 1);
+        $newStats = $this->db->getBuildingStatsForLevel($typeId, $currentLevel + 1);
+
+        if ($user->money < $upgradeCost->price) {
             return ['error' => 305];
         }
 
-        $newMoney = $user->money - $building->price;
+        $newMoney = $user->money - $upgradeCost->price;
         $this->db->updateMoney($user->id, $newMoney);
-        $result = $this->db->upgradeBuilding($buildingId, $village->id);
+
+        $result = $this->db->upgradeBuilding($buildingId, $village->id, $currentLevel + 1, (int)$newStats->hp);
+
         if (!$result) {
             return ['error' => 302];
         }

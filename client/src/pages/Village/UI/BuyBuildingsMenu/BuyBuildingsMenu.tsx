@@ -41,7 +41,7 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
 
     const buyBuilding = async (building: TBuildingType) => {
         const currentGold = Number(gold);
-        const buildingPrice = Number(building.price);
+        const buildingPrice = Number(building.priceLevel1);
 
         if (townHallLevel < building.unlockLevel) {
             alert(`Для покупки ${building.type} нужна ратуша уровня ${building.unlockLevel}`);
@@ -64,7 +64,10 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
     };
 
     const isBuildingAvailable = (building: TBuildingType): boolean => {
-        return townHallLevel >= building.unlockLevel;
+        const currentGold = Number(gold);
+        const buildingPrice = Number(building.price);
+
+        return townHallLevel >= building.unlockLevel && currentGold >= buildingPrice;
     }; 
 
     useEffect(() => {
@@ -93,7 +96,7 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
                                 <div className="building-info">
                                     <span className="building-name">{building.type}</span>
                                     <span className="building-details">
-                                        HP: {building.hp} | Цена: {building.price}
+                                        HP: {building.hp} | Цена: {building.priceLevel1}
                                     </span>
                                 </div>
                                 <Button
