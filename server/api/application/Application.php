@@ -308,4 +308,15 @@ class Application
         }
         return ['error' => 242];
     }
+
+    public function getActiveBattles($params) {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->user->getActiveBattles($params['token']);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
 }

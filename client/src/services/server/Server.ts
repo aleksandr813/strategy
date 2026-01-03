@@ -2,7 +2,7 @@ import md5 from 'md5';
 import GAMECONFIG from '../../game/gameConfig';
 import CONFIG from '../../config';
 import Store from "../store/Store";
-import { TBuildingType, TBuilding, TMap, TMapResponse, TUserArmy } from './types';
+import { TBuildingType, TBuilding, TMap, TMapResponse, TUserArmy, TBattle, TBattleResponse } from './types';
 import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 import Unit from '../../game/entities/Unit';
@@ -285,6 +285,14 @@ class Server {
         const response = await this.request<boolean>('sendArmy', params);
 
         return response;
+    }
+
+    async getBattle(): Promise<TBattleResponse | null> {
+
+        const hash = this.store.getBattleHash();
+
+        const battle = this.request<TBattleResponse>('getBattle', { hash })
+        return battle;
     }
 }
 

@@ -172,4 +172,17 @@ class User
 
         return true;
     }
+
+    public function getActiveBattles($token) {
+        $user = $this->db->getUserByToken($token);
+        if ($user) {
+            $attackBattles = $this->db->getActiveBattles($user->id);
+            $defendBattle = $this->db->getDefendBattle($user->id);
+            return [
+                'attack' => $attackBattles,
+                'defend' => $defendBattle
+            ];
+        }
+        return ['error' => 705];
+    }
 }
