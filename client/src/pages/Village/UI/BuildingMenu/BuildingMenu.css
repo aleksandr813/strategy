@@ -90,6 +90,32 @@
     background: #5a6d8e;
 }
 
+.levelup-button:disabled,
+.levelup-button.disabled {
+    background: #1a1410 !important;
+    color: #3d2817 !important;
+    cursor: not-allowed !important;
+    border-color: #2a1f15 !important;
+    box-shadow: 3px 3px 0 #0d0a08 !important;
+    transform: none !important;
+    opacity: 0.5;
+    position: relative;
+    
+    &::after {
+        content: '🔒';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+        color: #3d2817;
+    }
+}
+
 .delete-button {
     background: #c9453d;
     color: #e8d4b8;

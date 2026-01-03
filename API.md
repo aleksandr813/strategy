@@ -288,7 +288,26 @@ Buildings: {
 **Успешный ответ**
 ```
     Answer<{
-        buildingTypes: BuildingTypes[]
+        id: number; - id типа здания,
+        type: string; - название типа здания,
+
+        hpLevel1: number; - hp для уровня 1,
+        hpLevel2: number; - hp для уровня 2,
+        hpLevel3: number; - hp для уровня 3,
+
+        priceLevel1: number; - стоимость для уровня 1,
+        priceLevel2: number; - стоимость для уровня 2,
+        priceLevel3: number; - стоимость для уровня 3,
+
+        damageLevel1: number; - урон для уровня 1,
+        damageLevel2: number; - урон для уровня 2,
+        damageLevel3: number; - урон для уровня 3,
+
+        rangeAttackLevel1: number; - дистанция атаки для уровня 1,
+        rangeAttackLevel2: number; - дистанция атаки для уровня 2,
+        rangeAttackLevel3: number; - дистанция атаки для уровня 3,
+
+        unloclLevel: number; - уровень ратуши, необходимый для покупки здания
     }>
 ```
 **Ошибки**
@@ -314,7 +333,15 @@ Buildings: {
         y: number; - координата по y,
         level: number; - уровень здания,
         currentHp: number; - текущее здоровье здания,
-        type: string; - тип здания
+        type: string; - тип здания,
+        
+        damageLevel1: number; - урон для уровня 1,
+        damageLevel2: number; - урон для уровня 2,
+        damageLevel3: number; - урон для уровня 3,
+
+        rangeAttackLevel1: number; - дистанция атаки для уровня 1,
+        rangeAttackLevel2: number; - дистанция атаки для уровня 2,
+        rangeAttackLevel3: number; - дистанция атаки для уровня 3,
     }>
 ```
 **Ошибки**
