@@ -65,7 +65,7 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
 
     const isBuildingAvailable = (building: TBuildingType): boolean => {
         const currentGold = Number(gold);
-        const buildingPrice = Number(building.price);
+        const buildingPrice = Number(building.priceLevel1);
 
         return townHallLevel >= building.unlockLevel && currentGold >= buildingPrice;
     }; 
