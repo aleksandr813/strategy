@@ -790,4 +790,21 @@ class DB
     public function markArmyInBattle($armyId) {
         return $this->execute("UPDATE army SET in_battle = 1 WHERE army = ?", [$armyId]);
     }
+
+    public function getActiveBattles($userId) {
+        return $this->queryAll(
+            "SELECT b.id 
+            FROM battles b
+            JOIN army a ON b.army_attack_id = a.army
+            WHERE a.userId = ?",
+            [$userId]
+        );
+    }
+
+    public function getDefendBattle($userId) {
+        return $this->query(
+            "SELECT attack_id FROM villages WHERE user_id = ?",
+            [$userId]
+        );
+    }
 }
