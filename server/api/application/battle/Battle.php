@@ -74,13 +74,13 @@ class Battle {
         return sqrt(pow($x2 - $x1, 2) + pow($y2 - $y1, 2));
     }
 
-    public function getBattle($userId, $hash) {
+    public function getBattle($userId, $hash, $id) {
         $village = $this->db->getVillage($userId);
         if (!$village) {
             return ['error' => 310];
         }
 
-        $battle = $this->db->getActiveBattle($village->id);
+        $battle = $this->db->getActiveBattle($id, $village->id);
         if (!$battle) {
             return true;
         }
