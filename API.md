@@ -36,6 +36,7 @@
     * 4.20. getUserArmies
     * 4.21. unitsAttackDistance
     * 4.22. getBattle
+    * 4.23. getActiveBattles
 
 ## 1. Общее
 ### 1.1. Адрес сервера
@@ -717,7 +718,8 @@ Buildings: {
 * `315` - Деревня не найдена
 * `603` - Армия не найдена
 
-### 4.22 getActiveBattles
+
+### 4.23 getActiveBattles
 смотрит активные бои у пользователя
 **Параметры**
 ```
