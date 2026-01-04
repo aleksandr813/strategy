@@ -366,6 +366,21 @@ class DB
         );
     }
 
+    public function getVillageById($id)
+    {
+        return $this->query("
+            SELECT 
+                id, 
+                x, 
+                y, 
+                last_income_datetime, 
+                attack_id AS attackId 
+            FROM villages 
+            WHERE id = ?", 
+            [$id]
+        );
+    }
+
     public function getVillages() {
         return $this->queryAll("
             SELECT
@@ -512,7 +527,7 @@ class DB
         );
     }
 
-    public function sendArmy($userId, $startX, $startY, $startTime, $arrivalTime, $targetX, $targetY, $targetId, $units, $speed) {
+    public function sendArmy($userId, $startX, $startY, $startTime, $arrivalTime, $targetX, $targetY, $targetVillageId, $units, $speed) {
         $army = [];
         foreach ($units as $unit) {
             $army[] = $unit['id'];
@@ -524,7 +539,7 @@ class DB
         INSERT INTO army 
         (userId, startX, startY, startTime, arrivalTime, targetX, targetY, attackId, units, speed) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [$userId, $startX, $startY, $startTime, $arrivalTime, $targetX, $targetY, $targetId, $armyString, $speed]);
+        [$userId, $startX, $startY, $startTime, $arrivalTime, $targetX, $targetY, $targetVillageId, $armyString, $speed]);
     }
 
     public function markVillageAsAttacked($attackerVillageId, $targetVillageId) {
