@@ -360,7 +360,7 @@ class Village
         return true;
     }
 
-    public function sendArmy($user, $units, $target) {
+    public function sendArmy($user, $units, $targetVillageId) {
         if (count($units) === 0) {
             return ['error' => 600];
         }
@@ -370,7 +370,7 @@ class Village
             return ['error' => 315];
         }
 
-        $targetVillage = $this->db->getVillage($target);
+        $targetVillage = $this->db->getVillageById($targetVillageId);
         if (!$targetVillage) {
             return ['error' => 315];
         }
@@ -406,7 +406,7 @@ class Village
             $arrivalTime,
             $targetVillage->x, 
             $targetVillage->y, 
-            $target, 
+            $targetVillageId, 
             $units, 
             $speed
         );
