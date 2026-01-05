@@ -20,6 +20,7 @@ import home from "../../../../assets/img/panel/home.png";
 import moneyIcon from "../../../../assets/img/panel/moneyIcon.png";
 import rectangle from "../../../../assets/img/panel/rectangle.png";
 import rectangle1 from "../../../../assets/img/panel/rectangle1.png";
+import battleIcon from "../../../../assets/img/panel/battleIcon.png"
 import chat from "../../../../assets/img/panel/chat.png";
 import sendarmy from "../../../../assets/img/panel/sendarmy.png";
 
@@ -56,6 +57,7 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
     const villageHandler = () => setUIElement(UIELEMENT.NULL);
     const chatHandler = () =>  setPage(PAGES.CHAT);
     const sendArmyHandler = () => setUIElement(UIELEMENT.ARMYMENU);
+    const activeBattlesHandler = () => setUIElement(UIELEMENT.ACTIVEBATTLESMENU);
 
     return (
         <div className='Panel'>
@@ -87,6 +89,13 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
                     </div>
                 </div>
 
+                <Button 
+                    onClick={() => setUIElement(UIELEMENT.ACTIVEBATTLESMENU)} 
+                    className='panel-button chat-btn' 
+                    title='Активные бои'
+                >
+                    <img src={unit} className='icon-img' alt="battles" /> 
+                </Button>
                 <div className='centr-section'>
                     <Button onClick={sendArmyHandler} className='panel-button-send-army' id='sendarmy'>
                         <img src={sendarmy} className='icon-img' alt="sendarmy" />  
