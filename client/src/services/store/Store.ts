@@ -12,7 +12,6 @@ class Store {
     battleHash: string = 'empty battle hash';
     money: number = 0;
     mediator: Mediator;
-    currentBattleId: number | null = null;
 
     constructor(mediator: Mediator) {
         this.mediator = mediator;
@@ -98,18 +97,6 @@ class Store {
 
     getMoney(): number {
         return this.money;
-    }
-
-    setCurrentBattle(id: number): void {
-        this.currentBattleId = id;
-    }
-
-    getCurrentBattle(): number | null {
-        return this.currentBattleId;
-    }
-
-    clearCurrentBattle(): void {
-        this.currentBattleId = null;
     }
 }
 

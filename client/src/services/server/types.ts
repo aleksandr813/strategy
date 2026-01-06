@@ -150,7 +150,7 @@ export type TBattleResponse = {
 }
 
 export type TActiveBattle = {
-    attack: Array<{ id: string }>;
+    attack: { id: string }[];
     defend: { attack_id: string } | null; 
 };
 

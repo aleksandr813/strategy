@@ -6,11 +6,13 @@ import { GameContext } from '../../../../App';
 import { PAGES } from '../../../PageManager';
 
 import "./ActiveBattlesMenu.scss";
+import Mediator from '../../../../services/mediator/Mediator';
 
 interface ActiveBattlesMenuProps {
     setUIElement: (name: UIELEMENT) => void;
     store: Store;
     setPage: (name: PAGES) => void;
+    mediator: Mediator
 }
 
 const ActiveBattlesMenu: React.FC<ActiveBattlesMenuProps> = ({ setUIElement, store, setPage }) => {
@@ -48,7 +50,7 @@ const ActiveBattlesMenu: React.FC<ActiveBattlesMenuProps> = ({ setUIElement, sto
                                 <button
                                     className="go-btn"
                                     onClick={() => {
-                                        store.setCurrentBattle(Number(item.id));
+                                        game.setCurrentBattle(Number(item.id));
                                         setUIElement(UIELEMENT.NULL);
                                         setPage(PAGES.BATTLE);
                                     }}

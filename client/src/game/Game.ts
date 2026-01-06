@@ -23,6 +23,7 @@ class Game {
     private villages: VillageEntity[] = [];
     private armies: ArmyEntity[] = [];
     private activeBattles: TActiveBattle | null = null;
+    private currentBattleId: number | null = null;
     
     private incomeInterval: NodeJS.Timer | null = null;
     private activeBattlesInterval: NodeJS.Timer | null = null;
@@ -155,6 +156,18 @@ class Game {
 
     public getBattle(): Battle {
         return this.battle;
+    }
+
+    public setCurrentBattle(id: number): void {
+        this.currentBattleId = id;
+    }
+
+    public getCurrentBattle(): number | null {
+        return this.currentBattleId;
+    }
+
+    public clearCurrentBattle(): void {
+        this.currentBattleId = null;
     }
 
     public destructor(): void {
