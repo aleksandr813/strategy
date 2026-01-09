@@ -9,6 +9,9 @@ import Unit from '../../game/entities/Unit';
 
 const { HOST, CHAT_TIMESTAMP } = CONFIG;
 
+interface TokenCheckResponse {
+    user: boolean;
+}
 class Server {
     HOST = HOST;
     store: Store;
@@ -87,6 +90,14 @@ class Server {
         const result = await this.request<boolean>('logout', { token });
         if (result) {
             this.store.clearUser();
+            return true;
+        }
+        return false;
+    }
+
+    async checkToken(token: string) {
+        const result = await this.request<TokenCheckResponse>('checkToken', { token });
+        if (result?.user === true) {
             return true;
         }
         return false;

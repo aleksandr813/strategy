@@ -1,7 +1,7 @@
 import maxIcon from '../../assets/img/joke/max.webp'
 import gosIcon from '../../assets/img/joke/gos.png'
 import React, { useContext, useRef, useState, useEffect } from 'react';
-import { ServerContext } from '../../App';
+import { ServerContext, StoreContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import { validateLoginFromLogin, validatePasswordFromLogin } from '../../services/verification/Verification';
@@ -16,6 +16,7 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
     const [loginError, setLoginError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
+    const store = useContext(StoreContext);
 
     const loginClickHandler = async () => {
         if (loginRef.current && passwordRef.current) {
@@ -40,17 +41,15 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
                 setPasswordError(passwordValidation.message);
                 hasErrors = true;
             }
-            // Сохранение логина и пароля в cookies если отмечено "Запомнить меня"
-            if (rememberMe) {
-                setCookie('rememberedLogin', login, 30);
-                setCookie('rememberedPassword', password, 30);
-            } else {
-                deleteCookie('rememberedLogin');
-                deleteCookie('rememberedPassword');
-            }
 
             // Отправка данных на сервер
             if (login && password && await server.login(login, password)) {
+                const token = store.getToken();
+                if (rememberMe) {
+                    setCookie('rememberedToken', token || '', 30);
+                } else {
+                    deleteCookie('rememberedToken');
+                }
                 setPage(PAGES.VILLAGE);
             }
         }
@@ -62,19 +61,23 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
         }
     };
 
-    const jokeClickHandler = () => {window.open('https://rutube.ru/video/f3b615db135287a64584737e664e1e4b/?r=plwd')}
+    const jokeClickHandler = () => { window.open('https://rutube.ru/video/f3b615db135287a64584737e664e1e4b/?r=plwd') }
 
     useEffect(() => {
-        const savedLogin = getCookie('rememberedLogin');
-        const savedPassword = getCookie('rememberedPassword');
-
-        if (loginRef.current && savedLogin) {
-            loginRef.current.value = savedLogin;
-            setRememberMe(true);
-        }
-        if (passwordRef.current && savedPassword) {
-            passwordRef.current.value = savedPassword;
-        }
+        const checkSavedToken = async () => {
+            const savedToken = getCookie('rememberedToken');
+            if (savedToken) {
+                const isValidToken = await server.checkToken(savedToken);
+                if (isValidToken) {
+                    store.setToken(savedToken);
+                    setPage(PAGES.VILLAGE);
+                }else{
+                    deleteCookie('rememberedToken');
+                }
+            }
+        };
+        
+        checkSavedToken();
     }, []);
 
     const setCookie = (name: string, value: string, days: number) => {

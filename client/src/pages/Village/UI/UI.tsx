@@ -6,7 +6,7 @@ import Panel from './Panel/Panel';
 import ArmyMenu from './ArmyMenu/ArmyMenu';
 import Store from '../../../services/store/Store';
 import Mediator from '../../../services/mediator/Mediator';
-import { PAGES } from '../../PageManager';
+import { PAGES } from '../../PageManager'; 
 
 import "./UI.scss";
 
