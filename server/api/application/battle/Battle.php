@@ -3,11 +3,13 @@
 class Battle {
     private $db;
     private $config;
+    private $village;
 
     public function __construct($db)
     {
         $this->db = $db;
         $this->config = require('config.php');
+        $this->village = new Village($db);
     }
 
     public function takeDamage($userId, $units) {
@@ -168,5 +170,25 @@ class Battle {
         $timeDiff = $now - $lastOnline;
 
         return $timeDiff <= ONLINE_TIMEOUT;
+    }
+    
+    public function updateBattle($userId, $battleId, $unitsString) {
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
+        }
+
+        $units = $this->village->parseUnitsString($unitsString);
+        if (!$units) {
+            return ['error' => 504];
+        }
+
+        $updatedPositionUnits = $this->db->updateUnitsPositionInBattle($battleId, $units, $village->id);
+
+        if (!$updatedPositionUnits) {
+            return ['error' => 504];
+        }
+
+        return true;
     }
 }

@@ -46,6 +46,7 @@ function result($params) {
             case 'takeDamage': return $app->takeDamage($params);
             case 'unitsAttackDistance': return $app->unitsAttackDistance($params); //loop
             case 'getBattle': return $app->getBattle($params); //loop
+            case 'updateBattle': return $app->updateBattle($params);
             //calc
             case 'getRoots': return $app->getRoots($params);
 
