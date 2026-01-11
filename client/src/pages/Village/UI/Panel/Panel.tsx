@@ -3,7 +3,6 @@ import { useState, useEffect, useContext } from 'react';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
 import Store from '../../../../services/store/Store';
-import Server from '../../../../services/server/Server';
 import Mediator from '../../../../services/mediator/Mediator';
 import { PAGES } from '../../../PageManager';
 import MiniMapCanvas from '../../../MiniMap/MiniMapCanvas';
