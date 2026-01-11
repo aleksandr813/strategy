@@ -1,12 +1,12 @@
 import React from 'react';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
+import Server from '../../../../services/server/Server';
 import Store from '../../../../services/store/Store';
 import Mediator from '../../../../services/mediator/Mediator';
 import { PAGES } from '../../../PageManager';
 import MiniMapCanvas from '../../../MiniMap/MiniMapCanvas';
-import { ServerContext } from '../../../../App';
 
 import "./Panel.scss";
 
@@ -25,15 +25,14 @@ import chat from "../../../../assets/img/panel/chat.png";
 import sendarmy from "../../../../assets/img/panel/sendarmy.png";
 
 interface PanelProps extends IBaseUIElement {
+    server: Server;
     store: Store;
     mediator: Mediator;
     setPage: (name: PAGES) => void;
 }
 
 const Panel: React.FC<PanelProps> = (props: PanelProps) => {
-    const { setUIElement, store, mediator, setPage } = props;
-    const server = useContext(ServerContext);
-
+    const { setUIElement, server, store, mediator, setPage } = props;
 
     const token = store.getToken();
 
@@ -62,7 +61,7 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
         if (token && await server.logout(token)) {
             setPage(PAGES.LOGIN)
         }
-    }; //Временные логаут
+    };
     const chatHandler = () => setPage(PAGES.CHAT);
     const sendArmyHandler = () => setUIElement(UIELEMENT.ARMYMENU);
 

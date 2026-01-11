@@ -47,8 +47,10 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
                 const token = store.getToken();
                 if (rememberMe) {
                     setCookie('rememberedToken', token || '', 30);
+                    setCookie('rememberedName', login || '', 30);
                 } else {
                     deleteCookie('rememberedToken');
+                    deleteCookie('rememberedName');
                 }
                 setPage(PAGES.VILLAGE);
             }
@@ -66,17 +68,22 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
     useEffect(() => {
         const checkSavedToken = async () => {
             const savedToken = getCookie('rememberedToken');
+            const savedName = getCookie('rememberedName');
             if (savedToken) {
                 const isValidToken = await server.checkToken(savedToken);
                 if (isValidToken) {
-                    store.setToken(savedToken);
+                    store.setUser({
+                        name: savedName || '',
+                        token: savedToken || ''
+                    })
                     setPage(PAGES.VILLAGE);
-                }else{
+                } else {
                     deleteCookie('rememberedToken');
+                    deleteCookie('rememberedName');
                 }
             }
         };
-        
+
         checkSavedToken();
     }, []);
 
