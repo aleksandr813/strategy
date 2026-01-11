@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Canvas, useCanvas } from '../../services/canvas'; 
-import CONFIG, { TWINDOW } from '../../config'; 
+import { TWINDOW } from '../../config'; 
 
 const MINIMAP_FIELD = 'minimap-field'; 
 const MINIMAP_WIDTH = 150; 

@@ -1,4 +1,4 @@
-import React, { Component, useContext, useEffect, useRef, useState } from 'react';
+import React, { Component, useEffect, useRef, useState } from 'react';
 import { ServerContext, StoreContext, MediatorContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
@@ -14,13 +14,12 @@ const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
 
 const Village: React.FC<IBasePage> = (props: IBasePage) => {
-    const server = useContext(ServerContext);
-    const store = useContext(StoreContext);
-    const mediator = useContext(MediatorContext);
+    const { setPage, store, mediator, server } = props;
+
     const token = store.getToken();
-    
-    const { setPage } = props;
-    
+
+
+
     const backClickHandler = async () => {
         if (token && await server.logout(token)) {
             setPage(PAGES.LOGIN)
@@ -33,13 +32,13 @@ const Village: React.FC<IBasePage> = (props: IBasePage) => {
     const chatClickHandler = () => setPage(PAGES.CHAT);
 
     return (
-    <div className='game'>
-        <div>
-            <VillageCanvas />
+        <div className='game'>
+            <div>
+                <VillageCanvas />
+            </div>
+            <UI store={store} mediator={mediator} setPage={setPage} />
         </div>
-        <UI store={store} mediator={mediator} setPage={setPage} />
-    </div>
-);
+    );
 };
 
 export default Village;

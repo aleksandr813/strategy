@@ -1,11 +1,9 @@
-import React, { useRef, useContext } from 'react';
-import { ServerContext } from '../../App';
+import React from 'react';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 
 const Battle: React.FC<IBasePage> = (props: IBasePage) => {
     const { setPage } = props;
-    const server = useContext(ServerContext);
 
     const backclickHandler = () => setPage(PAGES.VILLAGE);
 
