@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import Button from '../../../../components/Button/Button';
 import { UIELEMENT, IBaseUIElement } from '../UI';
+import Server from '../../../../services/server/Server';
 import Store from '../../../../services/store/Store';
 import Mediator from '../../../../services/mediator/Mediator';
 import { PAGES } from '../../../PageManager';
@@ -25,19 +26,22 @@ import chat from "../../../../assets/img/panel/chat.png";
 import sendarmy from "../../../../assets/img/panel/sendarmy.png";
 
 interface PanelProps extends IBaseUIElement {
+    server: Server;
     store: Store;
     mediator: Mediator;
     setPage: (name: PAGES) => void;
 }
 
 const Panel: React.FC<PanelProps> = (props: PanelProps) => {
-    const { setUIElement, store, mediator, setPage } = props;
-    
+    const { setUIElement, server, store, mediator, setPage } = props;
+
+    const token = store.getToken();
+
     const [money, setMoney] = useState<number>(store.getMoney());
 
     useEffect(() => {
         const { MONEY_CHANGE } = mediator.getEventTypes();
-        
+
         const handleMoneyChange = () => {
             setMoney(store.getMoney());
         };
@@ -50,12 +54,16 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
     }, [mediator, store]);
 
     const buildingsHandler = () => setUIElement(UIELEMENT.BUYBUILDINGSMENU);
-    const unitsHandler = () => setUIElement(UIELEMENT.BUYUNITSMENU);    
+    const unitsHandler = () => setUIElement(UIELEMENT.BUYUNITSMENU);
     const settingsHandler = () => setUIElement(UIELEMENT.NULL);
     const globalmapHandler = () => setPage(PAGES.GLOBAL_MAP);
     const lidersHandler = () => setUIElement(UIELEMENT.NULL);
-    const villageHandler = () => setUIElement(UIELEMENT.NULL);
-    const chatHandler = () =>  setPage(PAGES.CHAT);
+    const villageHandler = async () => {
+        if (token && await server.logout(token)) {
+            setPage(PAGES.LOGIN)
+        }
+    };
+    const chatHandler = () => setPage(PAGES.CHAT);
     const sendArmyHandler = () => setUIElement(UIELEMENT.ARMYMENU);
     const activeBattlesHandler = () => setUIElement(UIELEMENT.ACTIVEBATTLESMENU);
 
@@ -73,7 +81,7 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
                         <div className="info-row top">
                             <img src={rectangle1} className='name-plate-bg' alt="plate" />
                         </div>
-                        
+
                         <div className="info-row bottom">
                             <div className='money-container'>
                                 <img src={rectangle} className='money-bg' alt="bg" />
@@ -98,16 +106,16 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
                 </Button>
                 <div className='centr-section'>
                     <Button onClick={sendArmyHandler} className='panel-button-send-army' id='sendarmy'>
-                        <img src={sendarmy} className='icon-img' alt="sendarmy" />  
+                        <img src={sendarmy} className='icon-img' alt="sendarmy" />
                     </Button>
                 </div>
 
                 <div className='right-section'>
-                    <div 
-                        className='panel-button big-btn' 
-                        title='Глобальная карта' 
-                        id='testpanelmap' 
-                        style={{ overflow: 'hidden' }} 
+                    <div
+                        className='panel-button big-btn'
+                        title='Глобальная карта'
+                        id='testpanelmap'
+                        style={{ overflow: 'hidden' }}
                     >
                         <MiniMapCanvas onMapClick={globalmapHandler} />
                     </div>
@@ -116,7 +124,7 @@ const Panel: React.FC<PanelProps> = (props: PanelProps) => {
                         <Button onClick={lidersHandler} className='panel-button-r mini-btn' title='Таблица лидеров'>
                             <img src={leaderboard} className='icon-img' alt="leaderboard" />
                         </Button>
-                        
+
                         <Button onClick={buildingsHandler} className='panel-button-r mini-btn' title='Купить здание'>
                             <img src={build} className='icon-img' alt="build" />
                         </Button>

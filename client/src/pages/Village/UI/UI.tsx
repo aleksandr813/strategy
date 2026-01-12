@@ -1,9 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import BuyBuildingsMenu from './BuyBuildingsMenu/BuyBuildingsMenu';
 import BuyUnitsMenu from './BuyUnitsMenu/BuyUnitsMenu';
 import BuildingMenu from './BuildingMenu/BuildingMenu';
 import Panel from './Panel/Panel';
 import ArmyMenu from './ArmyMenu/ArmyMenu';
+import Server from '../../../services/server/Server';
 import Store from '../../../services/store/Store';
 import Mediator from '../../../services/mediator/Mediator';
 import { PAGES } from '../../PageManager';
@@ -26,12 +27,13 @@ export interface IBaseUIElement {
 }
 
 interface UIProps {
+    server: Server;
     store: Store;
     mediator: Mediator;
     setPage: (name: PAGES) => void;
 }
 
-const UI: React.FC<UIProps> = ({ store, mediator, setPage }) => {
+const UI: React.FC<UIProps> = ({ server, store, mediator, setPage }) => {
     const [uiElement, setUIElement] = useState<UIELEMENT>(UIELEMENT.NULL);
 
     return (

@@ -80,7 +80,7 @@ class Map {
             return ['error' => 603];
         }
 
-        $defenderVillage = $this->db->getVillage($army->attackId);
+        $defenderVillage = $this->db->getVillageById($army->attackId);
         if (!$defenderVillage) {
             return ['error' => 315];
         }
