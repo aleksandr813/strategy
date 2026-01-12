@@ -148,3 +148,9 @@ export type TBattleResponse = {
     hash: string;
     battle: TBattle;
 }
+
+export type TActiveBattle = {
+    attack: { id: string }[];
+    defend: { attack_id: string } | null; 
+};
+

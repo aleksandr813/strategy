@@ -10,6 +10,7 @@ import VillageEntity from './entities/VillageEntity';
 import ArmyEntity from './entities/ArmyEntity';
 import Building from './entities/Building';
 import GAMECONFIG from './gameConfig';
+import { TActiveBattle, TAnswer } from '../services/server/types';
 
 class Game {
     private store: Store;
@@ -21,8 +22,11 @@ class Game {
     private buildings: Building[] = [];
     private villages: VillageEntity[] = [];
     private armies: ArmyEntity[] = [];
+    private activeBattles: TActiveBattle | null = null;
+    private currentBattleId: number | null = null;
     
     private incomeInterval: NodeJS.Timer | null = null;
+    private activeBattlesInterval: NodeJS.Timer | null = null;
     
     public village: Village;
     public globalMap: GlobalMap;
@@ -39,6 +43,7 @@ class Game {
         this.battle = new Battle(store, server, this);
         
         this.startIncomeUpdate();
+        this.startActiveBattlesUpdate();
     }
 
     private startIncomeUpdate(): void {
@@ -93,6 +98,34 @@ class Game {
         return this.buildings;
     }
 
+    public getActiveBattles(): TActiveBattle | null {
+        console.log('Активные битвы:', this.activeBattles);
+        return this.activeBattles;
+    }
+
+    public setActiveBattles(data: TActiveBattle): void {
+        this.activeBattles = data;
+    }
+
+    async updateActiveBattles(): Promise<void> {
+        const data = await this.server.getActiveBattles();
+
+        if (!data) return;
+
+        this.activeBattles = data;
+        this.mediator.call('UPDATE_BATTLES');
+    }
+
+
+    private startActiveBattlesUpdate(): void {
+        this.updateIncome();
+        this.updateActiveBattles();
+        
+        this.activeBattlesInterval = setInterval(() => {
+            this.updateActiveBattles();
+        }, GAMECONFIG.INCOME_INTERVAL);
+    }
+
     public setBuildings(buildings: Building[]): void {
         this.buildings = buildings;
     }
@@ -123,6 +156,18 @@ class Game {
 
     public getBattle(): Battle {
         return this.battle;
+    }
+
+    public setCurrentBattle(id: number): void {
+        this.currentBattleId = id;
+    }
+
+    public getCurrentBattle(): number | null {
+        return this.currentBattleId;
+    }
+
+    public clearCurrentBattle(): void {
+        this.currentBattleId = null;
     }
 
     public destructor(): void {

@@ -7,7 +7,8 @@ import ArmyMenu from './ArmyMenu/ArmyMenu';
 import Server from '../../../services/server/Server';
 import Store from '../../../services/store/Store';
 import Mediator from '../../../services/mediator/Mediator';
-import { PAGES } from '../../PageManager'; 
+import { PAGES } from '../../PageManager';
+import ActiveBattlesMenu from './ActiveBattlesMenu/ActiveBattlesMenu';
 
 import "./UI.scss";
 
@@ -17,6 +18,7 @@ export enum UIELEMENT {
     BUYUNITSMENU,
     BUYBUILDINGSMENU,
     ARMYMENU,
+    ACTIVEBATTLESMENU,
     NULL
 }
 
@@ -40,7 +42,8 @@ const UI: React.FC<UIProps> = ({ server, store, mediator, setPage }) => {
             {uiElement === UIELEMENT.BUYBUILDINGSMENU && <BuyBuildingsMenu setUIElement={setUIElement} store={store} mediator={mediator} />}
             {uiElement === UIELEMENT.BUYUNITSMENU && <BuyUnitsMenu setUIElement={setUIElement} store={store} mediator={mediator} />}
             {uiElement === UIELEMENT.ARMYMENU && <ArmyMenu setPage={setPage} setUIElement={setUIElement} store={store} mediator={mediator} />}
-            <Panel setUIElement={setUIElement} server={server} store={store} mediator={mediator} setPage={setPage} />
+            {uiElement === UIELEMENT.ACTIVEBATTLESMENU && <ActiveBattlesMenu setUIElement={setUIElement} store={store} setPage={setPage} mediator={mediator} />}
+            <Panel setUIElement={setUIElement} store={store} mediator={mediator} setPage={setPage} />
         </div>
     );
 };
