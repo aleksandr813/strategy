@@ -115,9 +115,17 @@ class Manager {
 
             this.game.getUnits().forEach((unit) => {
                 if (unit.isMoving()) {
-                    const stillMoving = unit.makeStep();
                     anyUnitMoving = true;
-                    movingUnits.push(unit);
+                    
+                    unit.movementAccumulator += unit.speed;
+                    
+                    if (unit.movementAccumulator >= 1) {
+                        unit.movementAccumulator -= 1;
+                        const stillMoving = unit.makeStep();
+                        if (stillMoving) {
+                            movingUnits.push(unit);
+                        }
+                    }
                 }
             });
 

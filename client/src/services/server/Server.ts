@@ -181,6 +181,7 @@ class Server {
             x: Number(unit.x),
             y: Number(unit.y),
             level: Number(unit.level),
+            speed: Number(unit.speed),
             currentHp: Number(unit.currentHp),
             type: unit.type,
             unlockLevel: Number(unit.unlockLevel),
