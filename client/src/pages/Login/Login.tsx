@@ -8,7 +8,7 @@ import { validateLoginFromLogin, validatePasswordFromLogin } from '../../service
 import './Login.scss';
 
 const Login: React.FC<IBasePage> = (props: IBasePage) => {
-    const { setPage, server } = props;
+    const { setPage, server, store } = props;
     const loginRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const [loginError, setLoginError] = useState('');
@@ -38,17 +38,17 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
                 setPasswordError(passwordValidation.message);
                 hasErrors = true;
             }
-            // Сохранение логина и пароля в cookies если отмечено "Запомнить меня"
-            if (rememberMe) {
-                setCookie('rememberedLogin', login, 30);
-                setCookie('rememberedPassword', password, 30);
-            } else {
-                deleteCookie('rememberedLogin');
-                deleteCookie('rememberedPassword');
-            }
 
             // Отправка данных на сервер
             if (login && password && await server.login(login, password)) {
+                const token = store.getToken();
+                if (rememberMe) {
+                    setCookie('rememberedToken', token || '', 30);
+                    setCookie('rememberedName', login || '', 30);
+                } else {
+                    deleteCookie('rememberedToken');
+                    deleteCookie('rememberedName');
+                }
                 setPage(PAGES.VILLAGE);
             }
         }
@@ -60,19 +60,28 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
         }
     };
 
-    const jokeClickHandler = () => {window.open('https://rutube.ru/video/f3b615db135287a64584737e664e1e4b/?r=plwd')}
+    const jokeClickHandler = () => { window.open('https://rutube.ru/video/f3b615db135287a64584737e664e1e4b/?r=plwd') }
 
     useEffect(() => {
-        const savedLogin = getCookie('rememberedLogin');
-        const savedPassword = getCookie('rememberedPassword');
+        const checkSavedToken = async () => {
+            const savedToken = getCookie('rememberedToken');
+            const savedName = getCookie('rememberedName');
+            if (savedToken) {
+                const isValidToken = await server.checkToken(savedToken);
+                if (isValidToken) {
+                    store.setUser({
+                        name: savedName || '',
+                        token: savedToken || ''
+                    })
+                    setPage(PAGES.VILLAGE);
+                } else {
+                    deleteCookie('rememberedToken');
+                    deleteCookie('rememberedName');
+                }
+            }
+        };
 
-        if (loginRef.current && savedLogin) {
-            loginRef.current.value = savedLogin;
-            setRememberMe(true);
-        }
-        if (passwordRef.current && savedPassword) {
-            passwordRef.current.value = savedPassword;
-        }
+        checkSavedToken();
     }, []);
 
     const setCookie = (name: string, value: string, days: number) => {

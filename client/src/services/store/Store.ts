@@ -33,6 +33,10 @@ class Store {
         localStorage.setItem(TOKEN, token);
     }
 
+    setName(name: string): void {
+        
+    }
+
     getToken(): string | null {
         return localStorage.getItem(TOKEN);
     }

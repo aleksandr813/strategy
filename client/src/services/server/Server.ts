@@ -2,13 +2,16 @@ import md5 from 'md5';
 import GAMECONFIG from '../../game/gameConfig';
 import CONFIG from '../../config';
 import Store from "../store/Store";
-import { TBuildingType, TBuilding, TMap, TMapResponse, TUserArmy, TBattle, TBattleResponse } from './types';
+import { TBuildingType, TBuilding, TMap, TMapResponse, TUserArmy, TBattle, TBattleResponse, TActiveBattle } from './types';
 import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 import Unit from '../../game/entities/Unit';
 
 const { HOST, CHAT_TIMESTAMP } = CONFIG;
 
+interface TokenCheckResponse {
+    user: boolean;
+}
 class Server {
     HOST = HOST;
     store: Store;
@@ -87,6 +90,14 @@ class Server {
         const result = await this.request<boolean>('logout', { token });
         if (result) {
             this.store.clearUser();
+            return true;
+        }
+        return false;
+    }
+
+    async checkToken(token: string) {
+        const result = await this.request<TokenCheckResponse>('checkToken', { token });
+        if (result?.user === true) {
             return true;
         }
         return false;
@@ -293,6 +304,12 @@ class Server {
 
         const battle = this.request<TBattleResponse>('getBattle', { hash })
         return battle;
+    }
+
+    async getActiveBattles(): Promise<TActiveBattle | null> {
+        const response = await this.request<TActiveBattle>('getActiveBattles');
+        console.log('Active battles:', response);
+        return response;
     }
 }
 
