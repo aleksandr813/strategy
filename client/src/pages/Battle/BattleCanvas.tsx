@@ -46,7 +46,7 @@ const BattleCanvas: React.FC = () => {
         }
     };
 
-    let allocation = new Allocation();
+    const allocation = new Allocation();
     const [[spritesImage], getSprite] = useSprites();
 
     let mouseDownPosition: TPoint | null = null;
@@ -154,12 +154,13 @@ const BattleCanvas: React.FC = () => {
         mouseDownTime = Date.now();
         wasDragging = false;
         
-        
         allocation.start(x, y);
     };
 
     const mouseMove = (x: number, y: number, screenX?: number, screenY?: number) => {
         const { units, buildings } = battle.getScene();
+
+        allocation.update(x, y);
         //const matrix = battle.getBattleMatrix(units, buildings);
 
 
@@ -311,15 +312,7 @@ const BattleCanvas: React.FC = () => {
     }, [ game ]);
 
     return (
-        <div className='BattleCanvas'
-        style={{
-                backgroundImage: `url(${tableBackground})`,
-                backgroundRepeat: 'repeat',
-                backgroundPosition: 'center',
-                imageRendering: 'pixelated' 
-            }}>
-            <div id={GAME_FIELD} className={GAME_FIELD}></div>
-        </div>
+        <div id={GAME_FIELD} className={GAME_FIELD}></div>
     );
 };
 
