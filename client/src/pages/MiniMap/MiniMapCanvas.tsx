@@ -68,9 +68,9 @@ const MiniMapCanvas: React.FC<MiniMapCanvasProps> = ({ onMapClick }) => {
 
         const playerVillage = villages.find(v => v.name === user?.name);
 
-        console.log('USER:', user);
-        console.log('FOUND VILLAGE:', playerVillage);
-        console.log('ALL VILLAGES:', villages);
+        //console.log('USER:', user);
+        //console.log('FOUND VILLAGE:', playerVillage);
+        //console.log('ALL VILLAGES:', villages);
         
         if (!playerVillage) return;
 

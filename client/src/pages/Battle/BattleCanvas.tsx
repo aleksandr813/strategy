@@ -46,7 +46,7 @@ const BattleCanvas: React.FC = () => {
         }
     };
 
-    const allocation = new Allocation();
+    let allocation = new Allocation();
     const [[spritesImage], getSprite] = useSprites();
 
     let mouseDownPosition: TPoint | null = null;
@@ -129,6 +129,7 @@ const BattleCanvas: React.FC = () => {
     const drawSelectionRect = (canvas: Canvas) => {
         if (!allocation.isSelectingStatus) return;
         const rect = allocation.getSelectionRect();
+        console.log("ZALUPA:", allocation)
         if (rect) {
             canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.5)";
             canvas.contextV.fillRect(canvas.xs(rect.x), canvas.ys(rect.y), canvas.dec(rect.width), canvas.dec(rect.height));
@@ -260,6 +261,14 @@ const BattleCanvas: React.FC = () => {
     const INITIAL_WINDOW_TOP = CONFIG.WINDOW.TOP;
 
     useEffect(() => {
+        const tryLoadBattle = async () => {
+        const id = game.getCurrentBattle();
+        if (!id) {
+            console.log("Battle ID ещё нет");
+            return;
+        }
+        await battle.loadBattle();
+    };
         canvas = CanvasRef({
             parentId: GAME_FIELD,
             WIDTH: window.innerWidth,
@@ -284,6 +293,8 @@ const BattleCanvas: React.FC = () => {
 
         clampCamera();
 
+        tryLoadBattle();
+
         return () => {
             if (WINDOW.WIDTH !== INITIAL_WINDOW_WIDTH) {
                 WINDOW.WIDTH = INITIAL_WINDOW_WIDTH;
@@ -297,7 +308,7 @@ const BattleCanvas: React.FC = () => {
             battle?.destructor();
             canvas = null;
         };
-    }, []);
+    }, [ game ]);
 
     return (
         <div className='BattleCanvas'
