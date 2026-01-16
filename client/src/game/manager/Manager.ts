@@ -128,6 +128,7 @@ class Manager {
                     }
                 }
             });
+            
 
             if (movingUnits.length > 0 && this.currentServer) {
                 this.currentServer.moveUnits(movingUnits);
