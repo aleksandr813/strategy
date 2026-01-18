@@ -108,6 +108,7 @@ class Game {
 
     async updateActiveBattles(): Promise<void> {
         const data = await this.server.getActiveBattles();
+        console.log('Данные от сервера getActiveBattles:', data);
 
         if (!data) return;
 
