@@ -101,7 +101,7 @@ const BattleCanvas: React.FC = () => {
                 spriteData[2]
             );
             
-            let isSelected = unit.isSelected;
+            let isSelected = unit.isSelected && unit.isMyUnit();
             if (allocation.isSelectingStatus) {
                 isSelected = allocation.isUnitInSelection(unit);
             }
@@ -153,7 +153,7 @@ const BattleCanvas: React.FC = () => {
         mouseDownPosition = { x, y };
         mouseDownTime = Date.now();
         wasDragging = false;
-        
+
         allocation.start(x, y);
     };
 
@@ -177,7 +177,13 @@ const BattleCanvas: React.FC = () => {
 
     const handleClick = async (x: number, y: number) => {
         if (!battle) return;
-    
+
+        if (allocation.isSelectingStatus) return;
+
+        const tileX = Math.floor(x);
+        const tileY = Math.floor(y);
+
+        battle.moveUnits({ x: tileX, y: tileY }, game['server']);
     };
 
     const mouseUp = (x: number, y: number) => {
@@ -187,7 +193,8 @@ const BattleCanvas: React.FC = () => {
 
         if (distance > DRAG_THRESHOLD || timeElapsed > TIME_THRESHOLD) {
             wasDragging = true;
-            allocation.end(battle.getScene().units);
+            const myUnits = battle.getScene().units.filter(u => u.isMyUnit());
+            allocation.end(myUnits);
         } else {
             wasDragging = false;
             allocation.cancel();
@@ -200,7 +207,23 @@ const BattleCanvas: React.FC = () => {
 
     const mouseClick = async (x: number, y: number) => {
         if (!battle || wasDragging) return;
+
+        const myUnits = battle.getScene().units.filter(u => u.isMyUnit());
+
+        const clickedUnit = myUnits.find(u =>
+            x >= u.coords.x &&
+            x < u.coords.x + 1 &&
+            y >= u.coords.y &&
+            y < u.coords.y + 1
+        );
+
+        if (clickedUnit) {
+            myUnits.forEach(u => u.updateSelection(false));
+            clickedUnit.updateSelection(true);
+            return;
+        }
     };
+
 
     const mouseRightClickDown = (x: number, y: number) => {
         if (!battle) return;

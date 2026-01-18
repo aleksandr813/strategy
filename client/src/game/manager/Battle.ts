@@ -45,13 +45,20 @@ class Battle extends Manager {
 
 
     async loadUnitsFromData(battleData: any): Promise<void> {
-        const units = [
-            ...battleData.alliedUnits,
-            ...battleData.enemyUnits
-        ].map((u: any) => new Unit(u, this.game, this.easyStar));
+        const alliedUnits = battleData.alliedUnits.map(
+            (u: any) => new Unit(u, this.game, this.easyStar, 'ally')
+        );
 
-        this.game.setUnits(units);
+        const enemyUnits = battleData.enemyUnits.map(
+            (u: any) => new Unit(u, this.game, this.easyStar, 'enemy')
+        );
+
+        this.game.setUnits([
+            ...enemyUnits,
+            ...alliedUnits
+        ]);
     }
+
 
     async loadBattle(): Promise<void> {
         const currentBattleId = this.game.getCurrentBattle();
