@@ -133,6 +133,8 @@ class GlobalMap extends Manager {
             this.mapUpdateInterval = null;
         }
         this.selectedVillage = null;
+
+        super.destructor();
     }
 }
 

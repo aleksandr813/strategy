@@ -14,7 +14,7 @@ const GlobalMap: React.FC<IBasePage> = (props: IBasePage) => {
     const { setPage, store, mediator, game } = props;
     
     const VillageClickHandler = () => {
-        game.globalMap.sendingArmy = false;
+        game.getGlobalMap().sendingArmy = false;
         setPage(PAGES.VILLAGE);
     }
 

@@ -26,6 +26,7 @@ const MiniMapCanvas: React.FC<MiniMapCanvasProps> = ({ onMapClick }) => {
     const store = useContext(StoreContext);
     const [[spritesImage], getSprite] = useSprites();
     const CanvasRef = useCanvas(render);
+    const globalMap = game.getGlobalMap();
 
     const drawSprites = (canvas: Canvas, item: ArmyEntity | VillageEntity, x: number, y: number, scaleFactor: number = 0.5) => {
         item.sprites.forEach((sprite) => {
@@ -62,15 +63,17 @@ const MiniMapCanvas: React.FC<MiniMapCanvasProps> = ({ onMapClick }) => {
         const ctx = canvas.contextV;
         canvas.clear();
 
-        const villages = game.getVillages();
-        const armies = game.getArmies();
+        const mapData = globalMap.getMap();
+        const villages = mapData.villages;
+        const armies = mapData.armies;
+
         const user = store.getUser();
 
         const playerVillage = villages.find(v => v.name === user?.name);
 
-        console.log('USER:', user);
-        console.log('FOUND VILLAGE:', playerVillage);
-        console.log('ALL VILLAGES:', villages);
+        //console.log('USER:', user);
+        //console.log('FOUND VILLAGE:', playerVillage);
+        //console.log('ALL VILLAGES:', villages);
         
         if (!playerVillage) return;
 

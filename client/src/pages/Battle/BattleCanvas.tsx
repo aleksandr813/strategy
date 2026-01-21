@@ -42,6 +42,7 @@ const BattleCanvas: React.FC = () => {
             canvasInstance.HEIGHT = window.innerHeight;
             canvasInstance.canvas.width = window.innerWidth;
             canvasInstance.canvas.height = window.innerHeight;
+            WINDOW.WIDTH = window.innerWidth * (WINDOW.HEIGHT / window.innerHeight);
             render(0); 
         }
     };
@@ -101,7 +102,7 @@ const BattleCanvas: React.FC = () => {
                 spriteData[2]
             );
             
-            let isSelected = unit.isSelected;
+            let isSelected = unit.isSelected && unit.isMyUnit();
             if (allocation.isSelectingStatus) {
                 isSelected = allocation.isUnitInSelection(unit);
             }
@@ -129,6 +130,7 @@ const BattleCanvas: React.FC = () => {
     const drawSelectionRect = (canvas: Canvas) => {
         if (!allocation.isSelectingStatus) return;
         const rect = allocation.getSelectionRect();
+        console.log("ZALUPA:", allocation)
         if (rect) {
             canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.5)";
             canvas.contextV.fillRect(canvas.xs(rect.x), canvas.ys(rect.y), canvas.dec(rect.width), canvas.dec(rect.height));
@@ -152,13 +154,14 @@ const BattleCanvas: React.FC = () => {
         mouseDownPosition = { x, y };
         mouseDownTime = Date.now();
         wasDragging = false;
-        
-        
+
         allocation.start(x, y);
     };
 
     const mouseMove = (x: number, y: number, screenX?: number, screenY?: number) => {
         const { units, buildings } = battle.getScene();
+
+        allocation.update(x, y);
         //const matrix = battle.getBattleMatrix(units, buildings);
 
 
@@ -175,7 +178,13 @@ const BattleCanvas: React.FC = () => {
 
     const handleClick = async (x: number, y: number) => {
         if (!battle) return;
-    
+
+        if (allocation.isSelectingStatus) return;
+
+        const tileX = Math.floor(x);
+        const tileY = Math.floor(y);
+
+        battle.moveUnits({ x: tileX, y: tileY }, game['server']);
     };
 
     const mouseUp = (x: number, y: number) => {
@@ -185,7 +194,8 @@ const BattleCanvas: React.FC = () => {
 
         if (distance > DRAG_THRESHOLD || timeElapsed > TIME_THRESHOLD) {
             wasDragging = true;
-            allocation.end(battle.getScene().units);
+            const myUnits = battle.getScene().units.filter(u => u.isMyUnit());
+            allocation.end(myUnits);
         } else {
             wasDragging = false;
             allocation.cancel();
@@ -198,7 +208,23 @@ const BattleCanvas: React.FC = () => {
 
     const mouseClick = async (x: number, y: number) => {
         if (!battle || wasDragging) return;
+
+        const myUnits = battle.getScene().units.filter(u => u.isMyUnit());
+
+        const clickedUnit = myUnits.find(u =>
+            x >= u.coords.x &&
+            x < u.coords.x + 1 &&
+            y >= u.coords.y &&
+            y < u.coords.y + 1
+        );
+
+        if (clickedUnit) {
+            myUnits.forEach(u => u.updateSelection(false));
+            clickedUnit.updateSelection(true);
+            return;
+        }
     };
+
 
     const mouseRightClickDown = (x: number, y: number) => {
         if (!battle) return;
@@ -260,6 +286,14 @@ const BattleCanvas: React.FC = () => {
     const INITIAL_WINDOW_TOP = CONFIG.WINDOW.TOP;
 
     useEffect(() => {
+        const tryLoadBattle = async () => {
+        const id = game.getCurrentBattle();
+        if (!id) {
+            console.log("Battle ID ещё нет");
+            return;
+        }
+        await battle.loadBattle();
+    };
         canvas = CanvasRef({
             parentId: GAME_FIELD,
             WIDTH: window.innerWidth,
@@ -284,6 +318,8 @@ const BattleCanvas: React.FC = () => {
 
         clampCamera();
 
+        tryLoadBattle();
+
         return () => {
             if (WINDOW.WIDTH !== INITIAL_WINDOW_WIDTH) {
                 WINDOW.WIDTH = INITIAL_WINDOW_WIDTH;
@@ -297,18 +333,10 @@ const BattleCanvas: React.FC = () => {
             battle?.destructor();
             canvas = null;
         };
-    }, []);
+    }, [ game ]);
 
     return (
-        <div className='BattleCanvas'
-        style={{
-                backgroundImage: `url(${tableBackground})`,
-                backgroundRepeat: 'repeat',
-                backgroundPosition: 'center',
-                imageRendering: 'pixelated' 
-            }}>
-            <div id={GAME_FIELD} className={GAME_FIELD}></div>
-        </div>
+        <div id={GAME_FIELD} className={GAME_FIELD}></div>
     );
 };
 

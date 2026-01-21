@@ -29,7 +29,7 @@ class Game {
     private activeBattlesInterval: NodeJS.Timer | null = null;
     
     public village: Village;
-    public globalMap: GlobalMap;
+    public globalMap: GlobalMap | null = null;
     public battle: Battle;
 
     constructor(store: Store, server: Server, mediator: Mediator) {
@@ -39,7 +39,6 @@ class Game {
         this.easyStar = new EasyStar.js();
         
         this.village = new Village(store, server, this.mediator, this.easyStar, this);
-        this.globalMap = new GlobalMap(store, server, this, this.mediator);
         this.battle = new Battle(store, server, this);
         
         this.startIncomeUpdate();
@@ -109,6 +108,7 @@ class Game {
 
     async updateActiveBattles(): Promise<void> {
         const data = await this.server.getActiveBattles();
+        console.log('Данные от сервера getActiveBattles:', data);
 
         if (!data) return;
 
@@ -151,7 +151,19 @@ class Game {
     }
 
     public getGlobalMap(): GlobalMap {
+        if (!this.globalMap) {
+            this.globalMap = new GlobalMap(this.store, this.server, this, this.mediator);
+            console.log("Global map создана");
+        }
+
         return this.globalMap;
+    }
+
+    public resetGlobalMap(): void {
+        if (this.globalMap) {
+            this.globalMap.destructor();
+            console.log("Global map сброшена");
+        }
     }
 
     public getBattle(): Battle {
@@ -177,7 +189,7 @@ class Game {
         }
         
         this.village.destructor();
-        this.globalMap.destructor();
+        this.resetGlobalMap();
         this.battle.destructor();
     }
 }
