@@ -4,6 +4,7 @@ import { SPRITE_MAP, UnitTypeID, getUnitSprites } from "../gameConfig";
 import { TPoint } from "../../config";
 import { TUnit } from "../../services/server/types";
 import Game from '../Game';
+export type UnitSide = 'ally' | 'enemy';
 
 const { GRID_HEIGHT, GRID_WIDTH, MOVE_INTERVAL } = GAMECONFIG
 
@@ -21,8 +22,8 @@ export default class Unit {
     easystar: EasyStar.js;
     game: Game;
     unlockLevel: number;
+    side: UnitSide;
 
-    isEnemy: number;
     isSelected: boolean = false;
     moveIntervalId: NodeJS.Timeout | null = null;
     
@@ -32,7 +33,7 @@ export default class Unit {
     private idleAnimationIntervalId: NodeJS.Timeout | null = null;
     private static readonly IDLE_ANIMATION_DELAY: number = 300;
     
-    constructor(data: TUnit, game: Game, easystar: EasyStar.js) {
+    constructor(data: TUnit, game: Game, easystar: EasyStar.js, side: UnitSide) {
         this.id = data.id;
         this.typeId = data.typeId as UnitTypeID;
         this.type = data.type;
@@ -41,7 +42,7 @@ export default class Unit {
         this.level = data.level;
         this.speed = data.speed;
         this.unlockLevel = data.unlockLevel
-        this.isEnemy = data.isEnemy
+        this.side = side;
 
         this.sprites = getUnitSprites(this.typeId);
         this.startIdleAnimation();
@@ -135,6 +136,15 @@ export default class Unit {
     isMoving(): boolean {
         return this.currentPath !== null && this.currentPathIndex < this.currentPath.length;
     }
+
+    isMyUnit() {
+        return this.side === 'ally';
+    }
+
+    isEnemy() {
+        return this.side === 'enemy';
+    }
+
 
     public getCurrentSpriteId(): number {
         return this.sprites[this.currentSpriteIndex];

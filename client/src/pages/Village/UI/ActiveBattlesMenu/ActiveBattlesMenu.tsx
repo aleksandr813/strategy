@@ -4,15 +4,15 @@ import Store from '../../../../services/store/Store';
 import { TActiveBattle } from '../../../../services/server/types';
 import { GameContext } from '../../../../App';
 import { PAGES } from '../../../PageManager';
+import Mediator from '../../../../services/mediator/Mediator';
 
 import "./ActiveBattlesMenu.scss";
-import Mediator from '../../../../services/mediator/Mediator';
 
 interface ActiveBattlesMenuProps {
     setUIElement: (name: UIELEMENT) => void;
     store: Store;
     setPage: (name: PAGES) => void;
-    mediator: Mediator
+    mediator: Mediator;
 }
 
 const ActiveBattlesMenu: React.FC<ActiveBattlesMenuProps> = ({ setUIElement, store, setPage }) => {
@@ -22,10 +22,13 @@ const ActiveBattlesMenu: React.FC<ActiveBattlesMenuProps> = ({ setUIElement, sto
 
     useEffect(() => {
         const handleUpdate = () => {
-            setBattles(game.getActiveBattles());
+            const activeBattles = game.getActiveBattles();
+            console.log("Обновление списка боев:", activeBattles);
+            setBattles(activeBattles);
         };
 
         store.mediator.subscribe('UPDATE_BATTLES', handleUpdate);
+        
         handleUpdate();
 
         return () => {
@@ -35,6 +38,15 @@ const ActiveBattlesMenu: React.FC<ActiveBattlesMenuProps> = ({ setUIElement, sto
 
     const closeMenu = () => setUIElement(UIELEMENT.NULL);
 
+    const joinBattle = (id: number) => {
+        game.setCurrentBattle(id);
+        setUIElement(UIELEMENT.NULL);
+        setPage(PAGES.BATTLE);
+    };
+
+    const hasAttack = battles?.attack && battles.attack.length > 0;
+    const hasDefend = !!battles?.defend;
+
     return (
         <div className="ActiveBattlesOverlay" onClick={closeMenu}>
             <div className="ActiveBattlesMenu" onClick={(e) => e.stopPropagation()}>
@@ -43,25 +55,43 @@ const ActiveBattlesMenu: React.FC<ActiveBattlesMenuProps> = ({ setUIElement, sto
                 </div>
 
                 <div className="battles-list">
-                    {battles?.attack?.length ? (
-                        battles.attack.map(item => (
-                            <div key={item.id} className="battle-item attack">
-                                <span>Атака ID: {item.id}</span>
-                                <button
-                                    className="go-btn"
-                                    onClick={() => {
-                                        game.setCurrentBattle(Number(item.id));
-                                        setUIElement(UIELEMENT.NULL);
-                                        setPage(PAGES.BATTLE);
-                                    }}
-                                >
-                                    ПЕРЕЙТИ
-                                </button>
+                    {hasAttack && battles!.attack.map((item) => (
+                        <div key={`attack-${item.battleId}`} className="battle-item attack">
+                            <div className="info">
+                                <span className="label">ВАША АТАКА</span>
+                                <span className="id">ID: {item.battleId}</span>
                             </div>
-                        ))
-                    ) : (
+                            <button
+                                className="go-btn"
+                                onClick={() => joinBattle(Number(item.battleId))}
+                            >
+                                ПЕРЕЙТИ
+                            </button>
+                        </div>
+                    ))}
+                    {hasDefend && (
+                        <div key={`defend-${battles!.defend!.attack_id}`} className="battle-item defend">
+                            <div className="info">
+                                <span className="label">ОБОРОНА</span>
+                                <span className="id">ID: {battles!.defend!.attack_id}</span>
+                            </div>
+                            <button
+                                className="go-btn danger"
+                                onClick={() => joinBattle(Number(battles!.defend!.attack_id))}
+                            >
+                                ЗАЩИТИТЬСЯ
+                            </button>
+                        </div>
+                    )}
+
+                    {/* 3. Сообщение, если пусто */}
+                    {!hasAttack && !hasDefend && (
                         <div className="empty-msg">НЕТ АКТИВНЫХ СРАЖЕНИЙ</div>
                     )}
+                </div>
+
+                <div className="menu-footer">
+                    <button className="close-btn" onClick={closeMenu}>ЗАКРЫТЬ</button>
                 </div>
             </div>
         </div>
