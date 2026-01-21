@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState, useMemo, useRef, KeyboardEvent } from 'react';
+import React, { useEffect, useState, useMemo, useRef, KeyboardEvent } from 'react';
 import { TMessages } from '../../services/server/types';
-import { ServerContext, StoreContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 
@@ -9,10 +8,9 @@ import CONFIG from '../../config';
 import './Chat.scss';
 
 
+
 const Chat: React.FC<IBasePage> = (props: IBasePage) => {
-    const { setPage } = props;
-    const server = useContext(ServerContext);
-    const store = useContext(StoreContext);
+    const { setPage, server, store } = props;
     const [messages, setMessages] = useState<TMessages>([]);
     const [_, setHash] = useState<string>('');
     const messageRef = useRef<HTMLInputElement>(null);

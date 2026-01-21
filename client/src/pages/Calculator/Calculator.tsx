@@ -1,10 +1,8 @@
-import React, { useState, useContext } from 'react';
-import { ServerContext } from '../../App';
+import React, { useState } from 'react';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 
-const Calculator: React.FC<IBasePage> = ({ setPage }) => {
-    const server = useContext(ServerContext);
+const Calculator: React.FC<IBasePage> = ({ setPage, server }) => {
     const [coeffs, setCoeffs] = useState<string[]>(["", ""]); 
     const [error, setError] = useState<string | null>(null);
     const [result, setResult] = useState<number[] | null>(null);

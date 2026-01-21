@@ -1,11 +1,8 @@
-import React, { Component, useContext, useEffect, useRef, useState } from 'react';
-import { GameContext, MediatorContext, ServerContext, StoreContext } from '../../App';
+import React from 'react';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import GlobalMapCanvas from './GlobalMapCanvas';
 import UI from './UI/UI';
-import Mediator from '../../services/mediator/Mediator';
-import CONFIG from '../../config';
 
 import "./GlobalMap.scss"
 
@@ -13,11 +10,8 @@ const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
 
 const GlobalMap: React.FC<IBasePage> = (props: IBasePage) => {
-    const store = useContext(StoreContext);
-    const mediator = useContext(MediatorContext);
-    const game = useContext(GameContext);
 
-    const { setPage } = props;
+    const { setPage, store, mediator, game } = props;
     
     const VillageClickHandler = () => {
         game.getGlobalMap().sendingArmy = false;
