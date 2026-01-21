@@ -10,11 +10,12 @@ class Battle extends Manager {
     private store: Store;
     private server: Server;
     private easyStar: EasyStar.js;
-    constructor(store: Store, server: Server, game: Game) {
+    
+    constructor(store: Store, server: Server, game: Game, easyStar: EasyStar.js) {
         super(game);
         this.store = store;
         this.server = server;
-        this.easyStar = new EasyStar.js();
+        this.easyStar = easyStar;
     }
 
     async loadBuildingsFromData(battleData: any): Promise<void> {
@@ -45,19 +46,30 @@ class Battle extends Manager {
 
 
     async loadUnitsFromData(battleData: any): Promise<void> {
-        const alliedUnits = battleData.alliedUnits.map(
-            (u: any) => new Unit(u, this.game, this.easyStar, 'ally')
-        );
+        const normalizeUnitData = (u: any) => ({
+            ...u,
+            x: Number(u.x),
+            y: Number(u.y),
+            currentHp: Number(u.currentHp),
+            level: Number(u.level),
+            speed: Number(u.speed),
+            id: Number(u.id),
+        });
 
-        const enemyUnits = battleData.enemyUnits.map(
-            (u: any) => new Unit(u, this.game, this.easyStar, 'enemy')
-        );
+        const createUnits = (units: any[], side: 'ally' | 'enemy') =>
+            units.map(u => new Unit(
+                normalizeUnitData(u),
+                this.game,
+                this.easyStar,
+                side
+            ));
 
-        this.game.setUnits([
-            ...enemyUnits,
-            ...alliedUnits
-        ]);
+        const alliedUnits = createUnits(battleData.alliedUnits, 'ally');
+        const enemyUnits  = createUnits(battleData.enemyUnits, 'enemy');
+
+        this.game.setUnits([...enemyUnits, ...alliedUnits]);
     }
+
 
 
     async loadBattle(): Promise<void> {
@@ -83,6 +95,20 @@ class Battle extends Manager {
 
         await this.loadBuildingsFromData(battleData);
         await this.loadUnitsFromData(battleData);
+        
+        this.initializePathfinding();
+    }
+    
+    private initializePathfinding(): void {
+        const units = this.game.getUnits();
+        const buildings = this.game.getBuildings();
+        
+        const matrix = this.game.getMatrixForEasyStar(units, buildings);
+        
+        this.easyStar.setGrid(matrix);
+        
+        this.easyStar.setAcceptableTiles([0, 2]);
+        console.log('Pathfinding initialized with matrix:', matrix.length, 'x', matrix[0]?.length);
     }
 
 }
