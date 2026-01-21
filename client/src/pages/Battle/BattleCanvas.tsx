@@ -130,7 +130,6 @@ const BattleCanvas: React.FC = () => {
     const drawSelectionRect = (canvas: Canvas) => {
         if (!allocation.isSelectingStatus) return;
         const rect = allocation.getSelectionRect();
-        console.log("ZALUPA:", allocation)
         if (rect) {
             canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.5)";
             canvas.contextV.fillRect(canvas.xs(rect.x), canvas.ys(rect.y), canvas.dec(rect.width), canvas.dec(rect.height));
@@ -184,7 +183,10 @@ const BattleCanvas: React.FC = () => {
         const tileX = Math.floor(x);
         const tileY = Math.floor(y);
 
-        battle.moveUnits({ x: tileX, y: tileY }, game['server']);
+        //console.log("X: ", tileX, "\nY: ", tileY);
+        const { units, buildings } = battle.getScene();
+
+        battle.moveUnits({ x: tileX, y: tileY }, units, buildings, game['server']);
     };
 
     const mouseUp = (x: number, y: number) => {

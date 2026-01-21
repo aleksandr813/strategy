@@ -5,8 +5,8 @@ import Allocation from "../../services/canvas/Allocation";
 import Server from '../../services/server/Server';
 import GAMECONFIG from '../gameConfig';
 import Unit from '../entities/Unit';
+import Building from '../entities/Building';
 import Game from '../Game';
-import { BuildingTypeID } from '../../services/server/types';
 
 const { WIDTH, HEIGHT } = CONFIG;
 const { GRID_HEIGHT, GRID_WIDTH, MOVE_INTERVAL } = GAMECONFIG;
@@ -36,42 +36,6 @@ class Manager {
         };
     }
 
-    getMatrixForEasyStar(excludedUnit?: Unit): number[][] {
-        const matrix: number[][] = Array.from(
-            { length: GRID_HEIGHT }, 
-            () => Array(GRID_WIDTH).fill(0)
-        );
-
-        this.game.getUnits().forEach((unit) => {
-            if (unit !== excludedUnit && unit.coords.y < GRID_HEIGHT && unit.coords.x < GRID_WIDTH) {
-                matrix[unit.coords.y][unit.coords.x] = 1;
-            }
-        });
-
-        this.game.getBuildings().forEach((building) => {
-            if (building.typeId === BuildingTypeID.Gates) {
-                const { x, y } = building.coords[0];
-                for (let dy = 0; dy <= 1; dy++) {
-                    for (let dx = 0; dx <= 1; dx++) {
-                        if (y + dy < GRID_HEIGHT && x + dx < GRID_WIDTH) {
-                            matrix[y + dy][x + dx] = 2;
-                        }
-                    }
-                }
-            } else {
-                const { x, y } = building.coords[0];
-                for (let dy = 0; dy <= 1; dy++) {
-                    for (let dx = 0; dx <= 1; dx++) {
-                        if (y + dy < GRID_HEIGHT && x + dx < GRID_WIDTH) {
-                            matrix[y + dy][x + dx] = 1;
-                        }
-                    }
-                }
-            } 
-        });
-
-        return matrix;
-    }
 
     private isValidDestination(destination: TPoint): boolean {
         return destination.x >= 0 && 
@@ -80,7 +44,7 @@ class Manager {
                destination.y < GRID_HEIGHT;
     }
 
-    moveUnits(destination: TPoint, server: Server) {
+    moveUnits(destination: TPoint, units: Unit[], buildings: Building[], server: Server) {
         destination.x = Math.round(destination.x);
         destination.y = Math.round(destination.y);
 
@@ -98,7 +62,7 @@ class Manager {
         const selectedUnits: Unit[] = [];
         this.game.getUnits().forEach((unit) => {
             if (unit.isSelected && unit.isMyUnit()) {
-                unit.calcPath(destination);
+                unit.calcPath(destination, units, buildings);
                 selectedUnits.push(unit);
             }
         });

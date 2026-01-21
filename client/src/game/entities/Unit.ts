@@ -4,6 +4,7 @@ import { SPRITE_MAP, UnitTypeID, getUnitSprites } from "../gameConfig";
 import { TPoint } from "../../config";
 import { TUnit } from "../../services/server/types";
 import Game from '../Game';
+import Building from './Building';
 export type UnitSide = 'ally' | 'enemy';
 
 const { GRID_HEIGHT, GRID_WIDTH, MOVE_INTERVAL } = GAMECONFIG
@@ -62,12 +63,12 @@ export default class Unit {
         this.currentPathIndex = 0;
     }
 
-    calcPath(destination: TPoint) {
+    calcPath(destination: TPoint, units: Unit[], buildings: Building[]) {
         this.clearUnitMovement();
 
         this.movementAccumulator = 0;
         
-        const matrix = this.game.village.getMatrixForEasyStar(this);
+        const matrix = this.game.getMatrixForEasyStar(units, buildings);
         
         this.easystar.setGrid(matrix);
 

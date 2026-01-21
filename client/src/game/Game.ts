@@ -9,8 +9,11 @@ import Unit from './entities/Unit';
 import VillageEntity from './entities/VillageEntity';
 import ArmyEntity from './entities/ArmyEntity';
 import Building from './entities/Building';
-import GAMECONFIG from './gameConfig';
+import { BuildingTypeID } from '../services/server/types';
 import { TActiveBattle, TAnswer } from '../services/server/types';
+import GAMECONFIG from './gameConfig';
+
+const { GRID_HEIGHT, GRID_WIDTH } = GAMECONFIG;
 
 class Game {
     private store: Store;
@@ -51,6 +54,48 @@ class Game {
         this.incomeInterval = setInterval(() => {
             this.updateIncome();
         }, GAMECONFIG.INCOME_INTERVAL);
+    }
+
+    getMatrixForEasyStar(units: Unit[], buildings: Building[]): number[][] {
+        const matrix: number[][] = Array.from(
+            { length: GRID_HEIGHT }, 
+            () => Array(GRID_WIDTH).fill(0)
+        );
+        
+        units.forEach((unit) => {
+            if (unit.coords.y < GRID_HEIGHT && unit.coords.x < GRID_WIDTH) {
+                matrix[unit.coords.y][unit.coords.x] = 1;
+            }
+        });
+        
+        buildings.forEach((building) => {
+            if (building.typeId === BuildingTypeID.Gates) {
+                const { x, y } = building.coords[0];
+                for (let dy = 0; dy <= 1; dy++) {
+                    for (let dx = 0; dx <= 1; dx++) {
+                        if (y + dy < GRID_HEIGHT && x + dx < GRID_WIDTH) {
+                            matrix[y + dy][x + dx] = 2;
+                        }
+                    }
+                }
+            } else if (building.typeId === BuildingTypeID.Wall) {
+                const { x, y } = building.coords[0];
+                if (y < GRID_HEIGHT && x < GRID_WIDTH) {
+                    matrix[y][x] = 1;
+                }
+            } else {
+                const { x, y } = building.coords[0];
+                for (let dy = 0; dy <= 1; dy++) {
+                    for (let dx = 0; dx <= 1; dx++) {
+                        if (y + dy < GRID_HEIGHT && x + dx < GRID_WIDTH) {
+                            matrix[y + dy][x + dx] = 1;
+                        }
+                    }
+                }
+            }
+        });
+        
+        return matrix;
     }
 
     private async updateIncome(): Promise<void> {
@@ -98,7 +143,6 @@ class Game {
     }
 
     public getActiveBattles(): TActiveBattle | null {
-        console.log('Активные битвы:', this.activeBattles);
         return this.activeBattles;
     }
 
@@ -108,7 +152,6 @@ class Game {
 
     async updateActiveBattles(): Promise<void> {
         const data = await this.server.getActiveBattles();
-        console.log('Данные от сервера getActiveBattles:', data);
 
         if (!data) return;
 
