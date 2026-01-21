@@ -50,8 +50,23 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
         }
     }
 
+    const handleSend = () => {
+        if (messageRef.current) {
+                const message = messageRef.current.value;
+                if (message.length > CONFIG.CHAT_MAX_MESSAGE_LENGTH) {
+                        alert(`Сообщение не должно превышать ${CONFIG.CHAT_MAX_MESSAGE_LENGTH} символов`);
+                        return;
+                }
+                if (message) {
+                    server.sendMessage(message);
+                    messageRef.current.value = '';
+                }
+            }
+    }
+
     const input = useMemo(() => 
         <input 
+            id='testInput'
             ref={messageRef} 
             onKeyUp={handleKeyUp} 
             placeholder='сообщение' 
@@ -82,8 +97,8 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
         </div>)
     }
 
-    return (<div className='chat'>
-        <Button onClick={toGameClickHandler} className='chatIconeDivBack'>
+    return (<div className='chat' id='testChat'>
+        <Button onClick={toGameClickHandler} className='chatIconeDivBack' id='testChatExit'>
             <img src={chatIcon}/>
         </Button>
         <div className='chat-messages'>
@@ -98,6 +113,7 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
         </div>
         <div className='chat-buttons'>
             {input}
+            <Button onClick={handleSend} text='>' id='testSendButton'/>
         </div>
     </div>)
 }
