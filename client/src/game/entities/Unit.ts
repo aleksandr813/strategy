@@ -16,6 +16,8 @@ export default class Unit {
     hp: number;
     maxHp: number;
     level: number;
+    speed: number = 1;
+    movementAccumulator: number = 0;
     sprites: number[];
     easystar: EasyStar.js;
     game: Game;
@@ -38,6 +40,7 @@ export default class Unit {
         this.hp = data.currentHp;
         this.maxHp = data.currentHp; 
         this.level = data.level;
+        this.speed = data.speed;
         this.unlockLevel = data.unlockLevel
         this.side = side;
 
@@ -61,6 +64,8 @@ export default class Unit {
 
     calcPath(destination: TPoint) {
         this.clearUnitMovement();
+
+        this.movementAccumulator = 0;
         
         const matrix = this.game.village.getMatrixForEasyStar(this);
         
