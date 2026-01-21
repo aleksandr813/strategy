@@ -69,20 +69,19 @@ export default class Unit {
 
     calcPath(destination: TPoint, units: Unit[], buildings: Building[]) {
         this.clearUnitMovement();
-
         this.movementAccumulator = 0;
         
         const matrix = this.game.getMatrixForEasyStar(units, buildings);
-        
         this.easystar.setGrid(matrix);
 
         const acceptableTiles = [0];
 
-        if (this.isEnemy === null){
+        if (!this.isEnemy()) {
             acceptableTiles.push(2);
         }
 
         this.easystar.setAcceptableTiles(acceptableTiles);
+
 
         this.easystar.findPath(
             this.coords.x, 
@@ -90,12 +89,17 @@ export default class Unit {
             destination.x, 
             destination.y, 
             (path) => {
-                if (path === null || path.length <= 1) {
+                if (path === null) {
+                    return;
+                }
+                
+                if (path.length <= 1) {
                     return;
                 }
 
                 this.currentPath = path;
-                this.currentPathIndex = 1;
+                this.currentPathIndex = 1; 
+                
             }
         );
 
@@ -112,7 +116,6 @@ export default class Unit {
         const isOccupiedByBuilding = this.game.village.isTileOccupiedByBuilding(nextStep.x, nextStep.y);
         
         if (isOccupiedByBuilding) {
-            console.warn(`Unit ${this.id}: Path blocked by building at (${nextStep.x}, ${nextStep.y}). Stopping.`);
             this.clearUnitMovement();
             return false; 
         }
@@ -134,7 +137,7 @@ export default class Unit {
             return true;
         }
 
-        this.waitCounter = 0;
+        this.waitCounter = 0; 
         this.coords.x = nextStep.x;
         this.coords.y = nextStep.y;
         this.currentPathIndex++;

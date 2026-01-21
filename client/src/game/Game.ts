@@ -42,7 +42,7 @@ class Game {
         this.easyStar = new EasyStar.js();
         
         this.village = new Village(store, server, this.mediator, this.easyStar, this);
-        this.battle = new Battle(store, server, this);
+        this.battle = new Battle(store, server, this, this.easyStar);
         
         this.startIncomeUpdate();
         this.startActiveBattlesUpdate();
@@ -69,16 +69,7 @@ class Game {
         });
         
         buildings.forEach((building) => {
-            if (building.typeId === BuildingTypeID.Gates) {
-                const { x, y } = building.coords[0];
-                for (let dy = 0; dy <= 1; dy++) {
-                    for (let dx = 0; dx <= 1; dx++) {
-                        if (y + dy < GRID_HEIGHT && x + dx < GRID_WIDTH) {
-                            matrix[y + dy][x + dx] = 2;
-                        }
-                    }
-                }
-            } else if (building.typeId === BuildingTypeID.Wall) {
+            if (building.typeId === BuildingTypeID.Wall) {
                 const { x, y } = building.coords[0];
                 if (y < GRID_HEIGHT && x < GRID_WIDTH) {
                     matrix[y][x] = 1;
