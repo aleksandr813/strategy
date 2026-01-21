@@ -34,6 +34,9 @@ export default class Unit {
     private idleAnimationIntervalId: NodeJS.Timeout | null = null;
     private static readonly IDLE_ANIMATION_DELAY: number = 300;
     
+    private waitCounter: number = 0;
+    private static readonly MAX_WAIT_ATTEMPTS: number = 5;
+    
     constructor(data: TUnit, game: Game, easystar: EasyStar.js, side: UnitSide) {
         this.id = data.id;
         this.typeId = data.typeId as UnitTypeID;
@@ -61,6 +64,7 @@ export default class Unit {
     private clearUnitMovement(): void {
         this.currentPath = null;
         this.currentPathIndex = 0;
+        this.waitCounter = 0;
     }
 
     calcPath(destination: TPoint, units: Unit[], buildings: Building[]) {
@@ -108,30 +112,36 @@ export default class Unit {
         const isOccupiedByBuilding = this.game.village.isTileOccupiedByBuilding(nextStep.x, nextStep.y);
         
         if (isOccupiedByBuilding) {
-            const destination = this.currentPath[this.currentPath.length - 1];
-            this.calcPath(destination); 
+            console.warn(`Unit ${this.id}: Path blocked by building at (${nextStep.x}, ${nextStep.y}). Stopping.`);
+            this.clearUnitMovement();
             return false; 
         }
         
-        const isOccupied = this.game.getUnits().some(unit => 
+        const isOccupiedByUnit = this.game.getUnits().some(unit => 
             unit !== this && 
             unit.coords.x === nextStep.x && 
             unit.coords.y === nextStep.y
         );
 
-        if (isOccupied) {
-            const destination = this.currentPath[this.currentPath.length - 1];
-            this.calcPath(destination);
-            return false;
+        if (isOccupiedByUnit) {
+            this.waitCounter++;
+            
+            if (this.waitCounter >= Unit.MAX_WAIT_ATTEMPTS) {
+                this.clearUnitMovement();
+                return false;
+            }
+            
+            return true;
         }
 
+        this.waitCounter = 0;
         this.coords.x = nextStep.x;
         this.coords.y = nextStep.y;
         this.currentPathIndex++;
 
         const stillMoving = this.currentPathIndex < this.currentPath.length;
 
-        return  stillMoving;
+        return stillMoving;
     }
 
     isMoving(): boolean {
@@ -145,7 +155,6 @@ export default class Unit {
     isEnemy() {
         return this.side === 'enemy';
     }
-
 
     public getCurrentSpriteId(): number {
         return this.sprites[this.currentSpriteIndex];
@@ -165,5 +174,14 @@ export default class Unit {
         this.idleAnimationIntervalId = setInterval(() => {
             this.switchSprite(); 
         }, Unit.IDLE_ANIMATION_DELAY); 
+    }
+    
+    public recalculatePathToDestination(units: Unit[], buildings: Building[]): void {
+        if (!this.currentPath || this.currentPath.length === 0) {
+            return;
+        }
+        
+        const destination = this.currentPath[this.currentPath.length - 1];
+        this.calcPath(destination, units, buildings);
     }
 }
