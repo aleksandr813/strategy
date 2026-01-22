@@ -6,8 +6,8 @@ export enum UnitTypeID {
     Guardian = 5,
     Archer = 6,
     Crossbowman = 7,
-    Knight = 8,
-    Sorcerer = 9,
+    Sorcerer = 8,
+    Knight = 9,
     Golem = 10,
 }
 
