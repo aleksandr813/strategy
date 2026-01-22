@@ -19,10 +19,11 @@ class Village extends Manager {
     private store: Store;
     private mediator: Mediator;
     private server: Server;
+    private easyStar: EasyStar.js;
+    private isPlacingRightNow = false;
+    
     public selectedBuilding: Building | null = null;
     public selectedUnit: Unit | null = null;
-    public easyStar: EasyStar.js;
-    private isPlacingRightNow = false;
 
     constructor(store: Store, server: Server, mediator: Mediator, easyStar: EasyStar.js, game: Game) {
         super(game);
@@ -148,7 +149,6 @@ class Village extends Manager {
 
         if (clickedBuilding) {
             console.log("Выбранное здание", clickedBuilding);
-            //clickedBuilding.takeDamage(10);
         }
         
         this.selectBuilding(clickedBuilding);
@@ -232,10 +232,9 @@ class Village extends Manager {
             return;
         }
 
-
-    const units = unitsData
-        .filter(unitData => !unitData.onACrusade)
-        .map(unitData => new Unit(unitData, this.game, this.easyStar));
+        const units = unitsData
+            .filter(unitData => !unitData.onACrusade)
+            .map(unitData => new Unit(unitData, this.game, this.easyStar, 'ally'));
         
         this.game.setUnits(units);
         console.log("Загружено юнитов:", this.game.getUnits().length);
@@ -382,7 +381,6 @@ class Village extends Manager {
             return gridX === bx && gridY === by;
         });
     }
-
 }
 
 export default Village;

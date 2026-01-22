@@ -6,8 +6,8 @@ export enum UnitTypeID {
     Guardian = 5,
     Archer = 6,
     Crossbowman = 7,
-    Knight = 8,
-    Sorcerer = 9,
+    Sorcerer = 8,
+    Knight = 9,
     Golem = 10,
 }
 
@@ -48,6 +48,8 @@ const GAMECONFIG = {
     MOVE_INTERVAL: 100,
     INCOME_INTERVAL: 5000,
     MAP_UPDATE_INTERVAL: 2000,
+    MINIMAP_RADIUS: 5,
+    MINIMAP_SIZE: 150,
 };
 
 

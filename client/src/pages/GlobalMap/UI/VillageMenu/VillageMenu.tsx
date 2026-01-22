@@ -38,10 +38,10 @@ const VillageMenu: React.FC<VillageMenuProps> = (props: VillageMenuProps) => {
         };
     }, [mediator]);
 
-    if (!selectedVillage || !game.globalMap.sendingArmy) return null;
+    if (!selectedVillage || !game.getGlobalMap().sendingArmy) return null;
 
     const handleAttack = (villageId: number) => {
-        game.globalMap.sendingArmy = false;
+        game.getGlobalMap().sendingArmy = false;
         game.village.sendArmy(villageId, selectedUnits)
         setPage(PAGES.VILLAGE)
     };
@@ -50,7 +50,7 @@ const VillageMenu: React.FC<VillageMenuProps> = (props: VillageMenuProps) => {
         <div className="VillageMenu">
             <div 
                 className="menu-overlay"
-                onClick={() => game.globalMap.selectVillage(null)}
+                onClick={() => game.getGlobalMap().selectVillage(null)}
             >
                 <div 
                     className="menu-container"

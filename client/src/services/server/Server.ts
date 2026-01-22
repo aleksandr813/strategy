@@ -1,14 +1,16 @@
 import md5 from 'md5';
-import GAMECONFIG from '../../game/gameConfig';
 import CONFIG from '../../config';
 import Store from "../store/Store";
-import { TBuildingType, TBuilding, TMap, TMapResponse, TUserArmy, TBattle, TBattleResponse } from './types';
+import { TBuildingType, TBuilding, TMapResponse, TUserArmy, TBattleResponse, TActiveBattle } from './types';
 import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 import Unit from '../../game/entities/Unit';
 
 const { HOST, CHAT_TIMESTAMP } = CONFIG;
 
+interface TokenCheckResponse {
+    user: boolean;
+}
 class Server {
     HOST = HOST;
     store: Store;
@@ -92,6 +94,14 @@ class Server {
         return false;
     }
 
+    async checkToken(token: string) {
+        const result = await this.request<TokenCheckResponse>('checkToken', { token });
+        if (result?.user === true) {
+            return true;
+        }
+        return false;
+    }
+
     sendMessage(message: string): void {
         this.request<boolean>('sendMessage', { message });
     }
@@ -170,6 +180,7 @@ class Server {
             x: Number(unit.x),
             y: Number(unit.y),
             level: Number(unit.level),
+            speed: Number(unit.speed),
             currentHp: Number(unit.currentHp),
             type: unit.type,
             unlockLevel: Number(unit.unlockLevel),
@@ -287,12 +298,20 @@ class Server {
         return response;
     }
 
-    async getBattle(): Promise<TBattleResponse | null> {
+    async getBattle(id: number): Promise<TBattleResponse | null> {
+    const hash = this.store.getBattleHash();
+    
+    const battle = await this.request<TBattleResponse>('getBattle', { 
+        hash, 
+        id: id.toString() 
+    });
+    return battle;
+}
 
-        const hash = this.store.getBattleHash();
-
-        const battle = this.request<TBattleResponse>('getBattle', { hash })
-        return battle;
+    async getActiveBattles(): Promise<TActiveBattle | null> {
+        const response = await this.request<TActiveBattle>('getActiveBattles');
+        console.log('Active battles:', response);
+        return response;
     }
 }
 
