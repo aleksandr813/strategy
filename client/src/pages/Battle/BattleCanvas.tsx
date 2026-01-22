@@ -93,6 +93,20 @@ const BattleCanvas: React.FC = () => {
         units.forEach((unit) => {
             const currentSpriteId = unit.getCurrentSpriteId();
             const spriteData = getSprite(currentSpriteId); 
+
+            let isSelected = unit.isSelected && unit.isMyUnit();
+            if (allocation.isSelectingStatus) {
+                isSelected = allocation.isUnitInSelection(unit);
+            }
+                
+            if (isSelected) {
+                canvas.oval(unit.coords.x+0.2, unit.coords.y+0.9, 0.6, 0.1, 'rgba(0, 255, 0, 0.7)');
+            }
+
+            if (!unit.isMyUnit()) {
+                canvas.oval(unit.coords.x+0.2, unit.coords.y+0.9, 0.6, 0.1, 'rgba(255, 0, 0, 0.7)');
+            }
+
             canvas.spriteFull(
                 spritesImage, 
                 unit.coords.x, 
@@ -102,14 +116,7 @@ const BattleCanvas: React.FC = () => {
                 spriteData[2]
             );
             
-            let isSelected = unit.isSelected && unit.isMyUnit();
-            if (allocation.isSelectingStatus) {
-                isSelected = allocation.isUnitInSelection(unit);
-            }
-                
-            if (isSelected) {
-                drawRect(canvas, unit.coords.x, unit.coords.y, 1, 1, 'rgba(0, 255, 0, 0.5)');
-            }
+            
 
             if (unit.hp < unit.maxHp) {
                 drawHPBar(canvas, unit.coords.x, unit.coords.y - 0.5, 0.8, 0.1, unit.hp, unit.maxHp);

@@ -162,13 +162,13 @@ class Canvas {
 
     keyDownHandler = (event: KeyboardEvent) => {
         if (event.key === 'Escape') {
-            if (this.callbacks.keyDown) { 
+            if (this.callbacks.keyDown) {
                 this.callbacks.keyDown(event);
             }
         }
     };
 
-    
+
 
     xs(x: number): number {
         return (x - this.WINDOW.LEFT) / this.WINDOW.WIDTH * this.WIDTH;
@@ -213,7 +213,7 @@ class Canvas {
         this.contextV.font = font;
         this.contextV.fillText(text, this.xs(x), this.ys(y));
     }
-    
+
     drawFPS(FPS: string, color = '#fff', font = 'bold 1rem Arial'): void {
         this.contextV.fillStyle = color;
         this.contextV.font = font;
@@ -232,6 +232,29 @@ class Canvas {
 
     spriteFull(image: HTMLImageElement, dx: number, dy: number, sx: number, sy: number, size: number): void {
         this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), this.dec(1), this.dec(1));
+    }
+
+    oval(x: number, y: number, width: number, height: number, color: string): void {
+        const screenX = this.xs(x);
+        const screenY = this.ys(y);
+        const screenWidth = width * this.WIDTH / this.WINDOW.WIDTH;
+        const screenHeight = height * this.HEIGHT / this.WINDOW.HEIGHT;
+
+        this.contextV.beginPath();
+        this.contextV.ellipse(
+            screenX + screenWidth / 2,
+            screenY + screenHeight / 2,
+            screenWidth / 2,
+            screenHeight / 2,
+            0,
+            0,
+            2 * Math.PI
+        );
+
+        this.contextV.fillStyle = color;
+        this.contextV.fill();
+
+        this.contextV.closePath();
     }
 
     render(): void {
