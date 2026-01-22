@@ -65,7 +65,7 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
 
     const isBuildingAvailable = (building: TBuildingType): boolean => {
         const currentGold = Number(gold);
-        const buildingPrice = Number(building.price);
+        const buildingPrice = Number(building.priceLevel1);
 
         return townHallLevel >= building.unlockLevel && currentGold >= buildingPrice;
     }; 
@@ -92,7 +92,7 @@ const BuyBuildingsMenu: React.FC<BuyBuildingMenuProps> = (props: BuyBuildingMenu
 
                     {
                         buildingTypes.map((building) => (
-                            <div key={building.id} className={`buy-menu-item ${!isBuildingAvailable(building) ? 'disabled' : ''}`}>
+                            <div key={building.id} className={`buy-menu-ite`}>
                                 <div className="building-info">
                                     <span className="building-name">{building.type}</span>
                                     <span className="building-details">

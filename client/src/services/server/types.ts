@@ -91,6 +91,7 @@ export type TUnit = {
     x: number;
     y: number;
     level: number;
+    speed: number;
     currentHp: number;
     type: string;
     unlockLevel: number;
@@ -138,3 +139,19 @@ export type TUserArmy = {
     enemyName: string;
     speed: number;
 }
+
+export type TBattle = {
+    buildings: TBuilding[];
+    units: TUnit[];
+}
+
+export type TBattleResponse = {
+    hash: string;
+    battleData: TBattle;
+};
+
+export type TActiveBattle = {
+    attack: { battleId: string; userId: string; name: string }[];
+    defend: { attack_id: string } | null; 
+};
+

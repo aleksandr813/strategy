@@ -9,7 +9,11 @@ import Unit from './entities/Unit';
 import VillageEntity from './entities/VillageEntity';
 import ArmyEntity from './entities/ArmyEntity';
 import Building from './entities/Building';
+import { BuildingTypeID } from '../services/server/types';
+import { TActiveBattle, TAnswer } from '../services/server/types';
 import GAMECONFIG from './gameConfig';
+
+const { GRID_HEIGHT, GRID_WIDTH } = GAMECONFIG;
 
 class Game {
     private store: Store;
@@ -21,11 +25,14 @@ class Game {
     private buildings: Building[] = [];
     private villages: VillageEntity[] = [];
     private armies: ArmyEntity[] = [];
+    private activeBattles: TActiveBattle | null = null;
+    private currentBattleId: number | null = null;
     
     private incomeInterval: NodeJS.Timer | null = null;
+    private activeBattlesInterval: NodeJS.Timer | null = null;
     
     public village: Village;
-    public globalMap: GlobalMap;
+    public globalMap: GlobalMap | null = null;
     public battle: Battle;
 
     constructor(store: Store, server: Server, mediator: Mediator) {
@@ -35,10 +42,10 @@ class Game {
         this.easyStar = new EasyStar.js();
         
         this.village = new Village(store, server, this.mediator, this.easyStar, this);
-        this.globalMap = new GlobalMap(store, server, this, this.mediator);
-        this.battle = new Battle(store, server, this);
+        this.battle = new Battle(store, server, this, this.easyStar);
         
         this.startIncomeUpdate();
+        this.startActiveBattlesUpdate();
     }
 
     private startIncomeUpdate(): void {
@@ -47,6 +54,39 @@ class Game {
         this.incomeInterval = setInterval(() => {
             this.updateIncome();
         }, GAMECONFIG.INCOME_INTERVAL);
+    }
+
+    getMatrixForEasyStar(units: Unit[], buildings: Building[]): number[][] {
+        const matrix: number[][] = Array.from(
+            { length: GRID_HEIGHT }, 
+            () => Array(GRID_WIDTH).fill(0)
+        );
+        
+        units.forEach((unit) => {
+            if (unit.coords.y < GRID_HEIGHT && unit.coords.x < GRID_WIDTH) {
+                matrix[unit.coords.y][unit.coords.x] = 1;
+            }
+        });
+        
+        buildings.forEach((building) => {
+            if (building.typeId === BuildingTypeID.Wall) {
+                const { x, y } = building.coords[0];
+                if (y < GRID_HEIGHT && x < GRID_WIDTH) {
+                    matrix[y][x] = 1;
+                }
+            } else {
+                const { x, y } = building.coords[0];
+                for (let dy = 0; dy <= 1; dy++) {
+                    for (let dx = 0; dx <= 1; dx++) {
+                        if (y + dy < GRID_HEIGHT && x + dx < GRID_WIDTH) {
+                            matrix[y + dy][x + dx] = 1;
+                        }
+                    }
+                }
+            }
+        });
+        
+        return matrix;
     }
 
     private async updateIncome(): Promise<void> {
@@ -93,6 +133,33 @@ class Game {
         return this.buildings;
     }
 
+    public getActiveBattles(): TActiveBattle | null {
+        return this.activeBattles;
+    }
+
+    public setActiveBattles(data: TActiveBattle): void {
+        this.activeBattles = data;
+    }
+
+    async updateActiveBattles(): Promise<void> {
+        const data = await this.server.getActiveBattles();
+
+        if (!data) return;
+
+        this.activeBattles = data;
+        this.mediator.call('UPDATE_BATTLES');
+    }
+
+
+    private startActiveBattlesUpdate(): void {
+        this.updateIncome();
+        this.updateActiveBattles();
+        
+        this.activeBattlesInterval = setInterval(() => {
+            this.updateActiveBattles();
+        }, GAMECONFIG.INCOME_INTERVAL);
+    }
+
     public setBuildings(buildings: Building[]): void {
         this.buildings = buildings;
     }
@@ -118,11 +185,35 @@ class Game {
     }
 
     public getGlobalMap(): GlobalMap {
+        if (!this.globalMap) {
+            this.globalMap = new GlobalMap(this.store, this.server, this, this.mediator);
+            console.log("Global map создана");
+        }
+
         return this.globalMap;
+    }
+
+    public resetGlobalMap(): void {
+        if (this.globalMap) {
+            this.globalMap.destructor();
+            console.log("Global map сброшена");
+        }
     }
 
     public getBattle(): Battle {
         return this.battle;
+    }
+
+    public setCurrentBattle(id: number): void {
+        this.currentBattleId = id;
+    }
+
+    public getCurrentBattle(): number | null {
+        return this.currentBattleId;
+    }
+
+    public clearCurrentBattle(): void {
+        this.currentBattleId = null;
     }
 
     public destructor(): void {
@@ -132,7 +223,7 @@ class Game {
         }
         
         this.village.destructor();
-        this.globalMap.destructor();
+        this.resetGlobalMap();
         this.battle.destructor();
     }
 }

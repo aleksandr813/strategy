@@ -39,6 +39,17 @@ class Application
     }
 
 
+    function checkToken($params){
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return ['user' => true];
+            }
+            return ['user' => false];
+        }
+        return ['error' => 242];
+    }
+
     public function registration($params)
     {
         // Проверка на пустые поля
@@ -303,6 +314,17 @@ class Application
             $user = $this->user->getUser($params['token']);
             if ($user) {
                 return $this->battle->getBattle($user->id, $params['hash'], $params['id']);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function getActiveBattles($params) {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->user->getActiveBattles($params['token']);
             }
             return ['error' => 705];
         }

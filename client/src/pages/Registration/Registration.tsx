@@ -1,13 +1,11 @@
-import React, { useContext, useRef, useState, useEffect } from 'react';
-import { ServerContext } from '../../App';
+import React, {  useRef, useState, useEffect } from 'react';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import { validateLogin, validatePassword, checkLoginAvailability } from '../../services/verification/Verification';
 import './Registration.scss';
 
 const Registration: React.FC<IBasePage> = (props: IBasePage) => {
-    const { setPage } = props;
-    const server = useContext(ServerContext);
+    const { setPage, server } = props;
     const loginRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const confirmPasswordRef = useRef<HTMLInputElement>(null);
@@ -87,7 +85,6 @@ const Registration: React.FC<IBasePage> = (props: IBasePage) => {
             <div className="background-characters right"></div>
         
             <div className="registration-content">
-                <h1 className='version'>Alpha</h1>
                 <h1 className="title">STRATEGY</h1>
 
                 <div className="registration-form">

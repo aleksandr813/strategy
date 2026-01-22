@@ -20,7 +20,9 @@ function result($params) {
             // user
             case 'login': return $app->login($params);
             case 'logout': return $app->logout($params);
+            case 'checkToken': return $app->checkToken($params); 
             case 'registration': return $app->registration($params);
+            case 'getActiveBattles': return $app->getActiveBattles($params);
             // chat
             case 'sendMessage': return $app->sendMessage($params);
             case 'getMessages': return $app->getMessages($params); //loop

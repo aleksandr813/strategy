@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 .registration {
     position: relative;
     width: 100vw;
@@ -6,19 +8,9 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    font-family: 'PixelifySans-Bold', sans-serif;
-    color: white;
-
-
-    @font-face {
-        font-family: 'PixelifySans-Medium';
-        src: url('../../assets/fonts/PixelifySans-Medium.ttf');
-    }
-
-    @font-face {
-        font-family: 'PixelifySans-Bold';
-        src: url('../../assets/fonts/PixelifySans-Bold.ttf');
-    }
+    font-family: 'Press Start 2P', monospace;
+    color: #e8d4b8;
+    image-rendering: pixelated;
 
     .arrow {
         position: absolute;
@@ -93,12 +85,12 @@
 
     .version {
         margin-bottom: -25px;
-        margin-left:-10px;
+        margin-left: -10px;
         height: 50px;
         width: 50px;
         image-rendering: pixelated;
         transform: rotate(-30deg);
-        color: yellow;
+        color: #f4d03f;
         text-shadow: 2px 2px #000;
         animation: pulse 2s ease-in-out infinite;
     }
@@ -137,80 +129,108 @@
     }
 
     .registration-content {
-        background: rgba(0, 0, 0, 0.3);
-        padding: 30px 50px;
-        border-radius: 16px;
+        background: #1a1410;
+        border: 6px solid #3d2817;
+        box-shadow: 
+            inset 0 0 0 2px #2a1f15,
+            0 8px 0 #0d0a08,
+            0 0 30px rgba(0, 0, 0, 0.9);
+        padding: 40px 50px;
+        border-radius: 0;
         text-align: center;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         min-width: 400px;
     }
 
     .title {
-        font-size: 48px;
-        color: white;
+        font-size: 32px;
+        color: #d4a574;
         margin-bottom: 30px;
-        text-shadow: 2px 2px #000;
-        letter-spacing: 3px;
+        text-shadow: 3px 3px 0 #000;
+        letter-spacing: 2px;
+        line-height: 1.6;
     }
 
     .registration-form {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
-        font-family: 'PixelifySans-Medium';
+        gap: 16px;
 
         label {
-            color: white;
-            font-size: 16px;
+            color: #d4a574;
+            font-size: 12px;
             align-self: flex-start;
+            text-shadow: 1px 1px 0 #000;
         }
 
         input {
             width: 100%;
             max-width: 300px;
             height: 40px;
-            padding: 5px 10px;
-            border-radius: 8px;
-            border: 2px solid #333;
-            background-color: #f5f5f5;
-            color: #000;
-            font-size: 14px;
-            font-family: 'PixelifySans-Medium';
+            padding: 12px;
+            border-radius: 0;
+            border: 3px solid #3d2817;
+            background-color: #2a1f15;
+            color: #e8d4b8;
+            font-size: 10px;
+            font-family: 'Press Start 2P', monospace;
             outline: none;
+            box-shadow: inset 2px 2px 0 #0d0a08;
 
             &:focus {
-                border-color: #000;
-                background-color: #fff;
+                border-color: #d4a574;
+                background-color: #322519;
+            }
+            
+            &::placeholder {
+                color: #5a4a38;
             }
         }
 
-        .error {
-            color: red;
-            font-size: 12px;
-            margin: -5px 0 10px;
+        .error-message {
+            color: #c9453d;
+            font-size: 10px;
+            margin: -8px 0 0;
+            text-shadow: 1px 1px 0 #000;
         }
 
         button {
             width: 100%;
             max-width: 320px;
-            background-color: #006400;
-            color: white;
-            border: 2px solid #222;
-            border-radius: 10px;
-            padding: 8px 0;
-            margin-top: 10px;
-            font-family: 'PixelifySans-Bold';
+            background-color: #5c7a3e;
+            color: #e8d4b8;
+            border: 3px solid #3d2817;
+            border-radius: 0;
+            padding: 12px 0;
+            margin-top: 8px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.1s;
             image-rendering: pixelated;
+            box-shadow: 3px 3px 0 #0d0a08;
+            line-height: 1.6;
 
             &:hover {
-                background-color: #00a000;
-                transform: scale(1.03);
+                background-color: #6d8f4a;
+                box-shadow: 2px 2px 0 #0d0a08;
+                transform: translate(1px, 1px);
+            }
+            
+            &:active {
+                box-shadow: 1px 1px 0 #0d0a08;
+                transform: translate(2px, 2px);
             }
         }
     }
 
-
+    @media (max-width: 768px) {
+        .arrow,
+        .swordman,
+        .archer,
+        .spearman,
+        .background-characters {
+            display: none !important;
+        }
+    }
 }

@@ -366,6 +366,21 @@ class DB
         );
     }
 
+    public function getVillageById($id)
+    {
+        return $this->query("
+            SELECT 
+                id, 
+                x, 
+                y, 
+                last_income_datetime, 
+                attack_id AS attackId 
+            FROM villages 
+            WHERE id = ?", 
+            [$id]
+        );
+    }
+
     public function getVillages() {
         return $this->queryAll("
             SELECT
@@ -512,7 +527,7 @@ class DB
         );
     }
 
-    public function sendArmy($userId, $startX, $startY, $startTime, $arrivalTime, $targetX, $targetY, $targetId, $units, $speed) {
+    public function sendArmy($userId, $startX, $startY, $startTime, $arrivalTime, $targetX, $targetY, $targetVillageId, $units, $speed) {
         $army = [];
         foreach ($units as $unit) {
             $army[] = $unit['id'];
@@ -524,7 +539,7 @@ class DB
         INSERT INTO army 
         (userId, startX, startY, startTime, arrivalTime, targetX, targetY, attackId, units, speed) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [$userId, $startX, $startY, $startTime, $arrivalTime, $targetX, $targetY, $targetId, $armyString, $speed]);
+        [$userId, $startX, $startY, $startTime, $arrivalTime, $targetX, $targetY, $targetVillageId, $armyString, $speed]);
     }
 
     public function markVillageAsAttacked($attackerVillageId, $targetVillageId) {
@@ -789,5 +804,34 @@ class DB
 
     public function markArmyInBattle($armyId) {
         return $this->execute("UPDATE army SET in_battle = 1 WHERE army = ?", [$armyId]);
+    }
+
+    public function getActiveBattles($userId) {
+        return $this->queryAll(
+            "SELECT 
+                b.id AS battleId,
+                v.user_id AS userId,
+                u.name AS name
+            FROM battles AS b
+            JOIN army AS a ON b.army_attack_id = a.army
+            JOIN villages AS v ON b.defender_village_id = v.id
+            JOIN users AS u ON v.user_id = u.id
+            WHERE a.userId = ?",
+            [$userId]
+        );
+    }
+
+    public function getDefendBattle($userId) {
+        return $this->queryAll(
+            "SELECT 
+                b.id AS battleId,
+                v.user_id AS userId,
+                u.name AS name
+            FROM battles AS b
+            JOIN villages AS v ON b.attacker_village_id = v.id
+            JOIN users AS u ON v.user_id = u.id
+            WHERE b.defender_village_id IN (SELECT id FROM villages WHERE user_id = ?)",
+            [$userId]
+        );
     }
 }
