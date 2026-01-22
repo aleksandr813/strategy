@@ -314,7 +314,7 @@ class Village extends Manager {
         const left = x > 0 ? matrix[y][x - 1] : 0;
         const right = x < 86 ? matrix[y][x + 1] : 0;
 
-        if (up === 1 && down === 1 && left === 1 && right === 1) return 36;
+        if (up === 1 && down === 1 && left === 1 && right === 1) return 21;
         if (left === 1 && down === 1 && up === 1 && right !== 1) return 35;
         if (right === 1 && left === 1 && up === 1 && down !== 1) return 34;
         if (right === 1 && down === 1 && up === 1 && left !== 1) return 33;
