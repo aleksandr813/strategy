@@ -91,6 +91,7 @@ export type TUnit = {
     x: number;
     y: number;
     level: number;
+    speed: number;
     currentHp: number;
     type: string;
     unlockLevel: number;

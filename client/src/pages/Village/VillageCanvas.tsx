@@ -229,6 +229,8 @@ const VillageCanvas: React.FC = () => {
         if (!village) return;
         
         const { buildingPreview, unitPreview } = village.getScene();
+        const { units, buildings } = village.getScene();
+
 
         if (buildingPreview.isActiveStatus()) {
             await village.handleBuildingPlacement();
@@ -238,7 +240,7 @@ const VillageCanvas: React.FC = () => {
             village.handleBuildingClick(x, y);
             
             if (!allocation.isSelectingStatus) {
-                village.moveUnits({ x, y }, game['server']);
+                village.moveUnits({ x, y }, units, buildings, game['server']);
             }
         }
     };
@@ -264,7 +266,9 @@ const VillageCanvas: React.FC = () => {
     const mouseClick = async (x: number, y: number) => {
         if (!village || wasDragging) return;
         
-        const { buildingPreview, unitPreview, units } = village.getScene();
+        const { buildingPreview, unitPreview } = village.getScene();
+        const { units, buildings } = village.getScene();
+
 
         if (buildingPreview.isActiveStatus()) {
             await village.handleBuildingPlacement();
@@ -283,7 +287,7 @@ const VillageCanvas: React.FC = () => {
             const hasSelectedUnits = units.some(u => u.isSelected);
 
             if (hasSelectedUnits) {
-                village.moveUnits({ x, y }, game['server']);
+                village.moveUnits({ x, y }, units, buildings, game['server']);
             } else {
                 village.selectUnit(null);
             }

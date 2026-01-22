@@ -43,7 +43,7 @@ const UI: React.FC<UIProps> = ({ server, store, mediator, setPage }) => {
             {uiElement === UIELEMENT.BUYUNITSMENU && <BuyUnitsMenu setUIElement={setUIElement} store={store} mediator={mediator} />}
             {uiElement === UIELEMENT.ARMYMENU && <ArmyMenu setPage={setPage} setUIElement={setUIElement} store={store} mediator={mediator} />}
             {uiElement === UIELEMENT.ACTIVEBATTLESMENU && <ActiveBattlesMenu setUIElement={setUIElement} store={store} setPage={setPage} mediator={mediator} />}
-            <Panel setUIElement={setUIElement} server= {server} store={store} mediator={mediator} setPage={setPage} />
+            <Panel setUIElement={setUIElement} server={server} store={store} mediator={mediator} setPage={setPage} />
         </div>
     );
 };

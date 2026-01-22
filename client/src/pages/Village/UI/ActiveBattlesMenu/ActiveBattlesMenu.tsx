@@ -57,21 +57,21 @@ const ActiveBattlesMenu: React.FC<ActiveBattlesMenuProps> = ({ setUIElement, sto
                 <div className="battles-list">
                     {hasAttack && battles!.attack.map((item) => (
                         <div key={`attack-${item.battleId}`} className="battle-item attack">
-                            <div className="info">
-                                <span className="label">ВАША АТАКА</span>
+                            <div className="battle-info">
+                                <span className="label">Ваш бой</span>
                                 <span className="id">ID: {item.battleId}</span>
                             </div>
                             <button
                                 className="go-btn"
                                 onClick={() => joinBattle(Number(item.battleId))}
                             >
-                                ПЕРЕЙТИ
+                                В бой!
                             </button>
                         </div>
                     ))}
                     {hasDefend && (
                         <div key={`defend-${battles!.defend!.attack_id}`} className="battle-item defend">
-                            <div className="info">
+                            <div className="battle-info">
                                 <span className="label">ОБОРОНА</span>
                                 <span className="id">ID: {battles!.defend!.attack_id}</span>
                             </div>
@@ -79,19 +79,20 @@ const ActiveBattlesMenu: React.FC<ActiveBattlesMenuProps> = ({ setUIElement, sto
                                 className="go-btn danger"
                                 onClick={() => joinBattle(Number(battles!.defend!.attack_id))}
                             >
-                                ЗАЩИТИТЬСЯ
+                                Защититься!
                             </button>
                         </div>
                     )}
 
-                    {/* 3. Сообщение, если пусто */}
                     {!hasAttack && !hasDefend && (
-                        <div className="empty-msg">НЕТ АКТИВНЫХ СРАЖЕНИЙ</div>
+                        <div className="empty-msg">
+                            Мирное небо над головой!
+                        </div>
                     )}
                 </div>
 
                 <div className="menu-footer">
-                    <button className="close-btn" onClick={closeMenu}>ЗАКРЫТЬ</button>
+                    <button className="close-btn" onClick={closeMenu}>Закрыть</button>
                 </div>
             </div>
         </div>

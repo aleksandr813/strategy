@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import { ServerContext, StoreContext, MediatorContext } from '../../App';
+import React from 'react';
 import { IBasePage } from '../PageManager';
 import VillageCanvas from './VillageCanvas';
 import UI from './UI/UI';
@@ -10,11 +9,7 @@ const GAME_FIELD = 'game-field';
 const GREEN = '#00e81c';
 
 const Village: React.FC<IBasePage> = (props: IBasePage) => {
-    const server = useContext(ServerContext);
-    const store = useContext(StoreContext);
-    const mediator = useContext(MediatorContext);
-    
-    const { setPage } = props;
+    const { setPage, store, mediator, server } = props;
     
     return (
     <div className='game'>

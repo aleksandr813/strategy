@@ -1,7 +1,6 @@
 import maxIcon from '../../assets/img/joke/max.webp'
 import gosIcon from '../../assets/img/joke/gos.png'
-import React, { useContext, useRef, useState, useEffect } from 'react';
-import { ServerContext, StoreContext } from '../../App';
+import React, { useRef, useState, useEffect } from 'react';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 import { validateLoginFromLogin, validatePasswordFromLogin } from '../../services/verification/Verification';
@@ -9,14 +8,12 @@ import { validateLoginFromLogin, validatePasswordFromLogin } from '../../service
 import './Login.scss';
 
 const Login: React.FC<IBasePage> = (props: IBasePage) => {
-    const { setPage } = props;
-    const server = useContext(ServerContext);
+    const { setPage, server, store } = props;
     const loginRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const [loginError, setLoginError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
-    const store = useContext(StoreContext);
 
     const loginClickHandler = async () => {
         if (loginRef.current && passwordRef.current) {
