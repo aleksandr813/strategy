@@ -10,6 +10,7 @@ class Battle extends Manager {
     private store: Store;
     private server: Server;
     private easyStar: EasyStar.js;
+    private attackIntervalId: NodeJS.Timeout | null = null;
     
     constructor(store: Store, server: Server, game: Game, easyStar: EasyStar.js) {
         super(game);
@@ -111,6 +112,11 @@ class Battle extends Manager {
         console.log('Pathfinding initialized with matrix:', matrix.length, 'x', matrix[0]?.length);
     }
 
+    private startAttackCycle() {
+        this.attackIntervalId = setInterval(()=>{
+            
+        })
+    }
 }
 
 export default Battle;
