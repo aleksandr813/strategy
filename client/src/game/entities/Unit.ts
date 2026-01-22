@@ -29,9 +29,11 @@ export default class Unit {
     private currentPathIndex: number = 0;
     private currentSpriteIndex: number = 0;
     private idleAnimationIntervalId: NodeJS.Timeout | null = null;
+    private labelPathIsNotBuilt: boolean;
     private static readonly IDLE_ANIMATION_DELAY: number = 300;
     
     constructor(data: TUnit, game: Game, easystar: EasyStar.js, side: UnitSide) {
+        this.labelPathIsNotBuilt = false;
         this.id = data.id;
         this.typeId = data.typeId as UnitTypeID;
         this.type = data.type;
@@ -81,6 +83,7 @@ export default class Unit {
             destination.y, 
             (path) => {
                 if (path === null || path.length <= 1) {
+                    this.labelPathIsNotBuilt = true;
                     return;
                 }
 
