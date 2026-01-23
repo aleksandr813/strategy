@@ -27,22 +27,24 @@ export default class Unit {
 
     isSelected: boolean = false;
     moveIntervalId: NodeJS.Timeout | null = null;
-    
+
+    labelPathIsNotBuilt: boolean;
     private currentPath: TPoint[] | null = null;
     private currentPathIndex: number = 0;
     private currentSpriteIndex: number = 0;
     private idleAnimationIntervalId: NodeJS.Timeout | null = null;
     private static readonly IDLE_ANIMATION_DELAY: number = 300;
-    
+
     private waitCounter: number = 0;
     private static readonly MAX_WAIT_ATTEMPTS: number = 5;
-    
+
     constructor(data: TUnit, game: Game, easystar: EasyStar.js, side: UnitSide) {
+        this.labelPathIsNotBuilt = false;
         this.id = data.id;
         this.typeId = data.typeId as UnitTypeID;
         this.type = data.type;
         this.hp = data.currentHp;
-        this.maxHp = data.currentHp; 
+        this.maxHp = data.currentHp;
         this.level = data.level;
         this.speed = data.speed;
         this.unlockLevel = data.unlockLevel
@@ -70,7 +72,7 @@ export default class Unit {
     calcPath(destination: TPoint, units: Unit[], buildings: Building[]) {
         this.clearUnitMovement();
         this.movementAccumulator = 0;
-        
+
         const matrix = this.game.getMatrixForEasyStar(units, buildings);
         this.easystar.setGrid(matrix);
 
@@ -84,22 +86,24 @@ export default class Unit {
 
 
         this.easystar.findPath(
-            this.coords.x, 
-            this.coords.y, 
-            destination.x, 
-            destination.y, 
+            this.coords.x,
+            this.coords.y,
+            destination.x,
+            destination.y,
             (path) => {
                 if (path === null) {
+                    this.labelPathIsNotBuilt = true;
                     return;
                 }
-                
+
                 if (path.length <= 1) {
+                    this.labelPathIsNotBuilt = true;
                     return;
                 }
 
                 this.currentPath = path;
-                this.currentPathIndex = 1; 
-                
+                this.currentPathIndex = 1;
+
             }
         );
 
@@ -114,30 +118,30 @@ export default class Unit {
         const nextStep = this.currentPath[this.currentPathIndex];
 
         const isOccupiedByBuilding = this.game.village.isTileOccupiedByBuilding(nextStep.x, nextStep.y);
-        
+
         if (isOccupiedByBuilding) {
             this.clearUnitMovement();
-            return false; 
+            return false;
         }
-        
-        const isOccupiedByUnit = this.game.getUnits().some(unit => 
-            unit !== this && 
-            unit.coords.x === nextStep.x && 
+
+        const isOccupiedByUnit = this.game.getUnits().some(unit =>
+            unit !== this &&
+            unit.coords.x === nextStep.x &&
             unit.coords.y === nextStep.y
         );
 
         if (isOccupiedByUnit) {
             this.waitCounter++;
-            
+
             if (this.waitCounter >= Unit.MAX_WAIT_ATTEMPTS) {
                 this.clearUnitMovement();
                 return false;
             }
-            
+
             return true;
         }
 
-        this.waitCounter = 0; 
+        this.waitCounter = 0;
         this.coords.x = nextStep.x;
         this.coords.y = nextStep.y;
         this.currentPathIndex++;
@@ -172,18 +176,18 @@ export default class Unit {
     }
 
     public startIdleAnimation(): void {
-        if (this.idleAnimationIntervalId !== null) return; 
+        if (this.idleAnimationIntervalId !== null) return;
 
         this.idleAnimationIntervalId = setInterval(() => {
-            this.switchSprite(); 
-        }, Unit.IDLE_ANIMATION_DELAY); 
+            this.switchSprite();
+        }, Unit.IDLE_ANIMATION_DELAY);
     }
-    
+
     public recalculatePathToDestination(units: Unit[], buildings: Building[]): void {
         if (!this.currentPath || this.currentPath.length === 0) {
             return;
         }
-        
+
         const destination = this.currentPath[this.currentPath.length - 1];
         this.calcPath(destination, units, buildings);
     }
