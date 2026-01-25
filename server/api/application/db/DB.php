@@ -183,6 +183,34 @@ class DB
         );
     }
 
+    public function updateUnitsPositionInBattle($battleId, $units, $villageId) {
+        $coordinatesX = [];
+        $coordinatesY = [];
+        $validUnits = [];
+
+        foreach($units as $unit) {
+            $unitId = (int) $unit['unitId'];
+            $x = (int) $unit['x'];
+            $y = (int) $unit['y'];
+
+            $coordinatesX[] = "WHEN $unitId THEN $x";
+            $coordinatesY[] = "WHEN $unitId THEN $y";
+            $validUnits[] = $unitId;
+        }
+
+        $unitsStr = implode(',', $validUnits);
+        $xStr = implode(' ', $coordinatesX);
+        $yStr = implode(' ', $coordinatesY);
+
+        return $this->execute(
+            "UPDATE battle_objects SET
+            x = CASE original_id $xStr END,
+            y = CASE original_id $yStr END
+            WHERE battle_id = ? AND owner_village_id = ? AND original_id IN ($unitsStr)",
+            [$battleId, $villageId]
+        );
+    }
+
     public function updateUnitsHP($units, $villageId)
     {
         $hpArr = [];
