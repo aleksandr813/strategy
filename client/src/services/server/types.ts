@@ -73,7 +73,10 @@ export enum BuildingTypeID {
     Kazarma = 3,
     Wall = 4,
     Tower = 5,
-    Gates = 6
+    VietnamTrap = 6,
+    Cannon = 7,
+    Gates = 8,
+
 }
 
 export type TUnitType = {
