@@ -19,26 +19,29 @@ export default class Building {
     typeData: TBuildingType | null = null;
 
     private static SPRITE_MAP: Record<BuildingTypeID, number[]> = {
-        [BuildingTypeID.TownHall]: [1, 2, 3, 4], // TownHall (Ратуша)
-        [BuildingTypeID.Mine]:     [5, 6, 7, 8], // Mine (Шахта)
-        [BuildingTypeID.Tower]:     [9, 10, 11, 12],
-        [BuildingTypeID.Wall]:     [26],
-        [BuildingTypeID.Kazarma]:  [14, 15, 16 ,17],
-        [BuildingTypeID.Gates]: [91, 92]
+        [BuildingTypeID.TownHall]: [1, 2, 3, 4],
+        [BuildingTypeID.Mine]: [5, 6, 7, 8],
+        [BuildingTypeID.Kazarma]: [14, 15, 16, 17],
+        [BuildingTypeID.Wall]: [26],
+        [BuildingTypeID.Tower]: [9, 10, 11, 12],
+        [BuildingTypeID.VietnamTrap]: [37],
+        [BuildingTypeID.Cannon]: [103],
+        [BuildingTypeID.Gates]: [91, 92],
     };
+
 
     private static WALL_SPRITES: Record<number, number> = {
         21: 21, // со всех 4 сторон
-        35: 35, // слева, снизу и сверху
-        34: 34, // справа, слева и сверху
-        33: 33, // справа, снизу и сверху
-        32: 32, // справа, слева и снизу
-        31: 31, // слева и сверху
-        30: 30, // справа и сверху
-        29: 29, // справа и снизу
+        34: 34, // слева, снизу и сверху
+        33: 33, // справа, слева и сверху
+        32: 32, // справа, снизу и сверху
+        31: 31, // справа, слева и снизу
+        30: 30, // слева и сверху
+        29: 29, // справа и сверху
         28: 28, // слева и снизу
         27: 27, // справа и слева
         26: 26, // сверху и снизу или нет
+        19: 19 // справа снизу
     };
 
 
