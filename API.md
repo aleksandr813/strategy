@@ -750,6 +750,8 @@ Buildings: {
     token: string; - токен
     battleId: number; - id битвы
     units: array; - массив юнитов с их id, x, y (Пример входных данных: units=id32,x3,y4;id33,x2,y7)
+    damageToUnits: array[][]; двумерный массив, где [1][2] означает что юнит с id 1 атакует объект(юнит или здание) с id 2
+    damageToBuildings: array[][]; двумерный массив, где [1][2] означает что здание с id 1 атакует юнита с id 2
 }
 ```
 **Успешный ответ**
