@@ -739,10 +739,11 @@ class DB
         $params = [];
 
         foreach($objects as $object) {
-            $insertData[] = "(?, ?, ?, ?, ?, ?, ?)";
+            $insertData[] = "(?, ?, ?, ?, ?, ?, ?, ?)";
             $params = array_merge($params, [
                 $params[] = $battleId,
                 $params[] = $type,
+                $params[] = (int)$object['typeId'],
                 $params[] = (int)$object['id'],
                 $params[] = (int)$object['villageId'],
                 $params[] = (int)$object['x'],
@@ -755,7 +756,7 @@ class DB
 
         return $this->execute(
             "INSERT INTO battle_objects
-            (battle_id, object_type, original_id, owner_village_id, x, y, current_hp)
+            (battle_id, object_type, type_id, original_id, owner_village_id, x, y, current_hp)
             VALUES $placeholder",
             $params
         );
@@ -796,12 +797,71 @@ class DB
         );
     }
 
+    public function getBattleObject($objectId, $battleId) {
+        return $this->query(
+            "SELECT
+                bo.id,
+                bo.battle_id AS battleId,
+                bo.object_type AS objectType,
+                bo.type_id AS typeId,
+                bo.original_id AS originalId,
+                bo.owner_village_id AS ownerVillageId,
+                bo.x,
+                bo.y,
+                bo.current_hp AS currentHp,
+                bo.is_alive AS isAlive,
+                bo.last_attack_time AS lastAttackTime,
+                CASE 
+                    WHEN bo.object_type = 'BUILDING' THEN b.level 
+                    ELSE NULL
+                END AS level
+            FROM battle_objects AS bo
+            LEFT JOIN buildings AS b ON bo.original_id = b.id AND bo.object_type = 'BUILDING'
+            WHERE bo.id = ? AND bo.battle_id = ?",
+            [$objectId, $battleId]
+        );
+    }
+
+    public function getUnitStats($unitTypeId) {
+        return $this->query(
+            "SELECT
+                attack_speed AS attackSpeed,
+                damage,
+                range_attack AS rangeAttack
+            FROM unit_types
+            WHERE id = ?",
+            [$unitTypeId]
+        );
+    }
+
+    public function updateBattleObjectLastAttackTime($objectId, $time) {
+        return $this->execute(
+            "UPDATE battle_objects SET last_attack_time = ? WHERE id = ?",
+            [$time, $objectId]
+        );
+    }
+
+    public function updateBattleObjectHp($objectId, $hp) {
+        return $this->execute(
+            "UPDATE battle_objects SET current_hp = ? WHERE id = ?",
+            [$hp, $objectId]
+        );
+    }
+
+    public function updateBattleObjectType($objectId, $type) {
+        return$this->execute(
+            "UPDATE battle_objects SET object_type = ? WHERE id = ?",
+            [$type, $objectId]
+        );
+    }
+
     public function getBattleObjects($battleId) {
         return $this->queryAll(
             "SELECT
                 id,
                 battle_id AS battleId,
                 object_type AS objectType,
+                type_id AS typeId,
                 original_id AS orirginalId,
                 owner_village_id AS ownerVillageId,
                 x,
@@ -864,37 +924,9 @@ class DB
         );
     }
 
-    public function updateBuildingHp($buildingId, $hp) {
-        return $this->query(
-            "UPDATE buildings SET current_hp = ? WHERE id = ?",
-            [$hp, $buildingId]
-        );
-    }
-
-    public function updateUnitHp($unitId, $hp) {
-        return $this->query(
-            "UPDATE units SET current_hp = ? WHERE id = ?",
-            [$hp, $unitId]
-        );
-    }
-
-    public function updateBuildingLastAttackTime($buildingId, $time) {
-        return $this->query(
-            "UPDATE buildings SET last_attack_time = ? WHERE id = ?",
-            [$time, $buildingId]
-        );
-    }
-
-    public function updateUnitLastAttackTime($unitId, $time) {
-        return $this->query(
-            "UPDATE buildings SET last_attack_time = ? WHERE id = ?",
-            [$time, $unitId]
-        );
-    }
-
     public function markObjectBattleNotAlive($battleId, $objectId) {
-        return $this->query(
-            "UPDATE battle_objects SET isAlive = 0 WHERE id = ? AND battle_id = ?",
+        return $this->execute(
+            "UPDATE battle_objects SET is_alive = 0 WHERE id = ? AND battle_id = ?",
             [$objectId, $battleId]
         );
     }

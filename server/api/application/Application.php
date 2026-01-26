@@ -182,19 +182,6 @@ class Application
         return ['error' => 242];
     }
 
-    public function takeDamage($params)
-    {
-        if ($params['token']  && $params['units']) {
-            $user = $this->user->getUser($params['token']);
-            if ($user) {
-                return $this->battle->takeDamage($user->id, $params['units']);
-            }
-            return ['error' => 705];
-        }
-        return ['error' => 242];
-    }
-
-
     public function buyBuilding($params)
     {
         if ($params['token'] && $params['typeId'] && $params['x'] && $params['y']) {
@@ -335,7 +322,11 @@ class Application
         if ($params['token']) {
             $user = $this->user->getUser($params['token']);
             if ($user) {
-                return $this->battle->updateBattle($user->id, $params['battleId'], $params['units']);
+                return $this->battle->updateBattle(
+                    $user->id, $params['battleId'], 
+                    $params['units'], 
+                    $params['damageToUnits'], 
+                    $params['damageToBuildings']);
             }
             return ['error' => 705];
         }
