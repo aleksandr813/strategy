@@ -1,7 +1,7 @@
 import md5 from 'md5';
 import CONFIG from '../../config';
 import Store from "../store/Store";
-import { TBuildingType, TBuilding, TMapResponse, TUserArmy, TBattleResponse, TActiveBattle } from './types';
+import { TBuildingType, TBuilding, TMapResponse, TUserArmy, TBattleResponse, TActiveBattle, TUpdateBattleUnit } from './types';
 import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 import Unit from '../../game/entities/Unit';
@@ -312,6 +312,19 @@ class Server {
         const response = await this.request<TActiveBattle>('getActiveBattles');
         console.log('Active battles:', response);
         return response;
+    }
+
+    async getUpdateBattle(battleId: number, units: TUpdateBattleUnit[]): Promise<boolean> {
+        const unitsString = units.map(unit => 
+            `id${unit.id},x${unit.x},y${unit.y}`
+        ).join(';');
+
+        const result = await this.request<boolean>('updateBattle', {
+            battleId: battleId.toString(),
+            units: unitsString
+        });
+
+        return result !== null ? result : false;
     }
 }
 

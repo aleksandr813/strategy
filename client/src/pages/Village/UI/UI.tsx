@@ -9,6 +9,7 @@ import Store from '../../../services/store/Store';
 import Mediator from '../../../services/mediator/Mediator';
 import { PAGES } from '../../PageManager';
 import ActiveBattlesMenu from './ActiveBattlesMenu/ActiveBattlesMenu';
+import BattleEndMenu from '../../GlobalMap/UI/BattleEndMenu/BattleEndMenu';
 
 import "./UI.scss";
 
@@ -19,6 +20,7 @@ export enum UIELEMENT {
     BUYBUILDINGSMENU,
     ARMYMENU,
     ACTIVEBATTLESMENU,
+    BATTLE_END_MENU,
     NULL
 }
 
@@ -38,6 +40,15 @@ const UI: React.FC<UIProps> = ({ server, store, mediator, setPage }) => {
 
     return (
         <div className='UI'>
+            {uiElement === UIELEMENT.BATTLE_END_MENU && (
+                <BattleEndMenu 
+                    setUIElement={setUIElement} 
+                    setPage={setPage} 
+                    store={store} 
+                    isWinner={true} 
+                    loot={{ gold: 1000 }}
+                />
+            )}
             <BuildingMenu mediator={mediator} />
             {uiElement === UIELEMENT.BUYBUILDINGSMENU && <BuyBuildingsMenu setUIElement={setUIElement} store={store} mediator={mediator} />}
             {uiElement === UIELEMENT.BUYUNITSMENU && <BuyUnitsMenu setUIElement={setUIElement} store={store} mediator={mediator} />}
