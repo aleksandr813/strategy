@@ -825,9 +825,11 @@ class DB
     public function getUnitStats($unitTypeId) {
         return $this->query(
             "SELECT
+                type,
                 attack_speed AS attackSpeed,
                 damage,
-                range_attack AS rangeAttack
+                range_attack AS rangeAttack,
+                speed
             FROM unit_types
             WHERE id = ?",
             [$unitTypeId]
@@ -858,16 +860,20 @@ class DB
     public function getBattleObjects($battleId) {
         return $this->queryAll(
             "SELECT
-                id,
-                battle_id AS battleId,
-                object_type AS objectType,
-                type_id AS typeId,
-                original_id AS orirginalId,
-                owner_village_id AS ownerVillageId,
-                x,
-                y,
-                current_hp AS currentHp
-            FROM battle_objects
+                bo.id,
+                bo.battle_id AS battleId,
+                bo.object_type AS objectType,
+                bo.type_id AS typeId,
+                bo.original_id AS orirginalId,
+                bo.owner_village_id AS ownerVillageId,
+                bo.x,
+                bo.y,
+                bo.current_hp AS currentHp,
+                bo.is_alive AS isAlive,
+                bo.last_attack_time AS lastAttackTime,
+                b.level AS level
+            FROM battle_objects AS bo
+            LEFT JOIN buildings AS b ON bo.original_id = b.id AND bo.object_type = 'BUILDING'
             WHERE battle_id = ?",
             [$battleId]
         );

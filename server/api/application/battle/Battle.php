@@ -130,34 +130,62 @@ class Battle {
 
         $objects = $this->db->getBattleObjects($battle->id);
 
-        $defenderUnits = $this->db->getUnits($battle->defenderVillageId);
-        $attackerUnits = $this->db->getUnitsInArmy($battle->armyAttackId);
-
-        $buildings = $this->db->getBuildings($battle->defenderVillageId);
+        $alliedUnits = [];
+        $enemyUnits = [];
+        $buildings = [];
         $corpse = [];
         $ruin = [];
 
         foreach($objects as $object) {
-            $objectWithoutType = $object;
-            unset($objectWithoutType['objectType']);
+            $objectData = [
+                'id' => $object['id'],
+                'typeId' => $object['typeId'],
+                'objectType' => $object['objectType'],
+                'x' => $object['x'],
+                'y' => $object['y'],
+                'currentHp' => $object['currentHp'],
+                'ownerVillageId' => $object['ownerVillageId']
+            ];
+
+            $isAllied = ($isAttacker && $object['ownerVillageId'] == $battle->attackerVillageId ||
+            !$isAttacker && $object['ownerVillageId'] == $battle->defenderVillageId);
 
             switch($object['objectType']) {
+                case 'UNIT':
+                    $unitStats = $this->db->getUnitStats($object['typeId']);
+                    if ($unitStats) {
+                        $objectData['speed'] = $unitStats->speed;
+                        $objectData['rangeAttack'] = $unitStats->rangeAttack;
+                        $objectData['attackSpeed'] = $unitStats->attackSpeed;
+                        $objectData['damage'] = $unitStats->damage;
+                    }
+
+                    if ($isAllied) {
+                        $alliedUnits[] = $objectData;
+                    } else {
+                        $enemyUnits[] = $objectData;
+                    }
+                    break;
+                case 'BUILDING':
+                    $buildingStats = $this->db->getBuildingStatsForLevel($object['typeId'], $object['level']);
+                    if ($buildingStats) {
+                        $objectData['rangeAttack'] = $buildingStats->rangeAttack;
+                        $objectData['attackSpeed'] = $buildingStats->attackSpeed;
+                        $objectData['damage'] = $buildingStats->damage;
+                    }
+
+                    if (!$isAttacker) {
+                        $buildings[] = $objectData;
+                    }
+                    break;
                 case 'CORPSE':
-                    $corpse[] = $objectWithoutType;
+                    $corpse[] = $objectData;
                     break;
 
                 case 'RUIN':
-                    $ruin = $objectWithoutType;
+                    $ruin = $objectData;
                     break;
             }
-        }
-
-        if ($isAttacker) {
-            $alliedUnits = $attackerUnits;
-            $enemyUnits = $defenderUnits;
-        } else {
-            $alliedUnits = $defenderUnits;
-            $enemyUnits = $attackerUnits;
         }
 
         $battleData = [
