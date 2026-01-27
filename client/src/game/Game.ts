@@ -142,6 +142,7 @@ class Game {
     }
 
     async updateActiveBattles(): Promise<void> {
+        if (!this.store.user) return;
         const data = await this.server.getActiveBattles();
 
         if (!data) return;
