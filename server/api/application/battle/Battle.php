@@ -3,26 +3,64 @@
 class Battle {
     private $db;
     private $config;
+    private $village;
 
     public function __construct($db)
     {
         $this->db = $db;
         $this->config = require('config.php');
+        $this->village = new Village($db);
     }
 
-    public function takeDamage($userId, $units) {
-        $village = $this->db->getVillage($userId);
-        if (!$village) {
-            return ['error' => 315];
+    public function takeDamage($attackerId, $targetId, $battleId) {
+        $attackerObject = $this->db->getBattleObject($attackerId, $battleId);
+        if (!$attackerObject) {
+            return;
         }
 
-        $result = $this->db->updateUnitsHP($units, $village->id);
-
-        if (!$result) {
-            return ['error' => 510];
+        if ($attackerObject->isAlive == 0) {
+            return;
         }
 
-        return true;
+        $currentTime = time();
+        $lastAttackTime = strtotime($attackerObject->lastAttackTime);
+        $objectType = null;
+
+        if ($attackerObject->objectType == 'UNIT') {
+            $objectType = $this->db->getUnitStats($attackerObject->typeId);
+            
+        } else {
+            $objectType = $this->db->getBuildingStatsForLevel($attackerObject->typeId, $attackerObject->level);
+        }
+
+        $attackSpeed = (int)$objectType->attackSpeed;
+        $damage = (int)$objectType->damage;
+
+        $timeSinceLastAttack = $currentTime - $lastAttackTime;
+        if ($timeSinceLastAttack < $attackSpeed) {
+            return;
+        }
+
+        $this->db->updateBattleObjectLastAttackTime($attackerId, date('Y-m-d H:i:s'));
+
+        $targetObject = $this->db->getBattleObject($targetId, $battleId);
+        if (!$targetObject) {
+            return;
+        }
+
+        $newHp = max(0, $targetObject->currentHp - $damage);
+        $this->db->updateBattleObjectHp($targetId, $newHp);
+
+        if ($newHp == 0) {
+            $this->db->markObjectBattleNotAlive($battleId, $targetId);
+
+            if ($targetObject->objectType == 'BUILDING') {
+                $this->db->updateBattleObjectType($targetId, 'RUIN');
+            }
+            elseif ($targetObject->objectType == 'UNIT') {
+                $this->db->updateBattleObjectType($targetId, 'CORPSE');
+            }
+        }
     }
 
     public function unitsAttackDistance($userId) {
@@ -168,5 +206,37 @@ class Battle {
         $timeDiff = $now - $lastOnline;
 
         return $timeDiff <= ONLINE_TIMEOUT;
+    }
+    
+    public function updateBattle($userId, $battleId, $unitsString, $damageToUnits, $damageToBuildings) {
+        $village = $this->db->getVillage($userId);
+        if (!$village) {
+            return ['error' => 310];
+        }
+
+        $units = $this->village->parseUnitsString($unitsString);
+        if (!$units) {
+            return ['error' => 504];
+        }
+
+        $updatedPositionUnits = $this->db->updateUnitsPositionInBattle($battleId, $units, $village->id);
+
+        if (!$updatedPositionUnits) {
+            return ['error' => 504];
+        }
+
+        if ($damageToUnits) {
+            foreach($damageToUnits as $attackerId => $targetId) {
+                $this->takeDamage($attackerId, $targetId, $battleId);
+            }
+        }
+
+        if ($damageToBuildings) {
+            foreach($damageToBuildings as $attackerId => $targetId) {
+                $this->takeDamage($attackerId, $targetId, $battleId);
+            }
+        }
+
+        return true;
     }
 }

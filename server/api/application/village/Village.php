@@ -321,11 +321,12 @@ class Village
         return true;
     }
 
-    private function parseUnitsString($unitsString) {
+    public function parseUnitsString($unitsString) {
         $units = [];
         $unitsData = explode(';', $unitsString);
 
         foreach($unitsData as $unitData) {
+            $unit = [];
             $parts = explode(',', $unitData);
 
             foreach($parts as $part) {
@@ -333,7 +334,7 @@ class Village
                     $unit['unitId'] = (int) substr($part, 2);
                 } else if (strpos($part, 'x') === 0) {
                     $unit['x'] = (int) substr($part, 1);
-                } if (strpos($part, 'y') === 0) {
+                } else if (strpos($part, 'y') === 0) {
                     $unit['y'] = (int) substr($part, 1);
                 }
             }
