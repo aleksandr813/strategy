@@ -100,11 +100,11 @@ const BattleCanvas: React.FC = () => {
             }
                 
             if (isSelected) {
-                canvas.oval(unit.coords.x+0.2, unit.coords.y+0.9, 0.6, 0.1, 'rgba(0, 255, 0, 0.7)');
+                canvas.oval(unit.coords.x+0.15, unit.coords.y+0.8, 0.75, 0.3, 'rgba(0, 0, 0, 0.5)', 3, 'rgba(34, 255, 0, 1)');
             }
 
             if (!unit.isMyUnit()) {
-                canvas.oval(unit.coords.x+0.2, unit.coords.y+0.9, 0.6, 0.1, 'rgba(255, 0, 0, 0.7)');
+                canvas.oval(unit.coords.x+0.15, unit.coords.y+0.8, 0.75, 0.3, 'rgba(0, 0, 0, 0.5)', 3, 'rgba(255, 0, 0, 1)');
             }
 
             canvas.spriteFull(
@@ -138,8 +138,10 @@ const BattleCanvas: React.FC = () => {
         if (!allocation.isSelectingStatus) return;
         const rect = allocation.getSelectionRect();
         if (rect) {
-            canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.5)";
+            canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.2)";
             canvas.contextV.fillRect(canvas.xs(rect.x), canvas.ys(rect.y), canvas.dec(rect.width), canvas.dec(rect.height));
+            canvas.contextV.strokeStyle = "rgba(0, 255, 0, 1)";
+            canvas.contextV.strokeRect(canvas.xs(rect.x), canvas.ys(rect.y), canvas.dec(rect.width), canvas.dec(rect.height));
         }
     };
 
