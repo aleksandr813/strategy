@@ -228,7 +228,7 @@ class Game {
         this.battle.destructor();
     }
 
-    public async sendUpdateBattle(): Promise<void> {
+    public async getUpdateBattle(): Promise<void> {
         const battleId = this.getCurrentBattle();
         if (battleId !== null) {
             const unitsToUpdate = this.units.map(unit => ({
@@ -238,7 +238,7 @@ class Game {
             }));
 
             console.log('Отправка обновления битвы...', unitsToUpdate);
-            const result = await this.server.getUpdateBattle(battleId, unitsToUpdate);
+            const result = await this.server.getBattle(battleId, unitsToUpdate);
             const fakeBattleEnd = true;
 
         if (fakeBattleEnd) {
