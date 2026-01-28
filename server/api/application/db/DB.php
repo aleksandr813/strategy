@@ -111,7 +111,6 @@ class DB
                 u.current_hp AS currentHp,
                 u.on_a_crusade AS onACrusade,
                 u.is_enemy AS isEnemy,
-                u.last_attack_time AS lastAttackTime,
                 ut.type AS type,
                 ut.speed AS speed,
                 ut.range_attack AS rangeAttack,
@@ -138,7 +137,6 @@ class DB
                 u.current_hp AS currentHp,
                 u.on_a_crusade AS onACrusade,
                 u.is_enemy AS isEnemy,
-                u.last_attack_time AS lastAttackTime,
                 ut.type AS type,
                 ut.speed AS speed,
                 ut.range_attack AS rangeAttack,
@@ -149,6 +147,27 @@ class DB
             ON u.type_id = ut.id
             WHERE village_id = ? AND u.on_a_crusade = 0",
             [$villageId]
+        );
+    }
+
+    public function getUnitsByIds($unitIds, $villageId) {
+        $placeholder = implode(',', array_fill(0, count($unitIds), '?'));
+        $params = array_merge($unitIds, [$villageId]);
+
+        return $this->queryAll(
+            "SELECT
+                id,
+                type_id AS typeId,
+                village_id AS villageId,
+                x,
+                y,
+                level,
+                current_hp AS currentHp,
+                on_a_crusade AS onACrusade,
+                is_enemy AS isEnemy
+            FROM units
+            WHERE id IN ($placeholder) AND village_id = ?",
+            $params
         );
     }
 
@@ -256,7 +275,28 @@ class DB
         );
     }
 
+    public function updateBuildingsHP($buildings, $villageId) {
+        $hpArr = [];
+        $validBuildings = [];
 
+        foreach ($buildings as $building) {
+            $buildingId = (int) $building['id'];
+            $hp = (int) $building['hp'];
+
+            $hpArr[] = "WHEN $buildingId THEN $hp";
+            $validBuildings[] = $buildingId;
+        }
+
+        $buildingsStr = implode(',', $validBuildings);
+        $hpStr = implode(' ', $hpArr);
+
+        return $this->execute(
+            "UPDATE buildings SET
+            current_hp = CASE id $hpStr END
+            WHERE id IN ($buildingsStr) AND village_id = ?",
+            [$villageId]
+        );
+    }
 
     public function deleteUnit($unitId, $villageId)
     {
@@ -265,6 +305,23 @@ class DB
             DELETE FROM units 
             WHERE id = ? AND village_id = ?",
             [$unitId, $villageId]
+        );
+    }
+
+    public function deleteUnits($villageId, $units) {
+        $deleteUnitIds = [];
+
+        foreach($units as $unit) {
+            $deleteUnitIds[] = $unit['id'];
+        }
+
+        $placeholder = implode(',', array_fill(0, count($deleteUnitIds), '?'));
+
+        $params = array_merge($deleteUnitIds, [$villageId]);
+
+        return $this->execute(
+            "DELETE FROM units WHERE id IN ($placeholder) AND village_id = ?",
+            $params
         );
     }
 
@@ -460,9 +517,30 @@ class DB
         return $this->query("SELECT money FROM users WHERE id = ?", [$userId]);
     }
 
+    public function getMoneyByVillageId($villageId) {
+        return $this->query(
+            "SELECT u.money
+            FROM users AS u
+            INNER JOIN villages AS v
+            ON v.user_id = u.id
+            WHERE v.id = ?",
+            [$villageId]
+        );
+    }
+
     public function updateMoney($userId, $money)
     {
         return $this->execute("UPDATE users SET money = ? WHERE id = ?", [$money, $userId]);
+    }
+
+    public function updateMoneyByVillageId($villageId, $money) {
+        return $this->execute(
+            "UPDATE users AS u
+            INNER JOIN villages AS v ON u.id = v.user_id
+            SET u.money = ?
+            WHERE v.id = ?",
+            [$money, $villageId]
+        );
     }
 
     public function upgradeBuilding($buildingId, $villageId, $nextLevel, $hp)
@@ -487,6 +565,17 @@ class DB
             "DELETE FROM buildings
             WHERE id = ? AND village_id = ?",
             [$buildingId, $villageId]
+        );
+    }
+
+    public function destroyBuildings($buildingIds, $villageId) {
+        $placeholder = implode(',', array_fill(0, count($buildingIds), '?'));
+
+        $params = array_merge($buildingIds, [$villageId]);
+
+        return $this->execute(
+            "UPDATE buildings SET is_ruin = 1 WHERE id IN ($placeholder) AND village_id = ?",
+            $params
         );
     }
 
@@ -611,6 +700,10 @@ class DB
 
     public function deleteArmy($userId, $armyId) {
         return $this->execute("DELETE FROM army WHERE userId = ? AND army = ?", [$userId, $armyId]);
+    }
+
+    public function deleteArmyAfterBattle($armyId) {
+        return $this->execute("DELETE FROM army WHERE army = ?", [$armyId]);
     }
 
     public function getArmy($armyId) {
@@ -825,9 +918,11 @@ class DB
     public function getUnitStats($unitTypeId) {
         return $this->query(
             "SELECT
+                type,
                 attack_speed AS attackSpeed,
                 damage,
-                range_attack AS rangeAttack
+                range_attack AS rangeAttack,
+                speed
             FROM unit_types
             WHERE id = ?",
             [$unitTypeId]
@@ -858,16 +953,20 @@ class DB
     public function getBattleObjects($battleId) {
         return $this->queryAll(
             "SELECT
-                id,
-                battle_id AS battleId,
-                object_type AS objectType,
-                type_id AS typeId,
-                original_id AS orirginalId,
-                owner_village_id AS ownerVillageId,
-                x,
-                y,
-                current_hp AS currentHp
-            FROM battle_objects
+                bo.id,
+                bo.battle_id AS battleId,
+                bo.object_type AS objectType,
+                bo.type_id AS typeId,
+                bo.original_id AS originalId,
+                bo.owner_village_id AS ownerVillageId,
+                bo.x,
+                bo.y,
+                bo.current_hp AS currentHp,
+                bo.is_alive AS isAlive,
+                bo.last_attack_time AS lastAttackTime,
+                b.level AS level
+            FROM battle_objects AS bo
+            LEFT JOIN buildings AS b ON bo.original_id = b.id AND bo.object_type = 'BUILDING'
             WHERE battle_id = ?",
             [$battleId]
         );
@@ -929,5 +1028,24 @@ class DB
             "UPDATE battle_objects SET is_alive = 0 WHERE id = ? AND battle_id = ?",
             [$objectId, $battleId]
         );
+    }
+
+    public function deleteBattleObjects($battleId) {
+        return $this->execute("DELETE FROM battle_objects WHERE battle_id = ?", [$battleId]);
+    }
+
+    public function finishBattle($battleId) {
+        return $this->execute(
+            "DELETE FROM battles WHERE id = ?",
+            [$battleId]
+        );
+    }
+
+    public function clearVillageAttackId($villageId) {
+        return $this->execute("UPDATE villages SET attack_id = 0 WHERE id = ?", [$villageId]);
+    }
+
+    public function clearVillageIsAttacked($villageId) {
+        return $this->execute("UPDATE villages SET is_attacked = 0 WHERE id = ?", [$villageId]);
     }
 }

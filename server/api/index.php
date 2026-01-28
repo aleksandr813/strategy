@@ -44,7 +44,6 @@ function result($params) {
             //map
             case 'getMap': return $app->getMap($params); //loop
             //battle
-            case 'takeDamage': return $app->takeDamage($params);
             case 'unitsAttackDistance': return $app->unitsAttackDistance($params); //loop
             case 'getBattle': return $app->getBattle($params); //loop
             case 'updateBattle': return $app->updateBattle($params);
