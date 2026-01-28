@@ -153,7 +153,6 @@ class Battle extends Manager {
             this.attackTarget(selectedUnits, targetUnit);
             return;
         }
-    }
 
         const targetBuilding = this.game.getBuildings().find(b => {
             const [bx, by] = [b.coords[0].x, b.coords[0].y];
