@@ -299,13 +299,13 @@ class Server {
     }
 
     async getBattle(id: number): Promise<TBattleResponse | null> {
-    const hash = this.store.getBattleHash();
-    
-    const battle = await this.request<TBattleResponse>('getBattle', { 
-        hash, 
-        id: id.toString() 
-    });
-    return battle;
+        const hash = this.store.getBattleHash();
+        
+        const battle = await this.request<TBattleResponse>('getBattle', { 
+            hash, 
+            id: id.toString() 
+        });
+        return battle;
     }
 
     async getActiveBattles(): Promise<TActiveBattle | null> {
@@ -314,44 +314,30 @@ class Server {
         return response;
     }
 
-    async updateBattle(battleId: number, units: Unit[], damageToUnits: number[][], damageToBuildings: number[][]): Promise<boolean | null> {
-        const params: { [key: string]: string } = {
-            battleId: battleId.toString()
-        };
+    async updateBattle(
+            battleId: number, 
+            units: Unit[], 
+            damageToUnits: Record<number, number>, 
+            damageToBuildings: Record<number, number>
+        ): Promise<boolean | null> {
+            const params: Record<string, string> = {
+                battleId: battleId.toString()
+            };
 
-        const unitsString = units.map(unit =>
-            `id${unit.id},x${unit.coords.x},y${unit.coords.y}`
-        ).join(';');
-        
-        params.units = unitsString;
+            if (units.length > 0) {
+                params.units = units.map(u => `id${u.id},x${u.coords.x},y${u.coords.y}`).join(';');
+            }
 
-        const damageToUnitsArray: string[] = [];
-        damageToUnits.forEach((damages, attackerId) => {
-            damages.forEach((damage, targetId) => {
-                if (damage > 0) {
-                    damageToUnitsArray.push(`[${attackerId}][${targetId}]=${damage}`);
-                }
+            Object.entries(damageToUnits).forEach(([attId, tarId]) => {
+                params[`damageToUnits[${attId}]`] = tarId.toString();
             });
-        });
-        if (damageToUnitsArray.length > 0) {
-            params.damageToUnits = damageToUnitsArray.join(';');
-        }
 
-        const damageToBuildingsArray: string[] = [];
-        damageToBuildings.forEach((damages, buildingId) => {
-            damages.forEach((damage, targetUnitId) => {
-                if (damage > 0) {
-                    damageToBuildingsArray.push(`[${buildingId}][${targetUnitId}]=${damage}`);
-                }
+            Object.entries(damageToBuildings).forEach(([attId, tarId]) => {
+                params[`damageToBuildings[${attId}]`] = tarId.toString();
             });
-        });
-        if (damageToBuildingsArray.length > 0) {
-            params.damageToBuildings = damageToBuildingsArray.join(';');
-        }
 
-        const response = await this.request<boolean>('updateBattle', params);
-        return response;
-    }
+            return await this.request<boolean>('updateBattle', params);
+        }
 }
 
 export default Server;

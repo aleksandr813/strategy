@@ -49,6 +49,8 @@ export default class Unit {
     private currentTarget: IAttackable | null = null;
     private isAttacking: boolean = false;
     
+    public onChanged?: (unitId: number) => void;
+    
     constructor(data: TUnit, game: Game, easystar: EasyStar.js, side: UnitSide) {
         this.id = data.id;
         this.typeId = data.typeId as UnitTypeID;
@@ -252,6 +254,10 @@ export default class Unit {
         this.hp -= amount;
         if (this.hp < 0) {
             this.hp = 0;
+        }
+        
+        if (this.onChanged) {
+            this.onChanged(this.id);
         }
     }
 
