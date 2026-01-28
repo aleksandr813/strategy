@@ -199,10 +199,7 @@ class Battle {
         }
 
         if ($townHallDestroyed) {
-            $this->processBattleObject($battle);
-            $this->db->deleteBattleObjects($battle->id);
-            $this->db->finishBattle($battle->id);
-            $this->resetVillageAttackFlags($battle);
+            $this->finalBattle($battle);
             return [
                 "winner" => $battle->attackerVillageId,
                 "prize" => $this->calculatePrize($battle, 'attacker')
@@ -210,10 +207,7 @@ class Battle {
         }
 
         if (!$townHallDestroyed && $livingAttackUnits == 0) {
-            $this->processBattleObject($battle);
-            $this->db->deleteBattleObjects($battle->id);
-            $this->db->finishBattle($battle->id);
-            $this->resetVillageAttackFlags($battle);
+            $this->finalBattle($battle);
             return [
                 'winner' => $battle->defenderVillageId
             ];
@@ -322,22 +316,33 @@ class Battle {
         $deadAttackerUnits = [];
         $deadDefenderUnits = [];
 
+        $buildings = [];
+        $ruins = [];
+
         foreach($objects as $object) {
             if ($object['objectType'] == 'UNIT') {
-                if ($object['currentHp'] <= 0) {
-                    if ($object['ownerVillageId'] == $battle->attackerVillageId) {
-                        $deadAttackerUnits[] = $object;
-                    } else {
-                        $deadDefenderUnits[] = $object;
-                    }
+                if ($object['ownerVillageId'] == $battle->attackerVillageId) {
+                    $aliveAttackerUnits[] = $object;
                 } else {
-                    if ($object['ownerVillageId'] == $battle->attackerVillageId) {
-                        $aliveAttackerUnits[] = $object;
-                    } else {
-                        $aliveDefenderUnits[] = $object;
-                    } 
+                    $aliveDefenderUnits[] = $object;
+                } 
+            }
+
+            if ($object['objectType'] == 'CORPSE') {
+                if ($object['ownerVillageId'] == $battle->attackerVillageId) {
+                    $deadAttackerUnits[] = $object;
+                } else {
+                    $deadDefenderUnits[] = $object;
                 }
-            } 
+            }
+
+            if ($object['objectType'] == 'BUILDING') {
+                $buildings[] = $object;
+            }
+
+            if ($object['objectType'] == 'RUIN') {
+                $ruins[] = $object;
+            }
         }
 
         if (!empty($deadAttackerUnits)) {
@@ -354,6 +359,14 @@ class Battle {
 
         if (!empty($aliveDefenderUnits)) {
             $this->returnDefenderUnitsInVillage($battle, $battle->defenderVillageId, $aliveDefenderUnits);
+        }
+
+        if (!empty($buildings)) {
+            $this->buildingSynchronization($battle, $buildings);
+        }
+
+        if (!empty($ruins)) {
+            $this->ruinSynchronization($battle, $ruins);
         }
     }
 
@@ -439,7 +452,46 @@ class Battle {
         return true;
     }
 
-    private function resetVillageAttackFlags($battle) {
+    private function buildingSynchronization($battle, $buildings) {
+        $buildingsToUpdateHp = [];
+
+        foreach($buildings as $building) {
+            $buildingsToUpdateHp[] = [
+                'id' => $building['originalId'],
+                'hp' => $building['currentHp']
+            ];
+        }
+
+        if (!empty($buildingsToUpdateHp)) {
+            $this->db->updateBuildingsHP($buildingsToUpdateHp, $battle->defenderVillageId);
+        } 
+
+        return true;
+    }
+
+    private function ruinSynchronization($battle, $ruins) {
+        $buildingToRuinIds = [];
+        $ruinsToUpdateHp = [];
+
+        foreach($ruins as $ruin) {
+            $buildingToRuinIds[] = $ruin['originalId'];
+            $ruinsToUpdateHp[] = [
+                'id' => $ruin['originalId'],
+                'hp' => 0
+            ];
+        }
+
+        if (!empty($buildingToRuinIds)) {
+            $this->db->destroyBuildings($buildingToRuinIds, $battle->defenderVillageId);
+            $this->db->updateBuildingsHP($ruinsToUpdateHp, $battle->defenderVillageId);
+        }
+    }
+
+    private function finalBattle($battle) {
+        $this->processBattleObject($battle);
+        $this->db->deleteBattleObjects($battle->id);
+        $this->db->finishBattle($battle->id);
+
         $this->db->clearVillageAttackId($battle->defenderVillageId);
         $this->db->clearVillageIsAttacked($battle->defenderVillageId);
     }

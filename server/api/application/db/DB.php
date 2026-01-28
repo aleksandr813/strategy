@@ -275,6 +275,29 @@ class DB
         );
     }
 
+    public function updateBuildingsHP($buildings, $villageId) {
+        $hpArr = [];
+        $validBuildings = [];
+
+        foreach ($buildings as $building) {
+            $buildingId = (int) $building['id'];
+            $hp = (int) $building['hp'];
+
+            $hpArr[] = "WHEN $buildingId THEN $hp";
+            $validBuildings[] = $buildingId;
+        }
+
+        $buildingsStr = implode(',', $validBuildings);
+        $hpStr = implode(' ', $hpArr);
+
+        return $this->execute(
+            "UPDATE buildings SET
+            current_hp = CASE id $hpStr END
+            WHERE id IN ($buildingsStr) AND village_id = ?",
+            [$villageId]
+        );
+    }
+
     public function deleteUnit($unitId, $villageId)
     {
         return $this->execute(
@@ -542,6 +565,17 @@ class DB
             "DELETE FROM buildings
             WHERE id = ? AND village_id = ?",
             [$buildingId, $villageId]
+        );
+    }
+
+    public function destroyBuildings($buildingIds, $villageId) {
+        $placeholder = implode(',', array_fill(0, count($buildingIds), '?'));
+
+        $params = array_merge($buildingIds, [$villageId]);
+
+        return $this->execute(
+            "UPDATE buildings SET is_ruin = 1 WHERE id IN ($placeholder) AND village_id = ?",
+            $params
         );
     }
 
