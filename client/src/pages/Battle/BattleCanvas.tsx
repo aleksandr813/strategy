@@ -107,6 +107,21 @@ const BattleCanvas: React.FC = () => {
                 canvas.oval(unit.coords.x+0.15, unit.coords.y+0.8, 0.75, 0.3, 'rgba(0, 0, 0, 0.5)', 3, 'rgba(255, 0, 0, 1)');
             }
 
+            // Индикатор цели
+            if (unit.hasTarget()) {
+                canvas.contextV.strokeStyle = 'rgba(255, 255, 0, 0.8)';
+                canvas.contextV.lineWidth = 2;
+                canvas.contextV.beginPath();
+                canvas.contextV.arc(
+                    canvas.xs(unit.coords.x + 0.5),
+                    canvas.ys(unit.coords.y + 0.5),
+                    canvas.dec(0.6),
+                    0,
+                    Math.PI * 2
+                );
+                canvas.contextV.stroke();
+            }
+
             canvas.spriteFull(
                 spritesImage, 
                 unit.coords.x, 
@@ -170,8 +185,6 @@ const BattleCanvas: React.FC = () => {
         const { units, buildings } = battle.getScene();
 
         allocation.update(x, y);
-        //const matrix = battle.getBattleMatrix(units, buildings);
-
 
         if (isMiddleMouseDragging && middleMouseStartScreenPosition && windowStartPosition && canvas && screenX !== undefined && screenY !== undefined) {
             const deltaX = (screenX - middleMouseStartScreenPosition.x) / canvas.WIDTH * WINDOW.WIDTH;
@@ -192,10 +205,33 @@ const BattleCanvas: React.FC = () => {
         const tileX = Math.floor(x);
         const tileY = Math.floor(y);
 
-        //console.log("X: ", tileX, "\nY: ", tileY);
         const { units, buildings } = battle.getScene();
+        
+        // Сначала проверяем клик по целям (юниты и здания)
+        battle.handleClick(tileX, tileY);
+        
+        // Если клик был не по цели, то двигаем юниты
+        const selectedUnits = units.filter(u => u.isSelected && u.isMyUnit());
+        if (selectedUnits.length > 0) {
+            const targetUnit = units.find(u => 
+                u.isEnemy() && 
+                u.coords.x === tileX && 
+                u.coords.y === tileY
+            );
+            
+            const targetBuilding = buildings.find(b => {
+                const [bx, by] = [b.coords[0].x, b.coords[0].y];
+                if (b.size === 1) {
+                    return tileX === bx && tileY === by;
+                }
+                return tileX >= bx && tileX < bx + 2 && tileY >= by && tileY < by + 2;
+            });
 
-        battle.moveUnits({ x: tileX, y: tileY }, units, buildings, game['server']);
+            // Если клик не по цели, то просто перемещаем
+            if (!targetUnit && !targetBuilding) {
+                battle.moveUnits({ x: tileX, y: tileY }, units, buildings, game['server']);
+            }
+        }
     };
 
     const mouseUp = (x: number, y: number) => {

@@ -108,7 +108,7 @@ const Login: React.FC<IBasePage> = (props: IBasePage) => {
             <div className="background-characters right"></div>
 
             <div className='login-content'>
-                <h1 className="title">STRATEGY</h1>
+                <h1 className="title">КОЛХОЗНЫЕ<br/>ВОЙНЫ</h1>
                 <div className="login-form">
                     <label>Логин</label>
                     <input ref={loginRef} id="Test-input-login" onKeyDown={handleKeyDown} />

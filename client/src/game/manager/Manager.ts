@@ -14,8 +14,8 @@ const { GRID_HEIGHT, GRID_WIDTH, MOVE_INTERVAL } = GAMECONFIG;
 class Manager {
     protected game: Game;
     protected allocation: Allocation;
-    private movementIntervalId: NodeJS.Timeout | null = null;
-    private currentServer: Server | null = null;
+    protected movementIntervalId: NodeJS.Timeout | null = null;
+    protected currentServer: Server | null = null;
     
     constructor(game: Game) {
         this.game = game;
@@ -37,7 +37,7 @@ class Manager {
     }
 
 
-    private isValidDestination(destination: TPoint): boolean {
+    protected isValidDestination(destination: TPoint): boolean {
         return destination.x >= 0 && 
                destination.x < GRID_WIDTH && 
                destination.y >= 0 && 
@@ -72,7 +72,7 @@ class Manager {
         }
     }
 
-    private startMovementCycle() {
+    protected startMovementCycle() {
         this.movementIntervalId = setInterval(() => {
             const movingUnits: Unit[] = [];
             let anyUnitMoving = false;
@@ -85,8 +85,15 @@ class Manager {
                     
                     if (unit.movementAccumulator >= 1) {
                         unit.movementAccumulator -= 1;
+                        
+                        const oldX = unit.coords.x;
+                        const oldY = unit.coords.y;
+                        
                         const stillMoving = unit.makeStep();
-                        if (stillMoving) {
+                        
+                        const hasMoved = oldX !== unit.coords.x || oldY !== unit.coords.y;
+                        
+                        if (hasMoved) {
                             movingUnits.push(unit);
                         }
                     }
