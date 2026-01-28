@@ -58,6 +58,13 @@ CREATE TABLE `battles` (
   `hash` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Дамп данных таблицы `battles`
+--
+
+INSERT INTO `battles` (`id`, `army_attack_id`, `attacker_village_id`, `defender_village_id`, `attacker_last_online`, `defender_last_online`, `hash`) VALUES
+(69, 141, 11, 9, '2026-01-26 10:01:41', '2026-01-26 10:01:41', '47f46943d9c9d204eec5d740c5bd600e');
+
 -- --------------------------------------------------------
 
 --
@@ -77,6 +84,38 @@ CREATE TABLE `battle_objects` (
   `is_alive` tinyint(1) NOT NULL DEFAULT '1',
   `last_attack_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `battle_objects`
+--
+
+INSERT INTO `battle_objects` (`id`, `battle_id`, `object_type`, `type_id`, `original_id`, `owner_village_id`, `x`, `y`, `current_hp`, `is_alive`, `last_attack_time`) VALUES
+(918, 69, 'UNIT', 3, 17, 9, 24, 19, 90, 1, NULL),
+(919, 69, 'UNIT', 1, 18, 9, 23, 17, 100, 1, NULL),
+(920, 69, 'UNIT', 4, 19, 9, 23, 18, 300, 1, NULL),
+(921, 69, 'UNIT', 5, 20, 9, 25, 19, 400, 1, NULL),
+(922, 69, 'UNIT', 6, 21, 9, 23, 19, 70, 1, NULL),
+(923, 69, 'UNIT', 7, 22, 9, 24, 17, 30, 1, NULL),
+(924, 69, 'UNIT', 2, 28, 11, 15, 19, 60, 1, '2026-01-27 09:11:09'),
+(925, 69, 'CORPSE', 3, 29, 11, 6, 7, 0, 0, NULL),
+(926, 69, 'BUILDING', 1, 13, 9, 15, 15, 100, 1, NULL),
+(927, 69, 'BUILDING', 2, 14, 9, 5, 5, 100, 1, NULL),
+(928, 69, 'BUILDING', 3, 15, 9, 22, 12, 500, 1, NULL),
+(929, 69, 'RUIN', 4, 16, 9, 29, 12, 0, 0, NULL),
+(930, 69, 'BUILDING', 4, 17, 9, 29, 13, 200, 1, NULL),
+(931, 69, 'BUILDING', 4, 18, 9, 29, 14, 200, 1, NULL),
+(932, 69, 'BUILDING', 4, 19, 9, 29, 15, 200, 1, NULL),
+(933, 69, 'BUILDING', 5, 20, 9, 27, 13, 300, 1, '2026-01-27 09:11:09'),
+(934, 69, 'BUILDING', 4, 21, 9, 29, 16, 200, 1, NULL),
+(935, 69, 'BUILDING', 5, 22, 9, 25, 17, 300, 1, NULL),
+(936, 69, 'BUILDING', 4, 23, 9, 29, 17, 200, 1, NULL),
+(937, 69, 'BUILDING', 4, 24, 9, 28, 18, 200, 1, NULL),
+(938, 69, 'BUILDING', 3, 25, 9, 19, 13, 500, 1, NULL),
+(939, 69, 'BUILDING', 4, 26, 9, 28, 17, 200, 1, NULL),
+(940, 69, 'BUILDING', 4, 27, 9, 28, 19, 200, 1, NULL),
+(941, 69, 'BUILDING', 4, 28, 9, 27, 19, 200, 1, NULL),
+(942, 69, 'BUILDING', 4, 29, 9, 26, 19, 200, 1, NULL),
+(943, 69, 'BUILDING', 5, 30, 9, 27, 15, 300, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -336,7 +375,8 @@ CREATE TABLE `units` (
   `level` int NOT NULL DEFAULT '1',
   `current_hp` int NOT NULL,
   `on_a_crusade` tinyint(1) NOT NULL DEFAULT '0',
-  `is_enemy` tinyint(1) NOT NULL DEFAULT '0'
+  `is_enemy` tinyint(1) NOT NULL DEFAULT '0',
+  `last_attack_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --

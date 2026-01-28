@@ -97,6 +97,13 @@ class Battle extends Manager {
         await this.loadUnitsFromData(battleData);
         
         this.initializePathfinding();
+
+        const target = this.findNearestEnemyFromData(battleData);
+    
+        if (target) {
+            console.log(`Ближайшая цель найдена в координатах: x:${target.x}, y:${target.y}`);
+        }
+
     }
     
     private initializePathfinding(): void {
@@ -110,6 +117,44 @@ class Battle extends Manager {
         this.easyStar.setAcceptableTiles([0, 2]);
         console.log('Pathfinding initialized with matrix:', matrix.length, 'x', matrix[0]?.length);
     }
+
+    public findNearestEnemyFromData(battleData: any) {
+        const { alliedUnits, enemyUnits, buildings } = battleData;
+
+        if (!alliedUnits || alliedUnits.length === 0) return null;
+
+        const primaryUnit = alliedUnits[0];
+        const ux = Number(primaryUnit.x);
+        const uy = Number(primaryUnit.y);
+
+        const targets = [...(enemyUnits || []), ...(buildings || [])];
+
+        if (targets.length === 0) return null;
+
+        let nearestTarget = null;
+        let minDistanceSq = Infinity;
+
+        for (const target of targets) {
+            const tx = Number(target.x);
+            const ty = Number(target.y);
+
+            const dx = ux - tx;
+            const dy = uy - ty;
+            const distSq = dx * dx + dy * dy;
+
+            if (distSq < minDistanceSq) {
+                minDistanceSq = distSq;
+                nearestTarget = {
+                    id: target.id,
+                    x: tx,
+                    y: ty,
+                    type: target.typeId ? 'building' : 'unit'
+                };
+            }
+        }
+
+        return nearestTarget;
+    }   
 
 }
 

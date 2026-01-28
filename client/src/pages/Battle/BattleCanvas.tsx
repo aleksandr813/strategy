@@ -93,6 +93,20 @@ const BattleCanvas: React.FC = () => {
         units.forEach((unit) => {
             const currentSpriteId = unit.getCurrentSpriteId();
             const spriteData = getSprite(currentSpriteId); 
+
+            let isSelected = unit.isSelected && unit.isMyUnit();
+            if (allocation.isSelectingStatus) {
+                isSelected = allocation.isUnitInSelection(unit);
+            }
+                
+            if (isSelected) {
+                canvas.oval(unit.coords.x+0.15, unit.coords.y+0.8, 0.75, 0.3, 'rgba(0, 0, 0, 0.5)', 3, 'rgba(34, 255, 0, 1)');
+            }
+
+            if (!unit.isMyUnit()) {
+                canvas.oval(unit.coords.x+0.15, unit.coords.y+0.8, 0.75, 0.3, 'rgba(0, 0, 0, 0.5)', 3, 'rgba(255, 0, 0, 1)');
+            }
+
             canvas.spriteFull(
                 spritesImage, 
                 unit.coords.x, 
@@ -102,14 +116,7 @@ const BattleCanvas: React.FC = () => {
                 spriteData[2]
             );
             
-            let isSelected = unit.isSelected && unit.isMyUnit();
-            if (allocation.isSelectingStatus) {
-                isSelected = allocation.isUnitInSelection(unit);
-            }
-                
-            if (isSelected) {
-                drawRect(canvas, unit.coords.x, unit.coords.y, 1, 1, 'rgba(0, 255, 0, 0.5)');
-            }
+            
 
             if (unit.hp < unit.maxHp) {
                 drawHPBar(canvas, unit.coords.x, unit.coords.y - 0.5, 0.8, 0.1, unit.hp, unit.maxHp);
@@ -131,8 +138,10 @@ const BattleCanvas: React.FC = () => {
         if (!allocation.isSelectingStatus) return;
         const rect = allocation.getSelectionRect();
         if (rect) {
-            canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.5)";
+            canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.2)";
             canvas.contextV.fillRect(canvas.xs(rect.x), canvas.ys(rect.y), canvas.dec(rect.width), canvas.dec(rect.height));
+            canvas.contextV.strokeStyle = "rgba(0, 255, 0, 1)";
+            canvas.contextV.strokeRect(canvas.xs(rect.x), canvas.ys(rect.y), canvas.dec(rect.width), canvas.dec(rect.height));
         }
     };
 
