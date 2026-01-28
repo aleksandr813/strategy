@@ -1002,9 +1002,8 @@
 | login | VARCHAR(50) | UNIQUE, NOT NULL | Логин пользователя |
 | password | VARCHAR(255) | NOT NULL | Хеш пароля |
 | name | VARCHAR(100) | NOT NULL | Отображаемое имя |
-| token | VARCHAR(255) | UNIQUE | Токен авторизации |
+| token | VARCHAR(255) | DEFAULT NULL | Токен авторизации |
 | money | INT | DEFAULT 100 | Баланс монет |
-| rating | INT | DEFAULT 0 | Рейтинг игрока |
 
 **Таблица `villages`**
 
@@ -1014,26 +1013,30 @@
 | user_id | INT | FOREIGN KEY (users.id) | Владелец деревни |
 | x | INT | NOT NULL | Координата X на карте |
 | y | INT | NOT NULL | Координата Y на карте |
-| last_income_datetime | DATETIME | DEFAULT NOW() | Время последнего сбора дохода |
-| attack_id | INT | Идентификатор атакующего |
-
-**Таблица `game`**
-
-| Поле | Тип | Ограничения | Описание |
-|------|-----|-------------|----------|
-| id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
-| name | VARCHAR(100) | NOT NULL | Имя поля |
-| value | TEXT | NOT NULL | Значение поля |
+| last_income_datetime | DATETIME | DEFAULT CURRENT_TIMESTAMP | Время последнего сбора дохода |
+| attack_id | INT | DEFAULT 0 | Идентификатор атакующего |
+| is_attacked | TINYINT(1) | DEFAULT 0 | Флаг атаки на деревню |
 
 **Таблица `building_types`**
 
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
-| id | INT | PRIMARY KEY | Уникальный идентификатор |
-| type | VARCHAR(100) | NOT NULL | Тип здания: 'mine', 'ratusha', 'tower', 'wall' |
-| hp | INT | DEFAULT 1 | Здоровье здания |
-| price | INT | NOT NULL | Стоимость строительства |
-| unlock_level | INT | NOT NULL | Требуемый уровень для покупки здания |
+| id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
+| type | VARCHAR(100) | NOT NULL | Тип здания |
+| hp_level_1 | INT | NOT NULL | Здоровье на уровне 1 |
+| hp_level_2 | INT | NOT NULL | Здоровье на уровне 2 |
+| hp_level_3 | INT | NOT NULL | Здоровье на уровне 3 |
+| price_level_1 | INT | NOT NULL | Стоимость на уровне 1 |
+| price_level_2 | INT | NOT NULL | Стоимость на уровне 2 |
+| price_level_3 | INT | NOT NULL | Стоимость на уровне 3 |
+| range_attack_level_1 | INT | NOT NULL | Дальность атаки на уровне 1 |
+| range_attack_level_2 | INT | NOT NULL | Дальность атаки на уровне 2 |
+| range_attack_level_3 | INT | NOT NULL | Дальность атаки на уровне 3 |
+| damage_level_1 | INT | NOT NULL | Урон на уровне 1 |
+| damage_level_2 | INT | NOT NULL | Урон на уровне 2 |
+| damage_level_3 | INT | NOT NULL | Урон на уровне 3 |
+| unlock_level | INT | NOT NULL | Уровень разблокировки |
+| attack_speed | FLOAT | DEFAULT 1 | Скорость атаки |
 
 **Таблица `buildings`**
 
@@ -1046,20 +1049,23 @@
 | y | INT | NOT NULL | Координата Y |
 | level | INT | DEFAULT 1 | Уровень здания |
 | current_hp | INT | NOT NULL | Текущее здоровье |
+| is_ruin | TINYINT(1) | DEFAULT 0 | Флаг разрушения |
+| last_attack_time | DATETIME | DEFAULT NULL | Время последней атаки |
 
 **Таблица `unit_types`**
 
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
-| id | INT | PRIMARY KEY | Уникальный идентификатор |
+| id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
 | type | VARCHAR(100) | NOT NULL | Тип юнита |
-| name | VARCHAR(100) | NOT NULL | Название юнита |
 | hp | INT | DEFAULT 1 | Здоровье юнита |
 | price | INT | NOT NULL | Стоимость найма |
-| damage | INT | NOT NULL | Урон |
-| speed | FLOAT | NOT NULL | Скорость перемещения |
-| range | INT | DEFAULT 1 | Дальность атаки |
-| unlock_level | INT | DEFAULT 1 | Уровень разблокировки |
+| damage | INT | DEFAULT NULL | Урон |
+| speed | DECIMAL(3,1) | DEFAULT NULL | Скорость перемещения |
+| range_attack | INT | DEFAULT NULL | Дальность атаки |
+| attack_speed | FLOAT | DEFAULT 1 | Скорость атаки |
+| unit_type | VARCHAR(20) | DEFAULT NULL | Категория юнита |
+| unlock_level | INT | DEFAULT NULL | Уровень разблокировки |
 
 **Таблица `units`**
 
@@ -1068,12 +1074,13 @@
 | id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
 | type_id | INT | FOREIGN KEY (unit_types.id) | Тип юнита |
 | village_id | INT | FOREIGN KEY (villages.id) | Деревня владельца |
-| x | INT | NULL | Координата X (если размещены) |
-| y | INT | NULL | Координата Y (если размещены) |
+| x | INT | NOT NULL | Координата X |
+| y | INT | NOT NULL | Координата Y |
 | level | INT | DEFAULT 1 | Уровень юнита |
 | current_hp | INT | NOT NULL | Текущее здоровье |
-| on_a_crusade | TINYINT(1) | DEFAULT '0' | NOT NULL | Указывает в походе юнит или нет (0 - нет, 1 - да) |
-| is_enemy | TINYINT | DEFAULT '0' | NOT NULL | Указывает союзный юнит или нет (0 - нет, 1 - да) |
+| on_a_crusade | TINYINT(1) | DEFAULT 0 | Флаг участия в походе |
+| is_enemy | TINYINT(1) | DEFAULT 0 | Флаг вражеского юнита |
+| last_attack_time | DATETIME | DEFAULT NULL | Время последней атаки |
 
 **Таблица `messages`**
 
@@ -1082,41 +1089,60 @@
 | id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
 | user_id | INT | FOREIGN KEY (users.id) | Автор сообщения |
 | message | TEXT | NOT NULL | Текст сообщения |
-| message_type | ENUM | 'global', 'private' | Тип сообщения |
-| target_user_id | INT | NULL | Получатель (для личных) |
-| created | TIMESTAMP | DEFAULT NOW() | Дата отправки |
-| hash | TEXT | NULL | Хеш для отслеживания прочитанных |
-
-**Таблица `battles`**
-
-| Поле | Тип | Ограничения | Описание |
-|------|-----|-------------|----------|
-| id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
-| attacker_id | INT | FOREIGN KEY (users.id) | Атакующий игрок |
-| defender_id | INT | FOREIGN KEY (users.id) | Защищающийся игрок |
-| result | ENUM | 'attacker_win', 'defender_win' | Результат битвы |
-| loot | JSON | DEFAULT '{"gold": 0}' | Добытые ресурсы |
-| attacker_losses | JSON | NOT NULL | Потери атакующего |
-| defender_losses | JSON | NOT NULL | Потери защищающегося |
-| started_at | TIMESTAMP | NOT NULL | Начало битвы |
-| ended_at | TIMESTAMP | NULL | Окончание битвы |
+| created | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Дата отправки |
 
 **Таблица `army`**
 
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
 | army | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
-| userId | INT | FOREIGN KEY (users.id) | Атакующий |
-| startX | INT | NOT NULL | Координата старта пути по x |
-| startY | INT | NOT NULL | Координата старта пути по y |
+| userId | INT | FOREIGN KEY (users.id) | ID пользователя-атакующего |
+| startX | INT | NOT NULL | Координата старта пути по X |
+| startY | INT | NOT NULL | Координата старта пути по Y |
 | startTime | DATETIME | NOT NULL | Время начала пути |
-| arrivalTime | DATETIME | NOT NULL | Время до конца пути |
-| targetX | INT | NOT NULL | Координата конца пути по y |
-| targetY | INT | NOT NULL | Координата конца пути по y |
-| attackedId | INT | FOREIGN KEY (villages.id) | Целевая деревня |
+| arrivalTime | DATETIME | NOT NULL | Время прибытия |
+| targetX | INT | NOT NULL | Координата цели по X |
+| targetY | INT | NOT NULL | Координата цели по Y |
+| attackId | INT | NOT NULL | ID целевой деревни |
+| units | TEXT | NOT NULL | Массив атакующих юнитов (JSON) |
 | speed | FLOAT | NOT NULL | Скорость армии |
-| units | TEXT | NOT NULL | Массив атакующих юнитов |
+| in_battle | TINYINT(1) | DEFAULT 0 | Флаг участия в битве |
 
+**Таблица `battles`**
+
+| Поле | Тип | Ограничения | Описание |
+|------|-----|-------------|----------|
+| id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
+| army_attack_id | INT | NOT NULL | ID атакующей армии |
+| attacker_village_id | INT | NOT NULL | ID атакующей деревни |
+| defender_village_id | INT | NOT NULL | ID защищающейся деревни |
+| attacker_last_online | DATETIME | NOT NULL | Время последней активности атакующего |
+| defender_last_online | DATETIME | NOT NULL | Время последней активности защитника |
+| hash | TEXT | NOT NULL | Хеш состояния битвы |
+
+**Таблица `battle_objects`**
+
+| Поле | Тип | Ограничения | Описание |
+|------|-----|-------------|----------|
+| id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
+| battle_id | INT | FOREIGN KEY (battles.id) | ID битвы |
+| object_type | ENUM('UNIT','BUILDING','RUIN','CORPSE') | NOT NULL | Тип объекта |
+| type_id | INT | NOT NULL | ID типа объекта |
+| original_id | INT | NOT NULL | ID из исходной таблицы |
+| owner_village_id | INT | NOT NULL | ID деревни владельца |
+| x | INT | NOT NULL | Координата X на карте |
+| y | INT | NOT NULL | Координата Y на карте |
+| current_hp | INT | NOT NULL | Текущее здоровье |
+| is_alive | TINYINT(1) | DEFAULT 1 | Флаг активности объекта |
+| last_attack_time | DATETIME | DEFAULT NULL | Время последней атаки |
+
+**Таблица `game`**
+
+| Поле | Тип | Ограничения | Описание |
+|------|-----|-------------|----------|
+| id | INT | PRIMARY KEY, AUTO_INCREMENT | Уникальный идентификатор |
+| name | VARCHAR(100) | NOT NULL | Имя параметра |
+| value | TEXT | NOT NULL | Значение параметра |
 
 **Таблица `hashes`**
 
@@ -1136,34 +1162,55 @@
 
 **Критические индексы для производительности:**
 
-- Пользователи и авторизация:
-  - CREATE INDEX idx_users_login ON users(login);
-  - CREATE INDEX idx_users_token ON users(token);
-  - CREATE INDEX idx_users_rating ON users(rating DESC);
+**Индексы для таблицы `users`:**
+- CREATE INDEX idx_users_login ON users(login);
+- CREATE INDEX idx_users_token ON users(token);
 
-- Деревни и геопозиция:
-  - CREATE INDEX idx_villages_user_id ON villages(user_id);
-  - CREATE INDEX idx_villages_coordinates ON villages(x, y);
-  - CREATE INDEX idx_villages_protection ON villages(protection_end) WHERE protection_end IS NOT NULL;
+**Индексы для таблицы `villages`:**
+- CREATE INDEX idx_villages_user_id ON villages(user_id);
+- CREATE INDEX idx_villages_coordinates ON villages(x, y);
+- CREATE INDEX idx_villages_attacked ON villages(is_attacked) WHERE is_attacked = 1;
 
-- Здания и юниты:
-  - CREATE INDEX idx_buildings_village_id ON buildings(village_id);
-  - CREATE INDEX idx_buildings_type_level ON buildings(type_id, level);
-  - CREATE UNIQUE INDEX idx_buildings_position ON buildings(village_id, x, y);
-  - CREATE INDEX idx_units_village_id ON units(village_id);
-  - CREATE INDEX idx_units_type_count ON units(type_id, count) WHERE count > 0;
+**Индексы для таблицы `buildings`:**
+- CREATE INDEX idx_buildings_village_id ON buildings(village_id);
+- CREATE INDEX idx_buildings_type_level ON buildings(type_id, level);
+- CREATE UNIQUE INDEX idx_buildings_position ON buildings(village_id, x, y);
+- CREATE INDEX idx_buildings_ruin ON buildings(is_ruin) WHERE is_ruin = 1;
 
-- Сообщения и чат:
-  - CREATE INDEX idx_messages_created ON messages(created DESC);
-  - CREATE INDEX idx_messages_user_type ON messages(user_id, message_type);
-  - CREATE INDEX idx_messages_target_hash ON messages(target_user_id, hash) WHERE target_user_id IS NOT NULL;
+**Индексы для таблицы `units`:**
+- CREATE INDEX idx_units_village_id ON units(village_id);
+- CREATE INDEX idx_units_type_id ON units(type_id);
+- CREATE INDEX idx_units_crusade ON units(on_a_crusade) WHERE on_a_crusade = 1;
+- CREATE INDEX idx_units_enemy ON units(is_enemy) WHERE is_enemy = 1;
 
-- Боевая система:
-  - CREATE INDEX idx_battles_attacker_defender ON battles(attacker_id, defender_id);
-  - CREATE INDEX idx_battles_started_ended ON battles(started_at, ended_at) WHERE ended_at IS NOT NULL;
-  - CREATE INDEX idx_attacks_status_time ON attacks(status, arrival_time);
-  - CREATE INDEX idx_attacks_attacker_target ON attacks(attacker_id, target_village_id);
+**Индексы для таблицы `messages`:**
+- CREATE INDEX idx_messages_created ON messages(created DESC);
+- CREATE INDEX idx_messages_user_id ON messages(user_id);
 
+**Индексы для таблицы `army`:**
+- CREATE INDEX idx_army_userId ON army(userId);
+- CREATE INDEX idx_army_arrivalTime ON army(arrivalTime);
+- CREATE INDEX idx_army_in_battle ON army(in_battle) WHERE in_battle = 1;
+- CREATE INDEX idx_army_attackId ON army(attackId);
+
+**Индексы для таблицы `battles`:**
+- CREATE INDEX idx_battles_attacker ON battles(attacker_village_id);
+- CREATE INDEX idx_battles_defender ON battles(defender_village_id);
+- CREATE INDEX idx_battles_army ON battles(army_attack_id);
+- CREATE INDEX idx_battles_hash ON battles(hash(32));
+
+**Индексы для таблицы `battle_objects`:**
+- CREATE INDEX idx_battle_objects_battle ON battle_objects(battle_id);
+- CREATE INDEX idx_battle_objects_alive ON battle_objects(is_alive) WHERE is_alive = 1;
+- CREATE INDEX idx_battle_objects_owner ON battle_objects(owner_village_id);
+- CREATE INDEX idx_battle_objects_type ON battle_objects(object_type, type_id);
+
+**Индексы для таблицы `building_types`:**
+- CREATE INDEX idx_building_types_unlock ON building_types(unlock_level);
+
+**Индексы для таблицы `unit_types`:**
+- CREATE INDEX idx_unit_types_unlock ON unit_types(unlock_level);
+- CREATE INDEX idx_unit_types_unit_type ON unit_types(unit_type);
 **Стратегии оптимизации:**
 
 1. **Партиционирование для быстрорастущих таблиц:**
@@ -1183,59 +1230,74 @@
 ├─────────────────┤      ├─────────────────┤      ├─────────────────┤
 │ id (PK)         │◄─────┤ id (PK)         │      │ id (PK)         │
 │ login (UQ)      │      │ user_id (FK)    │      │ type            │
-│ password        │      │ x, y            │      │ hp              │
-│ name            │      │ last_income_    │      │ price           │
-│ token (UQ)      │      │ datetime        │      │ unlock_level    │
-│ money           │      │ attack_id       │      └─────────────────┘
-└─────────────────┘      └─────────────────┘              │
-       │                            │                     │
-       │                            ▼                     ▼
-       │                   ┌─────────────────┐    ┌─────────────────┐
-       ▼                   │    buildings    │    │   unit_types    │
-┌─────────────────┐        ├─────────────────┤    ├─────────────────┤
-│    messages     │        │ id (PK)         │    │ id (PK)         │
-├─────────────────┤        │ type_id (FK)    │    │ type            │
-│ id (PK)         │        │ village_id (FK) │    │ hp              │
-│ user_id (FK)    │        │ x, y            │    │ price           │
-│ message         │        │ level           │    │ damage          │
-│ created         │        │ current_hp      │    │ speed           │
-└─────────────────┘        └─────────────────┘    │ range_attack    │
-       │                            │             │ unit_type       │
-       │                            │             │ unlock_level    │
-       │                            ▼             └─────────────────┘
-       │                    ┌─────────────────┐            │
-       │                    │      units      │            │
-       │                    ├─────────────────┤            │
-       │                    │ id (PK)         │            ▼
-       │                    │ type_id (FK)    │    ┌─────────────────┐
-       │                    │ village_id (FK) │    │      army       │
-       │                    │ x, y            │    ├─────────────────┤
-       │                    │ level           │    │ army (PK)       │
-       │                    │ current_hp      │    │ userId (FK)     │
-       │                    │ on_a_crusade    │    │ startX, startY  │
-       │                    │ is_enemy        │    │ startTime       │
-       │                    └─────────────────┘    │ arrivalTime     │
-       │                                           │ targetX,        |
-       |                                           | targetY         │
-       │                                           │ attackId        │
-       │                                           │ units           │
-       │                                           │ speed           │
-       │                                           └─────────────────┘
-       │                                                    │
-       │                                          ┌─────────────────┐
-       │                                          │      game       │
-       │                                          ├─────────────────┤
-       │                                          │ id (PK)         │
-       │                                          │ name            │
-       │                                          │ value           │
+│ password        │      │ x, y            │      │ hp_level_1      │
+│ name            │      │ last_income     │      │ hp_level_2      │
+│ token           │      │ attack_id       │      │ hp_level_3      │
+│ money           │      │ is_attacked     │      │ price_level_1   │
+└─────────────────┘      └─────────────────┘      │ price_level_2   │
+       │                            │             │ price_level_3   │
+       │                            ▼             │ ...             │
+       │                   ┌─────────────────┐    └─────────────────┘
+       ▼                   │    buildings    │            │
+┌─────────────────┐        ├─────────────────┤            │
+│    messages     │        │ id (PK)         │            ▼
+├─────────────────┤        │ type_id (FK)    │    ┌─────────────────┐
+│ id (PK)         │        │ village_id (FK) │    │   unit_types    │
+│ user_id (FK)    │        │ x, y            │    ├─────────────────┤
+│ message         │        │ level           │    │ id (PK)         │
+│ created         │        │ current_hp      │    │ type            │
+└─────────────────┘        │ is_ruin         │    │ hp              │
+       │                   │ last_attack_time│    │ price           │
+       │                   └─────────────────┘    │ damage          │
+       │                            │             │ speed           │
+       │                            ▼             │ range_attack    │
+       │                    ┌─────────────────┐   │ attack_speed    │
+       │                    │      units      │   │ unit_type       │
+       │                    ├─────────────────┤   │ unlock_level    │
+       │                    │ id (PK)         │   └─────────────────┘
+       │                    │ type_id (FK)    │           │
+       │                    │ village_id (FK) │           ▼
+       │                    │ x, y            │   ┌─────────────────┐
+       │                    │ level           │   │      army       │
+       │                    │ current_hp      │   ├─────────────────┤
+       │                    │ on_a_crusade    │   │ army (PK)       │
+       │                    │ is_enemy        │   │ userId (FK)     │
+       │                    │ last_attack_time│   │ startX, startY  │
+       │                    └─────────────────┘   │ startTime       │
+       │                                          │ arrivalTime     │
+       │                                          │ targetX, targetY│
+       │                                          │ attackId        │
+       │                                          │ units           │
+       │                                          │ speed           │
+       │                                          │ in_battle       │
        │                                          └─────────────────┘
        │
-┌─────────────────┐      ┌─────────────────┐
-│    hashes       │      │   map_hashes    │
-├─────────────────┤      ├─────────────────┤
-│ id (PK)         │      │ id (PK)         │
-│ chat_hash       │      │ hash            │
-└─────────────────┘      └─────────────────┘
+┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
+│    hashes       │      │   map_hashes    │      │     battles     │
+├─────────────────┤      ├─────────────────┤      ├─────────────────┤
+│ id (PK)         │      │ id (PK)         │      │ id (PK)         │
+│ chat_hash       │      │ hash            │      │ army_attack_id  │
+└─────────────────┘      └─────────────────┘      │ attacker_vill_id│
+                                                  │ defender_vill_id│
+                                                  │ att_last_online │
+                                                  │ def_last_online │
+                                                  │ hash            │
+                                                  └─────────────────┘
+                                                           │
+                                                  ┌─────────────────┐
+                                                  │  battle_objects │
+                                                  ├─────────────────┤
+                                                  │ id (PK)         │
+                                                  │ battle_id (FK)  │
+                                                  │ object_type     │
+                                                  │ type_id         │
+                                                  │ original_id     │
+                                                  │ owner_vill_id   │
+                                                  │ x, y            │
+                                                  │ current_hp      │
+                                                  │ is_alive        │
+                                                  │ last_attack_time│
+                                                  └─────────────────┘
 
 **Ключевые связи:**
 - `users(1) -> villages(1)` - Один пользователь = одна деревня
@@ -1244,8 +1306,7 @@
 - `users(1) -> messages(N)` - Пользователь отправляет много сообщений
 - `building_types(1) -> buildings(N)` - Тип здания у многих экземпляров
 - `unit_types(1) -> units(N)` - Тип юнита у многих экземпляров
-- `user(1) -> army(N)` - Пользователь может иметь несколько армий
-
-
-
-
+- `users(1) -> army(N)` - Пользователь может иметь несколько армий
+- `villages(2) -> battles(2)` - Деревни участвуют в битвах
+- `battles(1) -> battle_objects(N)` - В битве много объектов
+- `army(1) -> battles(1)` - Армия участвует в битве
