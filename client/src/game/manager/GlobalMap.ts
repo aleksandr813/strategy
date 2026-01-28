@@ -101,20 +101,27 @@ class GlobalMap extends Manager {
     }
 
     public handleVillageClick(x: number, y: number): void {
-        const gridX = Math.floor(x);
-        const gridY = Math.floor(y);
-        
-        const clickedVillage = this.game.getVillages().find(v => {
-            const [vx, vy] = [v.coords.x, v.coords.y];
-            return gridX >= vx && gridX < vx + 2 && gridY >= vy && gridY < vy + 2; 
-        }) || null;
+        const villages = this.game.getVillages();
+        if (!villages.length) return;
 
-        if (clickedVillage) {
-            console.log('Клик по деревне:', clickedVillage.name);
-        }
+        const clickRadius = 1.5; 
+
+        let closestVillage: VillageEntity | null = null;
+        let minDistance = clickRadius;
+
+        villages.forEach(v => {
+            const dx = x - v.coords.x;
+            const dy = y - v.coords.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestVillage = v;
+            }
+        });
         
-        this.selectVillage(clickedVillage);
-    }
+        this.selectVillage(closestVillage);
+    }   
 
     public getSelectedVillage(): VillageEntity | null {
         return this.selectedVillage;

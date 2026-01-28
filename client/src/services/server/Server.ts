@@ -299,14 +299,14 @@ class Server {
     }
 
     async getBattle(id: number): Promise<TBattleResponse | null> {
-    const hash = this.store.getBattleHash();
-    
-    const battle = await this.request<TBattleResponse>('getBattle', { 
-        hash, 
-        id: id.toString() 
-    });
-    return battle;
-}
+        const hash = this.store.getBattleHash();
+        
+        const battle = await this.request<TBattleResponse>('getBattle', { 
+            hash, 
+            id: id.toString() 
+        });
+        return battle;
+    }
 
     async getActiveBattles(): Promise<TActiveBattle | null> {
         const response = await this.request<TActiveBattle>('getActiveBattles');
@@ -314,17 +314,29 @@ class Server {
         return response;
     }
 
-    async getUpdateBattle(battleId: number, units: TUpdateBattleUnit[]): Promise<boolean> {
-        const unitsString = units.map(unit => 
-            `id${unit.id},x${unit.x},y${unit.y}`
-        ).join(';');
+    async updateBattle(
+        battleId: number, 
+        units: Unit[], 
+        damageToUnits: Record<number, number>, 
+        damageToBuildings: Record<number, number>
+    ): Promise<boolean | null> {
+        const params: Record<string, string> = {
+            battleId: battleId.toString()
+        };
 
-        const result = await this.request<boolean>('updateBattle', {
-            battleId: battleId.toString(),
-            units: unitsString
+        if (units.length > 0) {
+            params.units = units.map(u => `id${u.id},x${u.coords.x},y${u.coords.y}`).join(';');
+        }
+
+        Object.entries(damageToUnits).forEach(([attackerId, targetId]) => {
+            params[`damageToUnits[${attackerId}]`] = targetId.toString();
         });
 
-        return result !== null ? result : false;
+        Object.entries(damageToBuildings).forEach(([attackerId, targetId]) => {
+            params[`damageToBuildings[${attackerId}]`] = targetId.toString();
+        });
+
+        return await this.request<boolean>('updateBattle', params);
     }
 }
 
