@@ -35,6 +35,9 @@
     * 4.19. getMap
     * 4.20. getUserArmies
     * 4.21. unitsAttackDistance
+    * 4.22. getBattle
+    * 4.23. getActiveBattles
+    * 4.24. updadeBattle
 
 ## 1. Общее
 ### 1.1. Адрес сервера
@@ -137,6 +140,7 @@ Buildings: {
 | - | - |
 | login | Авторизация пользователя |
 | logout | Логаут пользователя |
+| checkToken | Проверка наличия токена в бд |
 | registration | Регистрация пользователя |
 | sendMessage | Отправить сообщение в чат |
 | getMessages | Получить сообщения в чате |
@@ -155,6 +159,8 @@ Buildings: {
 | getMap | Обновление карты по хешу, возвращает деревни и перемещение армий |
 | getUserArmies | Получение всех действующих армий пользователя |
 | unitsAttackDistance | Определяет ближайшего для атаки юнита |
+| getBattle | Отслеживает изменения на поле боя |
+| updateBattle | Изменяет данные на поле боя |
 
 ### 3.1. Общие ошибки
 * `101` - если не передан параметр `method`
@@ -286,7 +292,26 @@ Buildings: {
 **Успешный ответ**
 ```
     Answer<{
-        buildingTypes: BuildingTypes[]
+        id: number; - id типа здания,
+        type: string; - название типа здания,
+
+        hpLevel1: number; - hp для уровня 1,
+        hpLevel2: number; - hp для уровня 2,
+        hpLevel3: number; - hp для уровня 3,
+
+        priceLevel1: number; - стоимость для уровня 1,
+        priceLevel2: number; - стоимость для уровня 2,
+        priceLevel3: number; - стоимость для уровня 3,
+
+        damageLevel1: number; - урон для уровня 1,
+        damageLevel2: number; - урон для уровня 2,
+        damageLevel3: number; - урон для уровня 3,
+
+        rangeAttackLevel1: number; - дистанция атаки для уровня 1,
+        rangeAttackLevel2: number; - дистанция атаки для уровня 2,
+        rangeAttackLevel3: number; - дистанция атаки для уровня 3,
+
+        unloclLevel: number; - уровень ратуши, необходимый для покупки здания
     }>
 ```
 **Ошибки**
@@ -312,7 +337,15 @@ Buildings: {
         y: number; - координата по y,
         level: number; - уровень здания,
         currentHp: number; - текущее здоровье здания,
-        type: string; - тип здания
+        type: string; - тип здания,
+        
+        damageLevel1: number; - урон для уровня 1,
+        damageLevel2: number; - урон для уровня 2,
+        damageLevel3: number; - урон для уровня 3,
+
+        rangeAttackLevel1: number; - дистанция атаки для уровня 1,
+        rangeAttackLevel2: number; - дистанция атаки для уровня 2,
+        rangeAttackLevel3: number; - дистанция атаки для уровня 3,
     }>
 ```
 **Ошибки**
@@ -460,7 +493,12 @@ Buildings: {
         y: number; - координата по y,
         level: number; - уровень юнита,
         currentHp: number; - текущее здоровье юнита,
-        type: string; - тип юнита
+        onACrusade: number; - указывает в походе юнит или нет (1 - в походе, 0 - нет),
+        isEnemy: number; - указывает союзный юнит или нет (1 - свой, 0 - враг),
+        type: string; - тип юнита,
+        speed: number; - скорость юнита,
+        rangeAttack: number; - дистанция атаки юнита,
+        damage: number; - урон юнита
     }>
 ```
 **Ошибки**
@@ -510,7 +548,7 @@ Buildings: {
 * `504` - Ошибка перемещения юнитов (Units movement error)
 
 ### 4.16. takeDamage
-Обновить положение юнитов
+Операция нанесения урона
 
 **Параметры**
 ```
@@ -646,3 +684,89 @@ Buildings: {
 **Ошибки**
 * `705` - невалидный токен. Пользователь не авторизован
 * `315` - Деревня не найдена
+
+
+### 4.21. getBattle
+Отслеживает все изменения на поле боя
+
+**Параметры**
+```
+{
+    token: string; - токен
+    hash: stirng; - hash 
+}
+```
+**Успешный ответ**
+```
+    Answer<{
+        hash: string
+        battleData {
+            battleId: number; id битвы
+            enemyOnline: boolean; в сети опонент или нет
+            isAttacker: boolean; является ли посылающий запрос атакующим или нет
+            units, building, corspe, ruin {
+                id: number; id объекта
+                battleId: number; id битвы которой принадлежит объект
+                originalId: number; id объекта из исходной таблицы
+                ownerVillageId: number; id деревни, которой принадлежит объект
+                x: number; текущее положение объекта по координате x
+                y: number; текущее положение объекта по координате y
+                currentHp: number; количество hp объекта
+            }
+        }
+    }>
+
+    В случае окончания битвы
+    Answer<{
+        winner: number; id - победителя
+        prize?: number; количество монет потеряных защитником и заработаных нападавшим (только если победил атакующий). 
+    }>
+```
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
+* `315` - Деревня не найдена
+* `603` - Армия не найдена
+
+
+### 4.23 getActiveBattles
+смотрит активные бои у пользователя
+**Параметры**
+```
+{
+    token: string; - токен
+}
+```
+**Успешный ответ**
+```
+    Answer<{
+        attack: number[]; id баттлов, которые атаккующий ты
+        defend: number; id баттла, где напали на тебя
+    }>
+```
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
+* `315` - Деревня не найдена
+
+
+### 4.24 updateBattle
+Изменяет данные на поле боя
+**Параметры**
+```
+{
+    token: string; - токен
+    battleId: number; - id битвы
+    units: array; - массив юнитов с их id, x, y (Пример входных данных: units=id32,x3,y4;id33,x2,y7)
+    damageToUnits: array[][]; двумерный массив, где [1][2] означает что юнит с id 1 атакует объект(юнит или здание) с id 2
+    damageToBuildings: array[][]; двумерный массив, где [1][2] означает что здание с id 1 атакует юнита с id 2
+}
+```
+**Успешный ответ**
+```
+    Answer<{
+        true
+    }>
+```
+**Ошибки**
+* `705` - невалидный токен. Пользователь не авторизован
+* `315` - Деревня не найдена
+* `504` - Ошибка перемещения юнитов (Units movement error)

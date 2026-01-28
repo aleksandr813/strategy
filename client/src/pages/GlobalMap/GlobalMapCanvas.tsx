@@ -7,6 +7,7 @@ import VillageEntity from '../../game/entities/VillageEntity';
 import { GameContext } from '../../App';
 import { TPoint } from '../../config';
 import globalMapBackground from '../../assets/img/background/globalMapBackground.png';
+import tableBackground from '../../assets/img/background/tableBackground.png'
 import GAMECONFIG from '../../game/gameConfig';
 
 import "./GlobalMap.scss";
@@ -24,7 +25,6 @@ const GLOBAL_MAP_HEIGHT = GAMECONFIG.GRID_HEIGHT;
 const GlobalMapCanvas: React.FC = () => {
     const { WINDOW } = CONFIG;
     const game = useContext(GameContext);
-    const globalMap = game.getGlobalMap(); 
     
     const background = new Image();
     background.src = globalMapBackground;
@@ -82,6 +82,7 @@ const GlobalMapCanvas: React.FC = () => {
             canvas.contextV.drawImage(background, canvas.xs(0), canvas.ys(0), canvas.dec(87), canvas.dec(29));
         }
 
+        const globalMap = game.getGlobalMap();
         const { armies, villages } = globalMap.getMap();
 
         drawVillages(canvas, villages);
@@ -159,20 +160,19 @@ const drawArmies = (canvas: Canvas, armies: ArmyEntity[], time: number) => {
     };
 
     const mouseUp = (x: number, y: number) => {
-        if (!globalMap || !mouseDownPosition) return;
         mouseDownPosition = null;
         mouseDownTime = 0;
     };
 
     const mouseClick = async (x: number, y: number) => {
-        if (!game.globalMap.getSelectedVillage()) {
+        const globalMap = game.getGlobalMap();
+        if (!game.getGlobalMap().getSelectedVillage()) {
             globalMap.handleVillageClick(x, y);
         }
         
     };
 
     const mouseRightClickDown = (x: number, y: number) => {
-        if (!globalMap) return;
     };
 
     const mouseLeave = () => {
@@ -250,6 +250,8 @@ const drawArmies = (canvas: Canvas, armies: ArmyEntity[], time: number) => {
 
         clampCamera();
 
+        render(0);
+
         return () => {
             if (WINDOW.WIDTH !== INITIAL_WINDOW_WIDTH) {
                 WINDOW.WIDTH = INITIAL_WINDOW_WIDTH;
@@ -260,13 +262,24 @@ const drawArmies = (canvas: Canvas, armies: ArmyEntity[], time: number) => {
 
             window.removeEventListener('resize', handleResize);
 
-            globalMap?.destructor();
+            const currentGlobalMap = game.globalMap;
+            if (currentGlobalMap) {
+                currentGlobalMap.destructor();
+                game.globalMap = null;
+            }
+
             canvas = null;
         };
     }, []);
 
     return (
-        <div className='GlobalMapCanvas'>
+        <div className='GlobalMapCanvas'
+        style={{
+                backgroundImage: `url(${tableBackground})`,
+                backgroundRepeat: 'repeat',
+                backgroundPosition: 'center',
+                imageRendering: 'pixelated' 
+            }}>
             <div id={GAME_FIELD} className={GAME_FIELD}></div>
         </div>
     );

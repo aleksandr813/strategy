@@ -21,6 +21,7 @@ const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
     const [armies, setArmies] = useState<TUserArmy[]>([]);
     const [selectedUnits, setSelectedUnits] = useState<number[]>([]);
     const [showArmiesList, setShowArmiesList] = useState(false);
+    const globalMap = game.getGlobalMap();
 
     useEffect(() => {
         const units = game.village.getScene().units;
@@ -36,18 +37,18 @@ const ArmyMenu: React.FC<ArmyMenuProps> = (props: ArmyMenuProps) => {
     const closeArmyMenu = () => setUIElement(UIELEMENT.NULL);
 
     const fetchArmies = async () => {
-        const userArmies = await game.globalMap.getUserArmies();
+        const userArmies = await globalMap.getUserArmies();
         setArmies(Array.isArray(userArmies) ? userArmies : []);
     };
 
     const handleSendArmy = () => {
         setUIElement(UIELEMENT.NULL);
-        game.globalMap.sendingArmy = true;
+        globalMap.sendingArmy = true;
         setPage(PAGES.GLOBAL_MAP);
     };
     
     const handleReturnArmy = async (armyId: number) => {
-        await game.globalMap.moveArmyBack(armyId);
+        await globalMap.moveArmyBack(armyId);
         await fetchArmies();
     };
 

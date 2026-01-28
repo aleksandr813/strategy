@@ -37,7 +37,19 @@ export type TBuildingType = {
     id: number;
     type: string;
     hp: number;
-    price: number;
+    hpLevel1: number;
+    hpLevel2: number;
+    hpLevel3: number;
+    price?: number;
+    priceLevel1: number;
+    priceLevel2: number;
+    priceLevel3: number;
+    damageLevel1: number;
+    damageLevel2: number;
+    damageLevel3: number;
+    rangeAttackLevel1: number;
+    rangeAttackLevel2: number;
+    rangeAttackLevel3: number;
     sprite: number;
     unlockLevel: number;
 }
@@ -53,7 +65,6 @@ export type TBuilding = {
     level: number;
     type: string;
     unlockLevel: number;
-
 }
 
 export enum BuildingTypeID {
@@ -62,7 +73,10 @@ export enum BuildingTypeID {
     Kazarma = 3,
     Wall = 4,
     Tower = 5,
-    Gates = 6
+    VietnamTrap = 6,
+    Cannon = 7,
+    Gates = 8,
+
 }
 
 export type TUnitType = {
@@ -80,6 +94,7 @@ export type TUnit = {
     x: number;
     y: number;
     level: number;
+    speed: number;
     currentHp: number;
     type: string;
     unlockLevel: number;
@@ -127,3 +142,19 @@ export type TUserArmy = {
     enemyName: string;
     speed: number;
 }
+
+export type TBattle = {
+    buildings: TBuilding[];
+    units: TUnit[];
+}
+
+export type TBattleResponse = {
+    hash: string;
+    battleData: TBattle;
+};
+
+export type TActiveBattle = {
+    attack: { battleId: string; userId: string; name: string }[];
+    defend: { attack_id: string } | null; 
+};
+

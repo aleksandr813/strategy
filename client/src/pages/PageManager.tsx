@@ -1,4 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+
+import { GameContext, MediatorContext, ServerContext, StoreContext } from '../App';
+import Server from '../services/server/Server';
+import Store from '../services/store/Store';
+import Mediator from '../services/mediator/Mediator';
+import Game from '../game/Game';
+
 
 import Preloader from './Preloader/Preloader';
 import Login from './Login/Login';
@@ -24,23 +31,40 @@ export enum PAGES {
 }
 
 export interface IBasePage {
-    setPage: (name: PAGES) => void
+    setPage: (name: PAGES) => void;
+    server: Server;
+    store: Store;
+    mediator: Mediator;
+    game: Game;
 }
 
 const PageManager: React.FC = () => {
     const [page, setPage] = useState<PAGES>(PAGES.PRELOADER);
 
+    const server = useContext(ServerContext);
+    const store = useContext(StoreContext);
+    const mediator = useContext(MediatorContext);
+    const game = useContext(GameContext);
+
+    const props = {
+        server,
+        store,
+        mediator,
+        game,
+        setPage
+    }
+
     return (
         <>
-            {page === PAGES.PRELOADER && <Preloader setPage={setPage} />}
-            {page === PAGES.LOGIN && <Login setPage={setPage} />}
-            {page === PAGES.REGISTRATION && <Registration setPage={setPage} />}
-            {page === PAGES.CHAT && <Chat setPage={setPage} />}
-            {page === PAGES.VILLAGE && <Village setPage={setPage} />}
-            {page === PAGES.CALCULATOR && <Calculator setPage={setPage} />}
-            {page === PAGES.BATTLE && <Battle setPage={setPage} />}
-            {page === PAGES.GLOBAL_MAP && <GlobalMap setPage={setPage} />}
-            {page === PAGES.NOT_FOUND && <NotFound setPage={setPage} />}
+            {page === PAGES.BATTLE && <Battle {...props} />}
+            {page === PAGES.PRELOADER && <Preloader {...props} />}
+            {page === PAGES.LOGIN && <Login {...props} />}
+            {page === PAGES.REGISTRATION && <Registration {...props} />}
+            {page === PAGES.CHAT && <Chat {...props} />}
+            {page === PAGES.VILLAGE && <Village {...props} />}
+            {page === PAGES.CALCULATOR && <Calculator {...props} />}
+            {page === PAGES.GLOBAL_MAP && <GlobalMap {...props} />}
+            {page === PAGES.NOT_FOUND && <NotFound {...props} />}
         </>
     );
 }

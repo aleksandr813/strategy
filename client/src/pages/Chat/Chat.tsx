@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState, useMemo, useRef, KeyboardEvent } from 'react';
+import React, { useEffect, useState, useMemo, useRef, KeyboardEvent } from 'react';
 import { TMessages } from '../../services/server/types';
-import { ServerContext, StoreContext } from '../../App';
 import Button from '../../components/Button/Button';
 import { IBasePage, PAGES } from '../PageManager';
 
@@ -8,10 +7,10 @@ import chatIcon from '../../assets/img/chat/X.png';
 import CONFIG from '../../config';
 import './Chat.scss';
 
+
+
 const Chat: React.FC<IBasePage> = (props: IBasePage) => {
-    const { setPage } = props;
-    const server = useContext(ServerContext);
-    const store = useContext(StoreContext);
+    const { setPage, server, store } = props;
     const [messages, setMessages] = useState<TMessages>([]);
     const [_, setHash] = useState<string>('');
     const messageRef = useRef<HTMLInputElement>(null);
@@ -40,7 +39,7 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
             if (messageRef.current) {
                 const message = messageRef.current.value;
                 if (message.length > CONFIG.CHAT_MAX_MESSAGE_LENGTH) {
-                        console.log(`Сообщение не должно превышать ${CONFIG.CHAT_MAX_MESSAGE_LENGTH} символов`);
+                        alert(`Сообщение не должно превышать ${CONFIG.CHAT_MAX_MESSAGE_LENGTH} символов`);
                         return;
                 }
                 if (message) {
@@ -51,8 +50,23 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
         }
     }
 
+    const handleSend = () => {
+        if (messageRef.current) {
+                const message = messageRef.current.value;
+                if (message.length > CONFIG.CHAT_MAX_MESSAGE_LENGTH) {
+                        alert(`Сообщение не должно превышать ${CONFIG.CHAT_MAX_MESSAGE_LENGTH} символов`);
+                        return;
+                }
+                if (message) {
+                    server.sendMessage(message);
+                    messageRef.current.value = '';
+                }
+            }
+    }
+
     const input = useMemo(() => 
         <input 
+            id='testInput'
             ref={messageRef} 
             onKeyUp={handleKeyUp} 
             placeholder='сообщение' 
@@ -83,8 +97,8 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
         </div>)
     }
 
-    return (<div className='chat'>
-        <Button onClick={toGameClickHandler} className='chatIconeDivBack'>
+    return (<div className='chat' id='testChat'>
+        <Button onClick={toGameClickHandler} className='chatIconeDivBack' id='testChatExit'>
             <img src={chatIcon}/>
         </Button>
         <div className='chat-messages'>
@@ -99,6 +113,7 @@ const Chat: React.FC<IBasePage> = (props: IBasePage) => {
         </div>
         <div className='chat-buttons'>
             {input}
+            <Button onClick={handleSend} text='>' id='testSendButton'/>
         </div>
     </div>)
 }

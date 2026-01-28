@@ -39,6 +39,17 @@ class Application
     }
 
 
+    function checkToken($params){
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return ['user' => true];
+            }
+            return ['user' => false];
+        }
+        return ['error' => 242];
+    }
+
     public function registration($params)
     {
         // Проверка на пустые поля
@@ -171,19 +182,6 @@ class Application
         return ['error' => 242];
     }
 
-    public function takeDamage($params)
-    {
-        if ($params['token']  && $params['units']) {
-            $user = $this->user->getUser($params['token']);
-            if ($user) {
-                return $this->battle->takeDamage($user->id, $params['units']);
-            }
-            return ['error' => 705];
-        }
-        return ['error' => 242];
-    }
-
-
     public function buyBuilding($params)
     {
         if ($params['token'] && $params['typeId'] && $params['x'] && $params['y']) {
@@ -292,6 +290,43 @@ class Application
             $user = $this->user->getUser($params['token']);
             if ($user) {
                 return $this->battle->unitsAttackDistance($user->id);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function getBattle($params) {
+        if ($params['token'] && $params['hash'] && $params['id']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->battle->getBattle($user->id, $params['hash'], $params['id']);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function getActiveBattles($params) {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->user->getActiveBattles($params['token']);
+            }
+            return ['error' => 705];
+        }
+        return ['error' => 242];
+    }
+
+    public function updateBattle($params) {
+        if ($params['token']) {
+            $user = $this->user->getUser($params['token']);
+            if ($user) {
+                return $this->battle->updateBattle(
+                    $user->id, $params['battleId'], 
+                    $params['units'], 
+                    $params['damageToUnits'], 
+                    $params['damageToBuildings']);
             }
             return ['error' => 705];
         }

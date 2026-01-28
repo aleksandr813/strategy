@@ -20,7 +20,9 @@ function result($params) {
             // user
             case 'login': return $app->login($params);
             case 'logout': return $app->logout($params);
+            case 'checkToken': return $app->checkToken($params); 
             case 'registration': return $app->registration($params);
+            case 'getActiveBattles': return $app->getActiveBattles($params);
             // chat
             case 'sendMessage': return $app->sendMessage($params);
             case 'getMessages': return $app->getMessages($params); //loop
@@ -42,8 +44,9 @@ function result($params) {
             //map
             case 'getMap': return $app->getMap($params); //loop
             //battle
-            case 'takeDamage': return $app->takeDamage($params);
             case 'unitsAttackDistance': return $app->unitsAttackDistance($params); //loop
+            case 'getBattle': return $app->getBattle($params); //loop
+            case 'updateBattle': return $app->updateBattle($params);
             //calc
             case 'getRoots': return $app->getRoots($params);
 

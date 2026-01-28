@@ -5,7 +5,7 @@
 		"description": "`Набор авто-тестов для браузерной игры \"Strategy\"`",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "49525133",
-		"_collection_link": "https://nurs9797-3166872.postman.co/workspace/1c4749f2-8e80-4b90-8fc4-a63ea91fc1d0/collection/49525133-08abdedb-ccad-4e15-809e-7bcb1c8fbb8e?action=share&source=collection_link&creator=49525133"
+		"_collection_link": "https://nurs9797-3166872.postman.co/workspace/%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9-%D0%93%D1%80%D0%B5%D0%B1%D0%BD%D0%B5%D0%B2's-Workspace~1c4749f2-8e80-4b90-8fc4-a63ea91fc1d0/collection/49525133-08abdedb-ccad-4e15-809e-7bcb1c8fbb8e?action=share&source=collection_link&creator=49525133"
 	},
 	"item": [
 		{
@@ -24,17 +24,17 @@
 											"listen": "prerequest",
 											"script": {
 												"exec": [
-													"    const Password = pm.request.url.query.get(\"password\");\r",
-													"    const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
 													"\r",
-													"    pm.request.url.query.remove(\"password\");\r",
-													"    pm.request.url.query.add({\r",
-													"        key: \"hash\",\r",
-													"        value: passwordHash\r",
-													"    });\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});\r",
 													"\r",
-													"    console.log(\"Пароль:\", Password);\r",
-													"    console.log(\"Хэш:\", passwordHash);"
+													"console.log(\"Пароль:\", Password);\r",
+													"console.log(\"Хэш:\", passwordHash);"
 												],
 												"type": "text/javascript",
 												"packages": {},
@@ -59,14 +59,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=registration&login=TestUser1234&password=ValidPass123&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=registration&login=TestUser1234&password=ValidPass123&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401&",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -88,6 +83,10 @@
 												{
 													"key": "token",
 													"value": "65b0298b4a68bf7cf3478c1137c75401"
+												},
+												{
+													"key": "",
+													"value": null
 												}
 											]
 										}
@@ -136,14 +135,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=registration&login=Valid5&password=ValidPass123&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=registration&login=Valid5&password=ValidPass123&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -213,14 +207,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=registration&login=VeryLongUsername123&password=ValidPass123&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=registration&login=VeryLongUsername123&password=ValidPass123&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -255,17 +244,17 @@
 											"listen": "prerequest",
 											"script": {
 												"exec": [
-													"    const Password = pm.request.url.query.get(\"password\");\r",
-													"    const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
 													"\r",
-													"    pm.request.url.query.remove(\"password\");\r",
-													"    pm.request.url.query.add({\r",
-													"        key: \"hash\",\r",
-													"        value: passwordHash\r",
-													"    });\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});\r",
 													"\r",
-													"    console.log(\"Пароль:\", Password);\r",
-													"    console.log(\"Хэш:\", passwordHash);"
+													"console.log(\"Пароль:\", Password);\r",
+													"console.log(\"Хэш:\", passwordHash);"
 												],
 												"type": "text/javascript",
 												"packages": {},
@@ -290,14 +279,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=registration&login=User_Name123&password=ValidPass123&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=registration&login=User_Name123&password=ValidPass123&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -367,14 +351,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=registration&login=SpecialPass&password=Pass@123%&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=registration&login=SpecialPass&password=Pass@123%&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -444,14 +423,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=registration&login=MinPass8&password=TestP123&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=registration&login=MinPass8&password=TestP123&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -521,14 +495,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=registration&login=LongPassword&password=VeryLongPassword123!@%23$&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=registration&login=LongPassword&password=VeryLongPassword123!@%23$&name=TestName&token=65b0298b4a68bf7cf3478c1137c75401",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -541,7 +510,7 @@
 												},
 												{
 													"key": "password",
-													"value": "VeryLongPassword123!@#$"
+													"value": "VeryLongPassword123!@%23$"
 												},
 												{
 													"key": "name",
@@ -598,14 +567,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=registration&login=CyrillicName&password=ValidPass123&name=ИванИванов&token=65b0298b4a68bf7cf3478c1137c75401",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=registration&login=CyrillicName&password=ValidPass123&name=ИванИванов&token=65b0298b4a68bf7cf3478c1137c75401",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -675,14 +639,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=registration&login=SpaceName&password=ValidPass123&name=John Smith&token=65b0298b4a68bf7cf3478c1137c75401",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=registration&login=SpaceName&password=ValidPass123&name=John Smith&token=65b0298b4a68bf7cf3478c1137c75401",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -752,14 +711,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=registration&login=SpecialName&password=ValidPass123&name=John-Smith_123&token=65b0298b4a68bf7cf3478c1137c75401",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=registration&login=SpecialName&password=ValidPass123&name=John-Smith_123&token=65b0298b4a68bf7cf3478c1137c75401",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -793,13 +747,20 @@
 							"name": "01_07 Регистрация с НЕкорректными данными",
 							"item": [
 								{
-									"name": "Регистрация существующего пользователя",
+									"name": "01_07_01 Регистрация с уже существующим логином",
 									"event": [
 										{
 											"listen": "prerequest",
 											"script": {
 												"exec": [
-													""
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
 												],
 												"type": "text/javascript",
 												"packages": {},
@@ -810,8 +771,14 @@
 											"listen": "test",
 											"script": {
 												"exec": [
-													"pm.test('Ошибка, пользователь уже существует', () => {\r",
-													"    pm.expect(pm.response.json().result).to.eql('error');\r",
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1001 - Is it unique login?\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1001);\r",
+													"    pm.expect(response.error.text).to.eql(\"Is it unique login?\");\r",
 													"});"
 												],
 												"type": "text/javascript",
@@ -824,77 +791,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=login&login=TestUserXXX&hash=22b755e1b3835e678dd1cdd76bad9dbd&rnd=65785",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=registration&login=TestUser1234&password=TestPass1234&name=TestName",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
-											],
-											"query": [
-												{
-													"key": "method",
-													"value": "login"
-												},
-												{
-													"key": "login",
-													"value": "TestUserXXX"
-												},
-												{
-													"key": "hash",
-													"value": "22b755e1b3835e678dd1cdd76bad9dbd"
-												},
-												{
-													"key": "rnd",
-													"value": "65785"
-												}
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Регистрация с коротким логином (ошибка 1007)",
-									"event": [
-										{
-											"listen": "prerequest",
-											"script": {
-												"exec": [
-													""
-												],
-												"type": "text/javascript",
-												"packages": {},
-												"requests": {}
-											}
-										},
-										{
-											"listen": "test",
-											"script": {
-												"exec": [
-													"pm.test('Ошибка, логин слишком короткий', () => {\r",
-													"    pm.expect(pm.response.json().result).to.eql('error');\r",
-													"});"
-												],
-												"type": "text/javascript",
-												"packages": {},
-												"requests": {}
-											}
-										}
-									],
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "http://server/api/?method=registration&login=Ab1&hash=e1d77f204ec0d20245039d27cd7960e4&name=Short&token=65b0298b4a68bf7cf3478c1137c75401",
-											"protocol": "http",
-											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -903,19 +802,2074 @@
 												},
 												{
 													"key": "login",
-													"value": "Ab1"
+													"value": "TestUser1234"
 												},
 												{
-													"key": "hash",
-													"value": "e1d77f204ec0d20245039d27cd7960e4"
+													"key": "password",
+													"value": "TestPass1234"
 												},
 												{
 													"key": "name",
-													"value": "Short"
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_02 Регистрация с коротким логином",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1007 - Неправильная длина логина\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1007);\r",
+													"    pm.expect(response.error.text).to.eql(\"Неправильная длина логина\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=Abc1&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
 												},
 												{
-													"key": "token",
-													"value": "65b0298b4a68bf7cf3478c1137c75401"
+													"key": "login",
+													"value": "Abc1"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_03 Регистрация с длинным логином",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1007 - Неправильная длина логина\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1007);\r",
+													"    pm.expect(response.error.text).to.eql(\"Неправильная длина логина\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=VeryLongUsername12345&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "VeryLongUsername12345"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_04 Логин, начинающийся с цифры",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1008 - Логин начинается с цифры или подчеркивания\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1008);\r",
+													"    pm.expect(response.error.text).to.eql(\"Логин начинается с цифры или подчеркивания\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=9NumberFirst&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "9NumberFirst"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_05 Регистрация с логином, начинающимся с подчеркивания",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1008 - Логин начинается с цифры или подчеркивания\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1008);\r",
+													"    pm.expect(response.error.text).to.eql(\"Логин начинается с цифры или подчеркивания\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=_StartUnder&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "_StartUnder"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_06 Регистрация с символом @ в логине",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1009 - Недопустимые символы в логине\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1009);\r",
+													"    pm.expect(response.error.text).to.eql(\"Недопустимые символы в логине\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=Test@User&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "Test@User"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_07 Регистрация с символом # в логине",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1009 - Недопустимые символы в логине\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1009);\r",
+													"    pm.expect(response.error.text).to.eql(\"Недопустимые символы в логине\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=Hash%23Tag&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "Hash%23Tag"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_08 Регистрация с символом $ в логине",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1009 - Недопустимые символы в логине\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1009);\r",
+													"    pm.expect(response.error.text).to.eql(\"Недопустимые символы в логине\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=Dollar$Sign&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "Dollar$Sign"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_09 Регистрация с пробелом в середине логина",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1009 - Недопустимые символы в логине\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1009);\r",
+													"    pm.expect(response.error.text).to.eql(\"Недопустимые символы в логине\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=Space%20Between&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "Space%20Between"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_10 Регистрация с пробелом в начале логина",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1009 - Недопустимые символы в логине\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1009);\r",
+													"    pm.expect(response.error.text).to.eql(\"Недопустимые символы в логине\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=%20StartSpace&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "%20StartSpace"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_11 Регистрация с паролем 7 символов",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1011 - Слишком короткий пароль\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1011);\r",
+													"    pm.expect(response.error.text).to.eql(\"Слишком короткий пароль\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=ShortPass7&password=Short12&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "ShortPass7"
+												},
+												{
+													"key": "password",
+													"value": "Short12"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_12 Регистрация с паролем только строчными буквами",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1012 - Пароль без разных регистров\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1012);\r",
+													"    pm.expect(response.error.text).to.eql(\"Пароль без разных регистров\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=OnlyLower&password=lowercase&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "OnlyLower"
+												},
+												{
+													"key": "password",
+													"value": "lowercase"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_13 Регистрация с паролем только заглавными буквами",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1012 - Пароль без разных регистров\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1012);\r",
+													"    pm.expect(response.error.text).to.eql(\"Пароль без разных регистров\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=OnlyUpper&password=UPPERCASE&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "OnlyUpper"
+												},
+												{
+													"key": "password",
+													"value": "UPPERCASE"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_14 Регистрация с паролем без цифр",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1013 - Пароль без цифр\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1013);\r",
+													"    pm.expect(response.error.text).to.eql(\"Пароль без цифр\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=NoDigits&password=Password&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "NoDigits"
+												},
+												{
+													"key": "password",
+													"value": "Password"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_15 Регистрация с паролем, содержащим логин",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1014 - Пароль содержит персональную информацию\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1014);\r",
+													"    pm.expect(response.error.text).to.eql(\"Пароль содержит персональную информацию\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=MyLogin&password=MyLogin123&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "MyLogin"
+												},
+												{
+													"key": "password",
+													"value": "MyLogin123"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_16 Регистрация с паролем, содержащим никнейм",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1014 - Пароль содержит персональную информацию\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1014);\r",
+													"    pm.expect(response.error.text).to.eql(\"Пароль содержит персональную информацию\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=User12345678&password=MyLogin123&name=MyLogin",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "User12345678"
+												},
+												{
+													"key": "password",
+													"value": "MyLogin123"
+												},
+												{
+													"key": "name",
+													"value": "MyLogin"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_17 Регистрация с несовпадающими паролями",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1015 - Пароли не совпадают\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1015);\r",
+													"    pm.expect(response.error.text).to.eql(\"Пароли не совпадают\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=Mismatch&password=FirstPass123&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "Mismatch"
+												},
+												{
+													"key": "password",
+													"value": "FirstPass123"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_18 Регистрация с пустым логином",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1016 - params login or password not set\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1016);\r",
+													"    pm.expect(response.error.text).to.eql(\"params login or password not set\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": ""
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_19 Регистрация с пустым паролем",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1011 - Слишком короткий пароль\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1011);\r",
+													"    pm.expect(response.error.text).to.eql(\"Слишком короткий пароль\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=EmptyPass&password=&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "EmptyPass"
+												},
+												{
+													"key": "password",
+													"value": ""
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_20 Регистрация со всеми пустыми полями",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1016 - params login or password not set\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1016);\r",
+													"    pm.expect(response.error.text).to.eql(\"params login or password not set\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=&password=&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": ""
+												},
+												{
+													"key": "password",
+													"value": ""
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_21 Регистрация с символом % в логине",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1009 - Недопустимые символы в логине\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1009);\r",
+													"    pm.expect(response.error.text).to.eql(\"Недопустимые символы в логине\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=Percent%25User&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "Percent%25User"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_22 Регистрация с символом & в логине",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1009 - Недопустимые символы в логине\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1009);\r",
+													"    pm.expect(response.error.text).to.eql(\"Недопустимые символы в логине\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=Amp%26User&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "Amp%26User"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_23 Регистрация с пробелом в конце логина",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1009 - Недопустимые символы в логине\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1009);\r",
+													"    pm.expect(response.error.text).to.eql(\"Недопустимые символы в логине\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=EndSpace%20&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "EndSpace%20"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_24 Регистрация с несколькими пробелами в логине",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1009 - Недопустимые символы в логине\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1009);\r",
+													"    pm.expect(response.error.text).to.eql(\"Недопустимые символы в логине\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=Multi%20%20Space%20%20User&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "Multi%20%20Space%20%20User"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_25 Регистрация только с подтверждением пароля",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1016 - params login or password not set\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1016);\r",
+													"    pm.expect(response.error.text).to.eql(\"params login or password not set\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=&password=&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": ""
+												},
+												{
+													"key": "password",
+													"value": ""
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_26 Регистрация с паролем только цифрами",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1012 - Пароль без разных регистров\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1012);\r",
+													"    pm.expect(response.error.text).to.eql(\"Пароль без разных регистров\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=OnlyNumbers&password=12345678&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "OnlyNumbers"
+												},
+												{
+													"key": "password",
+													"value": "12345678"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_27 Регистрация с логином содержащим дефис",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1009 - Недопустимые символы в логине\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1009);\r",
+													"    pm.expect(response.error.text).to.eql(\"Недопустимые символы в логине\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=User-Name&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "User-Name"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_28 Регистрация с логином содержащим точку",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1009 - Недопустимые символы в логине\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1009);\r",
+													"    pm.expect(response.error.text).to.eql(\"Недопустимые символы в логине\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=User.Name&password=TestPass1234&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "User.Name"
+												},
+												{
+													"key": "password",
+													"value": "TestPass1234"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_29 Регистрация с паролем только спецсимволами",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1012 - Пароль без разных регистров\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1012);\r",
+													"    pm.expect(response.error.text).to.eql(\"Пароль без разных регистров\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=OnlySpecial&password=!%25%40%23$%25%5E%26%25*&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "OnlySpecial"
+												},
+												{
+													"key": "password",
+													"value": "!%25%40%23$%25%5E%26%25*"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "01_07_30 Регистрация с паролем содержащим пробелы",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const Password = pm.request.url.query.get(\"password\");\r",
+													"const passwordHash = CryptoJS.MD5(Password).toString();\r",
+													"\r",
+													"pm.request.url.query.remove(\"password\");\r",
+													"pm.request.url.query.add({\r",
+													"    key: \"hash\",\r",
+													"    value: passwordHash\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Результат - ошибка\", function() {\r",
+													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Код ошибки 1012 - Пароль без разных регистров\", function() {\r",
+													"    const response = pm.response.json();\r",
+													"    pm.expect(response.error.code).to.eql(1012);\r",
+													"    pm.expect(response.error.text).to.eql(\"Пароль без разных регистров\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}?method=registration&login=SpacePass&password=Pass%20word123&name=TestName",
+											"host": [
+												"{{base_url}}"
+											],
+											"query": [
+												{
+													"key": "method",
+													"value": "registration"
+												},
+												{
+													"key": "login",
+													"value": "SpacePass"
+												},
+												{
+													"key": "password",
+													"value": "Pass%20word123"
+												},
+												{
+													"key": "name",
+													"value": "TestName"
 												}
 											]
 										}
@@ -975,14 +2929,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=login&login=TestUser1234&password=ValidPass123",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=login&login=TestUser1234&password=ValidPass123",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -1045,14 +2994,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=login&login=Valid5&password=ValidPass123",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=login&login=Valid5&password=ValidPass123",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -1115,14 +3059,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=login&login=VeryLongUsername123&password=ValidPass123",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=login&login=VeryLongUsername123&password=ValidPass123",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -1185,14 +3124,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=login&login=User_Name123&password=ValidPass123",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=login&login=User_Name123&password=ValidPass123",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -1255,14 +3189,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=login&login=SpecialPass&password=Pass@123%",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=login&login=SpecialPass&password=Pass@123%",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -1325,14 +3254,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=login&login=MinPass8&password=TestP123",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=login&login=MinPass8&password=TestP123",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -1395,14 +3319,9 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://server/api/?method=login&login=LongPassword&password=VeryLongPassword123!@%23$",
-											"protocol": "http",
+											"raw": "{{base_url}}?method=login&login=LongPassword&password=VeryLongPassword123!@%23$",
 											"host": [
-												"server"
-											],
-											"path": [
-												"api",
-												""
+												"{{base_url}}"
 											],
 											"query": [
 												{
@@ -1415,7 +3334,7 @@
 												},
 												{
 													"key": "password",
-													"value": "VeryLongPassword123!@#$"
+													"value": "VeryLongPassword123!@%23$"
 												}
 											]
 										}
@@ -1804,11 +3723,11 @@
 													"    pm.expect(pm.response.json().result).to.eql(\"error\");\r",
 													"});\r",
 													"\r",
-													"pm.test(\"Код ошибки 1016 - params login or password not set\", () => {\r",
+													"pm.test(\"Код ошибки 1002 - Wrong login or password\", () => {\r",
 													"    const jsonData = pm.response.json();\r",
 													"    pm.expect(jsonData.error).to.be.an('object');\r",
-													"    pm.expect(jsonData.error.code).to.eql(1016);\r",
-													"    pm.expect(jsonData.error.text).to.eql(\"params login or password not set\");\r",
+													"    pm.expect(jsonData.error.code).to.eql(1002);\r",
+													"    pm.expect(jsonData.error.text).to.eql(\"Wrong login or password\");\r",
 													"});"
 												],
 												"type": "text/javascript",

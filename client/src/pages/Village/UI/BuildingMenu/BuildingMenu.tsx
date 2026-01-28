@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import GAMECONFIG from '../../../../game/gameConfig';
-import { GameContext, ServerContext} from '../../../../App';
+import { GameContext, ServerContext, StoreContext} from '../../../../App';
 import Building from '../../../../game/entities/Building';
 import Mediator from '../../../../services/mediator/Mediator';
 
@@ -13,6 +13,7 @@ interface BuildingMenuProps {
 const BuildingMenu: React.FC<BuildingMenuProps> = ({ mediator }) => {
     const game = useContext(GameContext);
     const server = useContext(ServerContext);
+    const store = useContext(StoreContext);
     const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
     const [showConfirm, setShowConfirm] = useState(false);
 
@@ -44,6 +45,21 @@ const BuildingMenu: React.FC<BuildingMenuProps> = ({ mediator }) => {
 
     const upgrade = async () => {
         if (!selectedBuilding) return;
+
+        const maxLevel = GAMECONFIG.MAX_LEVEL_BUILDING;
+        const upgradeCost = selectedBuilding.upgradeCost || 0;
+        const currentMoney = store.getMoney();
+
+        if (selectedBuilding.level >= maxLevel) {
+            alert('Достигнут максимальный уровень здания');
+            return;
+        }
+
+        if (currentMoney < upgradeCost) {
+            alert(`Недостаточно золота. Нужно: ${upgradeCost}, у вас: ${currentMoney}`);
+            return;
+        }
+
         const success = await server.upgradeBuilding(
             selectedBuilding.id,
             selectedBuilding.typeId
@@ -67,6 +83,10 @@ const BuildingMenu: React.FC<BuildingMenuProps> = ({ mediator }) => {
 
     const canDeleteBuilding = !GAMECONFIG.EXCLUDED_BUILDINGS.includes(selectedBuilding.type);
 
+    const isMaxLevel = selectedBuilding.level >= GAMECONFIG.MAX_LEVEL_BUILDING;
+    const hasEnoughMoney = store.getMoney() >= selectedBuilding.upgradeCost;
+    const canUpgrade = !isMaxLevel && hasEnoughMoney;
+
     return (
         <div className="BuildingMenu">
             <div 
@@ -86,7 +106,13 @@ const BuildingMenu: React.FC<BuildingMenuProps> = ({ mediator }) => {
                         </div>
                     </div>
                     <div className="menu-footer">
-                        <button className="levelup-button" onClick={upgrade}>Улучшить</button>
+                        <button 
+                            className={`levelup-button ${!canUpgrade ? 'disabled' : ''}`}
+                            onClick={upgrade}
+                            disabled={!canUpgrade}
+                        >
+                            Улучшить
+                        </button>
                         {canDeleteBuilding && (
                             <button className="delete-button"
                             onClick={openConfirm}

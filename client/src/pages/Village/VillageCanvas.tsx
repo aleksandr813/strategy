@@ -9,6 +9,7 @@ import useSprites from '../../hooks/useSprites';
 import Unit from '../../game/entities/Unit';
 import Building from '../../game/entities/Building';
 import villageBackground from '../../assets/img/background/villageBackground.png';
+import tableBackground from '../../assets/img/background/tableBackground.png'
 
 import "./Village.scss";
 
@@ -29,8 +30,12 @@ const VillageCanvas: React.FC = () => {
     const game = useContext(GameContext);
     const village = game.getVillage();
     
-    const background = new Image();
-    background.src = villageBackground;
+    const tableBg = new Image();
+    tableBg.src = tableBackground;
+
+    const villageBg = new Image();
+    villageBg.src = villageBackground;
+
 
     let canvas: Canvas | null = null;
     const CanvasRef = useCanvas(render);
@@ -41,6 +46,7 @@ const VillageCanvas: React.FC = () => {
             canvasInstance.HEIGHT = window.innerHeight;
             canvasInstance.canvas.width = window.innerWidth;
             canvasInstance.canvas.height = window.innerHeight;
+            WINDOW.WIDTH = window.innerWidth * (WINDOW.HEIGHT / window.innerHeight);
             render(0); 
         }
     };
@@ -91,6 +97,16 @@ const VillageCanvas: React.FC = () => {
         units.forEach((unit) => {
             const currentSpriteId = unit.getCurrentSpriteId();
             const spriteData = getSprite(currentSpriteId); 
+
+            let isSelected = unit.isSelected;
+            if (allocation.isSelectingStatus) {
+                isSelected = allocation.isUnitInSelection(unit);
+            }
+                
+            if (isSelected) {
+                canvas.oval(unit.coords.x+0.15, unit.coords.y+0.8, 0.75, 0.3, 'rgba(0, 0, 0, 0.5)', 3, 'rgba(34, 255, 0, 1)');
+            }
+            
             canvas.spriteFull(
                 spritesImage, 
                 unit.coords.x, 
@@ -100,14 +116,7 @@ const VillageCanvas: React.FC = () => {
                 spriteData[2]
             );
             
-            let isSelected = unit.isSelected;
-            if (allocation.isSelectingStatus) {
-                isSelected = allocation.isUnitInSelection(unit);
-            }
-                
-            if (isSelected) {
-                drawRect(canvas, unit.coords.x, unit.coords.y, 1, 1, 'rgba(0, 255, 0, 0.5)');
-            }
+            
 
             if (unit.hp < unit.maxHp) {
                 drawHPBar(canvas, unit.coords.x, unit.coords.y - 0.5, 0.8, 0.1, unit.hp, unit.maxHp);
@@ -150,17 +159,35 @@ const VillageCanvas: React.FC = () => {
         if (!allocation.isSelectingStatus) return;
         const rect = allocation.getSelectionRect();
         if (rect) {
-            canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.5)";
+            canvas.contextV.fillStyle = "rgba(0, 255, 0, 0.2)";
             canvas.contextV.fillRect(canvas.xs(rect.x), canvas.ys(rect.y), canvas.dec(rect.width), canvas.dec(rect.height));
+            canvas.contextV.strokeStyle = "rgba(0, 255, 0, 1)";
+            canvas.contextV.strokeRect(canvas.xs(rect.x), canvas.ys(rect.y), canvas.dec(rect.width), canvas.dec(rect.height));
         }
     };
 
     function render(FPS: number) {
         if (!canvas || !village) return;
         canvas.clear();
-        if (background.complete) {
-            canvas.contextV.drawImage(background, canvas.xs(0), canvas.ys(0), canvas.dec(87), canvas.dec(29));
-        }
+        if (tableBg.complete) {
+        canvas.contextV.drawImage(
+            tableBg,
+            canvas.xs(WINDOW.LEFT),
+            canvas.ys(WINDOW.TOP),
+            canvas.dec(WINDOW.WIDTH),
+            canvas.dec(WINDOW.HEIGHT)
+        );
+    }
+
+    if (villageBg.complete) {
+        canvas.contextV.drawImage(
+            villageBg,
+            canvas.xs(0),
+            canvas.ys(0),
+            canvas.dec(87),
+            canvas.dec(29)
+        );
+    }
         const { units, buildings } = village.getScene();
         drawUnits(canvas, units);
         drawBuildings(canvas, buildings);
@@ -207,6 +234,8 @@ const VillageCanvas: React.FC = () => {
         if (!village) return;
         
         const { buildingPreview, unitPreview } = village.getScene();
+        const { units, buildings } = village.getScene();
+
 
         if (buildingPreview.isActiveStatus()) {
             await village.handleBuildingPlacement();
@@ -216,7 +245,7 @@ const VillageCanvas: React.FC = () => {
             village.handleBuildingClick(x, y);
             
             if (!allocation.isSelectingStatus) {
-                village.moveUnits({ x, y }, game['server']);
+                village.moveUnits({ x, y }, units, buildings, game['server']);
             }
         }
     };
@@ -242,7 +271,9 @@ const VillageCanvas: React.FC = () => {
     const mouseClick = async (x: number, y: number) => {
         if (!village || wasDragging) return;
         
-        const { buildingPreview, unitPreview, units } = village.getScene();
+        const { buildingPreview, unitPreview } = village.getScene();
+        const { units, buildings } = village.getScene();
+
 
         if (buildingPreview.isActiveStatus()) {
             await village.handleBuildingPlacement();
@@ -261,7 +292,7 @@ const VillageCanvas: React.FC = () => {
             const hasSelectedUnits = units.some(u => u.isSelected);
 
             if (hasSelectedUnits) {
-                village.moveUnits({ x, y }, game['server']);
+                village.moveUnits({ x, y }, units, buildings, game['server']);
             } else {
                 village.selectUnit(null);
             }
@@ -380,10 +411,8 @@ const VillageCanvas: React.FC = () => {
         };
     }, []);
 
-    return (
-        <div className='VillageCanvas'>
-            <div id={GAME_FIELD} className={GAME_FIELD}></div>
-        </div>
+    return (    
+        <div id={GAME_FIELD} className={GAME_FIELD}></div>
     );
 };
 

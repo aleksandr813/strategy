@@ -3,7 +3,7 @@ import { TPoint } from "../../config";
 export default class VillageEntity {
     id: number;
     coords:TPoint;
-    sprites: number[] = [43];
+    sprites: number[] = [23];
     name: string;
     isSelected: boolean = false;
 
