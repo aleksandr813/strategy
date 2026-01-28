@@ -45,7 +45,7 @@ const ActiveBattlesMenu: React.FC<ActiveBattlesMenuProps> = ({ setUIElement, sto
     };
 
     const hasAttack = battles?.attack && battles.attack.length > 0;
-    const hasDefend = !!battles?.defend;
+    const hasDefend = battles?.defend;
 
     return (
         <div className="ActiveBattlesOverlay" onClick={closeMenu}>
@@ -69,7 +69,7 @@ const ActiveBattlesMenu: React.FC<ActiveBattlesMenuProps> = ({ setUIElement, sto
                             </button>
                         </div>
                     ))}
-                    {/*{hasDefend && (
+                    {hasDefend && (
                         <div key={`defend-${battles!.defend!.attack_id}`} className="battle-item defend">
                             <div className="battle-info">
                                 <span className="label">ОБОРОНА</span>
@@ -82,7 +82,7 @@ const ActiveBattlesMenu: React.FC<ActiveBattlesMenuProps> = ({ setUIElement, sto
                                 Защититься!
                             </button>
                         </div>
-                    )} */}
+                    )} 
 
                     {!hasAttack && !hasDefend && (
                         <div className="empty-msg">

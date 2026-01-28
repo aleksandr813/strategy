@@ -106,17 +106,15 @@ const BattleCanvas: React.FC = () => {
             }
 
             if (unit.hasTarget()) {
-                canvas.contextV.strokeStyle = 'rgba(255, 255, 0, 0.8)';
-                canvas.contextV.lineWidth = 2;
-                canvas.contextV.beginPath();
-                canvas.contextV.arc(
-                    canvas.xs(unit.coords.x + 0.5),
-                    canvas.ys(unit.coords.y + 0.5),
-                    canvas.dec(0.6),
-                    0,
-                    Math.PI * 2
+                canvas.star(
+                    unit.coords.x + 0.5, 
+                    unit.coords.y - 0.3, 
+                    0.15, 
+                    5, 
+                    'rgba(255, 215, 0, 0.9)', 
+                    'rgba(255, 165, 0, 0.9)',
+                    0.5 
                 );
-                canvas.contextV.stroke();
             }
 
             canvas.spriteFull(

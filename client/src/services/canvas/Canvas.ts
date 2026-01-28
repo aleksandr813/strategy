@@ -234,15 +234,7 @@ class Canvas {
         this.contextV.drawImage(image, sx, sy, size, size, this.xs(dx), this.ys(dy), this.dec(1), this.dec(1));
     }
 
-    oval(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    colorInside = 'rgba(0, 0, 0, 1)',
-    widthLine = 1,
-    colorOut = 'rgba(34, 255, 0, 1)'
-): void {
+    oval(x: number,y: number,width: number,height: number,colorInside = 'rgba(0, 0, 0, 1)',widthLine = 1,colorOut = 'rgba(34, 255, 0, 1)'): void {
     const screenX = this.xs(x);
     const screenY = this.ys(y);
     const screenWidth = width * this.WIDTH / this.WINDOW.WIDTH;
@@ -257,6 +249,7 @@ class Canvas {
         0,
         2 * Math.PI
     );
+    
  
     this.contextV.fillStyle = colorInside;
     this.contextV.fill();
@@ -266,7 +259,44 @@ class Canvas {
     this.contextV.stroke();
    
     this.contextV.closePath();
-}
+    }
+
+    star(x: number, y: number, radius: number = 0.15, spikes: number = 5, fillColor: string = 'rgba(255, 215, 0, 0.9)', strokeColor: string = 'rgba(255, 165, 0, 0.9)',lineWidth: number = 0.5): void {
+        const screenX = this.xs(x);
+        const screenY = this.ys(y);
+        const screenRadius = radius * this.WIDTH / this.WINDOW.WIDTH;
+        
+        this.contextV.save();
+        this.contextV.translate(screenX, screenY);
+        
+        this.contextV.fillStyle = fillColor;
+        this.contextV.strokeStyle = strokeColor;
+        this.contextV.lineWidth = lineWidth;
+        
+        this.contextV.beginPath();
+        
+        const outerRadius = screenRadius;
+        const innerRadius = screenRadius * 0.4;
+        
+        for (let i = 0; i < spikes * 2; i++) {
+            const radius = i % 2 === 0 ? outerRadius : innerRadius;
+            const angle = (i * Math.PI) / spikes;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+            
+            if (i === 0) {
+                this.contextV.moveTo(x, y);
+            } else {
+                this.contextV.lineTo(x, y);
+            }
+        }
+        
+        this.contextV.closePath();
+        this.contextV.fill();
+        this.contextV.stroke();
+        this.contextV.restore();
+    }
+    
     render(): void {
         this.context.clearRect(0, 0, this.WIDTH, this.HEIGHT);
         this.context.drawImage(this.canvasV, 0, 0);
