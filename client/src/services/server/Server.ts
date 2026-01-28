@@ -1,7 +1,7 @@
 import md5 from 'md5';
 import CONFIG from '../../config';
 import Store from "../store/Store";
-import { TBuildingType, TBuilding, TMapResponse, TUserArmy, TBattleResponse, TActiveBattle } from './types';
+import { TBuildingType, TBuilding, TMapResponse, TUserArmy, TBattleResponse, TActiveBattle, TUpdateBattleUnit } from './types';
 import { TUnitType, TUnit } from './types';
 import { TAnswer, TError, TMessagesResponse, TUser } from "./types";
 import Unit from '../../game/entities/Unit';

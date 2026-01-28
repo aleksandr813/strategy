@@ -18,7 +18,7 @@ const { GRID_HEIGHT, GRID_WIDTH } = GAMECONFIG;
 class Game {
     private store: Store;
     private server: Server;
-    private mediator: Mediator;
+    public mediator: Mediator;
     private easyStar: EasyStar.js;
     
     private units: Unit[] = [];
@@ -227,6 +227,28 @@ class Game {
         this.resetGlobalMap();
         this.battle.destructor();
     }
+
+    public async getUpdateBattle(): Promise<void> {
+        const battleId = this.getCurrentBattle();
+        if (battleId !== null) {
+            console.log('Отправка обновления битвы...');
+            const result = await this.server.getBattle(battleId);
+            
+            console.log('Результат обновления:', result);
+            
+            if (result && 'winner' in result) {
+                const isWinner = result.winner;
+                const loot = 'prize' in result && result.prize ? { gold: result.prize } : { gold: 0 };
+                
+                this.mediator.call('BATTLE_END', {
+                    isWinner,
+                    loot
+                });
+                
+                this.clearCurrentBattle();
+            }
+        }
+    }      
 }
 
 export default Game;

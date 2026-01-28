@@ -150,11 +150,19 @@ export type TBattle = {
 
 export type TBattleResponse = {
     hash: string;
-    battleData: TBattle;
+    battleData?: TBattle;
+    winner?: number;
+    prize?: number;
 };
-
 export type TActiveBattle = {
     attack: { battleId: string; userId: string; name: string }[];
     defend: { attack_id: string } | null; 
 };
 
+export type TUpdateBattleUnit = {
+    id: number;
+    x: number;
+    y: number;
+};
+
+export type TUpdateBattleResponse = boolean;

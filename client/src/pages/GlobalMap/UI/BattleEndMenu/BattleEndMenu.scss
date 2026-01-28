@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+$bg-dark: #1a1410;
+$bg-item: #2a1f15;
+$border-color: #3d2817;
+$accent-color: #d4a574;
+$text-main: #e8d4b8;
+$shadow-color: #0d0a08;
+
+.BattleEndOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    image-rendering: pixelated;
+    backdrop-filter: blur(2px);
+    cursor: pointer;
+}
+
+.BattleEndMenu {
+    width: 100%;
+    max-width: 400px;
+    min-height: 250px;
+    background: $bg-dark;
+    border: 6px solid $border-color;
+    box-shadow: 
+        inset 0 0 0 2px $bg-item,
+        0 8px 0 $shadow-color,
+        0 0 20px rgba(0, 0, 0, 0.8);
+    padding: 24px;
+    font-family: 'Press Start 2P', monospace;
+    color: $text-main;
+    box-sizing: border-box;
+    cursor: default;
+    text-align: center;
+
+    &.victory {
+        border-color: #4c6b22;
+        .result-header h1 { color: #88cc44; }
+    }
+
+    &.defeat {
+        border-color: #8b2e2e;
+        .result-header h1 { color: #ff5555; }
+    }
+
+    .result-header {
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 3px solid $border-color;
+
+        h1 {
+            font-size: 14px;
+            color: $accent-color;
+            text-shadow: 2px 2px 0 #000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+    }
+
+    .loot-section {
+        margin-bottom: 24px;
+
+        h3 {
+            font-size: 12px;
+            color: $text-main;
+            margin: 0 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .value {
+            font-size: 12px;
+            color: $accent-color;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #000;
+        }
+    }
+
+    .to-village-btn {
+        background: #5a822f;
+        color: $text-main;
+        border: 3px solid $border-color;
+        padding: 14px 28px;
+        cursor: pointer;
+        font-family: 'Press Start 2P', monospace;
+        font-size: 10px;
+        box-shadow: 3px 3px 0 $shadow-color;
+        transition: all 0.1s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        min-width: 160px;
+
+        &:hover {
+            background: #6ea139;
+            box-shadow: 2px 2px 0 $shadow-color;
+            transform: translate(1px, 1px);
+        }
+
+        &:active {
+            box-shadow: 1px 1px 0 $shadow-color;
+            transform: translate(2px, 2px);
+        }
+    }
+}

@@ -36,11 +36,13 @@ class Battle extends Manager {
 
         const buildings = battleData.buildings.map((b: any) => {
             const typeData = buildingTypes.find(t => t.id === b.typeId);
+            const hp = Number(b.currentHp) || 1;
+
             return new Building(
                 Number(b.id),
                 b.type,
-                Number(b.currentHp),
-                Number(b.currentHp),
+                hp,
+                hp,
                 Number(b.level),
                 b.size,
                 Number(b.typeId),
@@ -51,101 +53,158 @@ class Battle extends Manager {
                 typeData
             );
         });
+
         this.game.setBuildings(buildings);
     }
 
-    private updateUnitsState(newUnitsData: any[], side: 'ally' | 'enemy'): void {
-        const currentUnits = this.game.getUnits();
-        
-        newUnitsData.forEach(u => {
-            const id = Number(u.id);
-            const existingUnit = currentUnits.find(unit => unit.id === id);
+    async loadUnitsFromData(battleData: any): Promise<void> {
+        const normalizeUnitData = (u: any) => ({
+            ...u,
+            x: Number(u.x),
+            y: Number(u.y),
+            currentHp: Number(u.currentHp),
+            level: Number(u.level),
+            speed: Number(u.speed),
+            id: Number(u.id),
+        });
 
-            if (existingUnit) {
-                existingUnit.hp = Number(u.currentHp);
-                existingUnit.coords.x = Number(u.x);
-                existingUnit.coords.y = Number(u.y);
-                existingUnit.level = Number(u.level);
-                existingUnit.speed = Number(u.speed);
-            } else {
-                const newUnit = new Unit(
-                    {
-                        ...u,
-                        id: id,
-                        x: Number(u.x),
-                        y: Number(u.y),
-                        currentHp: Number(u.currentHp),
-                        level: Number(u.level),
-                        speed: Number(u.speed),
-                    },
+        const createUnits = (units: any[], side: 'ally' | 'enemy') =>
+            units.map(u => {
+                const unit = new Unit(
+                    normalizeUnitData(u),
                     this.game,
                     this.easyStar,
                     side
                 );
                 
-                if (newUnit.isMyUnit()) {
-                    newUnit.onChanged = (unitId: number) => this.markUnitAsChanged(unitId);
+                if (unit.isMyUnit()) {
+                    unit.onChanged = (unitId: number) => {
+                        this.markUnitAsChanged(unitId);
+                    };
                 }
-                currentUnits.push(newUnit);
-            }
-        });
-    }
+                
+                return unit;
+            });
 
-    async loadUnitsFromData(battleData: any): Promise<void> {
-        const currentUnits = this.game.getUnits();
-        const allNewUnitsData = [...battleData.alliedUnits, ...battleData.enemyUnits];
-        const newIds = new Set(allNewUnitsData.map(u => Number(u.id)));
+        const alliedUnits = createUnits(battleData.alliedUnits, 'ally');
+        const enemyUnits  = createUnits(battleData.enemyUnits, 'enemy');
 
-        const activeUnits = currentUnits.filter(u => newIds.has(u.id));
-        this.game.setUnits(activeUnits);
-
-        this.updateUnitsState(battleData.alliedUnits, 'ally');
-        this.updateUnitsState(battleData.enemyUnits, 'enemy');
+        this.game.setUnits([...enemyUnits, ...alliedUnits]);
     }
 
     async loadBattle(): Promise<void> {
         const currentBattleId = this.game.getCurrentBattle();
         if (!currentBattleId) return;
 
-        const response = await this.server.getBattle(currentBattleId);
-        if (!response || !response.battleData) return;
+        this.game.setBuildings([]);
+        this.game.setUnits([]);
 
-        await this.loadBuildingsFromData(response.battleData);
-        await this.loadUnitsFromData(response.battleData);
+        const response = await this.server.getBattle(currentBattleId);
+
+        if (!response) {
+            return;
+        }
+
+        if ('winner' in response) {
+            const isWinner = response.winner;
+            const loot = 'prize' in response && response.prize ? { gold: response.prize } : { gold: 0 };
+            
+            this.game['mediator']?.call('BATTLE_END', {
+                isWinner,
+                loot
+            });
+            
+            this.game.clearCurrentBattle();
+            return;
+        }
+
+        const battleData = response.battleData;
+        if (!battleData) return;
+
+        await this.loadBuildingsFromData(battleData);
+        await this.loadUnitsFromData(battleData);
         
         this.initializePathfinding();
-        
-        if (!this.combatIntervalId) this.startCombatLoop();
-        if (!this.updateBattleIntervalId) this.startUpdateBattleLoop();
+        this.startCombatLoop();
+        this.startUpdateBattleLoop();
     }
     
     private initializePathfinding(): void {
-        const matrix = this.game.getMatrixForEasyStar(this.game.getUnits(), this.game.getBuildings());
+        const units = this.game.getUnits();
+        const buildings = this.game.getBuildings();
+        const matrix = this.game.getMatrixForEasyStar(units, buildings);
+        
         this.easyStar.setGrid(matrix);
         this.easyStar.setAcceptableTiles([0, 2]);
     }
 
-    private attackTarget(units: Unit[], target: IAttackable): void {
-        const allUnits = this.game.getUnits();
-        const buildings = this.game.getBuildings();
-        
-        units.forEach(unit => {
-            unit.setTarget(target);
-            if (unit.isInAttackRange(target)) {
-                return; 
-            }
-            
-            const attackPos = unit.getAttackPosition(target);
-            unit.calcPath(attackPos, allUnits, buildings);
-        });
+    moveUnits(destination: TPoint, units: Unit[], buildings: Building[], server: Server) {
+        destination.x = Math.round(destination.x);
+        destination.y = Math.round(destination.y);
 
-        if (!this.movementIntervalId) this.startMovementCycle();
+        if (!this.isValidDestination(destination)) return;
+
+        if (this.movementIntervalId) {
+            clearInterval(this.movementIntervalId);
+            this.movementIntervalId = null;
+        }
+
+        const selectedUnits = this.game.getUnits().filter(unit => unit.isSelected && unit.isMyUnit());
+
+        if (selectedUnits.length > 0) {
+            selectedUnits.forEach((unit) => {
+                unit.calcPath(destination, units, buildings);
+            });
+            this.currentServer = server;
+            this.startMovementCycle();
+        }
+    }
+
+    protected startMovementCycle() {
+        if (this.movementIntervalId) return;
+
+        this.movementIntervalId = setInterval(() => {
+            const movingUnits: Unit[] = [];
+            let anyUnitMoving = false;
+
+            this.game.getUnits().forEach((unit) => {
+                if (unit.isMoving()) {
+                    anyUnitMoving = true;
+                    unit.movementAccumulator += unit.speed;
+                    
+                    if (unit.movementAccumulator >= 1) {
+                        unit.movementAccumulator -= 1;
+                        const oldX = unit.coords.x;
+                        const oldY = unit.coords.y;
+                        
+                        unit.makeStep();
+                        
+                        if (oldX !== unit.coords.x || oldY !== unit.coords.y) {
+                            movingUnits.push(unit);
+                            if (unit.isMyUnit()) {
+                                this.markUnitAsChanged(unit.id);
+                            }
+                        }
+                    }
+                }
+            });
+            
+            if (movingUnits.length > 0 && this.currentServer) {
+                this.currentServer.moveUnits(movingUnits);
+            }
+
+            if (!anyUnitMoving && this.movementIntervalId) {
+                clearInterval(this.movementIntervalId);
+                this.movementIntervalId = null;
+            }
+        }, MOVE_INTERVAL);
     }
 
     public handleClick(x: number, y: number): void {
         const gridX = Math.floor(x);
         const gridY = Math.floor(y);
         const selectedUnits = this.game.getUnits().filter(u => u.isSelected && u.isMyUnit());
+        
         if (selectedUnits.length === 0) return;
 
         const targetUnit = this.game.getUnits().find(u => u.isEnemy() && u.coords.x === gridX && u.coords.y === gridY);
@@ -153,7 +212,6 @@ class Battle extends Manager {
             this.attackTarget(selectedUnits, targetUnit);
             return;
         }
-    }
 
         const targetBuilding = this.game.getBuildings().find(b => {
             const [bx, by] = [b.coords[0].x, b.coords[0].y];
@@ -164,57 +222,15 @@ class Battle extends Manager {
         }
     }
 
-    public endBattle() {
-        console.log("Бой закончен");
-    }
-
-    private async processCombat(): Promise<void> {
-        const units = this.game.getUnits();
+    private attackTarget(units: Unit[], target: IAttackable): void {
+        const allUnits = this.game.getUnits();
         const buildings = this.game.getBuildings();
         
         units.forEach(unit => {
-            if (!unit.hasTarget() || !unit.isMyUnit()) return;
-
-            const target = unit.getTarget();
-            if (!target || target.hp <= 0) {
-                unit.clearTarget();
-                return;
-            }
-
-            if (unit.isInAttackRange(target)) {
-                const isTargetBuilding = buildings.some(b => b.id === target.id);
-                this.recordDamage(unit.id, target.id, isTargetBuilding);
-                unit.attack(target);
-            } else if (!unit.isMoving()) {
-                const attackPos = unit.getAttackPosition(target);
-                unit.calcPath(attackPos, units, buildings);
-                if (!this.movementIntervalId) this.startMovementCycle();
-            }
+            unit.setTarget(target);
+            const attackPos = unit.getAttackPosition(target);
+            unit.calcPath(attackPos, allUnits, buildings);
         });
-
-        await this.cleanupDestroyedEntities();
-    }
-
-    private async cleanupDestroyedEntities(): Promise<void> {
-        const buildings = this.game.getBuildings();
-        const units = this.game.getUnits();
-
-        const allyUnitsAlive = units.some(u => u.isMyUnit() && u.hp > 0);
-    
-        if (!allyUnitsAlive && units.length > 0) {
-            this.endBattle();
-        }
-
-        const needsReload = units.some(u => u.hp <= 0) || buildings.some(b => b.hp <= 0);
-
-        if (needsReload) {
-            buildings.forEach(b => {
-                if (b.hp <= 0 && (b.type === 'Castle' || b.typeId === 1)) {
-                    this.endBattle();
-                }
-            });
-            await this.loadBattle();
-        }
     }
 
     private startCombatLoop(): void {
@@ -239,15 +255,32 @@ class Battle extends Manager {
 
     private async sendBattleUpdate(): Promise<void> {
         const currentBattleId = this.game.getCurrentBattle();
-        if (!currentBattleId || (this.changedUnits.size === 0 && this.damageToUnits.size === 0 && this.damageToBuildings.size === 0)) return;
+        if (!currentBattleId) return;
 
-        const changedMyUnits = this.game.getUnits().filter(u => u.isMyUnit() && this.changedUnits.has(u.id));
+        if (this.changedUnits.size === 0 && this.damageToUnits.size === 0 && this.damageToBuildings.size === 0) {
+            return;
+        }
+
+        const units = this.game.getUnits();
+        const changedMyUnits = units.filter(u => u.isMyUnit() && this.changedUnits.has(u.id));
+
         const unitDamage: Record<number, number> = {};
-        this.damageToUnits.forEach((v, k) => unitDamage[k] = v);
-        const bldDamage: Record<number, number> = {};
-        this.damageToBuildings.forEach((v, k) => bldDamage[k] = v);
+        this.damageToUnits.forEach((targetId, attackerId) => {
+            unitDamage[attackerId] = targetId;
+        });
 
-        const result = await this.server.updateBattle(currentBattleId, changedMyUnits, unitDamage, bldDamage);
+        const buildingDamage: Record<number, number> = {};
+        this.damageToBuildings.forEach((targetId, attackerId) => {
+            buildingDamage[attackerId] = targetId;
+        });
+
+        const result = await this.server.updateBattle(
+            currentBattleId,
+            changedMyUnits,
+            unitDamage,
+            buildingDamage
+        );
+
         if (result) {
             this.damageToUnits.clear();
             this.damageToBuildings.clear();
@@ -255,9 +288,77 @@ class Battle extends Manager {
         }
     }
 
+    private async checkBattleEnd(): Promise<void> {
+        const currentBattleId = this.game.getCurrentBattle();
+        if (!currentBattleId) return;
+
+        const response = await this.server.getBattle(currentBattleId);
+        
+        if (response && 'winner' in response) {
+            const isWinner = response.winner;
+            const loot = 'prize' in response && response.prize ? { gold: response.prize } : { gold: 0 };
+            
+            this.game['mediator']?.call('BATTLE_END', {
+                isWinner,
+                loot
+            });
+            
+            this.game.clearCurrentBattle();
+            
+            if (this.combatIntervalId) clearInterval(this.combatIntervalId);
+            if (this.updateBattleIntervalId) clearInterval(this.updateBattleIntervalId);
+        }
+    }
+
+    private processCombat(): void {
+        const units = this.game.getUnits();
+        
+        units.forEach(unit => {
+            if (!unit.hasTarget() || !unit.isMyUnit()) return;
+
+            const target = unit.getTarget();
+            if (!target || target.hp <= 0) {
+                unit.clearTarget();
+                return;
+            }
+
+            if (unit.isInAttackRange(target)) {
+                const isTargetBuilding = this.game.getBuildings().some(b => b.id === target.id);
+                this.recordDamage(unit.id, target.id, isTargetBuilding);
+                unit.attack(target);
+            } else if (!unit.isMoving()) {
+                const attackPos = unit.getAttackPosition(target);
+                unit.calcPath(attackPos, this.game.getUnits(), this.game.getBuildings());
+                if (!this.movementIntervalId) this.startMovementCycle();
+            }
+        });
+
+        this.cleanupDestroyedEntities();
+    }
+
+    private async cleanupDestroyedEntities(): Promise<void> {
+        const buildings = this.game.getBuildings();
+        const units = this.game.getUnits();
+
+        const allyUnitsAlive = units.some(u => u.isMyUnit() && u.hp > 0);
+        const enemyUnitsAlive = units.some(u => !u.isMyUnit() && u.hp > 0);
+        
+        if (!allyUnitsAlive || !enemyUnitsAlive) {
+            await this.checkBattleEnd();
+            return;
+        }
+
+        const needsReload = units.some(u => u.hp <= 0) || buildings.some(b => b.hp <= 0);
+
+        if (needsReload) {
+            await this.checkBattleEnd();
+            await this.loadBattle();
+        }
+    }
+
     public destructor(): void {
-        //if (this.combatIntervalId) clearInterval(this.combatIntervalId);
-        //if (this.updateBattleIntervalId) clearInterval(this.updateBattleIntervalId);
+        if (this.combatIntervalId) clearInterval(this.combatIntervalId);
+        if (this.updateBattleIntervalId) clearInterval(this.updateBattleIntervalId);
         super.destructor();
     }
 }
