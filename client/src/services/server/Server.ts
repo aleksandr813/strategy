@@ -315,29 +315,29 @@ class Server {
     }
 
     async updateBattle(
-            battleId: number, 
-            units: Unit[], 
-            damageToUnits: Record<number, number>, 
-            damageToBuildings: Record<number, number>
-        ): Promise<boolean | null> {
-            const params: Record<string, string> = {
-                battleId: battleId.toString()
-            };
+        battleId: number, 
+        units: Unit[], 
+        damageToUnits: Record<number, number>, 
+        damageToBuildings: Record<number, number>
+    ): Promise<boolean | null> {
+        const params: Record<string, string> = {
+            battleId: battleId.toString()
+        };
 
-            if (units.length > 0) {
-                params.units = units.map(u => `id${u.id},x${u.coords.x},y${u.coords.y}`).join(';');
-            }
-
-            Object.entries(damageToUnits).forEach(([attId, tarId]) => {
-                params[`damageToUnits[${attId}]`] = tarId.toString();
-            });
-
-            Object.entries(damageToBuildings).forEach(([attId, tarId]) => {
-                params[`damageToBuildings[${attId}]`] = tarId.toString();
-            });
-
-            return await this.request<boolean>('updateBattle', params);
+        if (units.length > 0) {
+            params.units = units.map(u => `id${u.id},x${u.coords.x},y${u.coords.y}`).join(';');
         }
+
+        Object.entries(damageToUnits).forEach(([attackerId, targetId]) => {
+            params[`damageToUnits[${attackerId}]`] = targetId.toString();
+        });
+
+        Object.entries(damageToBuildings).forEach(([attackerId, targetId]) => {
+            params[`damageToBuildings[${attackerId}]`] = targetId.toString();
+        });
+
+        return await this.request<boolean>('updateBattle', params);
+    }
 }
 
 export default Server;
