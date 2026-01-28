@@ -244,9 +244,9 @@ class DB
 
         return $this->execute(
             "UPDATE battle_objects SET
-            x = CASE original_id $xStr END,
-            y = CASE original_id $yStr END
-            WHERE battle_id = ? AND owner_village_id = ? AND original_id IN ($unitsStr)",
+            x = CASE id $xStr END,
+            y = CASE id $yStr END
+            WHERE battle_id = ? AND owner_village_id = ? AND id IN ($unitsStr) AND object_type = 'UNIT'",
             [$battleId, $villageId]
         );
     }
