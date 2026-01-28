@@ -158,3 +158,10 @@ export type TActiveBattle = {
     defend: { attack_id: string } | null; 
 };
 
+export type TUpdateBattleUnit = {
+    id: number;
+    x: number;
+    y: number;
+};
+
+export type TUpdateBattleResponse = boolean;

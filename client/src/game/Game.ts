@@ -227,6 +227,32 @@ class Game {
         this.resetGlobalMap();
         this.battle.destructor();
     }
+
+    public async sendUpdateBattle(): Promise<void> {
+        const battleId = this.getCurrentBattle();
+        if (battleId !== null) {
+            const unitsToUpdate = this.units.map(unit => ({
+                id: unit.id,
+                x: unit.coords.x,
+                y: unit.coords.y
+            }));
+
+            console.log('Отправка обновления битвы...', unitsToUpdate);
+            const result = await this.server.getUpdateBattle(battleId, unitsToUpdate);
+            const fakeBattleEnd = true;
+
+        if (fakeBattleEnd) {
+            this.mediator.call('BATTLE_END', {
+                isWinner: true,
+                loot: {
+                    gold: 300
+                }
+            });
+        }
+            
+            console.log('Результат обновления:', result);
+        }
+    }      
 }
 
 export default Game;
