@@ -69,7 +69,7 @@ const ActiveBattlesMenu: React.FC<ActiveBattlesMenuProps> = ({ setUIElement, sto
                             </button>
                         </div>
                     ))}
-                    {hasDefend && (
+                    {/*{hasDefend && (
                         <div key={`defend-${battles!.defend!.attack_id}`} className="battle-item defend">
                             <div className="battle-info">
                                 <span className="label">ОБОРОНА</span>
@@ -82,7 +82,7 @@ const ActiveBattlesMenu: React.FC<ActiveBattlesMenuProps> = ({ setUIElement, sto
                                 Защититься!
                             </button>
                         </div>
-                    )}
+                    )} */}
 
                     {!hasAttack && !hasDefend && (
                         <div className="empty-msg">
