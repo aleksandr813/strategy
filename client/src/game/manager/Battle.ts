@@ -305,17 +305,20 @@ class Battle extends Manager {
         this.cleanupDestroyedEntities();
     }
 
-    private cleanupDestroyedEntities(): void {
+    private async cleanupDestroyedEntities(): Promise<void> {
+        const buildings = this.game.getBuildings();
         const units = this.game.getUnits();
-        const aliveUnits = units.filter(u => u.hp > 0);
-        if (aliveUnits.length !== units.length) {
-            this.game.setUnits(aliveUnits);
+
+        const allyUnitsAlive = units.some(u => u.isMyUnit() && u.hp > 0);
+        
+        if (!allyUnitsAlive && units.length > 0) {
+            console.log("Все ваши воины пали в бою!");
         }
 
-        const buildings = this.game.getBuildings();
-        const aliveBuildings = buildings.filter(b => b.hp > 0);
-        if (aliveBuildings.length !== buildings.length) {
-            this.game.setBuildings(aliveBuildings);
+        const needsReload = units.some(u => u.hp <= 0) || buildings.some(b => b.hp <= 0);
+
+        if (needsReload) {
+            await this.loadBattle();
         }
     }
 
