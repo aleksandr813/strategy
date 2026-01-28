@@ -18,7 +18,7 @@ const { GRID_HEIGHT, GRID_WIDTH } = GAMECONFIG;
 class Game {
     private store: Store;
     private server: Server;
-    private mediator: Mediator;
+    public mediator: Mediator;
     private easyStar: EasyStar.js;
     
     private units: Unit[] = [];
@@ -231,26 +231,22 @@ class Game {
     public async getUpdateBattle(): Promise<void> {
         const battleId = this.getCurrentBattle();
         if (battleId !== null) {
-            const unitsToUpdate = this.units.map(unit => ({
-                id: unit.id,
-                x: unit.coords.x,
-                y: unit.coords.y
-            }));
-
-            console.log('Отправка обновления битвы...', unitsToUpdate);
-            const result = await this.server.getBattle(battleId, unitsToUpdate);
-            const fakeBattleEnd = true;
-
-        if (fakeBattleEnd) {
-            this.mediator.call('BATTLE_END', {
-                isWinner: true,
-                loot: {
-                    gold: 300
-                }
-            });
-        }
+            console.log('Отправка обновления битвы...');
+            const result = await this.server.getBattle(battleId);
             
             console.log('Результат обновления:', result);
+            
+            if (result && 'winner' in result) {
+                const isWinner = result.winner;
+                const loot = 'prize' in result && result.prize ? { gold: result.prize } : { gold: 0 };
+                
+                this.mediator.call('BATTLE_END', {
+                    isWinner,
+                    loot
+                });
+                
+                this.clearCurrentBattle();
+            }
         }
     }      
 }

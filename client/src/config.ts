@@ -46,7 +46,8 @@ const CONFIG = {
             MONEY_CHANGE: 'MONEY_CHANGE',
             BUILDING_SELECTED: 'BUILDING_SELECTED', // событие выбора здания
             VILLAGE_SELECTED: 'VILLAGE_SELECTED', // событие выбора деревни на глобальной карте
-            UPDATE_BATTLES: 'UPDATE_BATTLES' // событие обновления списка битв 
+            UPDATE_BATTLES: 'UPDATE_BATTLES', // событие обновления списка битв 
+            BATTLE_END: 'BATTLE_END' // событие окончания битвы
         },
         TRIGGERS: {
             SET_STORE: 'SET_STORE', // записать в стор

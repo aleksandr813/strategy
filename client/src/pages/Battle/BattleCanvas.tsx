@@ -58,11 +58,9 @@ const BattleCanvas: React.FC = () => {
     let windowStartPosition: { LEFT: number, TOP: number } | null = null;
 
     const clampCamera = () => {
-        // границы с учётом отступа
         const maxLeft = Math.max(0, GAME_FIELD_WIDTH - WINDOW.WIDTH + BORDER_PADDING);
         const maxTop = Math.max(0, GAME_FIELD_HEIGHT - WINDOW.HEIGHT + BORDER_PADDING);
         
-        // минимальные значения
         const minLeft = -BORDER_PADDING;
         const minTop = -BORDER_PADDING;
         
@@ -107,7 +105,6 @@ const BattleCanvas: React.FC = () => {
                 canvas.oval(unit.coords.x+0.15, unit.coords.y+0.8, 0.75, 0.3, 'rgba(0, 0, 0, 0.5)', 3, 'rgba(255, 0, 0, 1)');
             }
 
-            // Индикатор цели
             if (unit.hasTarget()) {
                 canvas.contextV.strokeStyle = 'rgba(255, 255, 0, 0.8)';
                 canvas.contextV.lineWidth = 2;
@@ -131,8 +128,6 @@ const BattleCanvas: React.FC = () => {
                 spriteData[2]
             );
             
-            
-
             if (unit.hp < unit.maxHp) {
                 drawHPBar(canvas, unit.coords.x, unit.coords.y - 0.5, 0.8, 0.1, unit.hp, unit.maxHp);
             }
@@ -147,7 +142,6 @@ const BattleCanvas: React.FC = () => {
             }
         });
     };
-
 
     const drawSelectionRect = (canvas: Canvas) => {
         if (!allocation.isSelectingStatus) return;
@@ -207,10 +201,8 @@ const BattleCanvas: React.FC = () => {
 
         const { units, buildings } = battle.getScene();
         
-        // Сначала проверяем клик по целям (юниты и здания)
         battle.handleClick(tileX, tileY);
         
-        // Если клик был не по цели, то двигаем юниты
         const selectedUnits = units.filter(u => u.isSelected && u.isMyUnit());
         if (selectedUnits.length > 0) {
             const targetUnit = units.find(u => 
@@ -227,7 +219,6 @@ const BattleCanvas: React.FC = () => {
                 return tileX >= bx && tileX < bx + 2 && tileY >= by && tileY < by + 2;
             });
 
-            // Если клик не по цели, то просто перемещаем
             if (!targetUnit && !targetBuilding) {
                 battle.moveUnits({ x: tileX, y: tileY }, units, buildings, game['server']);
             }
@@ -271,7 +262,6 @@ const BattleCanvas: React.FC = () => {
             return;
         }
     };
-
 
     const mouseRightClickDown = (x: number, y: number) => {
         if (!battle) return;

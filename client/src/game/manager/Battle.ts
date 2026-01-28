@@ -105,6 +105,19 @@ class Battle extends Manager {
             return;
         }
 
+        if ('winner' in response) {
+            const isWinner = response.winner;
+            const loot = 'prize' in response && response.prize ? { gold: response.prize } : { gold: 0 };
+            
+            this.game['mediator']?.call('BATTLE_END', {
+                isWinner,
+                loot
+            });
+            
+            this.game.clearCurrentBattle();
+            return;
+        }
+
         const battleData = response.battleData;
         if (!battleData) return;
 
@@ -218,10 +231,6 @@ class Battle extends Manager {
             const attackPos = unit.getAttackPosition(target);
             unit.calcPath(attackPos, allUnits, buildings);
         });
-
-        if (!this.movementIntervalId) {
-            this.startMovementCycle();
-        }
     }
 
     private startCombatLoop(): void {
@@ -279,6 +288,28 @@ class Battle extends Manager {
         }
     }
 
+    private async checkBattleEnd(): Promise<void> {
+        const currentBattleId = this.game.getCurrentBattle();
+        if (!currentBattleId) return;
+
+        const response = await this.server.getBattle(currentBattleId);
+        
+        if (response && 'winner' in response) {
+            const isWinner = response.winner;
+            const loot = 'prize' in response && response.prize ? { gold: response.prize } : { gold: 0 };
+            
+            this.game['mediator']?.call('BATTLE_END', {
+                isWinner,
+                loot
+            });
+            
+            this.game.clearCurrentBattle();
+            
+            if (this.combatIntervalId) clearInterval(this.combatIntervalId);
+            if (this.updateBattleIntervalId) clearInterval(this.updateBattleIntervalId);
+        }
+    }
+
     private processCombat(): void {
         const units = this.game.getUnits();
         
@@ -310,14 +341,17 @@ class Battle extends Manager {
         const units = this.game.getUnits();
 
         const allyUnitsAlive = units.some(u => u.isMyUnit() && u.hp > 0);
+        const enemyUnitsAlive = units.some(u => !u.isMyUnit() && u.hp > 0);
         
-        if (!allyUnitsAlive && units.length > 0) {
-            console.log("Все ваши воины пали в бою!");
+        if (!allyUnitsAlive || !enemyUnitsAlive) {
+            await this.checkBattleEnd();
+            return;
         }
 
         const needsReload = units.some(u => u.hp <= 0) || buildings.some(b => b.hp <= 0);
 
         if (needsReload) {
+            await this.checkBattleEnd();
             await this.loadBattle();
         }
     }
