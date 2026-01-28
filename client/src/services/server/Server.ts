@@ -306,11 +306,50 @@ class Server {
         id: id.toString() 
     });
     return battle;
-}
+    }
 
     async getActiveBattles(): Promise<TActiveBattle | null> {
         const response = await this.request<TActiveBattle>('getActiveBattles');
         console.log('Active battles:', response);
+        return response;
+    }
+
+    async updateBattle(battleId: number, units: Unit[], damageToUnits: number[][], damageToBuildings: number[][]): Promise<boolean | null> {
+        const params: { [key: string]: string } = {
+            battleId: battleId.toString()
+        };
+
+        const unitsString = units.map(unit =>
+            `id${unit.id},x${unit.coords.x},y${unit.coords.y}`
+        ).join(';');
+        
+        params.units = unitsString;
+
+        const damageToUnitsArray: string[] = [];
+        damageToUnits.forEach((damages, attackerId) => {
+            damages.forEach((damage, targetId) => {
+                if (damage > 0) {
+                    damageToUnitsArray.push(`[${attackerId}][${targetId}]=${damage}`);
+                }
+            });
+        });
+        if (damageToUnitsArray.length > 0) {
+            params.damageToUnits = damageToUnitsArray.join(';');
+        }
+
+        const damageToBuildingsArray: string[] = [];
+        damageToBuildings.forEach((damages, buildingId) => {
+            damages.forEach((damage, targetUnitId) => {
+                if (damage > 0) {
+                    damageToBuildingsArray.push(`[${buildingId}][${targetUnitId}]=${damage}`);
+                }
+            });
+        });
+        if (damageToBuildingsArray.length > 0) {
+            params.damageToBuildings = damageToBuildingsArray.join(';');
+        }
+
+        const response = await this.request<boolean>('updateBattle', params);
         return response;
     }
 }
