@@ -184,9 +184,7 @@ class Battle {
                         $objectData['damage'] = $buildingStats->damage;
                     }
 
-                    if (!$isAttacker) {
-                        $buildings[] = $objectData;
-                    }
+                    $buildings[] = $objectData;
                     break;
                 case 'CORPSE':
                     $corpse[] = $objectData;
