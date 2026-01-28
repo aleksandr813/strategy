@@ -67,6 +67,7 @@ class Battle extends Manager {
                 existingUnit.coords.y = Number(u.y);
                 existingUnit.level = Number(u.level);
                 existingUnit.speed = Number(u.speed);
+                // Параметры выделения и цели сохраняются, так как объект не пересоздан
             } else {
                 const newUnit = new Unit(
                     {
@@ -96,6 +97,7 @@ class Battle extends Manager {
         const allNewUnitsData = [...battleData.alliedUnits, ...battleData.enemyUnits];
         const newIds = new Set(allNewUnitsData.map(u => Number(u.id)));
 
+        // Оставляем только те юниты, которые прислал сервер (живые)
         const activeUnits = currentUnits.filter(u => newIds.has(u.id));
         this.game.setUnits(activeUnits);
 
@@ -131,11 +133,13 @@ class Battle extends Manager {
         
         units.forEach(unit => {
             unit.setTarget(target);
+            // Если юнит уже в радиусе — атакуем, иначе идем
             if (unit.isInAttackRange(target)) {
                 return; 
             }
             
             const attackPos = unit.getAttackPosition(target);
+            // Если путь не найден до точки атаки, пробуем идти прямо к координатам центра здания
             unit.calcPath(attackPos, allUnits, buildings);
         });
 
@@ -153,6 +157,7 @@ class Battle extends Manager {
             this.attackTarget(selectedUnits, targetUnit);
             return;
         }
+    }
 
         const targetBuilding = this.game.getBuildings().find(b => {
             const [bx, by] = [b.coords[0].x, b.coords[0].y];
@@ -161,10 +166,6 @@ class Battle extends Manager {
         if (targetBuilding) {
             this.attackTarget(selectedUnits, targetBuilding);
         }
-    }
-
-    public endBattle() {
-        console.log("Бой закончен");
     }
 
     private async processCombat(): Promise<void> {
@@ -185,6 +186,7 @@ class Battle extends Manager {
                 this.recordDamage(unit.id, target.id, isTargetBuilding);
                 unit.attack(target);
             } else if (!unit.isMoving()) {
+                // Пытаемся обновить путь, если застряли
                 const attackPos = unit.getAttackPosition(target);
                 unit.calcPath(attackPos, units, buildings);
                 if (!this.movementIntervalId) this.startMovementCycle();
@@ -198,18 +200,12 @@ class Battle extends Manager {
         const buildings = this.game.getBuildings();
         const units = this.game.getUnits();
 
-        const allyUnitsAlive = units.some(u => u.isMyUnit() && u.hp > 0);
-    
-        if (!allyUnitsAlive && units.length > 0) {
-            this.endBattle();
-        }
-
         const needsReload = units.some(u => u.hp <= 0) || buildings.some(b => b.hp <= 0);
 
         if (needsReload) {
             buildings.forEach(b => {
                 if (b.hp <= 0 && (b.type === 'Castle' || b.typeId === 1)) {
-                    this.endBattle();
+                    console.log("Ратуша разрушена");
                 }
             });
             await this.loadBattle();
